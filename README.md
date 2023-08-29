@@ -13,13 +13,13 @@
   </a> 
     <br />
     <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=📝&message=docs&color=grey" alt="License">
+      <img src="https://img.shields.io/static/v1?label=📝&message=docs&color=grey" alt="docs">
   </a> 
     <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=🦙&message=llamaindex&color=grey" alt="License">
+      <img src="https://img.shields.io/static/v1?label=🦙&message=llamaindex&color=grey" alt="llamaindex">
   </a> 
     <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=🦜🔗&message=langchain&color=grey" alt="License">
+      <img src="https://img.shields.io/static/v1?label=🦜🔗&message=langchain&color=grey" alt="langchain">
   </a> 
   <br />
       <a href="https://docs.portkey.ai/" target="_blank">
