@@ -12,7 +12,6 @@ from .utils import (
     ProviderOptions,
     RubeusResponse,
 )
-from pydantic import BaseModel
 from .exceptions import (
     APIStatusError,
     BadRequestError,
@@ -100,7 +99,7 @@ class APIClient:
         return config
 
     @property
-    def _default_headers(self) -> dict[str, str]:
+    def _default_headers(self) -> Mapping[str, str]:
         return {
             "Content-Type": "application/json",
             "x-portkey-api-key": self.api_key,
@@ -141,7 +140,7 @@ class APIClient:
 
     def __exit__(
         self,
-        exc_type: Optional[type[BaseException]],
+        exc_type: Optional[BaseException],
         exc: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
