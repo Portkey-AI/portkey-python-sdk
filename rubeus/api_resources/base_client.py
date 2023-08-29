@@ -73,11 +73,11 @@ class APIClient:
     def _construct(
         self, *, method: str, url: str, body: List[Body], mode: str
     ) -> Options:
-        opts = Options.model_construct()
+        opts = Options.construct()
         opts.method = method
         opts.url = url
         json_body = {
-            "config": self._config(mode, body).model_dump(),
+            "config": self._config(mode, body).dict(),
             "params": self._custom_params,
         }
         opts.json_body = remove_empty_values(json_body)
@@ -87,7 +87,7 @@ class APIClient:
     def _config(self, mode: str, body: List[Body]) -> Config:
         config = Config(mode=mode, options=[])
         for i in body:
-            item = i.model_dump()
+            item = i.dict()
             options = ProviderOptions(
                 provider=item.get("provider"),
                 apiKey=item.get("api_key"),
@@ -178,7 +178,7 @@ class APIClient:
             raise APIConnectionError(request=request) from err
         response = cast(
             RubeusResponse,
-            RubeusResponse.model_construct(**res.json(), raw_body=res.json()),
+            RubeusResponse.construct(**res.json(), raw_body=res.json()),
         )
         return response
 
