@@ -13,17 +13,17 @@
   </a> 
     <br />
     <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=📝&message=docs&color=grey" alt="docs">
+      <img src="https://img.shields.io/static/v1?label=📝 &message=docs&color=grey" alt="docs">
   </a> 
     <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=🦙&message=llamaindex&color=grey" alt="llamaindex">
+      <img src="https://img.shields.io/static/v1?label=🦙 &message=llamaindex&color=grey" alt="llamaindex">
   </a> 
     <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=🦜🔗&message=langchain&color=grey" alt="langchain">
+      <img src="https://img.shields.io/static/v1?label=🦜🔗 &message=langchain&color=grey" alt="langchain">
   </a> 
   <br />
       <a href="https://docs.portkey.ai/" target="_blank">
-    <img src="https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/>
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt=\"Open In Colab\"/>
   </a> 
     <a href="https://twitter.com/intent/follow?screen_name=portkeyai">
         <img src="https://img.shields.io/twitter/follow/portkeyai?style=social&logo=twitter"
