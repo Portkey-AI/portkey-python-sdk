@@ -148,6 +148,7 @@ class LLMBase(BaseModel):
     (default: {}).
     weight (Optional[float]): The weight of the LLM in the ensemble (default: 1.0).
     """
+
     prompt: Optional[str] = None
     messages: Optional[List[Message]] = None
     provider: Union[ProviderTypes, ProviderTypesLiteral]
