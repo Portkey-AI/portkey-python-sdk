@@ -1,3 +1,4 @@
+import os
 from enum import Enum
 from typing import (
     List,
@@ -179,8 +180,9 @@ class LLMBase(BaseModel):
     # logit_bias: Optional[Dict[str, int]]
     # user: Optional[str]
 
-    def __setitem__(self, key: str, value: Any) -> None:
-        setattr(self, key, value)
+    def __init__(self, **kwargs):
+        kwargs["model_api_key"] = str(apikey_from_env(kwargs.get("provider", "")))
+        super().__init__(**kwargs)
 
 
 class Body(LLMBase):
@@ -188,8 +190,7 @@ class Body(LLMBase):
 
 
 class Params(LLMBase):
-    def __setitem__(self, key: str, value: Any) -> None:
-        setattr(self, key, value)
+    pass
 
 
 class RequestData(BaseModel):
@@ -201,3 +202,15 @@ class RubeusResponse(BaseModel):
     model: str
     choices: List[Any]
     raw_body: Dict[str, Any]
+
+
+def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str:
+    if provider == ProviderTypes.OPENAI:
+        return os.environ.get("OPENAI_API_KEY", "")
+    elif provider == ProviderTypes.COHERE:
+        return os.environ.get("COHERE_API_KEY", "")
+    elif provider == ProviderTypes.AZURE_OPENAI:
+        return os.environ.get("AZURE_OPENAI_API_KEY", "")
+    elif provider == ProviderTypes.HUGGING_FACE:
+        return os.environ.get("HUGGINGFACE_API_KEY", "")
+    return ""

@@ -1,12 +1,12 @@
 """Rubeus implementation."""
 import os
 from typing import Optional, Union, Mapping, Any
-from rubeus.global_constants import (
+from .global_constants import (
     MISSING_API_KEY_ERROR_MESSAGE,
     DEFAULT_MAX_RETRIES,
     DEFAULT_TIMEOUT,
 )
-from rubeus.base_client import APIClient
+from .base_client import APIClient
 from . import apis
 
 __all__ = ["Rubeus"]
@@ -19,17 +19,17 @@ class Rubeus(APIClient):
     def __init__(
         self,
         *,
-        api_key: str,
+        api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         timeout: Union[float, None] = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
         default_headers: Optional[Mapping[str, str]] = None,
         default_query: Optional[Mapping[str, object]] = None,
-        default_params: Optional[Mapping[str, str]] = None,
+        default_params: Optional[Mapping[str, Any]] = None,
     ) -> None:
         if base_url is None:
             self.base_url = "https://api.portkey.ai"
-        self.api_key = api_key or os.environ.get("PORTKEY_API_KEY", "")
+        self.api_key = api_key or os.environ.get("PORTKEY_API_KEY") or ""
         if not self.api_key:
             raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
         self.default_params = default_params or {}

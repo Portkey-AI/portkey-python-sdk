@@ -1,6 +1,6 @@
 from typing import Optional, Union, List, Dict, Any, cast
-from rubeus.global_constants import DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT
-from rubeus.utils import (
+from .global_constants import DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT
+from .utils import (
     ProviderTypes,
     RubeusCacheType,
     LLMBase,
@@ -9,6 +9,7 @@ from rubeus.utils import (
     ProviderTypesLiteral,
     Body,
     RubeusResponse,
+    apikey_from_env,
 )
 
 from .base_client import APIClient
@@ -51,6 +52,7 @@ class Completions(APIResource):
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
     ) -> RubeusResponse:
+        model_api_key = apikey_from_env(provider)
         llm = Body(
             prompt=prompt,
             timeout=timeout,
