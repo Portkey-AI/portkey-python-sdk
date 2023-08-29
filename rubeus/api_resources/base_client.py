@@ -74,11 +74,11 @@ class APIClient:
     def _construct(
         self, *, method: str, url: str, body: List[Body], mode: str
     ) -> Options:
-        opts = Options.construct()
+        opts = Options.model_construct()
         opts.method = method
         opts.url = url
         json_body = {
-            "config": self._config(mode, body).dict(),
+            "config": self._config(mode, body).model_dump(),
             "params": self._custom_params,
         }
         opts.json_body = remove_empty_values(json_body)
@@ -88,10 +88,10 @@ class APIClient:
     def _config(self, mode: str, body: List[Body]) -> Config:
         config = Config(mode=mode, options=[])
         for i in body:
-            item = i.dict()
+            item = i.model_dump()
             options = ProviderOptions(
                 provider=item.get("provider"),
-                apiKey=item.get("model_api_key"),
+                apiKey=item.get("api_key"),
                 weight=item.get("weight"),
                 retry=item.get("retry"),
                 override_params=item.get("override_params"),
