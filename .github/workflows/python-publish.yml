@@ -33,7 +33,7 @@ jobs:
     - name: Build package
       run: make build
     - name: Publish package
-      uses: make upload
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      run: make upload
+      env:
+        TWINE_USERNAME: "__token__"
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
