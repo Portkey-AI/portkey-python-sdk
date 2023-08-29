@@ -178,7 +178,8 @@ class APIClient:
         except Exception as err:
             raise APIConnectionError(request=request) from err
         response = cast(
-            RubeusResponse, BaseModel.construct(**res.json(), raw_body=res.json())
+            RubeusResponse,
+            RubeusResponse.model_construct(**res.json(), raw_body=res.json()),
         )
         return response
 
