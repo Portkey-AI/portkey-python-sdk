@@ -9,10 +9,10 @@ from .utils import (
     ProviderTypesLiteral,
     Body,
     RubeusResponse,
-    apikey_from_env,
 )
 
 from .base_client import APIClient
+from .streaming import Stream
 
 __all__ = ["Completions", "ChatCompletions"]
 
@@ -44,14 +44,13 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         stop_sequences: Optional[List[str]] = None,
-        stream: Optional[bool] = False,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = None,
         cache_status: Optional[RubeusCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-    ) -> RubeusResponse:
+    ) -> RubeusResponse | Stream[RubeusResponse]:
         llm = Body(
             prompt=prompt,
             timeout=timeout,
@@ -63,7 +62,6 @@ class Completions(APIResource):
             top_k=top_k,
             top_p=top_p,
             stop_sequences=stop_sequences,
-            stream=stream,
             max_tokens=max_tokens,
             trace_id=trace_id,
             cache_status=cache_status,
@@ -74,12 +72,14 @@ class Completions(APIResource):
         return self._post(
             "/v1/complete",
             body=[llm],
-            stream=stream or False,
             mode=RubeusModes.SINGLE.value,
             cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
         )
 
-    def with_fallbacks(self, llms: List[LLMBase]) -> RubeusResponse:
+    def with_fallbacks(
+        self, llms: List[LLMBase]
+    ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -87,11 +87,13 @@ class Completions(APIResource):
             "/v1/chatComplete",
             body=body,
             mode=RubeusModes.FALLBACK,
-            stream=False,
             cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
         )
 
-    def with_loadbalancing(self, llms: List[LLMBase]) -> RubeusResponse:
+    def with_loadbalancing(
+        self, llms: List[LLMBase]
+    ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -99,8 +101,8 @@ class Completions(APIResource):
             "/v1/chatComplete",
             body=body,
             mode=RubeusModes.LOADBALANCE,
-            stream=False,
             cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
         )
 
 
@@ -118,7 +120,6 @@ class ChatCompletions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         stop_sequences: Optional[List[str]] = None,
-        stream: Optional[bool] = False,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = "",
         cache_status: Optional[RubeusCacheType] = None,
@@ -126,7 +127,7 @@ class ChatCompletions(APIResource):
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
         # retry_settings: Optional[RetrySettings] = None,
-    ) -> RubeusResponse:
+    ) -> RubeusResponse | Stream[RubeusResponse]:
         llm = Body(
             messages=messages,
             timeout=timeout,
@@ -138,7 +139,6 @@ class ChatCompletions(APIResource):
             top_k=top_k,
             top_p=top_p,
             stop_sequences=stop_sequences,
-            stream=stream,
             max_tokens=max_tokens,
             trace_id=trace_id,
             cache_status=cache_status,
@@ -150,12 +150,14 @@ class ChatCompletions(APIResource):
         return self._post(
             "/v1/chatComplete",
             body=[llm],
-            stream=stream or False,
             mode=RubeusModes.SINGLE.value,
             cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
         )
 
-    def with_fallbacks(self, llms: List[LLMBase]) -> RubeusResponse:
+    def with_fallbacks(
+        self, llms: List[LLMBase]
+    ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -163,12 +165,14 @@ class ChatCompletions(APIResource):
             "/v1/chatComplete",
             body=body,
             mode=RubeusModes.FALLBACK,
-            stream=False,
             cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
         )
         return res
 
-    def with_loadbalancing(self, llms: List[LLMBase]) -> RubeusResponse:
+    def with_loadbalancing(
+        self, llms: List[LLMBase]
+    ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -176,6 +180,6 @@ class ChatCompletions(APIResource):
             "/v1/chatComplete",
             body=body,
             mode=RubeusModes.LOADBALANCE,
-            stream=False,
             cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
         )

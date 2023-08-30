@@ -1,6 +1,19 @@
+from __future__ import annotations
+
 import json
 from types import TracebackType
-from typing import Dict, Any, Union, Mapping, cast, List, Optional, Type
+from typing import (
+    Dict,
+    Any,
+    Union,
+    Mapping,
+    cast,
+    List,
+    Optional,
+    Type,
+    overload,
+    Literal,
+)
 import httpx
 import platform
 from .global_constants import DEFAULT_MAX_RETRIES
@@ -14,22 +27,25 @@ from .utils import (
 )
 from .exceptions import (
     APIStatusError,
-    BadRequestError,
-    AuthenticationError,
-    PermissionDeniedError,
-    NotFoundError,
-    ConflictError,
-    UnprocessableEntityError,
-    RateLimitError,
-    InternalServerError,
     APITimeoutError,
     APIConnectionError,
 )
 from rubeus.version import VERSION
+from .utils import DefaultParams, ResponseT, make_status_error
+from .common_types import StreamT
+from .streaming import Stream
+
+
+class MissingStreamClassError(TypeError):
+    def __init__(self) -> None:
+        super().__init__(
+            "The `stream` argument was set to `True` but the `stream_cls` argument was not given. See `anthropic._streaming` for reference",
+        )
 
 
 class APIClient:
     _client: httpx.Client
+    _default_stream_cls: type[Stream[Any]] | None = None
 
     def __init__(
         self,
@@ -40,13 +56,14 @@ class APIClient:
         max_retries: int = DEFAULT_MAX_RETRIES,
         custom_headers: Optional[Mapping[str, str]] = None,
         custom_query: Optional[Mapping[str, object]],
-        custom_params: Optional[Mapping[str, str]] = None,
+        custom_params: Optional[DefaultParams] = None,
     ) -> None:
         self.api_key = api_key
         self.max_retries = max_retries
         self._custom_headers = custom_headers
         self._custom_query = custom_query or None
-        self._custom_params = custom_params
+        self._custom_params = {} if custom_params is None else custom_params.dict()
+        self._stream = self._custom_params.get("stream", False)
         self._client = httpx.Client(
             base_url=base_url,
             timeout=timeout,
@@ -62,13 +79,19 @@ class APIClient:
         path: str,
         *,
         body: List[Body],
-        stream: bool,
         mode: str,
-        cast_to: Type[RubeusResponse],
-    ) -> RubeusResponse:
+        cast_to: Type[ResponseT],
+        stream_cls: type[StreamT],
+    ) -> ResponseT | StreamT:
         body = cast(List[Body], body)
         opts = self._construct(method="post", url=path, body=body, mode=mode)
-        return self._request(options=opts, stream=stream, cast_to=cast_to)
+        res = self._request(
+            options=opts,
+            stream=self._stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return cast(StreamT, res) if isinstance(res, Stream) else cast(ResponseT, res)
 
     def _construct(
         self, *, method: str, url: str, body: List[Body], mode: str
@@ -88,12 +111,13 @@ class APIClient:
         config = Config(mode=mode, options=[])
         for i in body:
             item = i.dict()
+            override_params = i.override_params()
             options = ProviderOptions(
                 provider=item.get("provider"),
                 apiKey=item.get("api_key"),
                 weight=item.get("weight"),
                 retry=item.get("retry"),
-                override_params=item.get("override_params"),
+                override_params=override_params,
             )
             config.options.append(options)
         return config
@@ -160,9 +184,47 @@ class APIClient:
         )
         return request
 
+    @overload
     def _request(
-        self, *, options: Options, stream: bool, cast_to: Type[RubeusResponse]
-    ) -> RubeusResponse:
+        self,
+        *,
+        options: Options,
+        stream: Literal[False],
+        cast_to: Type[ResponseT],
+        stream_cls: type[StreamT] | None = None,
+    ) -> ResponseT:
+        ...
+
+    @overload
+    def _request(
+        self,
+        *,
+        options: Options,
+        stream: Literal[True],
+        cast_to: Type[ResponseT],
+        stream_cls: type[StreamT] | None = None,
+    ) -> StreamT:
+        ...
+
+    @overload
+    def _request(
+        self,
+        *,
+        options: Options,
+        stream: bool,
+        cast_to: Type[ResponseT],
+        stream_cls: type[StreamT] | None = None,
+    ) -> ResponseT | StreamT:
+        ...
+
+    def _request(
+        self,
+        *,
+        options: Options,
+        stream: bool,
+        cast_to: Type[ResponseT],
+        stream_cls: type[StreamT] | None = None,
+    ) -> ResponseT | StreamT:
         request = self._build_request(options)
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
@@ -176,8 +238,16 @@ class APIClient:
             raise APITimeoutError(request=request) from err
         except Exception as err:
             raise APIConnectionError(request=request) from err
+        if res.headers["content-type"] == "text/event-stream":
+            stream_cls = stream_cls or cast(
+                "type[StreamT] | None", self._default_stream_cls
+            )
+            if stream_cls is None:
+                raise MissingStreamClassError()
+            stream_response = stream_cls(response=res)
+            return stream_response
         response = cast(
-            RubeusResponse,
+            ResponseT,
             RubeusResponse.construct(**res.json(), raw_body=res.json()),
         )
         return response
@@ -196,44 +266,4 @@ class APIClient:
         except Exception:
             err_msg = err_text or f"Error code: {response.status_code}"
 
-        return self._make_status_error(
-            err_msg, body=body, request=request, response=response
-        )
-
-    def _make_status_error(
-        self,
-        err_msg: str,
-        *,
-        body: object,
-        request: httpx.Request,
-        response: httpx.Response,
-    ) -> APIStatusError:
-        if response.status_code == 400:
-            return BadRequestError(
-                err_msg, request=request, response=response, body=body
-            )
-        if response.status_code == 401:
-            return AuthenticationError(
-                err_msg, request=request, response=response, body=body
-            )
-        if response.status_code == 403:
-            return PermissionDeniedError(
-                err_msg, request=request, response=response, body=body
-            )
-        if response.status_code == 404:
-            return NotFoundError(err_msg, request=request, response=response, body=body)
-        if response.status_code == 409:
-            return ConflictError(err_msg, request=request, response=response, body=body)
-        if response.status_code == 422:
-            return UnprocessableEntityError(
-                err_msg, request=request, response=response, body=body
-            )
-        if response.status_code == 429:
-            return RateLimitError(
-                err_msg, request=request, response=response, body=body
-            )
-        if response.status_code >= 500:
-            return InternalServerError(
-                err_msg, request=request, response=response, body=body
-            )
-        return APIStatusError(err_msg, request=request, response=response, body=body)
+        return make_status_error(err_msg, body=body, request=request, response=response)
