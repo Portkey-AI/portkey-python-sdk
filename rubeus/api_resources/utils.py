@@ -66,14 +66,14 @@ class RubeusApiPaths(Enum):
 class Options(BaseModel):
     method: str
     url: str
-    params: Optional[Mapping[str, str]]
-    headers: Optional[Mapping[str, str]]
-    max_retries: Optional[int]
-    timeout: Optional[Union[float, None]]
+    params: Optional[Mapping[str, str]] = None
+    headers: Optional[Mapping[str, str]] = None
+    max_retries: Optional[int] = None
+    timeout: Optional[float] = None
     # stringified json
-    data: Optional[Mapping[str, Any]]
+    data: Optional[Mapping[str, Any]] = None
     # json structure
-    json_body: Optional[Mapping[str, Any]]
+    json_body: Optional[Mapping[str, Any]] = None
 
 
 class OverrideParams(BaseModel):
@@ -153,7 +153,7 @@ class LLMBase(BaseModel):
     messages: Optional[List[Message]] = None
     provider: Union[ProviderTypes, ProviderTypesLiteral]
     model: str
-    model_api_key: str
+    api_key: str
     temperature: Optional[float] = None
     max_tokens: Optional[int] = None
     max_retries: Optional[int] = None
@@ -180,9 +180,51 @@ class LLMBase(BaseModel):
     # logit_bias: Optional[Dict[str, int]]
     # user: Optional[str]
 
-    def __init__(self, **kwargs):
-        kwargs["model_api_key"] = str(apikey_from_env(kwargs.get("provider", "")))
-        super().__init__(**kwargs)
+    def __init__(
+        self,
+        *,
+        prompt: Optional[str] = None,
+        messages: Optional[List[Message]] = None,
+        provider: Union[ProviderTypes, ProviderTypesLiteral],
+        model: str,
+        api_key: Optional[str] = None,
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        max_retries: Optional[int] = None,
+        trace_id: Optional[str] = None,
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = None,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        stream: Optional[bool] = False,
+        timeout: Union[float, None] = None,
+        retry_settings: Optional[RetrySettings] = None,
+    ):
+        api_key = api_key or apikey_from_env(provider)
+        super().__init__(
+            prompt=prompt,
+            messages=messages,
+            provider=provider,
+            model=model,
+            api_key=api_key,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            max_retries=max_retries,
+            trace_id=trace_id,
+            cache_status=cache_status,
+            cache=cache,
+            metadata=metadata,
+            weight=weight,
+            top_k=top_k,
+            top_p=top_p,
+            stop_sequences=stop_sequences,
+            stream=stream,
+            timeout=timeout,
+            retry_settings=retry_settings,
+        )
 
 
 class Body(LLMBase):

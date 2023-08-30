@@ -12,10 +12,7 @@ client = Rubeus(
     },
 )
 
-openai_llm = LLMBase(
-    provider="openai",
-    model="gpt-3.5-turbo",
-)
+openai_llm = LLMBase(provider="openai", model="gpt-3.5-turbo")
 res = client.chat_completion.with_fallbacks(llms=[openai_llm])
 
-print(res.json())
+print(res)
