@@ -9,9 +9,9 @@ from typing import (
     Union,
     Mapping,
     Literal,
-    TypedDict,
     TypeVar,
 )
+from typing_extensions import TypedDict
 from pydantic import BaseModel
 from .exceptions import (
     APIStatusError,

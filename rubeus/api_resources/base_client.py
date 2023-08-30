@@ -31,7 +31,7 @@ from .exceptions import (
     APIConnectionError,
 )
 from rubeus.version import VERSION
-from .utils import DefaultParams, ResponseT, make_status_error
+from .utils import ResponseT, make_status_error
 from .common_types import StreamT
 from .streaming import Stream
 
@@ -57,14 +57,13 @@ class APIClient:
         max_retries: int = DEFAULT_MAX_RETRIES,
         custom_headers: Optional[Mapping[str, str]] = None,
         custom_query: Optional[Mapping[str, object]],
-        custom_params: Optional[DefaultParams] = None,
+        custom_params: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.api_key = api_key
         self.max_retries = max_retries
         self._custom_headers = custom_headers
         self._custom_query = custom_query or None
-        self._custom_params = {} if custom_params is None else custom_params.dict()
-        self._stream = self._custom_params.get("stream", False)
+        self._custom_params = custom_params
         self._client = httpx.Client(
             base_url=base_url,
             timeout=timeout,

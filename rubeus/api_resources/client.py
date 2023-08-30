@@ -33,7 +33,7 @@ class Rubeus(APIClient):
         self.api_key = api_key or os.environ.get("PORTKEY_API_KEY") or ""
         if not self.api_key:
             raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
-        self.default_params = default_params
+        self.default_params = {} if default_params is None else default_params.dict()
         self.timeout = timeout
         self.max_retries = max_retries
         self.default_headers = default_headers
