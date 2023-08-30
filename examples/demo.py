@@ -14,8 +14,8 @@ client = Rubeus(
 )
 
 openai_llm = LLMBase(provider="openai", model="gpt-3.5-turbo")
-res = client.chat_completion.with_fallbacks(llms=[openai_llm])
+response = client.chat_completion.with_fallbacks(llms=[openai_llm], stream=True)
 
-print(res)
-for i in res:
+print(response)
+for i in response:
     print(i.choices)

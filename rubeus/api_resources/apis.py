@@ -1,4 +1,6 @@
-from typing import Optional, Union, List, Dict, Any, cast
+from typing import Optional, Union, List, Dict, Any, cast, overload, Literal
+
+from rubeus.api_resources.base_client import APIClient
 from .global_constants import DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT
 from .utils import (
     ProviderTypes,
@@ -11,7 +13,6 @@ from .utils import (
     RubeusResponse,
 )
 
-from .base_client import APIClient
 from .streaming import Stream
 
 __all__ = ["Completions", "ChatCompletions"]
@@ -31,6 +32,7 @@ class APIResource:
 
 
 class Completions(APIResource):
+    @overload
     def create(
         self,
         *,
@@ -50,6 +52,78 @@ class Completions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
+        stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def create(
+        self,
+        *,
+        prompt: str = "",
+        timeout: Union[float, None] = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        provider: Union[ProviderTypes, ProviderTypesLiteral] = ProviderTypes.OPENAI,
+        model: str = "gpt-3.5-turbo",
+        api_key: str = "",
+        temperature: float = 0.1,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        max_tokens: Optional[int] = None,
+        trace_id: Optional[str] = None,
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = False,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = 1.0,
+        stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def create(
+        self,
+        *,
+        prompt: str = "",
+        timeout: Union[float, None] = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        provider: Union[ProviderTypes, ProviderTypesLiteral] = ProviderTypes.OPENAI,
+        model: str = "gpt-3.5-turbo",
+        api_key: str = "",
+        temperature: float = 0.1,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        max_tokens: Optional[int] = None,
+        trace_id: Optional[str] = None,
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = False,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = 1.0,
+        stream: bool = False
+    ) -> RubeusResponse | Stream[RubeusResponse]:
+        ...
+
+    def create(
+        self,
+        *,
+        prompt: str = "",
+        timeout: Union[float, None] = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        provider: Union[ProviderTypes, ProviderTypesLiteral] = ProviderTypes.OPENAI,
+        model: str = "gpt-3.5-turbo",
+        api_key: str = "",
+        temperature: float = 0.1,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        max_tokens: Optional[int] = None,
+        trace_id: Optional[str] = None,
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = False,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = 1.0,
+        stream: bool = False
     ) -> RubeusResponse | Stream[RubeusResponse]:
         llm = Body(
             prompt=prompt,
@@ -75,10 +149,29 @@ class Completions(APIResource):
             mode=RubeusModes.SINGLE.value,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
+            stream=stream,
         )
 
+    @overload
     def with_fallbacks(
-        self, llms: List[LLMBase]
+        self, *, llms: List[LLMBase], stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def with_fallbacks(
+        self, *, llms: List[LLMBase], stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def with_fallbacks(
+        self, *, llms: List[LLMBase], stream: bool = False
+    ) -> RubeusResponse | Stream[RubeusResponse]:
+        ...
+
+    def with_fallbacks(
+        self, llms: List[LLMBase], stream: bool = False
     ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
@@ -89,10 +182,29 @@ class Completions(APIResource):
             mode=RubeusModes.FALLBACK,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
+            stream=stream,
         )
 
+    @overload
     def with_loadbalancing(
-        self, llms: List[LLMBase]
+        self, llms: List[LLMBase], stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def with_loadbalancing(
+        self, llms: List[LLMBase], stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def with_loadbalancing(
+        self, llms: List[LLMBase], stream: bool = False
+    ) -> RubeusResponse | Stream[RubeusResponse]:
+        ...
+
+    def with_loadbalancing(
+        self, llms: List[LLMBase], stream: bool = False
     ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
@@ -103,10 +215,12 @@ class Completions(APIResource):
             mode=RubeusModes.LOADBALANCE,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
+            stream=stream,
         )
 
 
 class ChatCompletions(APIResource):
+    @overload
     def create(
         self,
         *,
@@ -126,6 +240,81 @@ class ChatCompletions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
+        stream: Literal[True]
+        # retry_settings: Optional[RetrySettings] = None,
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def create(
+        self,
+        *,
+        messages: List[Message],
+        provider: ProviderTypes = ProviderTypes.OPENAI,
+        model: str = "gpt-3.5-turbo",
+        api_key: str = "",
+        timeout: Union[float, None] = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        temperature: float = 0.1,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        max_tokens: Optional[int] = None,
+        trace_id: Optional[str] = "",
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = False,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = 1.0,
+        stream: Literal[False] = False
+        # retry_settings: Optional[RetrySettings] = None,
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def create(
+        self,
+        *,
+        messages: List[Message],
+        provider: ProviderTypes = ProviderTypes.OPENAI,
+        model: str = "gpt-3.5-turbo",
+        api_key: str = "",
+        timeout: Union[float, None] = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        temperature: float = 0.1,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        max_tokens: Optional[int] = None,
+        trace_id: Optional[str] = "",
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = False,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = 1.0,
+        stream: bool = False
+        # retry_settings: Optional[RetrySettings] = None,
+    ) -> RubeusResponse | Stream[RubeusResponse]:
+        ...
+
+    def create(
+        self,
+        *,
+        messages: List[Message],
+        provider: ProviderTypes = ProviderTypes.OPENAI,
+        model: str = "gpt-3.5-turbo",
+        api_key: str = "",
+        timeout: Union[float, None] = DEFAULT_TIMEOUT,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        temperature: float = 0.1,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        stop_sequences: Optional[List[str]] = None,
+        max_tokens: Optional[int] = None,
+        trace_id: Optional[str] = "",
+        cache_status: Optional[RubeusCacheType] = None,
+        cache: Optional[bool] = False,
+        metadata: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = 1.0,
+        stream: bool = False
         # retry_settings: Optional[RetrySettings] = None,
     ) -> RubeusResponse | Stream[RubeusResponse]:
         llm = Body(
@@ -153,25 +342,62 @@ class ChatCompletions(APIResource):
             mode=RubeusModes.SINGLE.value,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
+            stream=stream,
         )
 
+    @overload
     def with_fallbacks(
-        self, llms: List[LLMBase]
+        self, *, llms: List[LLMBase], stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def with_fallbacks(
+        self, *, llms: List[LLMBase], stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def with_fallbacks(
+        self, *, llms: List[LLMBase], stream: bool = False
+    ) -> RubeusResponse | Stream[RubeusResponse]:
+        ...
+
+    def with_fallbacks(
+        self, *, llms: List[LLMBase], stream: bool = False
     ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
-        res = self._post(
+        return self._post(
             "/v1/chatComplete",
             body=body,
             mode=RubeusModes.FALLBACK,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
+            stream=stream,
         )
-        return res
+
+    @overload
+    def with_loadbalancing(
+        self, llms: List[LLMBase], stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def with_loadbalancing(
+        self, llms: List[LLMBase], stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def with_loadbalancing(
+        self, llms: List[LLMBase], stream: bool = False
+    ) -> RubeusResponse | Stream[RubeusResponse]:
+        ...
 
     def with_loadbalancing(
-        self, llms: List[LLMBase]
+        self, llms: List[LLMBase], stream: bool = False
     ) -> RubeusResponse | Stream[RubeusResponse]:
         body = []
         for i in llms:
@@ -182,4 +408,5 @@ class ChatCompletions(APIResource):
             mode=RubeusModes.LOADBALANCE,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
+            stream=stream,
         )

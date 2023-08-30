@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Iterator, Generic, TypeVar, cast
+from typing import Any, Iterator, Generic, cast
 
 import httpx
 
@@ -49,7 +49,8 @@ class ServerSentEvent:
         )
 
     def __repr__(self) -> str:
-        return f"ServerSentEvent(event={self.event}, data={self.data}, id={self.id}, retry={self.retry})"
+        return f"ServerSentEvent(event={self.event}, data={self.data}, id={self.id},\
+            retry={self.retry})"
 
 
 class SSEDecoder:
@@ -65,7 +66,9 @@ class SSEDecoder:
         self._retry = None
 
     def iter(self, iterator: Iterator[str]) -> Iterator[ServerSentEvent]:
-        """Given an iterator that yields lines, iterate over it & yield every event encountered"""
+        """Given an iterator that yields lines, iterate over it & yield every
+        event encountered
+        """
         for line in iterator:
             line = line.rstrip("\n")
             sse = self.decode(line)

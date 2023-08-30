@@ -39,7 +39,8 @@ from .streaming import Stream
 class MissingStreamClassError(TypeError):
     def __init__(self) -> None:
         super().__init__(
-            "The `stream` argument was set to `True` but the `stream_cls` argument was not given. See `anthropic._streaming` for reference",
+            "The `stream` argument was set to `True` but the `stream_cls` argument was\
+            not given",
         )
 
 
@@ -74,6 +75,7 @@ class APIClient:
     def custom_auth(self) -> Optional[httpx.Auth]:
         return None
 
+    @overload
     def post(
         self,
         path: str,
@@ -81,17 +83,56 @@ class APIClient:
         body: List[Body],
         mode: str,
         cast_to: Type[ResponseT],
+        stream: Literal[True],
+        stream_cls: type[StreamT],
+    ) -> StreamT:
+        ...
+
+    @overload
+    def post(
+        self,
+        path: str,
+        *,
+        body: List[Body],
+        mode: str,
+        cast_to: Type[ResponseT],
+        stream: Literal[False],
+        stream_cls: type[StreamT],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    def post(
+        self,
+        path: str,
+        *,
+        body: List[Body],
+        mode: str,
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+    ) -> ResponseT | StreamT:
+        ...
+
+    def post(
+        self,
+        path: str,
+        *,
+        body: List[Body],
+        mode: str,
+        cast_to: Type[ResponseT],
+        stream: bool,
         stream_cls: type[StreamT],
     ) -> ResponseT | StreamT:
         body = cast(List[Body], body)
         opts = self._construct(method="post", url=path, body=body, mode=mode)
         res = self._request(
             options=opts,
-            stream=self._stream,
+            stream=stream,
             cast_to=cast_to,
             stream_cls=stream_cls,
         )
-        return cast(StreamT, res) if isinstance(res, Stream) else cast(ResponseT, res)
+        return res
 
     def _construct(
         self, *, method: str, url: str, body: List[Body], mode: str
