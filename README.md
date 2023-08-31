@@ -9,7 +9,7 @@
       <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=blue" alt="License">
   </a> 
   <a href="https://pypi.org/project/rubeus/" target="_blank">
-      <img src="https://img.shields.io/pypi/pyversions/ubeus" alt="PyPi">
+      <img src="https://img.shields.io/static/v1?label=pypi&message=rubeus&color=red" alt="PyPi">
   </a> 
     <br />
     <a href="https://docs.portkey.ai/" target="_blank">
@@ -49,7 +49,7 @@ pip install rubeus
 | ⚖️    | Load Balancing         | Distribute load effectively across multiple API keys or providers based on custom weights.              | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
 | 📝    | Unified API Signature  | If you've used OpenAI, you already know how to use Rubeus with any other provider.                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
 
----
+
 
 ### 🤝 Supported Providers
 
