@@ -29,7 +29,8 @@ class Rubeus(APIClient):
         default_params: Optional[DefaultParams] = None,
     ) -> None:
         if base_url is None:
-            self.base_url = "https://api.portkey.ai"
+            base_url = "https://api.portkey.ai"
+        self.base_url = base_url
         self.api_key = api_key or os.environ.get("PORTKEY_API_KEY") or ""
         if not self.api_key:
             raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
