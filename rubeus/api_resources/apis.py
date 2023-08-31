@@ -101,7 +101,7 @@ class Completions(APIResource):
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
         stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
     def create(
@@ -124,7 +124,7 @@ class Completions(APIResource):
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
         stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         llm = Body(
             prompt=prompt,
             timeout=timeout,
@@ -167,12 +167,12 @@ class Completions(APIResource):
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
     def with_fallbacks(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -200,12 +200,12 @@ class Completions(APIResource):
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -292,7 +292,7 @@ class ChatCompletions(APIResource):
         weight: Optional[float] = 1.0,
         stream: bool = False
         # retry_settings: Optional[RetrySettings] = None,
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
     def create(
@@ -316,7 +316,7 @@ class ChatCompletions(APIResource):
         weight: Optional[float] = 1.0,
         stream: bool = False
         # retry_settings: Optional[RetrySettings] = None,
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         llm = Body(
             messages=messages,
             timeout=timeout,
@@ -360,12 +360,12 @@ class ChatCompletions(APIResource):
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
@@ -393,12 +393,12 @@ class ChatCompletions(APIResource):
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> RubeusResponse | Stream[RubeusResponse]:
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))

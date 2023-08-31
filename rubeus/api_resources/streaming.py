@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Iterator, Generic, cast
+from typing import Any, Iterator, Generic, cast, Union
 
 import httpx
 
@@ -12,10 +12,10 @@ class ServerSentEvent:
     def __init__(
         self,
         *,
-        event: str | None = None,
-        data: str | None = None,
-        id: str | None = None,
-        retry: int | None = None,
+        event: Union[str, None] = None,
+        data: Union[str, None] = None,
+        id: Union[str, None] = None,
+        retry: Union[int, None] = None,
     ) -> None:
         if data is None:
             data = ""
@@ -26,15 +26,15 @@ class ServerSentEvent:
         self._retry = retry
 
     @property
-    def event(self) -> str | None:
+    def event(self) -> Union[str, None]:
         return self._event
 
     @property
-    def id(self) -> str | None:
+    def id(self) -> Union[str, None]:
         return self._id
 
     @property
-    def retry(self) -> int | None:
+    def retry(self) -> Union[int, None]:
         return self._retry
 
     @property
@@ -55,9 +55,9 @@ class ServerSentEvent:
 
 class SSEDecoder:
     _data: list[str]
-    _event: str | None
-    _retry: int | None
-    _last_event_id: str | None
+    _event: Union[str, None]
+    _retry: Union[int, None]
+    _last_event_id: Union[str, None]
 
     def __init__(self) -> None:
         self._event = None
@@ -75,7 +75,7 @@ class SSEDecoder:
             if sse is not None:
                 yield sse
 
-    def decode(self, line: str) -> ServerSentEvent | None:
+    def decode(self, line: str) -> Union[ServerSentEvent, None]:
         # See: https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation  # noqa: E501
 
         if not line:

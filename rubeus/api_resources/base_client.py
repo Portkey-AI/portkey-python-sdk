@@ -46,7 +46,7 @@ class MissingStreamClassError(TypeError):
 
 class APIClient:
     _client: httpx.Client
-    _default_stream_cls: type[Stream[Any]] | None = None
+    _default_stream_cls: Union[type[Stream[Any]], None] = None
 
     def __init__(
         self,
@@ -110,7 +110,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
-    ) -> ResponseT | StreamT:
+    ) -> Union[ResponseT, StreamT]:
         ...
 
     def post(
@@ -122,7 +122,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
-    ) -> ResponseT | StreamT:
+    ) -> Union[ResponseT, StreamT]:
         body = cast(List[Body], body)
         opts = self._construct(method="post", url=path, body=body, mode=mode)
         res = self._request(
@@ -231,7 +231,7 @@ class APIClient:
         options: Options,
         stream: Literal[False],
         cast_to: Type[ResponseT],
-        stream_cls: type[StreamT] | None = None,
+        stream_cls: Union[type[StreamT], None] = None,
     ) -> ResponseT:
         ...
 
@@ -242,7 +242,7 @@ class APIClient:
         options: Options,
         stream: Literal[True],
         cast_to: Type[ResponseT],
-        stream_cls: type[StreamT] | None = None,
+        stream_cls: Union[type[StreamT], None] = None,
     ) -> StreamT:
         ...
 
@@ -253,8 +253,8 @@ class APIClient:
         options: Options,
         stream: bool,
         cast_to: Type[ResponseT],
-        stream_cls: type[StreamT] | None = None,
-    ) -> ResponseT | StreamT:
+        stream_cls: Union[type[StreamT], None] = None,
+    ) -> Union[ResponseT, StreamT]:
         ...
 
     def _request(
@@ -263,8 +263,8 @@ class APIClient:
         options: Options,
         stream: bool,
         cast_to: Type[ResponseT],
-        stream_cls: type[StreamT] | None = None,
-    ) -> ResponseT | StreamT:
+        stream_cls: Union[type[StreamT], None] = None,
+    ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
@@ -280,7 +280,7 @@ class APIClient:
             raise APIConnectionError(request=request) from err
         if res.headers["content-type"] == "text/event-stream":
             stream_cls = stream_cls or cast(
-                "type[StreamT] | None", self._default_stream_cls
+                "Union[type[StreamT], None]", self._default_stream_cls
             )
             if stream_cls is None:
                 raise MissingStreamClassError()
