@@ -1,6 +1,6 @@
 """Rubeus implementation."""
 import os
-from typing import Optional, Union, Mapping, Any
+from typing import Optional, Union, Any, Dict
 from .global_constants import (
     MISSING_API_KEY_ERROR_MESSAGE,
     DEFAULT_MAX_RETRIES,
@@ -24,8 +24,8 @@ class Rubeus(APIClient):
         base_url: Optional[str] = None,
         timeout: Union[float, None] = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
-        default_headers: Optional[Mapping[str, str]] = None,
-        default_query: Optional[Mapping[str, object]] = None,
+        default_headers: Optional[Dict[str, Any]] = None,
+        default_query: Optional[Dict[str, Any]] = None,
         default_params: Optional[DefaultParams] = None,
     ) -> None:
         if base_url is None:
@@ -33,11 +33,12 @@ class Rubeus(APIClient):
         self.api_key = api_key or os.environ.get("PORTKEY_API_KEY") or ""
         if not self.api_key:
             raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+
         self.default_params = {} if default_params is None else default_params.dict()
         self.timeout = timeout
         self.max_retries = max_retries
-        self.default_headers = default_headers
-        self.default_query = default_query
+        self.default_headers = default_headers or {}
+        self.default_query = default_query or {}
         super().__init__(
             base_url=self.base_url,
             api_key=self.api_key,

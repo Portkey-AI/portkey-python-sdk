@@ -16,7 +16,7 @@ from typing import (
 )
 import httpx
 import platform
-from .global_constants import DEFAULT_MAX_RETRIES
+from .global_constants import DEFAULT_MAX_RETRIES, PORTKEY_HEADER_PREFIX
 from .utils import (
     remove_empty_values,
     Body,
@@ -55,20 +55,32 @@ class APIClient:
         api_key: str,
         timeout: Union[float, None],
         max_retries: int = DEFAULT_MAX_RETRIES,
-        custom_headers: Optional[Mapping[str, str]] = None,
+        custom_headers: Optional[Mapping[str, Any]] = None,
         custom_query: Optional[Mapping[str, object]],
         custom_params: Optional[Dict[str, Any]] = None,
     ) -> None:
         self.api_key = api_key
         self.max_retries = max_retries
-        self._custom_headers = custom_headers
-        self._custom_query = custom_query or None
+        self._custom_headers = self._serialize_header_values(custom_headers)
+        self._custom_query = custom_query
         self._custom_params = custom_params
         self._client = httpx.Client(
             base_url=base_url,
             timeout=timeout,
             headers={"Accept": "application/json"},
         )
+
+    def _serialize_header_values(
+        self, headers: Optional[Mapping[str, Any]]
+    ) -> Dict[str, str]:
+        if headers is None:
+            return {}
+        return {
+            f"{PORTKEY_HEADER_PREFIX}{k}": json.dumps(v)
+            if isinstance(v, (dict, list))
+            else str(v)
+            for k, v in headers.items()
+        }
 
     @property
     def custom_auth(self) -> Optional[httpx.Auth]:
@@ -144,7 +156,9 @@ class APIClient:
             "params": self._custom_params,
         }
         opts.json_body = remove_empty_values(json_body)
-        opts.headers = self._custom_headers or None
+        opts.headers = (
+            remove_empty_values(self._custom_headers) if self._custom_headers else None
+        )
         return opts
 
     def _config(self, mode: str, body: List[Body]) -> Config:
@@ -166,16 +180,15 @@ class APIClient:
     def _default_headers(self) -> Mapping[str, str]:
         return {
             "Content-Type": "application/json",
-            "x-portkey-api-key": self.api_key,
-            "x-rubeus-package-version": VERSION,
-            "x-rubeus-runtime": platform.python_implementation(),
-            "x-rubeus-runtime-version": platform.python_version(),
+            f"{PORTKEY_HEADER_PREFIX}api-key": self.api_key,
+            f"{PORTKEY_HEADER_PREFIX}package-version": f"rubeus-{VERSION}",
+            f"{PORTKEY_HEADER_PREFIX}runtime": platform.python_implementation(),
+            f"{PORTKEY_HEADER_PREFIX}runtime-version": platform.python_version(),
         }
 
     def _build_headers(self, options: Options) -> httpx.Headers:
         custom_headers = options.headers or {}
         headers_dict = self._merge_mappings(self._default_headers, custom_headers)
-
         headers = httpx.Headers(headers_dict)
         return headers
 

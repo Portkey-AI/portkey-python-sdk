@@ -1,16 +1,7 @@
 import os
 from enum import Enum
 import httpx
-from typing import (
-    List,
-    Dict,
-    Any,
-    Optional,
-    Union,
-    Mapping,
-    Literal,
-    TypeVar,
-)
+from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from typing_extensions import TypedDict
 from pydantic import BaseModel
 from .exceptions import (
@@ -117,7 +108,7 @@ class OverrideParams(TypedDict, total=False):
     max_tokens: Optional[int]
     max_retries: Optional[int]
     trace_id: Optional[str]
-    cache_status: Optional[RubeusCacheType]
+    cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]]
     cache: Optional[bool]
     metadata: Optional[Dict[str, Any]]
     weight: Optional[float]
@@ -155,7 +146,9 @@ class Config(BaseModel):
     options: List[ProviderOptions]
 
 
-def remove_empty_values(data: Dict[str, Any]) -> Dict[str, Any]:
+def remove_empty_values(
+    data: Union[Dict[str, Any], Mapping[str, Any]]
+) -> Dict[str, Any]:
     if isinstance(data, dict):
         cleaned_dict = {}
         for key, value in data.items():
@@ -173,7 +166,10 @@ def remove_empty_values(data: Dict[str, Any]) -> Dict[str, Any]:
                 cleaned_list.append(cleaned_item)
         return cleaned_list  # type: ignore
     else:
-        return data
+        return cast(dict, data)
+
+
+# class DefaultHeaders(TypedDict. total=false)
 
 
 class DefaultParams(BaseModel):
@@ -184,7 +180,7 @@ class DefaultParams(BaseModel):
     max_tokens: Optional[int] = None
     max_retries: Optional[int] = None
     trace_id: Optional[str] = None
-    cache_status: Optional[RubeusCacheType] = None
+    cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]] = None
     cache: Optional[bool] = None
     metadata: Optional[Dict[str, Any]] = None
     weight: Optional[float] = None
@@ -220,7 +216,7 @@ class DefaultParams(BaseModel):
         max_tokens: Optional[int] = None,
         max_retries: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]] = None,
         cache: Optional[bool] = None,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = None,
@@ -288,7 +284,8 @@ class LLMBase(BaseModel):
     max_tokens (Optional[int]): The maximum number of tokens in the generated text.
     max_retries (int): The maximum number of retries for failed requests (default: 5).
     trace_id (Optional[str]): A unique identifier for tracing requests.
-    cache_status (Optional[RubeusCacheType]): The type of cache to use (default: "").
+    cache_status (Optional[Union[RubeusCacheType,  RubeusCacheLiteral]]): The type of c
+    ache to use (default: "").
         If cache_status is set, then cache is automatically set to True
     cache (Optional[bool]): Whether to use caching (default: False).
     metadata (Optional[Dict[str, Any]]): Metadata associated with the request
@@ -305,7 +302,7 @@ class LLMBase(BaseModel):
     max_tokens: Optional[int] = None
     max_retries: Optional[int] = None
     trace_id: Optional[str] = None
-    cache_status: Optional[RubeusCacheType] = None
+    cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]] = None
     cache: Optional[bool] = None
     metadata: Optional[Dict[str, Any]] = None
     weight: Optional[float] = None
@@ -314,6 +311,17 @@ class LLMBase(BaseModel):
     stop_sequences: Optional[List[str]] = None
     timeout: Union[float, None] = None
     retry_settings: Optional[RetrySettings] = None
+    functions: Optional[List[Function]]
+    function_call: Optional[Union[None, str, Function]]
+    n: Optional[int]
+    logprobs: Optional[int]
+    echo: Optional[bool]
+    stop: Optional[Union[str, List[str]]]
+    presence_penalty: Optional[int]
+    frequency_penalty: Optional[int]
+    best_of: Optional[int]
+    logit_bias: Optional[Dict[str, int]]
+    user: Optional[str]
 
     # NOTE: We do not support streaming in over-ride params.
     def __init__(
@@ -337,6 +345,17 @@ class LLMBase(BaseModel):
         stop_sequences: Optional[List[str]] = None,
         timeout: Union[float, None] = None,
         retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ):
         api_key = api_key or apikey_from_env(provider)
         super().__init__(
@@ -358,6 +377,17 @@ class LLMBase(BaseModel):
             stop_sequences=stop_sequences,
             timeout=timeout,
             retry_settings=retry_settings,
+            functions=functions,
+            function_call=function_call,
+            n=n,
+            logprobs=logprobs,
+            echo=echo,
+            stop=stop,
+            presence_penalty=presence_penalty,
+            frequency_penalty=frequency_penalty,
+            best_of=best_of,
+            logit_bias=logit_bias,
+            user=user,
         )
 
     def override_params(self) -> OverrideParams:
@@ -380,6 +410,17 @@ class LLMBase(BaseModel):
             "stop_sequences": self.stop_sequences,
             "timeout": self.timeout,
             "retry_settings": self.retry_settings,
+            "functions": self.functions,
+            "function_call": self.function_call,
+            "n": self.n,
+            "logprobs": self.logprobs,
+            "echo": self.echo,
+            "stop": self.stop,
+            "presence_penalty": self.presence_penalty,
+            "frequency_penalty": self.frequency_penalty,
+            "best_of": self.best_of,
+            "logit_bias": self.logit_bias,
+            "user": self.user,
         }
 
 

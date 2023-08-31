@@ -13,3 +13,4 @@ Here's how you get it:
 DEFAULT_MAX_RETRIES = 2
 VERSION = "0.1.0"
 DEFAULT_TIMEOUT = 60
+PORTKEY_HEADER_PREFIX = "x-portkey-"

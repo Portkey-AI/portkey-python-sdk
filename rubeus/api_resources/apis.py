@@ -11,6 +11,8 @@ from .utils import (
     ProviderTypesLiteral,
     Body,
     RubeusResponse,
+    RetrySettings,
+    Function,
 )
 
 from .streaming import Stream
@@ -52,7 +54,19 @@ class Completions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: Literal[True]
+        stream: Literal[True],
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> Stream[RubeusResponse]:
         ...
 
@@ -76,7 +90,19 @@ class Completions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: Literal[False] = False
+        stream: Literal[False] = False,
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> RubeusResponse:
         ...
 
@@ -100,7 +126,19 @@ class Completions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: bool = False
+        stream: bool = False,
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
@@ -123,7 +161,19 @@ class Completions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: bool = False
+        stream: bool = False,
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         llm = Body(
             prompt=prompt,
@@ -142,6 +192,18 @@ class Completions(APIResource):
             cache=cache,
             metadata=metadata,
             weight=weight,
+            retry_settings=retry_settings,
+            functions=functions,
+            function_call=function_call,
+            n=n,
+            logprobs=logprobs,
+            echo=echo,
+            stop=stop,
+            presence_penalty=presence_penalty,
+            frequency_penalty=frequency_penalty,
+            best_of=best_of,
+            logit_bias=logit_bias,
+            user=user,
         )
         return self._post(
             "/v1/complete",
@@ -177,7 +239,7 @@ class Completions(APIResource):
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
-            "/v1/chatComplete",
+            "/v1/complete",
             body=body,
             mode=RubeusModes.FALLBACK,
             cast_to=RubeusResponse,
@@ -210,7 +272,7 @@ class Completions(APIResource):
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
-            "/v1/chatComplete",
+            "/v1/complete",
             body=body,
             mode=RubeusModes.LOADBALANCE,
             cast_to=RubeusResponse,
@@ -240,8 +302,19 @@ class ChatCompletions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: Literal[True]
-        # retry_settings: Optional[RetrySettings] = None,
+        stream: Literal[True],
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> Stream[RubeusResponse]:
         ...
 
@@ -265,8 +338,19 @@ class ChatCompletions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: Literal[False] = False
-        # retry_settings: Optional[RetrySettings] = None,
+        stream: Literal[False] = False,
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> RubeusResponse:
         ...
 
@@ -290,8 +374,19 @@ class ChatCompletions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: bool = False
-        # retry_settings: Optional[RetrySettings] = None,
+        stream: bool = False,
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         ...
 
@@ -314,8 +409,19 @@ class ChatCompletions(APIResource):
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
-        stream: bool = False
-        # retry_settings: Optional[RetrySettings] = None,
+        stream: bool = False,
+        retry_settings: Optional[RetrySettings] = None,
+        functions: Optional[List[Function]] = None,
+        function_call: Optional[Union[None, str, Function]] = None,
+        n: Optional[int] = None,
+        logprobs: Optional[int] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[Union[str, List[str]]] = None,
+        presence_penalty: Optional[int] = None,
+        frequency_penalty: Optional[int] = None,
+        best_of: Optional[int] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
     ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
         llm = Body(
             messages=messages,
@@ -333,8 +439,19 @@ class ChatCompletions(APIResource):
             cache_status=cache_status,
             cache=cache,
             metadata=metadata,
-            weight=weight
-            # retry_settings=retry_settings,
+            weight=weight,
+            retry_settings=retry_settings,
+            functions=functions,
+            function_call=function_call,
+            n=n,
+            logprobs=logprobs,
+            echo=echo,
+            stop=stop,
+            presence_penalty=presence_penalty,
+            frequency_penalty=frequency_penalty,
+            best_of=best_of,
+            logit_bias=logit_bias,
+            user=user,
         )
         return self._post(
             "/v1/chatComplete",
