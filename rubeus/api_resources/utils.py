@@ -452,7 +452,7 @@ def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, None]) 
         return os.environ.get("AZURE_OPENAI_API_KEY", "")
     elif provider == ProviderTypes.HUGGING_FACE:
         return os.environ.get("HUGGINGFACE_API_KEY", "")
-    elif provider == ProviderTypes.HUGGING_FACE:
+    elif provider == ProviderTypes.ANTHROPIC:
         return os.environ.get("ANTHROPIC_API_KEY", "")
     return ""
 

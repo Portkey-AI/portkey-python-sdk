@@ -280,6 +280,39 @@ class Completions(APIResource):
             stream=stream,
         )
 
+    @overload
+    def single(
+        self, llms: List[LLMBase], stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def single(
+        self, llms: List[LLMBase], stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def single(
+        self, llms: List[LLMBase], stream: bool = False
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+        ...
+
+    def single(
+        self, llms: List[LLMBase], stream: bool = False
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+        body = []
+        for i in llms:
+            body.append(cast(Body, i))
+        return self._post(
+            "/v1/complete",
+            body=body,
+            mode=RubeusModes.SINGLE,
+            cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
+            stream=stream,
+        )
+
 
 class ChatCompletions(APIResource):
     @overload
@@ -523,6 +556,39 @@ class ChatCompletions(APIResource):
             "/v1/chatComplete",
             body=body,
             mode=RubeusModes.LOADBALANCE,
+            cast_to=RubeusResponse,
+            stream_cls=Stream[RubeusResponse],
+            stream=stream,
+        )
+
+    @overload
+    def single(
+        self, llms: List[LLMBase], stream: Literal[True]
+    ) -> Stream[RubeusResponse]:
+        ...
+
+    @overload
+    def single(
+        self, llms: List[LLMBase], stream: Literal[False] = False
+    ) -> RubeusResponse:
+        ...
+
+    @overload
+    def single(
+        self, llms: List[LLMBase], stream: bool = False
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+        ...
+
+    def single(
+        self, llms: List[LLMBase], stream: bool = False
+    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+        body = []
+        for i in llms:
+            body.append(cast(Body, i))
+        return self._post(
+            "/v1/chatComplete",
+            body=body,
+            mode=RubeusModes.SINGLE,
             cast_to=RubeusResponse,
             stream_cls=Stream[RubeusResponse],
             stream=stream,
