@@ -291,7 +291,7 @@ class APIClient:
             raise APITimeoutError(request=request) from err
         except Exception as err:
             raise APIConnectionError(request=request) from err
-        if res.headers["content-type"] == "text/event-stream":
+        if stream:
             stream_cls = stream_cls or cast(
                 "Union[type[StreamT], None]", self._default_stream_cls
             )
