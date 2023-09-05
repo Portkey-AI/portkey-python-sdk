@@ -1,13 +1,13 @@
-from portkey import Portkey, LLMBase, DefaultParams
+from portkey import Portkey, LLMBase, DefaultParams, Message
 
+
+messages = [
+    Message(role="system", content="You are a helpful assistant"),
+    Message(role="user", content="What can you do?"),
+]
 client = Portkey(
     default_params=DefaultParams(
-        messages=[
-            {
-                "role": "user",
-                "content": "What are the top 10 happiest countries in the world?",
-            }
-        ],
+        messages=messages,
         max_tokens=50,
         stream=True,
     )
