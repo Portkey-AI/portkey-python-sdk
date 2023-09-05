@@ -23,14 +23,14 @@ from .utils import (
     Options,
     Config,
     ProviderOptions,
-    RubeusResponse,
+    PortkeyResponse,
 )
 from .exceptions import (
     APIStatusError,
     APITimeoutError,
     APIConnectionError,
 )
-from rubeus.version import VERSION
+from portkey.version import VERSION
 from .utils import ResponseT, make_status_error
 from .common_types import StreamT
 from .streaming import Stream
@@ -181,7 +181,7 @@ class APIClient:
         return {
             "Content-Type": "application/json",
             f"{PORTKEY_HEADER_PREFIX}api-key": self.api_key,
-            f"{PORTKEY_HEADER_PREFIX}package-version": f"rubeus-{VERSION}",
+            f"{PORTKEY_HEADER_PREFIX}package-version": f"portkey-{VERSION}",
             f"{PORTKEY_HEADER_PREFIX}runtime": platform.python_implementation(),
             f"{PORTKEY_HEADER_PREFIX}runtime-version": platform.python_version(),
         }
@@ -301,7 +301,7 @@ class APIClient:
             return stream_response
         response = cast(
             ResponseT,
-            RubeusResponse.construct(**res.json(), raw_body=res.json()),
+            PortkeyResponse.construct(**res.json(), raw_body=res.json()),
         )
         return response
 

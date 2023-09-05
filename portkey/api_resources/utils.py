@@ -17,15 +17,15 @@ from .exceptions import (
 )
 
 
-class RubeusCacheType(Enum):
+class PortkeyCacheType(Enum):
     SEMANTIC = "semantic"
     SIMPLE = "simple"
 
 
-RubeusCacheLiteral = Literal["semantic", "simple"]
+PortkeyCacheLiteral = Literal["semantic", "simple"]
 
 
-ResponseT = TypeVar("ResponseT", bound="RubeusResponse")
+ResponseT = TypeVar("ResponseT", bound="PortkeyResponse")
 
 
 class ProviderTypes(str, Enum):
@@ -50,7 +50,7 @@ ProviderTypesLiteral = Literal[
 ]
 
 
-class RubeusModes(str, Enum):
+class PortkeyModes(str, Enum):
     """_summary_
 
     Args:
@@ -63,10 +63,10 @@ class RubeusModes(str, Enum):
     PROXY = "proxy"
 
 
-RubeusModesLiteral = Literal["fallback", "loadbalance", "single", "proxy"]
+PortkeyModesLiteral = Literal["fallback", "loadbalance", "single", "proxy"]
 
 
-class RubeusApiPaths(Enum):
+class PortkeyApiPaths(Enum):
     CHAT_COMPLETION = "/v1/chatComplete"
     COMPLETION = "/v1/complete"
 
@@ -108,7 +108,7 @@ class OverrideParams(TypedDict, total=False):
     max_tokens: Optional[int]
     max_retries: Optional[int]
     trace_id: Optional[str]
-    cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]]
+    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]]
     cache: Optional[bool]
     metadata: Optional[Dict[str, Any]]
     weight: Optional[float]
@@ -180,7 +180,7 @@ class DefaultParams(BaseModel):
     max_tokens: Optional[int] = None
     max_retries: Optional[int] = None
     trace_id: Optional[str] = None
-    cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]] = None
+    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
     cache: Optional[bool] = None
     metadata: Optional[Dict[str, Any]] = None
     weight: Optional[float] = None
@@ -216,7 +216,7 @@ class DefaultParams(BaseModel):
         max_tokens: Optional[int] = None,
         max_retries: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]] = None,
+        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
         cache: Optional[bool] = None,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = None,
@@ -284,7 +284,7 @@ class LLMBase(BaseModel):
     max_tokens (Optional[int]): The maximum number of tokens in the generated text.
     max_retries (int): The maximum number of retries for failed requests (default: 5).
     trace_id (Optional[str]): A unique identifier for tracing requests.
-    cache_status (Optional[Union[RubeusCacheType,  RubeusCacheLiteral]]): The type of c
+    cache_status (Optional[Union[PortkeyCacheType,  PortkeyCacheLiteral]]): The type of c
     ache to use (default: "").
         If cache_status is set, then cache is automatically set to True
     cache (Optional[bool]): Whether to use caching (default: False).
@@ -302,7 +302,7 @@ class LLMBase(BaseModel):
     max_tokens: Optional[int] = None
     max_retries: Optional[int] = None
     trace_id: Optional[str] = None
-    cache_status: Optional[Union[RubeusCacheType, RubeusCacheLiteral]] = None
+    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
     cache: Optional[bool] = None
     metadata: Optional[Dict[str, Any]] = None
     weight: Optional[float] = None
@@ -336,7 +336,7 @@ class LLMBase(BaseModel):
         max_tokens: Optional[int] = None,
         max_retries: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = None,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = None,
@@ -437,7 +437,7 @@ class RequestData(BaseModel):
     params: Params
 
 
-class RubeusResponse(BaseModel):
+class PortkeyResponse(BaseModel):
     model: str
     choices: List[Any]
     raw_body: Dict[str, Any]

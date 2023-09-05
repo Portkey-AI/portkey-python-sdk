@@ -1,15 +1,15 @@
-<img src="https://raw.githubusercontent.com/Portkey-AI/Rubeus/main/docs/images/header.png" width=2000>
+<img src="https://raw.githubusercontent.com/Portkey-AI/Portkey/main/docs/images/header.png" width=2000>
 
 <div align="center">
 <br />
   <a href="https://discord.gg/sDk9JaNfK8" target="_blank">
       <img src="https://img.shields.io/discord/1143393887742861333?logo=discord" alt="Discord">
   </a>
-    <a href="https://github.com/Portkey-AI/rubeus-python-sdk/blob/main/LICENSE" target="_blank">
+    <a href="https://github.com/Portkey-AI/portkey-python-sdk/blob/main/LICENSE" target="_blank">
       <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=blue" alt="License">
   </a> 
-  <a href="https://pypi.org/project/rubeus/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=pypi&message=rubeus&color=red" alt="PyPi">
+  <a href="https://pypi.org/project/portkey/" target="_blank">
+      <img src="https://img.shields.io/static/v1?label=pypi&message=portkey&color=red" alt="PyPi">
   </a> 
     <br />
     <a href="https://docs.portkey.ai/" target="_blank">
@@ -33,10 +33,10 @@
 
 ---
 
-#### **Rubeus** streamlines API requests to 20+ LLMs. It provides a unified API signature for interacting with all LLMs alongwith powerful LLM Gateway features like load balancing, fallbacks, retries and more. 
+#### **Portkey** streamlines API requests to 20+ LLMs. It provides a unified API signature for interacting with all LLMs alongwith powerful LLM Gateway features like load balancing, fallbacks, retries and more. 
 
 ```bash
-pip install rubeus
+pip install portkey-ai
 ```
 
 ### 💡 Features
@@ -44,10 +44,10 @@ pip install rubeus
 || Name | Description | Example |
 |---|---|---|---|
 | 🌐    | Interoperability       | Write once, run with any provider. Switch between __ models from __ providers seamlessly.               | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| 🔀    | Fallback Strategies    | Don't let failures stop you. If one provider fails, Rubeus can automatically switch to another.          | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| 🔄    | Retry Strategies       | Temporary issues shouldn't mean manual re-runs. Rubeus can automatically retry failed requests.         | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
+| 🔀    | Fallback Strategies    | Don't let failures stop you. If one provider fails, Portkey can automatically switch to another.          | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
+| 🔄    | Retry Strategies       | Temporary issues shouldn't mean manual re-runs. Portkey can automatically retry failed requests.         | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
 | ⚖️    | Load Balancing         | Distribute load effectively across multiple API keys or providers based on custom weights.              | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| 📝    | Unified API Signature  | If you've used OpenAI, you already know how to use Rubeus with any other provider.                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
+| 📝    | Unified API Signature  | If you've used OpenAI, you already know how to use Portkey with any other provider.                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
 
 
 
@@ -64,7 +64,7 @@ pip install rubeus
 
 ---
 
-#### [📝 Full Documentation](https://github.com/Portkey-AI/rubeus-python-sdk) | [🎯 Roadmap](https://github.com/Portkey-AI/Rubeus/issues) | [🐞 Bug Reports](https://github.com/Portkey-AI/Rubeus/issues) | [💡 Feature Requests](https://github.com/Portkey-AI/Rubeus/issues)
+#### [📝 Full Documentation](https://github.com/Portkey-AI/portkey-python-sdk) | [🎯 Roadmap](https://github.com/Portkey-AI/Portkey/issues) | [🐞 Bug Reports](https://github.com/Portkey-AI/Portkey/issues) | [💡 Feature Requests](https://github.com/Portkey-AI/Portkey/issues)
 
 #### 📞 Talk to the devs: [Rohit](https://twitter.com/jumbld) | [Ayush](https://twitter.com/ayushgarg_xyz)
 

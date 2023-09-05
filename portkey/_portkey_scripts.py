@@ -1,6 +1,6 @@
 """main file"""
 import argparse
-from rubeus.version import VERSION
+from portkey.version import VERSION
 
 
 def main():
@@ -10,7 +10,7 @@ def main():
         "--version",
         "-v",
         action="version",
-        version=f"rubeus {VERSION}",
+        version=f"portkey {VERSION}",
         help="Print version and exit.",
     )
 

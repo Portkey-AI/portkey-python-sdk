@@ -1,6 +1,6 @@
-from rubeus import Rubeus, LLMBase, DefaultParams
+from portkey import Portkey, LLMBase, DefaultParams
 
-client = Rubeus(
+client = Portkey(
     default_params=DefaultParams(
         messages=[
             {

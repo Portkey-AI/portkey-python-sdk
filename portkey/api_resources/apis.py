@@ -1,16 +1,16 @@
 from typing import Optional, Union, List, Dict, Any, cast, overload, Literal
 
-from rubeus.api_resources.base_client import APIClient
+from portkey.api_resources.base_client import APIClient
 from .global_constants import DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT
 from .utils import (
     ProviderTypes,
-    RubeusCacheType,
+    PortkeyCacheType,
     LLMBase,
-    RubeusModes,
+    PortkeyModes,
     Message,
     ProviderTypesLiteral,
     Body,
-    RubeusResponse,
+    PortkeyResponse,
     RetrySettings,
     Function,
 )
@@ -50,7 +50,7 @@ class Completions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -67,7 +67,7 @@ class Completions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
@@ -86,7 +86,7 @@ class Completions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -103,7 +103,7 @@ class Completions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
@@ -122,7 +122,7 @@ class Completions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -139,7 +139,7 @@ class Completions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def create(
@@ -157,7 +157,7 @@ class Completions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -174,7 +174,7 @@ class Completions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         llm = Body(
             prompt=prompt,
             timeout=timeout,
@@ -208,108 +208,108 @@ class Completions(APIResource):
         return self._post(
             "/v1/complete",
             body=[llm],
-            mode=RubeusModes.SINGLE.value,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.SINGLE.value,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: Literal[True]
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: Literal[False] = False
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def with_fallbacks(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
             "/v1/complete",
             body=body,
-            mode=RubeusModes.FALLBACK,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.FALLBACK,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: Literal[True]
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: Literal[False] = False
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
             "/v1/complete",
             body=body,
-            mode=RubeusModes.LOADBALANCE,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.LOADBALANCE,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
     @overload
     def single(
         self, llms: List[LLMBase], stream: Literal[True]
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
     def single(
         self, llms: List[LLMBase], stream: Literal[False] = False
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
     def single(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def single(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
             "/v1/complete",
             body=body,
-            mode=RubeusModes.SINGLE,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.SINGLE,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
@@ -331,7 +331,7 @@ class ChatCompletions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = "",
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -348,7 +348,7 @@ class ChatCompletions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
@@ -367,7 +367,7 @@ class ChatCompletions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = "",
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -384,7 +384,7 @@ class ChatCompletions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
@@ -403,7 +403,7 @@ class ChatCompletions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = "",
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -420,7 +420,7 @@ class ChatCompletions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def create(
@@ -438,7 +438,7 @@ class ChatCompletions(APIResource):
         stop_sequences: Optional[List[str]] = None,
         max_tokens: Optional[int] = None,
         trace_id: Optional[str] = "",
-        cache_status: Optional[RubeusCacheType] = None,
+        cache_status: Optional[PortkeyCacheType] = None,
         cache: Optional[bool] = False,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = 1.0,
@@ -455,7 +455,7 @@ class ChatCompletions(APIResource):
         best_of: Optional[int] = None,
         logit_bias: Optional[Dict[str, int]] = None,
         user: Optional[str] = None,
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         llm = Body(
             messages=messages,
             timeout=timeout,
@@ -489,107 +489,107 @@ class ChatCompletions(APIResource):
         return self._post(
             "/v1/chatComplete",
             body=[llm],
-            mode=RubeusModes.SINGLE.value,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.SINGLE.value,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: Literal[True]
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: Literal[False] = False
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def with_fallbacks(
         self, *, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
             "/v1/chatComplete",
             body=body,
-            mode=RubeusModes.FALLBACK,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.FALLBACK,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: Literal[True]
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: Literal[False] = False
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def with_loadbalancing(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
             "/v1/chatComplete",
             body=body,
-            mode=RubeusModes.LOADBALANCE,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.LOADBALANCE,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )
 
     @overload
     def single(
         self, llms: List[LLMBase], stream: Literal[True]
-    ) -> Stream[RubeusResponse]:
+    ) -> Stream[PortkeyResponse]:
         ...
 
     @overload
     def single(
         self, llms: List[LLMBase], stream: Literal[False] = False
-    ) -> RubeusResponse:
+    ) -> PortkeyResponse:
         ...
 
     @overload
     def single(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     def single(
         self, llms: List[LLMBase], stream: bool = False
-    ) -> Union[RubeusResponse, Stream[RubeusResponse]]:
+    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         body = []
         for i in llms:
             body.append(cast(Body, i))
         return self._post(
             "/v1/chatComplete",
             body=body,
-            mode=RubeusModes.SINGLE,
-            cast_to=RubeusResponse,
-            stream_cls=Stream[RubeusResponse],
+            mode=PortkeyModes.SINGLE,
+            cast_to=PortkeyResponse,
+            stream_cls=Stream[PortkeyResponse],
             stream=stream,
         )

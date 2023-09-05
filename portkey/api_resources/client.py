@@ -1,4 +1,4 @@
-"""Rubeus implementation."""
+"""Portkey implementation."""
 import os
 from typing import Optional, Union, Any, Dict
 from .global_constants import (
@@ -10,10 +10,10 @@ from .utils import DefaultParams
 from .base_client import APIClient
 from . import apis
 
-__all__ = ["Rubeus"]
+__all__ = ["Portkey"]
 
 
-class Rubeus(APIClient):
+class Portkey(APIClient):
     completion: apis.Completions
     chat_completion: apis.ChatCompletions
 

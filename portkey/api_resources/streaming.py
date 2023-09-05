@@ -5,7 +5,7 @@ from typing import Any, Iterator, Generic, cast, Union
 
 import httpx
 
-from .utils import ResponseT, RubeusResponse, make_status_error
+from .utils import ResponseT, PortkeyResponse, make_status_error
 
 
 class ServerSentEvent:
@@ -159,7 +159,7 @@ class Stream(Generic[ResponseT]):
             if sse.event is None:
                 yield cast(
                     ResponseT,
-                    RubeusResponse.construct(**sse.json(), raw_body=sse.json()),
+                    PortkeyResponse.construct(**sse.json(), raw_body=sse.json()),
                 )
 
             if sse.event == "ping":

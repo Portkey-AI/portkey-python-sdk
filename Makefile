@@ -21,5 +21,5 @@ build:
 
 upload:
 	python -m pip install twine
-	python -m twine upload dist/rubeus-*
+	python -m twine upload dist/portkey-ai-*
 	rm -rf dist
