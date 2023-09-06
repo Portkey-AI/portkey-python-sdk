@@ -17,7 +17,7 @@ from .exceptions import (
 )
 
 
-class PortkeyCacheType(Enum):
+class PortkeyCacheType(str, Enum):
     SEMANTIC = "semantic"
     SIMPLE = "simple"
 
@@ -119,7 +119,6 @@ class OverrideParams(TypedDict, total=False):
     retry_settings: Optional[RetrySettings]
     model: Optional[str]
     api_key: Optional[str]
-    stream: Optional[bool]
     functions: Optional[List[Function]]
     function_call: Optional[Union[None, str, Function]]
     n: Optional[int]
@@ -191,7 +190,6 @@ class DefaultParams(BaseModel):
     retry_settings: Optional[RetrySettings] = None
     model: Optional[str] = None
     api_key: Optional[str] = None
-    stream: Optional[bool] = False
     functions: Optional[List[Function]]
     function_call: Optional[Union[None, str, Function]]
     n: Optional[int]
@@ -223,7 +221,6 @@ class DefaultParams(BaseModel):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         stop_sequences: Optional[List[str]] = None,
-        stream: Optional[bool] = False,
         timeout: Union[float, None] = None,
         retry_settings: Optional[RetrySettings] = None,
         functions: Optional[List[Function]] = None,
@@ -256,7 +253,6 @@ class DefaultParams(BaseModel):
             top_k=top_k,
             top_p=top_p,
             stop_sequences=stop_sequences,
-            stream=stream,
             timeout=timeout,
             retry_settings=retry_settings,
             functions=functions,
@@ -336,7 +332,7 @@ class LLMBase(BaseModel):
         max_tokens: Optional[int] = None,
         max_retries: Optional[int] = None,
         trace_id: Optional[str] = None,
-        cache_status: Optional[PortkeyCacheType] = None,
+        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
         cache: Optional[bool] = None,
         metadata: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = None,

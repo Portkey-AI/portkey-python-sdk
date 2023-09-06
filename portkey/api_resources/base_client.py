@@ -55,9 +55,9 @@ class APIClient:
         api_key: str,
         timeout: Union[float, None],
         max_retries: int = DEFAULT_MAX_RETRIES,
-        custom_headers: Optional[Mapping[str, Any]] = None,
-        custom_query: Optional[Mapping[str, object]],
-        custom_params: Optional[Dict[str, Any]] = None,
+        custom_params: Dict[str, Any] = {},
+        custom_headers: Dict[str, Any] = {},
+        custom_query: Dict[str, object] = {},
     ) -> None:
         self.api_key = api_key
         self.max_retries = max_retries
@@ -136,7 +136,9 @@ class APIClient:
         stream_cls: type[StreamT],
     ) -> Union[ResponseT, StreamT]:
         body = cast(List[Body], body)
-        opts = self._construct(method="post", url=path, body=body, mode=mode)
+        opts = self._construct(
+            method="post", url=path, body=body, mode=mode, stream=stream
+        )
         res = self._request(
             options=opts,
             stream=stream,
@@ -146,11 +148,12 @@ class APIClient:
         return res
 
     def _construct(
-        self, *, method: str, url: str, body: List[Body], mode: str
+        self, *, method: str, url: str, body: List[Body], mode: str, stream: bool
     ) -> Options:
         opts = Options.construct()
         opts.method = method
         opts.url = url
+        self._custom_params["stream"] = stream
         json_body = {
             "config": self._config(mode, body).dict(),
             "params": self._custom_params,
