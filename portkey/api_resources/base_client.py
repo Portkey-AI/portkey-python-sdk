@@ -172,6 +172,7 @@ class APIClient:
             item = i.dict()
             override_params = cast(OverrideParams, i.dict())
             options = ProviderOptions(
+                virtualKey=item.get('virtual_key'),
                 provider=item.get("provider"),
                 apiKey=item.get("api_key"),
                 weight=item.get("weight"),

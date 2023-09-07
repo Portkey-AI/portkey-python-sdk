@@ -114,6 +114,7 @@ class ConversationInput(BaseModel):
 
 
 class ModelParams(BaseModel):
+    virtual_key: Optional[str] = None
     temperature: Optional[float] = None
     max_tokens: Optional[int] = None
     max_retries: Optional[int] = None
@@ -147,6 +148,7 @@ class OverrideParams(ModelParams, ConversationInput):
 class ProviderOptions(BaseModel):
     provider: Optional[str]
     apiKey: Optional[str]
+    virtualKey: Optional[str]
     weight: Optional[float]
     override_params: Optional[OverrideParams]
     retry: Optional[RetrySettings]
