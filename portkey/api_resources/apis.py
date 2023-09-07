@@ -1,7 +1,7 @@
 from typing import Optional, Union, overload, Literal
 from portkey.api_resources.base_client import APIClient
-from .utils import PortkeyModes, PortkeyResponse, Config, retrieve_config
-
+from .utils import PortkeyModes, PortkeyResponse, Config, retrieve_config, Params
+import portkey
 
 from .streaming import Stream
 
@@ -30,37 +30,42 @@ class Completions(APIResource):
     @classmethod
     @overload
     def create(
-        cls, *, config: Optional[Config] = None, stream: Literal[True]
+        cls, *, config: Optional[Config] = None, stream: Literal[True], **kwargs
     ) -> Stream[PortkeyResponse]:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Optional[Config] = None, stream: Literal[False] = False
+        cls,
+        *,
+        config: Optional[Config] = None,
+        stream: Literal[False] = False,
+        **kwargs
     ) -> PortkeyResponse:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Optional[Config] = None, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False, **kwargs
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     @classmethod
     def create(
-        cls, *, config: Optional[Config] = None, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False, **kwargs
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         _client = APIClient()
         if config is None:
             config = retrieve_config()
+        params = portkey.params or Params(**kwargs)
         if config.mode == PortkeyModes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/complete",
                 body=config.llms,
                 mode=PortkeyModes.SINGLE.value,
-                params=config.params,
+                params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
@@ -70,7 +75,7 @@ class Completions(APIResource):
                 "/v1/complete",
                 body=config.llms,
                 mode=PortkeyModes.FALLBACK,
-                params=config.params,
+                params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
@@ -80,7 +85,7 @@ class Completions(APIResource):
                 "/v1/complete",
                 body=config.llms,
                 mode=PortkeyModes.LOADBALANCE,
-                params=config.params,
+                params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
@@ -92,37 +97,42 @@ class ChatCompletions(APIResource):
     @classmethod
     @overload
     def create(
-        cls, *, config: Optional[Config] = None, stream: Literal[True]
+        cls, *, config: Optional[Config] = None, stream: Literal[True], **kwargs
     ) -> Stream[PortkeyResponse]:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Optional[Config] = None, stream: Literal[False] = False
+        cls,
+        *,
+        config: Optional[Config] = None,
+        stream: Literal[False] = False,
+        **kwargs
     ) -> PortkeyResponse:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Optional[Config] = None, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False, **kwargs
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     @classmethod
     def create(
-        cls, *, config: Optional[Config] = None, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False, **kwargs
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         _client = APIClient()
         if config is None:
             config = retrieve_config()
+        params = portkey.params or Params(**kwargs)
         if config.mode == PortkeyModes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/chatComplete",
                 body=config.llms,
                 mode=PortkeyModes.SINGLE.value,
-                params=config.params,
+                params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
@@ -132,7 +142,7 @@ class ChatCompletions(APIResource):
                 "/v1/chatComplete",
                 body=config.llms,
                 mode=PortkeyModes.FALLBACK,
-                params=config.params,
+                params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
@@ -142,7 +152,7 @@ class ChatCompletions(APIResource):
                 "/v1/chatComplete",
                 body=config.llms,
                 mode=PortkeyModes.LOADBALANCE,
-                params=config.params,
+                params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,

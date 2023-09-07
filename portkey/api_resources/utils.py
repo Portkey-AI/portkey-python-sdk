@@ -1,9 +1,9 @@
 import os
+from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from enum import Enum
+from typing_extensions import TypedDict
 import httpx
 import portkey
-from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
-from typing_extensions import TypedDict
 from pydantic import BaseModel, validator
 from .exceptions import (
     APIStatusError,
@@ -199,7 +199,7 @@ class Body(LLMBase):
     ...
 
 
-class Params(ConversationInput, ModelParams):
+class Params(ConversationInput, ModelParams, extra="forbid"):
     ...
 
 
@@ -256,7 +256,6 @@ def make_status_error(
 
 class Config(BaseModel):
     mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = None
-    params: Optional[Params] = None
     llms: List[LLMBase]
 
     @validator("mode", always=True)
