@@ -1,21 +1,24 @@
-from portkey import Portkey, LLMBase, DefaultParams, Message
+import portkey
+from portkey import Config, LLMBase, Message, Params
 
+portkey.api_key = ""
+portkey.base_url = ""
 
 messages = [
     Message(role="system", content="You are a helpful assistant"),
     Message(role="user", content="What can you do?"),
 ]
-client = Portkey(
-    base_url="https://api.portkeydev.com",
-    default_params=DefaultParams(
-        prompt="What can you do?",
-        max_tokens=250,
-    ),
-)
+# portkey.mode = "loadbalance"
+config = Config(
+    mode="loadbalance",
+    llms=[
+        LLMBase(
+            provider="openai", model="gpt-3.5-turbo", max_tokens=250, messages=messages,
+            api_key=""),
+        LLMBase(provider="anthropic", model="claude-2", max_tokens=250,),],
+    params=Params(messages=messages),)
 
-openai_llm = LLMBase(provider="openai", model="text-davinci-003", cache_status="simple")
-response = client.completion.with_fallbacks(llms=[openai_llm], stream=True)
-
-# print(response.choices[0]["text"])
+response = portkey.ChatCompletions.create(config=config, stream=True)
+# portkey.Completions.create()
 for i in response:
-    print(i.choices[0].get("text"), end="", flush=True)
+    print(i.choices[0].get("delta", {}).get("content"), end="", flush=True)
