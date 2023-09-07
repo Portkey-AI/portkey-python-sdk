@@ -1,3 +1,4 @@
+import os
 from portkey.api_resources import (
     Portkey,
     LLMBase,
@@ -9,9 +10,15 @@ from portkey.api_resources import (
     PortkeyCacheLiteral,
     Message,
     PortkeyResponse,
-    DefaultParams,
+    ChatCompletions,
+    Completions,
+    Params,
+    Config,
 )
 from portkey.version import VERSION
+
+api_key = os.environ.get("PORTKEY_API_KEY", "")
+base_url = os.environ.get("PORTKEY_PROXY", "https://api.portkey.ai")
 
 __version__ = VERSION
 __all__ = [
@@ -25,5 +32,10 @@ __all__ = [
     "PortkeyCacheType",
     "PortkeyCacheLiteral",
     "Message",
-    "DefaultParams",
+    "ChatCompletions",
+    "Completions",
+    "Params",
+    "Config",
+    "api_key",
+    "base_url",
 ]

@@ -1,5 +1,6 @@
 """"""
 from .client import Portkey
+from .apis import ChatCompletions, Completions
 from .utils import (
     PortkeyModes,
     PortkeyModesLiteral,
@@ -10,7 +11,8 @@ from .utils import (
     PortkeyCacheLiteral,
     Message,
     PortkeyResponse,
-    DefaultParams,
+    Params,
+    Config,
 )
 
 from portkey.version import VERSION
@@ -27,5 +29,8 @@ __all__ = [
     "PortkeyCacheType",
     "PortkeyCacheLiteral",
     "Message",
-    "DefaultParams",
+    "ChatCompletions",
+    "Completions",
+    "Params",
+    "Config",
 ]

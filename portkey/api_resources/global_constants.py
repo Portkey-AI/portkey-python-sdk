@@ -9,6 +9,10 @@ Here's how you get it:
 2. From the dropdown menu, click on "Copy API Key"
 """
 
+MISSING_BASE_URL = """No Base url provided. Please provide a valid base url.
+For example: https://api.portkey.ai
+"""
+
 
 DEFAULT_MAX_RETRIES = 2
 VERSION = "0.1.0"

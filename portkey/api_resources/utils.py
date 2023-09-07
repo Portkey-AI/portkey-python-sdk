@@ -1,9 +1,10 @@
 import os
 from enum import Enum
 import httpx
+import portkey
 from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from typing_extensions import TypedDict
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from .exceptions import (
     APIStatusError,
     BadRequestError,
@@ -15,6 +16,7 @@ from .exceptions import (
     RateLimitError,
     InternalServerError,
 )
+from .global_constants import MISSING_API_KEY_ERROR_MESSAGE, MISSING_BASE_URL
 
 
 class PortkeyCacheType(str, Enum):
@@ -100,36 +102,40 @@ class RetrySettings(BaseModel):
     on_status_codes: list
 
 
-class OverrideParams(TypedDict, total=False):
-    provider: Optional[Union[ProviderTypes, ProviderTypesLiteral]]
-    prompt: Optional[str]
-    messages: Optional[List[Message]]
-    temperature: Optional[float]
-    max_tokens: Optional[int]
-    max_retries: Optional[int]
-    trace_id: Optional[str]
-    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]]
-    cache: Optional[bool]
-    metadata: Optional[Dict[str, Any]]
-    weight: Optional[float]
-    top_k: Optional[int]
-    top_p: Optional[float]
-    stop_sequences: Optional[List[str]]
-    timeout: Union[float, None]
-    retry_settings: Optional[RetrySettings]
-    model: Optional[str]
-    api_key: Optional[str]
-    functions: Optional[List[Function]]
-    function_call: Optional[Union[None, str, Function]]
-    n: Optional[int]
-    logprobs: Optional[int]
-    echo: Optional[bool]
-    stop: Optional[Union[str, List[str]]]
-    presence_penalty: Optional[int]
-    frequency_penalty: Optional[int]
-    best_of: Optional[int]
-    logit_bias: Optional[Mapping[str, int]]
-    user: Optional[str]
+class ConversationInput(BaseModel):
+    prompt: Optional[str] = None
+    messages: Optional[List[Message]] = None
+
+
+class ModelParams(BaseModel):
+    temperature: Optional[float] = None
+    max_tokens: Optional[int] = None
+    max_retries: Optional[int] = None
+    trace_id: Optional[str] = None
+    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
+    cache: Optional[bool] = None
+    metadata: Optional[Dict[str, Any]] = None
+    weight: Optional[float] = None
+    top_k: Optional[int] = None
+    top_p: Optional[float] = None
+    stop_sequences: Optional[List[str]] = None
+    timeout: Union[float, None] = None
+    retry_settings: Optional[RetrySettings] = None
+    functions: Optional[List[Function]] = None
+    function_call: Optional[Union[None, str, Function]] = None
+    n: Optional[int] = None
+    logprobs: Optional[int] = None
+    echo: Optional[bool] = None
+    stop: Optional[Union[str, List[str]]] = None
+    presence_penalty: Optional[int] = None
+    frequency_penalty: Optional[int] = None
+    best_of: Optional[int] = None
+    logit_bias: Optional[Dict[str, int]] = None
+    user: Optional[str] = None
+
+
+class OverrideParams(ModelParams, ConversationInput):
+    ...
 
 
 class ProviderOptions(BaseModel):
@@ -140,7 +146,7 @@ class ProviderOptions(BaseModel):
     retry: Optional[RetrySettings]
 
 
-class Config(BaseModel):
+class RequestConfig(BaseModel):
     mode: str
     options: List[ProviderOptions]
 
@@ -168,268 +174,31 @@ def remove_empty_values(
         return cast(dict, data)
 
 
-# class DefaultHeaders(TypedDict. total=false)
-
-
-class DefaultParams(BaseModel):
-    provider: Optional[Union[ProviderTypes, ProviderTypesLiteral]] = None
-    prompt: Optional[str] = None
-    messages: Optional[List[Message]] = None
-    temperature: Optional[float] = None
-    max_tokens: Optional[int] = None
-    max_retries: Optional[int] = None
-    trace_id: Optional[str] = None
-    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
-    cache: Optional[bool] = None
-    metadata: Optional[Dict[str, Any]] = None
-    weight: Optional[float] = None
-    top_k: Optional[int] = None
-    top_p: Optional[float] = None
-    stop_sequences: Optional[List[str]] = None
-    timeout: Union[float, None] = None
-    retry_settings: Optional[RetrySettings] = None
-    model: Optional[str] = None
-    api_key: Optional[str] = None
-    functions: Optional[List[Function]]
-    function_call: Optional[Union[None, str, Function]]
-    n: Optional[int]
-    logprobs: Optional[int]
-    echo: Optional[bool]
-    stop: Optional[Union[str, List[str]]]
-    presence_penalty: Optional[int]
-    frequency_penalty: Optional[int]
-    best_of: Optional[int]
-    logit_bias: Optional[Dict[str, int]]
-    user: Optional[str]
-
-    def __init__(
-        self,
-        *,
-        prompt: Optional[str] = None,
-        messages: Optional[List[Message]] = None,
-        provider: Optional[Union[ProviderTypes, ProviderTypesLiteral]] = None,
-        model: Optional[str] = None,
-        api_key: Optional[str] = None,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
-        stop_sequences: Optional[List[str]] = None,
-        timeout: Union[float, None] = None,
-        retry_settings: Optional[RetrySettings] = None,
-        functions: Optional[List[Function]] = None,
-        function_call: Optional[Union[None, str, Function]] = None,
-        n: Optional[int] = None,
-        logprobs: Optional[int] = None,
-        echo: Optional[bool] = None,
-        stop: Optional[Union[str, List[str]]] = None,
-        presence_penalty: Optional[int] = None,
-        frequency_penalty: Optional[int] = None,
-        best_of: Optional[int] = None,
-        logit_bias: Optional[Dict[str, int]] = None,
-        user: Optional[str] = None,
-    ):
-        api_key = api_key or apikey_from_env(provider)
-        super().__init__(
-            prompt=prompt,
-            messages=messages,
-            provider=provider,
-            model=model,
-            api_key=api_key,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            max_retries=max_retries,
-            trace_id=trace_id,
-            cache_status=cache_status,
-            cache=cache,
-            metadata=metadata,
-            weight=weight,
-            top_k=top_k,
-            top_p=top_p,
-            stop_sequences=stop_sequences,
-            timeout=timeout,
-            retry_settings=retry_settings,
-            functions=functions,
-            function_call=function_call,
-            n=n,
-            logprobs=logprobs,
-            echo=echo,
-            stop=stop,
-            presence_penalty=presence_penalty,
-            frequency_penalty=frequency_penalty,
-            best_of=best_of,
-            logit_bias=logit_bias,
-            user=user,
-        )
-
-
-class LLMBase(BaseModel):
-    """
-    provider (Optional[ProviderTypes]): The LLM provider to be used for the Portkey
-    integration.
-        Eg: openai, anthropic etc.
-        NOTE: Check the ProviderTypes to see the supported list of LLMs.
-    model (str): The name of the language model to use (default: "gpt-3.5-turbo").
-    temperature (float): The temperature parameter for text generation (default: 0.1).
-    max_tokens (Optional[int]): The maximum number of tokens in the generated text.
-    max_retries (int): The maximum number of retries for failed requests (default: 5).
-    trace_id (Optional[str]): A unique identifier for tracing requests.
-    cache_status (Optional[Union[PortkeyCacheType,  PortkeyCacheLiteral]]): The type of c
-    ache to use (default: "").
-        If cache_status is set, then cache is automatically set to True
-    cache (Optional[bool]): Whether to use caching (default: False).
-    metadata (Optional[Dict[str, Any]]): Metadata associated with the request
-    (default: {}).
-    weight (Optional[float]): The weight of the LLM in the ensemble (default: 1.0).
-    """
-
-    prompt: Optional[str] = None
-    messages: Optional[List[Message]] = None
+class LLMBase(ConversationInput, ModelParams):
     provider: Union[ProviderTypes, ProviderTypesLiteral]
     model: str
-    api_key: str
-    temperature: Optional[float] = None
-    max_tokens: Optional[int] = None
-    max_retries: Optional[int] = None
-    trace_id: Optional[str] = None
-    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
-    cache: Optional[bool] = None
-    metadata: Optional[Dict[str, Any]] = None
-    weight: Optional[float] = None
-    top_k: Optional[int] = None
-    top_p: Optional[float] = None
-    stop_sequences: Optional[List[str]] = None
-    timeout: Union[float, None] = None
-    retry_settings: Optional[RetrySettings] = None
-    functions: Optional[List[Function]]
-    function_call: Optional[Union[None, str, Function]]
-    n: Optional[int]
-    logprobs: Optional[int]
-    echo: Optional[bool]
-    stop: Optional[Union[str, List[str]]]
-    presence_penalty: Optional[int]
-    frequency_penalty: Optional[int]
-    best_of: Optional[int]
-    logit_bias: Optional[Dict[str, int]]
-    user: Optional[str]
+    api_key: Optional[str] = None
 
-    # NOTE: We do not support streaming in over-ride params.
-    def __init__(
-        self,
-        *,
-        prompt: Optional[str] = None,
-        messages: Optional[List[Message]] = None,
-        provider: Union[ProviderTypes, ProviderTypesLiteral],
-        model: str,
-        api_key: Optional[str] = None,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
-        stop_sequences: Optional[List[str]] = None,
-        timeout: Union[float, None] = None,
-        retry_settings: Optional[RetrySettings] = None,
-        functions: Optional[List[Function]] = None,
-        function_call: Optional[Union[None, str, Function]] = None,
-        n: Optional[int] = None,
-        logprobs: Optional[int] = None,
-        echo: Optional[bool] = None,
-        stop: Optional[Union[str, List[str]]] = None,
-        presence_penalty: Optional[int] = None,
-        frequency_penalty: Optional[int] = None,
-        best_of: Optional[int] = None,
-        logit_bias: Optional[Dict[str, int]] = None,
-        user: Optional[str] = None,
-    ):
-        api_key = api_key or apikey_from_env(provider)
-        super().__init__(
-            prompt=prompt,
-            messages=messages,
-            provider=provider,
-            model=model,
-            api_key=api_key,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            max_retries=max_retries,
-            trace_id=trace_id,
-            cache_status=cache_status,
-            cache=cache,
-            metadata=metadata,
-            weight=weight,
-            top_k=top_k,
-            top_p=top_p,
-            stop_sequences=stop_sequences,
-            timeout=timeout,
-            retry_settings=retry_settings,
-            functions=functions,
-            function_call=function_call,
-            n=n,
-            logprobs=logprobs,
-            echo=echo,
-            stop=stop,
-            presence_penalty=presence_penalty,
-            frequency_penalty=frequency_penalty,
-            best_of=best_of,
-            logit_bias=logit_bias,
-            user=user,
-        )
-
-    def override_params(self) -> OverrideParams:
-        return {
-            "prompt": self.prompt,
-            "messages": self.messages,
-            "provider": self.provider,
-            "model": self.model,
-            "api_key": self.api_key,
-            "temperature": self.temperature,
-            "max_tokens": self.max_tokens,
-            "max_retries": self.max_retries,
-            "trace_id": self.trace_id,
-            "cache_status": self.cache_status,
-            "cache": self.cache,
-            "metadata": self.metadata,
-            "weight": self.weight,
-            "top_k": self.top_k,
-            "top_p": self.top_p,
-            "stop_sequences": self.stop_sequences,
-            "timeout": self.timeout,
-            "retry_settings": self.retry_settings,
-            "functions": self.functions,
-            "function_call": self.function_call,
-            "n": self.n,
-            "logprobs": self.logprobs,
-            "echo": self.echo,
-            "stop": self.stop,
-            "presence_penalty": self.presence_penalty,
-            "frequency_penalty": self.frequency_penalty,
-            "best_of": self.best_of,
-            "logit_bias": self.logit_bias,
-            "user": self.user,
-        }
+    @validator("api_key", always=True)
+    @classmethod
+    def parse_api_key(cls, api_key, values):
+        if api_key is None:
+            # You can access other fields' values via the 'values' dictionary
+            provider = values.get("provider", "")
+            api_key = apikey_from_env(provider)
+        return api_key
 
 
 class Body(LLMBase):
-    pass
+    ...
 
 
-class Params(LLMBase):
-    pass
+class Params(ConversationInput, ModelParams):
+    ...
 
 
 class RequestData(BaseModel):
-    config: Config
+    config: RequestConfig
     params: Params
 
 
@@ -439,18 +208,10 @@ class PortkeyResponse(BaseModel):
     raw_body: Dict[str, Any]
 
 
-def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, None]) -> str:
-    if provider == ProviderTypes.OPENAI:
-        return os.environ.get("OPENAI_API_KEY", "")
-    elif provider == ProviderTypes.COHERE:
-        return os.environ.get("COHERE_API_KEY", "")
-    elif provider == ProviderTypes.AZURE_OPENAI:
-        return os.environ.get("AZURE_OPENAI_API_KEY", "")
-    elif provider == ProviderTypes.HUGGING_FACE:
-        return os.environ.get("HUGGINGFACE_API_KEY", "")
-    elif provider == ProviderTypes.ANTHROPIC:
-        return os.environ.get("ANTHROPIC_API_KEY", "")
-    return ""
+def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str:
+    if provider is None:
+        return ""
+    return os.environ.get(f"{provider.upper().replace('-', '_')}_API_KEY", "")
 
 
 def make_status_error(
@@ -485,3 +246,23 @@ def make_status_error(
             err_msg, request=request, response=response, body=body
         )
     return APIStatusError(err_msg, request=request, response=response, body=body)
+
+
+class Config(BaseModel):
+    mode: Union[PortkeyModes, PortkeyModesLiteral]
+    params: Optional[Params] = None
+    llms: List[LLMBase]
+
+
+def default_api_key() -> str:
+    if portkey.api_key:
+        return portkey.api_key
+    else:
+        raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+
+
+def default_base_url() -> str:
+    if portkey.base_url:
+        return portkey.base_url
+    else:
+        raise ValueError(MISSING_BASE_URL)

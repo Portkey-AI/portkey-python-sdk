@@ -16,14 +16,16 @@ from typing import (
 )
 import httpx
 import platform
-from .global_constants import DEFAULT_MAX_RETRIES, PORTKEY_HEADER_PREFIX
+from .global_constants import PORTKEY_HEADER_PREFIX
 from .utils import (
     remove_empty_values,
     Body,
     Options,
-    Config,
+    RequestConfig,
+    OverrideParams,
     ProviderOptions,
     PortkeyResponse,
+    Params,
 )
 from .exceptions import (
     APIStatusError,
@@ -31,7 +33,7 @@ from .exceptions import (
     APIConnectionError,
 )
 from portkey.version import VERSION
-from .utils import ResponseT, make_status_error
+from .utils import ResponseT, make_status_error, default_api_key, default_base_url
 from .common_types import StreamT
 from .streaming import Stream
 
@@ -51,22 +53,13 @@ class APIClient:
     def __init__(
         self,
         *,
-        base_url: str,
-        api_key: str,
-        timeout: Union[float, None],
-        max_retries: int = DEFAULT_MAX_RETRIES,
-        custom_params: Dict[str, Any] = {},
-        custom_headers: Dict[str, Any] = {},
-        custom_query: Dict[str, object] = {},
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
     ) -> None:
-        self.api_key = api_key
-        self.max_retries = max_retries
-        self._custom_headers = self._serialize_header_values(custom_headers)
-        self._custom_query = custom_query
-        self._custom_params = custom_params
+        self.api_key = api_key or default_api_key()
+        self.base_url = base_url or default_base_url()
         self._client = httpx.Client(
-            base_url=base_url,
-            timeout=timeout,
+            base_url=self.base_url,
             headers={"Accept": "application/json"},
         )
 
@@ -96,6 +89,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
+        params: Params,
     ) -> StreamT:
         ...
 
@@ -109,6 +103,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
+        params: Params,
     ) -> ResponseT:
         ...
 
@@ -122,6 +117,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
+        params: Params,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -134,10 +130,11 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
+        params: Params,
     ) -> Union[ResponseT, StreamT]:
         body = cast(List[Body], body)
         opts = self._construct(
-            method="post", url=path, body=body, mode=mode, stream=stream
+            method="post", url=path, body=body, mode=mode, stream=stream, params=params
         )
         res = self._request(
             options=opts,
@@ -148,27 +145,32 @@ class APIClient:
         return res
 
     def _construct(
-        self, *, method: str, url: str, body: List[Body], mode: str, stream: bool
+        self,
+        *,
+        method: str,
+        url: str,
+        body: List[Body],
+        mode: str,
+        stream: bool,
+        params: Params,
     ) -> Options:
         opts = Options.construct()
         opts.method = method
         opts.url = url
-        self._custom_params["stream"] = stream
+        params_dict = {} if params is None else params.dict()
         json_body = {
             "config": self._config(mode, body).dict(),
-            "params": self._custom_params,
+            "params": {**params_dict, "stream": stream},
         }
         opts.json_body = remove_empty_values(json_body)
-        opts.headers = (
-            remove_empty_values(self._custom_headers) if self._custom_headers else None
-        )
+        opts.headers = None
         return opts
 
-    def _config(self, mode: str, body: List[Body]) -> Config:
-        config = Config(mode=mode, options=[])
+    def _config(self, mode: str, body: List[Body]) -> RequestConfig:
+        config = RequestConfig(mode=mode, options=[])
         for i in body:
             item = i.dict()
-            override_params = i.override_params()
+            override_params = cast(OverrideParams, i.dict())
             options = ProviderOptions(
                 provider=item.get("provider"),
                 apiKey=item.get("api_key"),
