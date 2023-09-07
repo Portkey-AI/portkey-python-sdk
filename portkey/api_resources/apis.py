@@ -1,23 +1,7 @@
-from typing import Optional, Union, List, Dict, Any, cast, overload, Literal
-import portkey
+from typing import Optional, Union, overload, Literal
 from portkey.api_resources.base_client import APIClient
-from .global_constants import DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT
-from .utils import (
-    ProviderTypes,
-    PortkeyCacheType,
-    LLMBase,
-    PortkeyModes,
-    Message,
-    ProviderTypesLiteral,
-    Body,
-    PortkeyResponse,
-    RetrySettings,
-    Function,
-    Config,
-    ResponseT,
-)
+from .utils import PortkeyModes, PortkeyResponse, Config, retrieve_config
 
-from .common_types import StreamT
 
 from .streaming import Stream
 
@@ -46,29 +30,31 @@ class Completions(APIResource):
     @classmethod
     @overload
     def create(
-        cls, *, config: Config, stream: Literal[True]
+        cls, *, config: Optional[Config] = None, stream: Literal[True]
     ) -> Stream[PortkeyResponse]:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Config, stream: Literal[False] = False
+        cls, *, config: Optional[Config] = None, stream: Literal[False] = False
     ) -> PortkeyResponse:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Config, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     @classmethod
     def create(
-        cls, *, config: Config, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         _client = APIClient()
+        if config is None:
+            config = retrieve_config()
         if config.mode == PortkeyModes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/complete",
@@ -106,29 +92,31 @@ class ChatCompletions(APIResource):
     @classmethod
     @overload
     def create(
-        cls, *, config: Config, stream: Literal[True]
+        cls, *, config: Optional[Config] = None, stream: Literal[True]
     ) -> Stream[PortkeyResponse]:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Config, stream: Literal[False] = False
+        cls, *, config: Optional[Config] = None, stream: Literal[False] = False
     ) -> PortkeyResponse:
         ...
 
     @classmethod
     @overload
     def create(
-        cls, *, config: Config, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         ...
 
     @classmethod
     def create(
-        cls, *, config: Config, stream: bool = False
+        cls, *, config: Optional[Config] = None, stream: bool = False
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
         _client = APIClient()
+        if config is None:
+            config = retrieve_config()
         if config.mode == PortkeyModes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/chatComplete",

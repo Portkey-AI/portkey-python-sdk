@@ -16,7 +16,13 @@ from .exceptions import (
     RateLimitError,
     InternalServerError,
 )
-from .global_constants import MISSING_API_KEY_ERROR_MESSAGE, MISSING_BASE_URL
+from .global_constants import (
+    MISSING_API_KEY_ERROR_MESSAGE,
+    INVALID_PORTKEY_MODE,
+    MISSING_BASE_URL,
+    MISSING_CONFIG_MESSAGE,
+    MISSING_MODE_MESSAGE,
+)
 
 
 class PortkeyCacheType(str, Enum):
@@ -249,20 +255,41 @@ def make_status_error(
 
 
 class Config(BaseModel):
-    mode: Union[PortkeyModes, PortkeyModesLiteral]
+    mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = None
     params: Optional[Params] = None
     llms: List[LLMBase]
+
+    @validator("mode", always=True)
+    @classmethod
+    def check_mode(cls, mode):
+        if mode is None:
+            # You can access other fields' values via the 'values' dictionary
+            mode = retrieve_mode()
+        if not isinstance(mode, PortkeyModes):
+            raise ValueError(INVALID_PORTKEY_MODE.format(mode))
+
+        return mode
 
 
 def default_api_key() -> str:
     if portkey.api_key:
         return portkey.api_key
-    else:
-        raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+    raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
 
 
 def default_base_url() -> str:
     if portkey.base_url:
         return portkey.base_url
-    else:
-        raise ValueError(MISSING_BASE_URL)
+    raise ValueError(MISSING_BASE_URL)
+
+
+def retrieve_config() -> Config:
+    if portkey.config:
+        return portkey.config
+    raise ValueError(MISSING_CONFIG_MESSAGE)
+
+
+def retrieve_mode() -> Union[PortkeyModes, PortkeyModesLiteral]:
+    if portkey.mode:
+        return portkey.mode
+    raise ValueError(MISSING_MODE_MESSAGE)

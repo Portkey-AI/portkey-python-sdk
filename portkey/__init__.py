@@ -1,6 +1,6 @@
 import os
+from typing import Optional, Union
 from portkey.api_resources import (
-    Portkey,
     LLMBase,
     PortkeyModes,
     PortkeyModesLiteral,
@@ -19,10 +19,10 @@ from portkey.version import VERSION
 
 api_key = os.environ.get("PORTKEY_API_KEY", "")
 base_url = os.environ.get("PORTKEY_PROXY", "https://api.portkey.ai")
-
+config: Optional[Config] = None
+mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = None
 __version__ = VERSION
 __all__ = [
-    "Portkey",
     "LLMBase",
     "PortkeyModes",
     "PortkeyResponse",

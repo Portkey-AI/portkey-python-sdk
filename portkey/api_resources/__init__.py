@@ -1,5 +1,4 @@
 """"""
-from .client import Portkey
 from .apis import ChatCompletions, Completions
 from .utils import (
     PortkeyModes,
@@ -19,7 +18,6 @@ from portkey.version import VERSION
 
 __version__ = VERSION
 __all__ = [
-    "Portkey",
     "LLMBase",
     "PortkeyModes",
     "PortkeyResponse",

@@ -13,6 +13,16 @@ MISSING_BASE_URL = """No Base url provided. Please provide a valid base url.
 For example: https://api.portkey.ai
 """
 
+MISSING_CONFIG_MESSAGE = (
+    """The 'config' parameter is not set. Please provide a valid Config object."""
+)
+MISSING_MODE_MESSAGE = (
+    """The 'mode' parameter is not set. Please provide a valid mode literal."""
+)
+
+INVALID_PORTKEY_MODE = """
+Argument of type '{}' cannot be assigned to parameter "mode" of type "PortkeyModesLiteral | PortkeyModes | None"
+"""
 
 DEFAULT_MAX_RETRIES = 2
 VERSION = "0.1.0"
