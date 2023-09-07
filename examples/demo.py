@@ -16,7 +16,6 @@ portkey.config = Config(
             model="gpt-3.5-turbo",
             max_tokens=250,
             messages=messages,
-            api_key="",
         ),
         LLMBase(
             provider="anthropic",
