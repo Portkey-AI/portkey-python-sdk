@@ -1,13 +1,13 @@
 """"""
 from .apis import ChatCompletions, Completions
 from .utils import (
-    PortkeyModes,
-    PortkeyModesLiteral,
+    Modes,
+    ModesLiteral,
     LLMOptions,
     ProviderTypes,
     ProviderTypesLiteral,
-    PortkeyCacheType,
-    PortkeyCacheLiteral,
+    CacheType,
+    CacheLiteral,
     Message,
     PortkeyResponse,
     Params,
@@ -19,13 +19,13 @@ from portkey.version import VERSION
 __version__ = VERSION
 __all__ = [
     "LLMOptions",
-    "PortkeyModes",
+    "Modes",
     "PortkeyResponse",
-    "PortkeyModesLiteral",
+    "ModesLiteral",
     "ProviderTypes",
     "ProviderTypesLiteral",
-    "PortkeyCacheType",
-    "PortkeyCacheLiteral",
+    "CacheType",
+    "CacheLiteral",
     "Message",
     "ChatCompletions",
     "Completions",

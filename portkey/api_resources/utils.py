@@ -25,12 +25,12 @@ from .global_constants import (
 )
 
 
-class PortkeyCacheType(str, Enum):
+class CacheType(str, Enum):
     SEMANTIC = "semantic"
     SIMPLE = "simple"
 
 
-PortkeyCacheLiteral = Literal["semantic", "simple"]
+CacheLiteral = Literal["semantic", "simple"]
 
 
 ResponseT = TypeVar("ResponseT", bound="PortkeyResponse")
@@ -58,7 +58,7 @@ ProviderTypesLiteral = Literal[
 ]
 
 
-class PortkeyModes(str, Enum):
+class Modes(str, Enum):
     """_summary_
 
     Args:
@@ -66,12 +66,12 @@ class PortkeyModes(str, Enum):
     """
 
     FALLBACK = "fallback"
-    LOADBALANCE = "loadbalance"
+    AB_TEST = "ab_test"
     SINGLE = "single"
     PROXY = "proxy"
 
 
-PortkeyModesLiteral = Literal["fallback", "loadbalance", "single", "proxy"]
+ModesLiteral = Literal["fallback", "loadbalance", "single", "proxy"]
 
 
 class PortkeyApiPaths(Enum):
@@ -170,7 +170,7 @@ class Constructs(BaseModel):
     virtual_key: Optional[str] = None
     cache: Optional[bool] = None
     cache_age: Optional[int] = None
-    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
+    cache_status: Optional[Union[CacheType, CacheLiteral]] = None
     cache_force_refresh: Optional[bool] = None
     trace_id: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
@@ -275,7 +275,7 @@ def make_status_error(
 class Config(BaseModel):
     api_key: Optional[str] = None
     base_url: Optional[str] = None
-    mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = "single"
+    mode: Optional[Union[Modes, ModesLiteral]] = "single"
     llms: Union[List[LLMOptions], LLMOptions]
 
     @validator("mode", always=True)
@@ -284,7 +284,7 @@ class Config(BaseModel):
         if mode is None:
             # You can access other fields' values via the 'values' dictionary
             mode = retrieve_mode()
-        if not isinstance(mode, PortkeyModes):
+        if not isinstance(mode, Modes):
             raise ValueError(INVALID_PORTKEY_MODE.format(mode))
 
         return mode
@@ -315,7 +315,7 @@ def retrieve_config() -> Config:
     raise ValueError(MISSING_CONFIG_MESSAGE)
 
 
-def retrieve_mode() -> Union[PortkeyModes, PortkeyModesLiteral]:
+def retrieve_mode() -> Union[Modes, ModesLiteral]:
     if portkey.mode:
         return portkey.mode
     raise ValueError(MISSING_MODE_MESSAGE)

@@ -2,7 +2,7 @@ from typing import Optional, Union, overload, Literal, List
 from portkey.api_resources.base_client import APIClient
 import portkey
 from .utils import (
-    PortkeyModes,
+    Modes,
     PortkeyResponse,
     Config,
     retrieve_config,
@@ -106,31 +106,31 @@ class Completions(APIResource):
             top_p=top_p,
             **kwargs
         )
-        if config.mode == PortkeyModes.SINGLE.value:
+        if config.mode == Modes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/complete",
                 body=config.llms,
-                mode=PortkeyModes.SINGLE.value,
+                mode=Modes.SINGLE.value,
                 params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
             )
-        if config.mode == PortkeyModes.FALLBACK.value:
+        if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
                 "/v1/complete",
                 body=config.llms,
-                mode=PortkeyModes.FALLBACK,
+                mode=Modes.FALLBACK,
                 params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
             )
-        if config.mode == PortkeyModes.LOADBALANCE.value:
+        if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
                 "/v1/complete",
                 body=config.llms,
-                mode=PortkeyModes.LOADBALANCE,
+                mode=Modes.AB_TEST,
                 params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
@@ -212,31 +212,31 @@ class ChatCompletions(APIResource):
             top_p=top_p,
             **kwargs
         )
-        if config.mode == PortkeyModes.SINGLE.value:
+        if config.mode == Modes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/chatComplete",
                 body=config.llms,
-                mode=PortkeyModes.SINGLE.value,
+                mode=Modes.SINGLE.value,
                 params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
             )
-        if config.mode == PortkeyModes.FALLBACK.value:
+        if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
                 "/v1/chatComplete",
                 body=config.llms,
-                mode=PortkeyModes.FALLBACK,
+                mode=Modes.FALLBACK,
                 params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
                 stream=stream,
             )
-        if config.mode == PortkeyModes.LOADBALANCE.value:
+        if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
                 "/v1/chatComplete",
                 body=config.llms,
-                mode=PortkeyModes.LOADBALANCE,
+                mode=Modes.AB_TEST,
                 params=params,
                 cast_to=PortkeyResponse,
                 stream_cls=Stream[PortkeyResponse],
