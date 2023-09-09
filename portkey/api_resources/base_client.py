@@ -26,6 +26,7 @@ from .utils import (
     ProviderOptions,
     PortkeyResponse,
     Params,
+    Constructs,
 )
 from .exceptions import (
     APIStatusError,
@@ -170,15 +171,10 @@ class APIClient:
     def _config(self, mode: str, body: List[Body]) -> RequestConfig:
         config = RequestConfig(mode=mode, options=[])
         for i in body:
-            item = i.dict()
-            override_params = cast(OverrideParams, i.dict())
+            override_params = cast(OverrideParams, i)
+            constructs = cast(Constructs, i)
             options = ProviderOptions(
-                virtualKey=item.get("virtual_key"),
-                provider=item.get("provider"),
-                apiKey=item.get("api_key"),
-                weight=item.get("weight"),
-                retry=item.get("retry"),
-                override_params=override_params,
+                override_params=override_params, **constructs.dict()
             )
             config.options.append(options)
         return config

@@ -1,4 +1,4 @@
-from typing import Optional, Union, overload, Literal, Dict, Any
+from typing import Optional, Union, overload, Literal, List
 from portkey.api_resources.base_client import APIClient
 import portkey
 from .utils import (
@@ -7,8 +7,7 @@ from .utils import (
     Config,
     retrieve_config,
     Params,
-    PortkeyCacheType,
-    PortkeyCacheLiteral,
+    Message,
 )
 
 from .streaming import Stream
@@ -40,17 +39,11 @@ class Completions(APIResource):
     def create(
         cls,
         *,
+        prompt: Optional[str] = None,
         config: Optional[Config] = None,
         stream: Literal[True],
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -62,17 +55,11 @@ class Completions(APIResource):
     def create(
         cls,
         *,
+        prompt: Optional[str] = None,
         config: Optional[Config] = None,
         stream: Literal[False] = False,
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -84,17 +71,11 @@ class Completions(APIResource):
     def create(
         cls,
         *,
+        prompt: Optional[str] = None,
         config: Optional[Config] = None,
         stream: bool = False,
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -105,17 +86,11 @@ class Completions(APIResource):
     def create(
         cls,
         *,
+        prompt: Optional[str] = None,
         config: Optional[Config] = None,
         stream: bool = False,
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -123,16 +98,10 @@ class Completions(APIResource):
         _client = APIClient()
         if config is None:
             config = retrieve_config()
-        params = portkey.params or Params(
-            virtual_key=virtual_key,
+        params = Params(
+            prompt=prompt,
             temperature=temperature,
             max_tokens=max_tokens,
-            max_retries=max_retries,
-            trace_id=trace_id,
-            cache_status=cache_status,
-            cache=cache,
-            metadata=metadata,
-            weight=weight,
             top_k=top_k,
             top_p=top_p,
             **kwargs
@@ -176,17 +145,11 @@ class ChatCompletions(APIResource):
     def create(
         cls,
         *,
+        messages: Optional[List[Message]] = None,
         config: Optional[Config] = None,
         stream: Literal[True],
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -198,17 +161,11 @@ class ChatCompletions(APIResource):
     def create(
         cls,
         *,
+        messages: Optional[List[Message]] = None,
         config: Optional[Config] = None,
         stream: Literal[False] = False,
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -220,17 +177,11 @@ class ChatCompletions(APIResource):
     def create(
         cls,
         *,
+        messages: Optional[List[Message]] = None,
         config: Optional[Config] = None,
         stream: bool = False,
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -241,17 +192,11 @@ class ChatCompletions(APIResource):
     def create(
         cls,
         *,
+        messages: Optional[List[Message]] = None,
         config: Optional[Config] = None,
         stream: bool = False,
-        virtual_key: Optional[str] = None,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
-        max_retries: Optional[int] = None,
-        trace_id: Optional[str] = None,
-        cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None,
-        cache: Optional[bool] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        weight: Optional[float] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
@@ -259,16 +204,10 @@ class ChatCompletions(APIResource):
         _client = APIClient()
         if config is None:
             config = retrieve_config()
-        params = portkey.params or Params(
-            virtual_key=virtual_key,
+        params = Params(
+            messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
-            max_retries=max_retries,
-            trace_id=trace_id,
-            cache_status=cache_status,
-            cache=cache,
-            metadata=metadata,
-            weight=weight,
             top_k=top_k,
             top_p=top_p,
             **kwargs

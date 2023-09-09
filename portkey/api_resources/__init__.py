@@ -3,7 +3,7 @@ from .apis import ChatCompletions, Completions
 from .utils import (
     PortkeyModes,
     PortkeyModesLiteral,
-    LLMBase,
+    LLMOptions,
     ProviderTypes,
     ProviderTypesLiteral,
     PortkeyCacheType,
@@ -18,7 +18,7 @@ from portkey.version import VERSION
 
 __version__ = VERSION
 __all__ = [
-    "LLMBase",
+    "LLMOptions",
     "PortkeyModes",
     "PortkeyResponse",
     "PortkeyModesLiteral",

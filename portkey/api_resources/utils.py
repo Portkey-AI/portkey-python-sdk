@@ -103,7 +103,7 @@ class Function(BaseModel):
     parameters: str
 
 
-class RetrySettings(BaseModel):
+class RetrySettings(TypedDict):
     attempts: int
     on_status_codes: list
 
@@ -114,23 +114,18 @@ class ConversationInput(BaseModel):
 
 
 class ModelParams(BaseModel):
-    virtual_key: Optional[str] = None
-    temperature: Optional[float] = None
+    model: Optional[str] = None
+    suffix: Optional[str] = None
     max_tokens: Optional[int] = None
-    max_retries: Optional[int] = None
-    trace_id: Optional[str] = None
-    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
-    cache: Optional[bool] = None
-    metadata: Optional[Dict[str, Any]] = None
-    weight: Optional[float] = None
+    temperature: Optional[float] = None
     top_k: Optional[int] = None
     top_p: Optional[float] = None
+    n: Optional[int] = None
     stop_sequences: Optional[List[str]] = None
     timeout: Union[float, None] = None
     retry_settings: Optional[RetrySettings] = None
     functions: Optional[List[Function]] = None
     function_call: Optional[Union[None, str, Function]] = None
-    n: Optional[int] = None
     logprobs: Optional[int] = None
     echo: Optional[bool] = None
     stop: Optional[Union[str, List[str]]] = None
@@ -139,33 +134,11 @@ class ModelParams(BaseModel):
     best_of: Optional[int] = None
     logit_bias: Optional[Dict[str, int]] = None
     user: Optional[str] = None
-    cache_age: Optional[int] = None
-    cache_force_refresh: Optional[bool] = None
-
-    @validator("cache_age", always=True)
-    @classmethod
-    def parse_cache_age(cls, cache_age):
-        if cache_age is not None:
-            cache_age = f"max-age={cache_age}"
-        return cache_age
+    organization: Optional[str] = None
 
 
 class OverrideParams(ModelParams, ConversationInput):
     ...
-
-
-class ProviderOptions(BaseModel):
-    provider: Optional[str]
-    apiKey: Optional[str]
-    virtualKey: Optional[str]
-    weight: Optional[float]
-    override_params: Optional[OverrideParams]
-    retry: Optional[RetrySettings]
-
-
-class RequestConfig(BaseModel):
-    mode: str
-    options: List[ProviderOptions]
 
 
 def remove_empty_values(
@@ -191,22 +164,48 @@ def remove_empty_values(
         return cast(dict, data)
 
 
-class LLMBase(ConversationInput, ModelParams):
+class Constructs(BaseModel):
     provider: Union[ProviderTypes, ProviderTypesLiteral]
-    model: str
     api_key: Optional[str] = None
+    virtual_key: Optional[str] = None
+    cache: Optional[bool] = None
+    cache_age: Optional[int] = None
+    cache_status: Optional[Union[PortkeyCacheType, PortkeyCacheLiteral]] = None
+    cache_force_refresh: Optional[bool] = None
+    trace_id: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+    weight: Optional[float] = None
+    retry: Optional[RetrySettings] = None
+
+
+class LLMOptions(Constructs, ConversationInput, ModelParams):
+    @validator("cache_age", always=True)
+    @classmethod
+    def parse_cache_age(cls, cache_age):
+        if cache_age is not None:
+            cache_age = f"max-age={cache_age}"
+        return cache_age
 
     @validator("api_key", always=True)
     @classmethod
     def parse_api_key(cls, api_key, values):
-        if api_key is None:
+        if api_key is None and values.get("virtual_key", "") is None:
             # You can access other fields' values via the 'values' dictionary
             provider = values.get("provider", "")
             api_key = apikey_from_env(provider)
         return api_key
 
 
-class Body(LLMBase):
+class ProviderOptions(Constructs):
+    override_params: Optional[OverrideParams] = None
+
+
+class RequestConfig(BaseModel):
+    mode: str
+    options: List[ProviderOptions]
+
+
+class Body(LLMOptions):
     ...
 
 
@@ -235,7 +234,7 @@ def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str
     raise ValueError(
         f"Did not find '{provider.lower()}' api key, please add an environment variable"
         f" `{env_key}` which contains it, or pass"
-        f"  `api_key` as a named parameter in LLMBase"
+        f"  `api_key` as a named parameter in LLMOptions"
     )
 
 
@@ -274,8 +273,8 @@ def make_status_error(
 
 
 class Config(BaseModel):
-    mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = None
-    llms: List[LLMBase]
+    mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = "single"
+    llms: List[LLMOptions]
 
     @validator("mode", always=True)
     @classmethod

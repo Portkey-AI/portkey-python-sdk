@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Union
 from portkey.api_resources import (
-    LLMBase,
+    LLMOptions,
     PortkeyModes,
     PortkeyModesLiteral,
     ProviderTypes,
@@ -24,7 +24,7 @@ mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = None
 params: Optional[Params] = None
 __version__ = VERSION
 __all__ = [
-    "LLMBase",
+    "LLMOptions",
     "PortkeyModes",
     "PortkeyResponse",
     "PortkeyModesLiteral",
