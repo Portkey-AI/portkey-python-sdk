@@ -139,6 +139,15 @@ class ModelParams(BaseModel):
     best_of: Optional[int] = None
     logit_bias: Optional[Dict[str, int]] = None
     user: Optional[str] = None
+    cache_age: Optional[int] = None
+    cache_force_refresh: Optional[bool] = None
+
+    @validator("cache_age", always=True)
+    @classmethod
+    def parse_cache_age(cls, cache_age):
+        if cache_age is not None:
+            cache_age = f"max-age={cache_age}"
+        return cache_age
 
 
 class OverrideParams(ModelParams, ConversationInput):
@@ -217,9 +226,17 @@ class PortkeyResponse(BaseModel):
 
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str:
+    env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
     if provider is None:
         return ""
-    return os.environ.get(f"{provider.upper().replace('-', '_')}_API_KEY", "")
+    if env_key in os.environ and os.environ[env_key]:
+        return os.environ.get(env_key, "")
+
+    raise ValueError(
+        f"Did not find '{provider.lower()}' api key, please add an environment variable"
+        f" `{env_key}` which contains it, or pass"
+        f"  `api_key` as a named parameter in LLMBase"
+    )
 
 
 def make_status_error(

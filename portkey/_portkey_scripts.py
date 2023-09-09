@@ -1,10 +1,11 @@
 """main file"""
 import argparse
-from portkey.version import VERSION
+from .version import VERSION
 
 
 def main():
     """Main function"""
+    print("Comes here....")
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--version",

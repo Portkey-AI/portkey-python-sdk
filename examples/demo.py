@@ -23,9 +23,9 @@ portkey.config = Config(
             max_tokens=250,
         ),
     ],
-    params=Params(messages=messages),
 )
 
-response = portkey.ChatCompletions.create(stream=True)
+response = portkey.ChatCompletions.create(
+    stream=True, virtual_key="pk-virtualkey-12345", temperature=0)
 for i in response:
     print(i.choices[0].get("delta", {}).get("content"), end="", flush=True)
