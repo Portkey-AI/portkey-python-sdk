@@ -164,7 +164,6 @@ class APIClient:
             "params": {**params_dict, "stream": stream},
         }
         opts.json_body = remove_empty_values(json_body)
-        print(json.dumps(opts.json_body))
         opts.headers = None
         return opts
 

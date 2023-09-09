@@ -274,7 +274,7 @@ def make_status_error(
 
 class Config(BaseModel):
     mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = "single"
-    llms: List[LLMOptions]
+    llms: Union[List[LLMOptions], LLMOptions]
 
     @validator("mode", always=True)
     @classmethod
@@ -286,6 +286,13 @@ class Config(BaseModel):
             raise ValueError(INVALID_PORTKEY_MODE.format(mode))
 
         return mode
+
+    @validator("llms", always=True)
+    @classmethod
+    def parse_llms(cls, llms):
+        if isinstance(llms, LLMOptions):
+            llms = [llms]
+        return llms
 
 
 def default_api_key() -> str:

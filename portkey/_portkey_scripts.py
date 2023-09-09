@@ -5,7 +5,6 @@ from .version import VERSION
 
 def main():
     """Main function"""
-    print("Comes here....")
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--version",
