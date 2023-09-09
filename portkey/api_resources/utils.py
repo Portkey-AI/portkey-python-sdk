@@ -273,6 +273,8 @@ def make_status_error(
 
 
 class Config(BaseModel):
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
     mode: Optional[Union[PortkeyModes, PortkeyModesLiteral]] = "single"
     llms: Union[List[LLMOptions], LLMOptions]
 

@@ -95,9 +95,9 @@ class Completions(APIResource):
         top_p: Optional[float] = None,
         **kwargs
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
-        _client = APIClient()
         if config is None:
             config = retrieve_config()
+        _client = APIClient(api_key=config.api_key, base_url=config.base_url)
         params = Params(
             prompt=prompt,
             temperature=temperature,
@@ -201,9 +201,9 @@ class ChatCompletions(APIResource):
         top_p: Optional[float] = None,
         **kwargs
     ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
-        _client = APIClient()
         if config is None:
             config = retrieve_config()
+        _client = APIClient(api_key=config.api_key, base_url=config.base_url)
         params = Params(
             messages=messages,
             temperature=temperature,
