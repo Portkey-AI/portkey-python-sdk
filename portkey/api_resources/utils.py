@@ -1,4 +1,5 @@
 import os
+import json
 from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from enum import Enum
 from typing_extensions import TypedDict
@@ -33,7 +34,10 @@ class CacheType(str, Enum):
 CacheLiteral = Literal["semantic", "simple"]
 
 
-ResponseT = TypeVar("ResponseT", bound="PortkeyResponse")
+ResponseT = TypeVar(
+    "ResponseT",
+    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion]",
+)
 
 
 class ProviderTypes(str, Enum):
@@ -69,6 +73,11 @@ class Modes(str, Enum):
     AB_TEST = "ab_test"
     SINGLE = "single"
     PROXY = "proxy"
+
+
+class ApiType(str, Enum):
+    COMPLETIONS = "completions"
+    CHAT_COMPLETION = "chat_completions"
 
 
 ModesLiteral = Literal["fallback", "loadbalance", "single", "proxy"]
@@ -189,7 +198,7 @@ class LLMOptions(Constructs, ConversationInput, ModelParams):
     @validator("api_key", always=True)
     @classmethod
     def parse_api_key(cls, api_key, values):
-        if api_key is None and values.get("virtual_key", "") is None:
+        if api_key is None and values.get("virtual_key") is None:
             # You can access other fields' values via the 'values' dictionary
             provider = values.get("provider", "")
             api_key = apikey_from_env(provider)
@@ -222,6 +231,158 @@ class PortkeyResponse(BaseModel):
     model: str
     choices: List[Any]
     raw_body: Dict[str, Any]
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+
+# Models for Chat Stream
+class Delta(BaseModel):
+    role: Optional[str] = None
+    content: Optional[str] = ""
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+class StreamChoice(BaseModel):
+    index: Optional[int] = None
+    delta: Union[Delta, Dict[Any, Any]] = {}
+    finish_reason: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+
+class ChatCompletionChunk(BaseModel):
+    id: Optional[str] = None
+    object: Optional[str] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    choices: Union[List[StreamChoice], Dict[Any, Any]] = {}
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+# Models for Chat Non-stream
+class ChatChoice(BaseModel):
+    index: Optional[int] = None
+    message: Optional[Message] = None
+    finish_reason: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+class Usage(BaseModel):
+    prompt_tokens: Optional[int] = None
+    completion_tokens: Optional[int] = None
+    total_tokens: Optional[int] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+class ChatCompletion(BaseModel):
+    id: Optional[str] = None
+    object: Optional[str] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    choices: Union[List[ChatChoice], Dict[Any, Any]] = {}
+    usage: Optional[Usage] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+# Models for text completion Non-stream
+class TextChoice(BaseModel):
+    index: Optional[int] = None
+    text: Optional[str] = None
+    logprobs: Optional[int] = None
+    finish_reason: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+class TextCompletion(BaseModel):
+    id: Optional[str] = None
+    object: Optional[str] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    choices: Union[List[TextChoice], Dict[Any, Any]] = {}
+    usage: Optional[Usage] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+# Models for text completion stream
+class TextCompletionChunk(BaseModel):
+    id: Optional[str] = None
+    object: Optional[str] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    choices: Union[List[TextChoice], Dict[Any, Any]] = {}
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str:

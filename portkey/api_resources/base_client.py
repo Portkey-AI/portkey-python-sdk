@@ -24,9 +24,9 @@ from .utils import (
     RequestConfig,
     OverrideParams,
     ProviderOptions,
-    PortkeyResponse,
     Params,
     Constructs,
+    ApiType,
 )
 from .exceptions import (
     APIStatusError,
@@ -91,6 +91,7 @@ class APIClient:
         stream: Literal[True],
         stream_cls: type[StreamT],
         params: Params,
+        type: ApiType,
     ) -> StreamT:
         ...
 
@@ -105,6 +106,7 @@ class APIClient:
         stream: Literal[False],
         stream_cls: type[StreamT],
         params: Params,
+        type: ApiType,
     ) -> ResponseT:
         ...
 
@@ -119,6 +121,7 @@ class APIClient:
         stream: bool,
         stream_cls: type[StreamT],
         params: Params,
+        type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -132,6 +135,7 @@ class APIClient:
         stream: bool,
         stream_cls: type[StreamT],
         params: Params,
+        type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         body = cast(List[Body], body)
         opts = self._construct(
@@ -142,6 +146,7 @@ class APIClient:
             stream=stream,
             cast_to=cast_to,
             stream_cls=stream_cls,
+            type=type,
         )
         return res
 
@@ -246,7 +251,8 @@ class APIClient:
         options: Options,
         stream: Literal[False],
         cast_to: Type[ResponseT],
-        stream_cls: Union[type[StreamT], None] = None,
+        stream_cls: Type[StreamT],
+        type: ApiType,
     ) -> ResponseT:
         ...
 
@@ -257,7 +263,8 @@ class APIClient:
         options: Options,
         stream: Literal[True],
         cast_to: Type[ResponseT],
-        stream_cls: Union[type[StreamT], None] = None,
+        stream_cls: Type[StreamT],
+        type: ApiType,
     ) -> StreamT:
         ...
 
@@ -268,7 +275,8 @@ class APIClient:
         options: Options,
         stream: bool,
         cast_to: Type[ResponseT],
-        stream_cls: Union[type[StreamT], None] = None,
+        stream_cls: Type[StreamT],
+        type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -278,7 +286,8 @@ class APIClient:
         options: Options,
         stream: bool,
         cast_to: Type[ResponseT],
-        stream_cls: Union[type[StreamT], None] = None,
+        stream_cls: Type[StreamT],
+        type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
         try:
@@ -294,16 +303,15 @@ class APIClient:
         except Exception as err:
             raise APIConnectionError(request=request) from err
         if stream:
-            stream_cls = stream_cls or cast(
-                "Union[type[StreamT], None]", self._default_stream_cls
-            )
+            # stream_cls = stream_cls
             if stream_cls is None:
                 raise MissingStreamClassError()
-            stream_response = stream_cls(response=res)
+            print("stream_cls : ", stream_cls)
+            stream_response = stream_cls(response=res, type=type)
             return stream_response
         response = cast(
             ResponseT,
-            PortkeyResponse.construct(**res.json(), raw_body=res.json()),
+            cast_to(**res.json()),
         )
         return response
 

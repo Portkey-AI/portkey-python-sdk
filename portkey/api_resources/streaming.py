@@ -5,7 +5,13 @@ from typing import Any, Iterator, Generic, cast, Union
 
 import httpx
 
-from .utils import ResponseT, PortkeyResponse, make_status_error
+from .utils import (
+    ChatCompletionChunk,
+    ResponseT,
+    TextCompletionChunk,
+    make_status_error,
+    ApiType,
+)
 
 
 class ServerSentEvent:
@@ -134,11 +140,14 @@ class Stream(Generic[ResponseT]):
 
     response: httpx.Response
 
-    def __init__(
-        self,
-        *,
-        response: httpx.Response,
-    ) -> None:
+    def __init__(self, *, response: httpx.Response, type: str) -> None:
+        self._type = type
+        print(type)
+        self.response_cls = (
+            ChatCompletionChunk
+            if type == ApiType.CHAT_COMPLETION
+            else TextCompletionChunk
+        )
         self.response = response
         self._decoder = SSEDecoder()
         self._iterator = self.__stream__()
@@ -157,10 +166,7 @@ class Stream(Generic[ResponseT]):
         response = self.response
         for sse in self._iter_events():
             if sse.event is None:
-                yield cast(
-                    ResponseT,
-                    PortkeyResponse.construct(**sse.json(), raw_body=sse.json()),
-                )
+                yield cast(ResponseT, self.response_cls(**sse.json()))
 
             if sse.event == "ping":
                 continue

@@ -1,13 +1,16 @@
 from typing import Optional, Union, overload, Literal, List
 from portkey.api_resources.base_client import APIClient
-import portkey
 from .utils import (
     Modes,
-    PortkeyResponse,
     Config,
     retrieve_config,
     Params,
     Message,
+    ChatCompletionChunk,
+    ChatCompletion,
+    TextCompletion,
+    TextCompletionChunk,
+    ApiType,
 )
 
 from .streaming import Stream
@@ -47,7 +50,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> Stream[PortkeyResponse]:
+    ) -> Stream[TextCompletionChunk]:
         ...
 
     @classmethod
@@ -63,7 +66,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> PortkeyResponse:
+    ) -> TextCompletion:
         ...
 
     @classmethod
@@ -79,7 +82,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
+    ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
         ...
 
     @classmethod
@@ -94,7 +97,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
+    ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
         if config is None:
             config = retrieve_config()
         _client = APIClient(api_key=config.api_key, base_url=config.base_url)
@@ -112,8 +115,8 @@ class Completions(APIResource):
                 body=config.llms,
                 mode=Modes.SINGLE.value,
                 params=params,
-                cast_to=PortkeyResponse,
-                stream_cls=Stream[PortkeyResponse],
+                cast_to=TextCompletion,
+                stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
             )
         if config.mode == Modes.FALLBACK.value:
@@ -122,8 +125,8 @@ class Completions(APIResource):
                 body=config.llms,
                 mode=Modes.FALLBACK,
                 params=params,
-                cast_to=PortkeyResponse,
-                stream_cls=Stream[PortkeyResponse],
+                cast_to=TextCompletion,
+                stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
             )
         if config.mode == Modes.AB_TEST.value:
@@ -132,8 +135,8 @@ class Completions(APIResource):
                 body=config.llms,
                 mode=Modes.AB_TEST,
                 params=params,
-                cast_to=PortkeyResponse,
-                stream_cls=Stream[PortkeyResponse],
+                cast_to=TextCompletion,
+                stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
             )
         raise NotImplementedError("Mode not implemented.")
@@ -153,7 +156,7 @@ class ChatCompletions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> Stream[PortkeyResponse]:
+    ) -> Stream[ChatCompletionChunk]:
         ...
 
     @classmethod
@@ -169,7 +172,7 @@ class ChatCompletions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> PortkeyResponse:
+    ) -> ChatCompletion:
         ...
 
     @classmethod
@@ -185,7 +188,7 @@ class ChatCompletions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
+    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
         ...
 
     @classmethod
@@ -200,7 +203,7 @@ class ChatCompletions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs
-    ) -> Union[PortkeyResponse, Stream[PortkeyResponse]]:
+    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
         if config is None:
             config = retrieve_config()
         _client = APIClient(api_key=config.api_key, base_url=config.base_url)
@@ -218,9 +221,10 @@ class ChatCompletions(APIResource):
                 body=config.llms,
                 mode=Modes.SINGLE.value,
                 params=params,
-                cast_to=PortkeyResponse,
-                stream_cls=Stream[PortkeyResponse],
+                cast_to=ChatCompletion,
+                stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
+                type=ApiType.CHAT_COMPLETION,
             )
         if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
@@ -228,9 +232,10 @@ class ChatCompletions(APIResource):
                 body=config.llms,
                 mode=Modes.FALLBACK,
                 params=params,
-                cast_to=PortkeyResponse,
-                stream_cls=Stream[PortkeyResponse],
+                cast_to=ChatCompletion,
+                stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
+                type=ApiType.CHAT_COMPLETION,
             )
         if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
@@ -238,8 +243,9 @@ class ChatCompletions(APIResource):
                 body=config.llms,
                 mode=Modes.AB_TEST,
                 params=params,
-                cast_to=PortkeyResponse,
-                stream_cls=Stream[PortkeyResponse],
+                cast_to=ChatCompletion,
+                stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
+                type=ApiType.CHAT_COMPLETION,
             )
         raise NotImplementedError("Mode not implemented.")
