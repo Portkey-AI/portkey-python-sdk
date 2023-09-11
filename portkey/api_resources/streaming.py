@@ -142,7 +142,6 @@ class Stream(Generic[ResponseT]):
 
     def __init__(self, *, response: httpx.Response, type: str) -> None:
         self._type = type
-        print(type)
         self.response_cls = (
             ChatCompletionChunk
             if type == ApiType.CHAT_COMPLETION

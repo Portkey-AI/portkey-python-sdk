@@ -306,7 +306,6 @@ class APIClient:
             # stream_cls = stream_cls
             if stream_cls is None:
                 raise MissingStreamClassError()
-            print("stream_cls : ", stream_cls)
             stream_response = stream_cls(response=res, type=type)
             return stream_response
         response = cast(
