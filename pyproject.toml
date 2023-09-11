@@ -1,3 +1,22 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools ~= 58.0", "cython ~= 0.29.0"]
 build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools]
+# Add your package information here
+name = "portkey-ai"
+author = "Portkey.ai"
+author_email = "support@portkey.ai"
+description = "Python client library for the Portkey API"
+long_description = file: README.md
+long_description_content_type = text/markdown
+url = "https://github.com/Portkey-AI/portkey-python-sdk"
+license = "MIT"
+
+
+[project.urls]
+homepage = 'https://github.com/Portkey-AI/portkey-python-sdk'
+documentation = 'https://docs.portkey.ai/'
+repository = 'https://github.com/Portkey-AI/portkey-python-sdk'
+changelog = "https://github.com/Portkey-AI/portkey-python-sdk/blob/main/CHANGELOG.md"
