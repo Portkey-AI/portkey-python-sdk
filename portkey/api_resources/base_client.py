@@ -91,7 +91,7 @@ class APIClient:
         stream: Literal[True],
         stream_cls: type[StreamT],
         params: Params,
-        type: ApiType,
+        _type: ApiType,
     ) -> StreamT:
         ...
 
@@ -106,7 +106,7 @@ class APIClient:
         stream: Literal[False],
         stream_cls: type[StreamT],
         params: Params,
-        type: ApiType,
+        _type: ApiType,
     ) -> ResponseT:
         ...
 
@@ -121,7 +121,7 @@ class APIClient:
         stream: bool,
         stream_cls: type[StreamT],
         params: Params,
-        type: ApiType,
+        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -135,7 +135,7 @@ class APIClient:
         stream: bool,
         stream_cls: type[StreamT],
         params: Params,
-        type: ApiType,
+        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         body = cast(List[Body], body)
         opts = self._construct(
@@ -146,7 +146,7 @@ class APIClient:
             stream=stream,
             cast_to=cast_to,
             stream_cls=stream_cls,
-            type=type,
+            _type=_type,
         )
         return res
 
@@ -252,7 +252,7 @@ class APIClient:
         stream: Literal[False],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        type: ApiType,
+        _type: ApiType,
     ) -> ResponseT:
         ...
 
@@ -264,7 +264,7 @@ class APIClient:
         stream: Literal[True],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        type: ApiType,
+        _type: ApiType,
     ) -> StreamT:
         ...
 
@@ -276,7 +276,7 @@ class APIClient:
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        type: ApiType,
+        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -287,7 +287,7 @@ class APIClient:
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        type: ApiType,
+        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
         try:
@@ -306,7 +306,7 @@ class APIClient:
             # stream_cls = stream_cls
             if stream_cls is None:
                 raise MissingStreamClassError()
-            stream_response = stream_cls(response=res, type=type)
+            stream_response = stream_cls(response=res, _type=_type)
             return stream_response
         response = cast(
             ResponseT,

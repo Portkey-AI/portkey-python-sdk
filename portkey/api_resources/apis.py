@@ -118,6 +118,7 @@ class Completions(APIResource):
                 cast_to=TextCompletion,
                 stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
+                _type=ApiType.COMPLETIONS,
             )
         if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
@@ -128,6 +129,7 @@ class Completions(APIResource):
                 cast_to=TextCompletion,
                 stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
+                _type=ApiType.COMPLETIONS,
             )
         if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
@@ -138,6 +140,7 @@ class Completions(APIResource):
                 cast_to=TextCompletion,
                 stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
+                _type=ApiType.COMPLETIONS,
             )
         raise NotImplementedError("Mode not implemented.")
 
@@ -224,7 +227,7 @@ class ChatCompletions(APIResource):
                 cast_to=ChatCompletion,
                 stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
-                type=ApiType.CHAT_COMPLETION,
+                _type=ApiType.CHAT_COMPLETION,
             )
         if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
@@ -235,7 +238,7 @@ class ChatCompletions(APIResource):
                 cast_to=ChatCompletion,
                 stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
-                type=ApiType.CHAT_COMPLETION,
+                _type=ApiType.CHAT_COMPLETION,
             )
         if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
@@ -246,6 +249,6 @@ class ChatCompletions(APIResource):
                 cast_to=ChatCompletion,
                 stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
-                type=ApiType.CHAT_COMPLETION,
+                _type=ApiType.CHAT_COMPLETION,
             )
         raise NotImplementedError("Mode not implemented.")

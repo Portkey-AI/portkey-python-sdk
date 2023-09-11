@@ -195,7 +195,7 @@ class LLMOptions(Constructs, ConversationInput, ModelParams):
             cache_age = f"max-age={cache_age}"
         return cache_age
 
-    @validator("api_key", always=True)
+    @validator("api_key", "virtual_key", always=False)
     @classmethod
     def parse_api_key(cls, api_key, values):
         if api_key is None and values.get("virtual_key") is None:
@@ -336,7 +336,7 @@ class ChatCompletion(BaseModel):
 class TextChoice(BaseModel):
     index: Optional[int] = None
     text: Optional[str] = None
-    logprobs: Optional[int] = None
+    logprobs: Any
     finish_reason: Optional[str] = None
 
     def __str__(self):

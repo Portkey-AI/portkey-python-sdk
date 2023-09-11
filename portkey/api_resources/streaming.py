@@ -140,11 +140,10 @@ class Stream(Generic[ResponseT]):
 
     response: httpx.Response
 
-    def __init__(self, *, response: httpx.Response, type: str) -> None:
-        self._type = type
+    def __init__(self, *, response: httpx.Response, _type: str) -> None:
         self.response_cls = (
             ChatCompletionChunk
-            if type == ApiType.CHAT_COMPLETION
+            if _type == ApiType.CHAT_COMPLETION
             else TextCompletionChunk
         )
         self.response = response
