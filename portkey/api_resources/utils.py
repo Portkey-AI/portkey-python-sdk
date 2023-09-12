@@ -145,7 +145,6 @@ class ModelParams(BaseModel):
     user: Optional[str] = None
     organization: Optional[str] = None
 
-
 class OverrideParams(ModelParams, ConversationInput):
     ...
 
@@ -185,6 +184,9 @@ class Constructs(BaseModel):
     metadata: Optional[Dict[str, Any]] = None
     weight: Optional[float] = None
     retry: Optional[RetrySettings] = None
+    deployment_id: Optional[str] = None
+    resource_name: Optional[str] = None
+    api_version: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):
