@@ -1,7 +1,7 @@
 import os
 import json
 from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
-from enum import Enum
+from enum import Enum, EnumMeta
 from typing_extensions import TypedDict
 import httpx
 import portkey
@@ -26,7 +26,16 @@ from .global_constants import (
 )
 
 
-class CacheType(str, Enum):
+class MetaEnum(EnumMeta):
+    def __contains__(cls, item):
+        try:
+            cls(item)
+        except ValueError:
+            return False
+        return True
+
+
+class CacheType(str, Enum, metaclass=MetaEnum):
     SEMANTIC = "semantic"
     SIMPLE = "simple"
 
@@ -62,7 +71,7 @@ ProviderTypesLiteral = Literal[
 ]
 
 
-class Modes(str, Enum):
+class Modes(str, Enum, metaclass=MetaEnum):
     """_summary_
 
     Args:
@@ -75,7 +84,7 @@ class Modes(str, Enum):
     PROXY = "proxy"
 
 
-class ApiType(str, Enum):
+class ApiType(str, Enum, metaclass=MetaEnum):
     COMPLETIONS = "completions"
     CHAT_COMPLETION = "chat_completions"
 
@@ -144,6 +153,7 @@ class ModelParams(BaseModel):
     logit_bias: Optional[Dict[str, int]] = None
     user: Optional[str] = None
     organization: Optional[str] = None
+
 
 class OverrideParams(ModelParams, ConversationInput):
     ...
@@ -438,7 +448,7 @@ def make_status_error(
 class Config(BaseModel):
     api_key: Optional[str] = None
     base_url: Optional[str] = None
-    mode: Optional[Union[Modes, ModesLiteral]] = "single"
+    mode: Optional[Union[Modes, ModesLiteral]] = None
     llms: Union[List[LLMOptions], LLMOptions]
 
     @validator("mode", always=True)
@@ -447,7 +457,7 @@ class Config(BaseModel):
         if mode is None:
             # You can access other fields' values via the 'values' dictionary
             mode = retrieve_mode()
-        if not isinstance(mode, Modes):
+        if mode not in Modes:
             raise ValueError(INVALID_PORTKEY_MODE.format(mode))
 
         return mode
