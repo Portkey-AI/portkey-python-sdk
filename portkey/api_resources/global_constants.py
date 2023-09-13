@@ -21,7 +21,8 @@ MISSING_MODE_MESSAGE = (
 )
 
 INVALID_PORTKEY_MODE = """
-Argument of type '{}' cannot be assigned to parameter "mode" of type "ModesLiteral | Modes | None"
+Argument of type '{}' cannot be assigned to parameter "mode" of \
+    type "ModesLiteral | Modes | None"
 """
 
 DEFAULT_MAX_RETRIES = 2
