@@ -12,6 +12,7 @@ from .utils import (
     PortkeyResponse,
     Params,
     Config,
+    RetrySettings
 )
 
 from portkey.version import VERSION
@@ -31,4 +32,5 @@ __all__ = [
     "Completions",
     "Params",
     "Config",
+    "RetrySettings"
 ]

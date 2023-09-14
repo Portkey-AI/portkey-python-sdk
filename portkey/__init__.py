@@ -14,6 +14,7 @@ from portkey.api_resources import (
     Completions,
     Params,
     Config,
+    RetrySettings
 )
 from portkey.version import VERSION
 
@@ -35,6 +36,7 @@ __all__ = [
     "ChatCompletions",
     "Completions",
     "Params",
+    "RetrySettings",
     "Config",
     "api_key",
     "base_url",
