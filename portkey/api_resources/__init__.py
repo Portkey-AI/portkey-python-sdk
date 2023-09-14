@@ -12,6 +12,11 @@ from .utils import (
     PortkeyResponse,
     Params,
     Config,
+    RetrySettings,
+    ChatCompletion,
+    ChatCompletionChunk,
+    TextCompletion,
+    TextCompletionChunk,
 )
 
 from portkey.version import VERSION
@@ -31,4 +36,9 @@ __all__ = [
     "Completions",
     "Params",
     "Config",
+    "RetrySettings",
+    "ChatCompletion",
+    "ChatCompletionChunk",
+    "TextCompletion",
+    "TextCompletionChunk",
 ]

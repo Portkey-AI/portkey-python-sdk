@@ -89,7 +89,7 @@ class ApiType(str, Enum, metaclass=MetaEnum):
     CHAT_COMPLETION = "chat_completions"
 
 
-ModesLiteral = Literal["fallback", "loadbalance", "single", "proxy"]
+ModesLiteral = Literal["fallback", "ab_test", "single", "proxy"]
 
 
 class PortkeyApiPaths(Enum):
@@ -200,13 +200,6 @@ class Constructs(BaseModel):
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):
-    @validator("cache_age", always=True)
-    @classmethod
-    def parse_cache_age(cls, cache_age):
-        if cache_age is not None:
-            cache_age = f"max-age={cache_age}"
-        return cache_age
-
     @validator("api_key", "virtual_key", always=False)
     @classmethod
     def parse_api_key(cls, api_key, values):
@@ -219,6 +212,13 @@ class LLMOptions(Constructs, ConversationInput, ModelParams):
 
 class ProviderOptions(Constructs):
     override_params: Optional[OverrideParams] = None
+   
+    @validator("cache_age", always=True)
+    @classmethod
+    def parse_cache_age(cls, cache_age):
+        if cache_age is not None:
+            cache_age = f"max-age={cache_age}"
+        return cache_age
 
 
 class RequestConfig(BaseModel):
