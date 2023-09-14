@@ -14,7 +14,11 @@ from portkey.api_resources import (
     Completions,
     Params,
     Config,
-    RetrySettings
+    RetrySettings,
+    ChatCompletion,
+    ChatCompletionChunk,
+    TextCompletion,
+    TextCompletionChunk,
 )
 from portkey.version import VERSION
 
@@ -37,6 +41,10 @@ __all__ = [
     "Completions",
     "Params",
     "RetrySettings",
+    "ChatCompletion",
+    "ChatCompletionChunk",
+    "TextCompletion",
+    "TextCompletionChunk",
     "Config",
     "api_key",
     "base_url",
