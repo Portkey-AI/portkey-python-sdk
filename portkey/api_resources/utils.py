@@ -23,6 +23,9 @@ from .global_constants import (
     MISSING_BASE_URL,
     MISSING_CONFIG_MESSAGE,
     MISSING_MODE_MESSAGE,
+    PORTKEY_BASE_URL,
+    PORTKEY_API_KEY_ENV,
+    PORTKEY_PROXY_ENV,
 )
 
 
@@ -212,7 +215,7 @@ class LLMOptions(Constructs, ConversationInput, ModelParams):
 
 class ProviderOptions(Constructs):
     override_params: Optional[OverrideParams] = None
-   
+
     @validator("cache_age", always=True)
     @classmethod
     def parse_cache_age(cls, cache_age):
@@ -473,12 +476,19 @@ class Config(BaseModel):
 def default_api_key() -> str:
     if portkey.api_key:
         return portkey.api_key
+    env_api_key = os.environ.get(PORTKEY_API_KEY_ENV, "")
+    if env_api_key:
+        return env_api_key
     raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
 
 
 def default_base_url() -> str:
     if portkey.base_url:
         return portkey.base_url
+
+    env_base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
+    if env_base_url:
+        return env_base_url
     raise ValueError(MISSING_BASE_URL)
 
 
