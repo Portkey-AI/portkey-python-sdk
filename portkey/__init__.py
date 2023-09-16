@@ -21,9 +21,14 @@ from portkey.api_resources import (
     TextCompletionChunk,
 )
 from portkey.version import VERSION
+from portkey.api_resources.global_constants import (
+    PORTKEY_BASE_URL,
+    PORTKEY_API_KEY_ENV,
+    PORTKEY_PROXY_ENV,
+)
 
-api_key = os.environ.get("PORTKEY_API_KEY", "")
-base_url = os.environ.get("PORTKEY_PROXY", "https://api.portkey.ai")
+api_key = os.environ.get(PORTKEY_API_KEY_ENV)
+base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
 config: Optional[Config] = None
 mode: Optional[Union[Modes, ModesLiteral]] = None
 __version__ = VERSION
