@@ -22,6 +22,7 @@ pip install portkey-ai
 *  Requests Tracing: Understand the journey of each request for optimization.
 *  Custom Tags: Segment and categorize requests for better insights.
 
+
 ## **🚀 Quick Start**
 
 ### **4️⃣ Steps to Integrate the SDK**
@@ -44,7 +45,7 @@ os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 
 ### 2️⃣: Construct your LLM, add Portkey features, provider features, and prompt
 
-**Portkey Features**
+**[Portkey Features](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L188)**
 
 | Feature             | Config Key              | Value(Type)                                      | Required    |
 |---------------------|-------------------------|--------------------------------------------------|-------------|
@@ -58,15 +59,26 @@ os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 | Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
 | Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
 
-**Provider Features** 
+**[Provider Features](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137)** 
 All of your LLM provider features work as they would in their own SDKs. For example, you can also set `top_p`, `top_k`, `temperature`, `max_tokens` etc. with Portkey's LLM constructor.
 
-**And lastly, you can also set your prompt as a `text string` or as `message array` as well.**
+**[Prompt Input](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L132)**
 
 Let's see it in action.
 ```
 from portkey import LLMOptions
-llm = LLMOptions(provider="openai", model="gpt-4", virtual_key="key_a", trace_id="portkey_sdk_test", temperature=1),
+llm = LLMOptions(
+  provider="openai", 
+  model="gpt-4", 
+  virtual_key="key_a", 
+  trace_id="portkey_sdk_test", 
+  temperature=1, 
+  messages=[
+    {
+      "role": "user", 
+      "content": "Who are you ?"}
+    ]
+)
 ```
 
 ### 3️⃣: Construct the Portkey Client
@@ -88,11 +100,7 @@ portkey.config = Config(mode="single",llms=[llm])
 
 ### 4️⃣: Let's Call the Portkey Client!
 
-The Portkey client can do the following calls: 
-| &nbsp;               | &nbsp;               | &nbsp;               |
-|----------------------|----------------------|----------------------|
-| `ChatCompletions`    | `Completions`        | `ChatCompletion`     |
-| `ChatCompletionChunk`| `TextCompletion`     | `TextCompletionChunk`|
+The Portkey client can do `ChatCompletions` and `Completions`.
 
 Since our LLM is GPT4, we will use ChatCompletions:
 
@@ -126,9 +134,7 @@ portkey.config = Config(mode="fallback",llms=[llm1,llm2])
 
 # And, that's it!
 
-response = pk.ChatCompletions.create(
-    messages=[{"role": "user", "content": "Who are you ?"}]
-)
+response = portkey.ChatCompletions.create()
 
 print(response.choices[0].message)
 ```
@@ -140,12 +146,12 @@ print(response.choices[0].message)
 | <img src="docs/images/openai.png" width=18 />| OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="docs/images/azure.png" width=18>| Azure OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="docs/images/anthropic.png" width=18>| Anthropic  | ✅ Supported  | `/complete` |
-| <img src="docs/images/cohere.png" width=18>| Cohere  | ✅ Supported  | `generate`, `embed` |
+| <img src="docs/images/cohere.png" width=18>| Cohere  | 🚧 Coming Soon  | `generate`, `embed` |
 
 
 ---
 
-#### [📝 Full Documentation](https://docs.portkey.ai/) | [🛠️ Integration Requests](https://github.com/Portkey-AI/Portkey/issues) | 
+#### [📝 Full Documentation](https://docs.portkey.ai/) | [🛠️ Integration Requests](https://github.com/Portkey-AI/portkey-python-sdk/issues) | 
 
 <a href="https://twitter.com/intent/follow?screen_name=portkeyai"><img src="https://img.shields.io/twitter/follow/portkeyai?style=social&logo=twitter" alt="follow on Twitter"></a>
 <a href="https://discord.gg/sDk9JaNfK8" target="_blank"><img src="https://img.shields.io/discord/1143393887742861333?logo=discord" alt="Discord"></a>
