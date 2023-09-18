@@ -1,113 +1,159 @@
-<img src="https://raw.githubusercontent.com/Portkey-AI/Portkey/main/docs/images/header.png" width=2000>
-
 <div align="center">
-<br />
-  <a href="https://discord.gg/sDk9JaNfK8" target="_blank">
-      <img src="https://img.shields.io/discord/1143393887742861333?logo=discord" alt="Discord">
-  </a>
-    <a href="https://github.com/Portkey-AI/portkey-python-sdk/blob/main/LICENSE" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=blue" alt="License">
-  </a> 
-  <a href="https://pypi.org/project/portkey/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=pypi&message=portkey&color=red" alt="PyPi">
-  </a> 
-    <br />
-    <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=📝 &message=docs&color=grey" alt="docs">
-  </a> 
-    <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=🦙 &message=llamaindex&color=grey" alt="llamaindex">
-  </a> 
-    <a href="https://docs.portkey.ai/" target="_blank">
-      <img src="https://img.shields.io/static/v1?label=🦜🔗 &message=langchain&color=grey" alt="langchain">
-  </a> 
-  <br />
-      <a href="https://docs.portkey.ai/" target="_blank">
-    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt=\"Open In Colab\"/>
-  </a> 
-    <a href="https://twitter.com/intent/follow?screen_name=portkeyai">
-        <img src="https://img.shields.io/twitter/follow/portkeyai?style=social&logo=twitter"
-            alt="follow on Twitter">
-    </a>
-</div>
+<img src="docs/images/header.png" height=150><br />
 
----
-
-#### **Portkey** streamlines API requests to 20+ LLMs. It provides a unified API signature for interacting with all LLMs alongwith powerful LLM Gateway features like load balancing, fallbacks, retries and more. 
+## Build reliable, secure, and production-ready AI apps easily.
 
 ```bash
 pip install portkey-ai
 ```
+</div>
 
-### 💡 Features
+## **💡 Features**
 
-|| Name | Description | Example |
-|---|---|---|---|
-| 🌐    | Interoperability       | Write once, run with any provider. Switch between __ models from __ providers seamlessly.               | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| 🔀    | Fallback Strategies    | Don't let failures stop you. If one provider fails, Portkey can automatically switch to another.          | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| 🔄    | Retry Strategies       | Temporary issues shouldn't mean manual re-runs. Portkey can automatically retry failed requests.         | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| ⚖️    | Load Balancing         | Distribute load effectively across multiple API keys or providers based on custom weights.              | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
-| 📝    | Unified API Signature  | If you've used OpenAI, you already know how to use Portkey with any other provider.                      | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://docs.portkey.ai/) |
+**🚪 AI Gateway:**
+*  Unified API Signature: If you've used OpenAI, you already know how to use Portkey with any other provider.
+*  Interoperability: Write once, run with any provider. Switch between _any model_ from _any provider_ seamlessly. 
+*  Automated Fallbacks & Retries: Ensure your application remains functional even if a primary service fails.
+*  Load Balancing: Efficiently distribute incoming requests among multiple models.
+*  Semantic Caching: Reduce costs and latency by intelligently caching results.
+
+**🔬 Observability:**
+*  Logging: Keep track of all requests for monitoring and debugging.
+*  Requests Tracing: Understand the journey of each request for optimization.
+*  Custom Tags: Segment and categorize requests for better insights.
 
 
+## **🚀 Quick Start**
 
-### 🤝 Supported Providers
+### **4️⃣ Steps to Integrate the SDK**
+
+1. Get your Portkey API key and your virtual key for AI providers.
+2. Construct your LLM, add Portkey features, provider features, and prompt.
+3. Construct the Portkey client and set your usage mode.
+4. Now call Portkey regularly like you would call your OpenAI constructor.
+
+Let's dive in! If you are an advanced user and want to directly jump to various full-fledged examples, [click here](https://github.com/Portkey-AI/portkey-python-sdk/tree/main/examples).
+
+### 1️⃣: Get your Portkey API Key and your Virtual Keys for AI providers
+
+**Portkey API Key:** Log into [Portkey here](https://app.portkey.ai/), then click on the profile icon on top left and “Copy API Key”.
+```py
+import os
+os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
+```
+**Virtual Keys:** Navigate to the "Virtual Keys" page on [Portkey](https://app.portkey.ai/) and hit the "Add Key" button. Choose your AI provider and assign a unique name to your key. Your virtual key is ready!
+
+### 2️⃣: Construct your LLM, add Portkey features, provider features, and prompt
+
+#### **[List of Portkey Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L188)**
+
+| Feature             | Config Key              | Value(Type)                                      | Required    |
+|---------------------|-------------------------|--------------------------------------------------|-------------|
+| Provider Name       | `provider`        | `string`                                         | ✅ Required  |
+| Model Name        | `model`        | `string`                                         | ✅ Required |
+| Virtual Key OR API Key        | `virtual_key` or `api_key`        | `string`                                         | ✅ Required (can be set externally) |
+| Cache Type          | `cache_status`          | `simple`, `semantic`                             | ❔ Optional |
+| Force Cache Refresh | `cache_force_refresh`   | `True`, `False` (Boolean)                                 | ❔ Optional |
+| Cache Age           | `cache_age`             | `integer` (in seconds)                           | ❔ Optional |
+| Trace ID            | `trace_id`              | `string`                                         | ❔ Optional |
+| Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
+| Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
+
+#### **[List of Provider Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137)** 
+
+All of your LLM provider features work as they would in their own SDKs. For example, you can also set `top_p`, `top_k`, `temperature`, `max_tokens` etc. with Portkey's LLM constructor.
+
+#### **[Prompt Input](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L132)**
+* Set `prompt` = `(str)` to set text input for models like Claude and GPT3
+* Set `messages` = `[array]` to set input for models like GPT3.5 & GPT4
+
+Let's see it in action.
+```
+from portkey import LLMOptions
+llm = LLMOptions(
+  provider="openai", 
+  model="gpt-4", 
+  virtual_key="key_a", 
+  trace_id="portkey_sdk_test", 
+  temperature=1, 
+  messages=[{
+    "role": "user", 
+    "content": "Who are you ?"
+  }]
+)
+```
+
+### 3️⃣: Construct the Portkey Client
+
+Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
+
+* `api_key`: You can set your Portkey API key here or with `os.ennviron` as done above.
+* `mode`: There are **3** modes - Single, Fallback, Loadbalance.
+  * **Single** - This is the standard mode. Use it if you do not want Fallback OR Loadbalance features.
+  * **Fallback** - Set this mode if you want to enable the Fallback feature.
+  * **Loadbalance** - Set this mode if you want to enable the Loadbalance feature. 
+* `llms`: This is an array where we pass our LLMs constructed using the LLMOptions constructor.
+
+```py
+import portkey
+from portkey import Config
+portkey.config = Config(mode="single",llms=[llm])
+```
+
+### 4️⃣: Let's Call the Portkey Client!
+
+The Portkey client can do `ChatCompletions` and `Completions`.
+
+Since our LLM is GPT4, we will use ChatCompletions:
+
+```py
+response = portkey.ChatCompletions.create(
+    messages=[{"role": "user", "content": "Who are you ?"}]
+)
+
+print(response.choices[0].message)
+```
+
+You have integrated Portkey's Python SDK in just 4 steps!
+
+### **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
+
+```py
+import os
+os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY" # Setting the Portkey API Key
+
+import portkey
+from portkey import Config, LLMOptions
+
+# Let's construct our LLMs.
+
+llm1 = LLMOptions(provider="openai", model="gpt-4", virtual_key="key_a"),
+llm2 = LLMOptions(provider="openai", model="gpt-3.5-turbo", virtual_key="key_a")
+
+# Now let's construct the Portkey client where we will set the fallback logic
+
+portkey.config = Config(mode="fallback",llms=[llm1,llm2])
+
+# And, that's it!
+
+response = portkey.ChatCompletions.create()
+
+print(response.choices[0].message)
+```
+
+## **🤝 Supported Providers**
 
 || Provider  | Support Status  | Supported Endpoints |
 |---|---|---|---|
 | <img src="docs/images/openai.png" width=18 />| OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="docs/images/azure.png" width=18>| Azure OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="docs/images/anthropic.png" width=18>| Anthropic  | ✅ Supported  | `/complete` |
-| <img src="docs/images/cohere.png" width=18>| Cohere  | ✅ Supported  | `generate`, `embed` |
-| <img src="docs/images/bard.png" width=18>| Google Bard  | 🚧 Coming Soon  |  |
-| <img src="docs/images/localai.png" width=18>| LocalAI  | 🚧 Coming Soon  |  |
+| <img src="docs/images/cohere.png" width=18>| Cohere  | 🚧 Coming Soon  | `generate`, `embed` |
+
 
 ---
 
-#### [📝 Full Documentation](https://github.com/Portkey-AI/portkey-python-sdk) | [🎯 Roadmap](https://github.com/Portkey-AI/Portkey/issues) | [🐞 Bug Reports](https://github.com/Portkey-AI/Portkey/issues) | [💡 Feature Requests](https://github.com/Portkey-AI/Portkey/issues)
+#### [📝 Full Documentation](https://docs.portkey.ai/) | [🛠️ Integration Requests](https://github.com/Portkey-AI/portkey-python-sdk/issues) | 
 
-#### 📞 Talk to the devs: [Rohit](https://twitter.com/jumbld) | [Ayush](https://twitter.com/ayushgarg_xyz)
-
-
-<br></br>
-### Changelog
-
-All notable changes to this project will be documented in this file. Dates are displayed in UTC.
-
-Generated by [`auto-changelog`](https://github.com/CookPete/auto-changelog).
-
-#### [v0.1.45](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.44...v0.1.45)
-
-> 12 September 2023
-
-- feat: Add support for azure models [`#9`](https://github.com/Portkey-AI/portkey-python-sdk/pull/9)
-- docs: Added examples for azure-openai fallback and loadbalance [`#8`](https://github.com/Portkey-AI/portkey-python-sdk/pull/8)
-- chore: Updating the documentation [`#7`](https://github.com/Portkey-AI/portkey-python-sdk/pull/7)
-- chore: Updating the documentation [`#6`](https://github.com/Portkey-AI/portkey-python-sdk/pull/6)
-- chore: Adding an example for ab-testing and loadbalance [`#5`](https://github.com/Portkey-AI/portkey-python-sdk/pull/5)
-
-#### v0.1.44
-
-> 11 September 2023
-
-- feat: added changie to generate changelogs [`#4`](https://github.com/Portkey-AI/portkey-python-sdk/pull/4)
-- feat: version upgrade - 0.1.44 [`#3`](https://github.com/Portkey-AI/portkey-python-sdk/pull/3)
-- feat: Workflow update [`cb80617`](https://github.com/Portkey-AI/portkey-python-sdk/commit/cb806173049d2a1f690935320e5ad4738910a452)
-- fea: Initial Commit [`2c3631a`](https://github.com/Portkey-AI/portkey-python-sdk/commit/2c3631ac65ff58158695e84881993460fd27cb82)
-- feat: adding the streaming capability into rubeus sdk [`f06e23b`](https://github.com/Portkey-AI/portkey-python-sdk/commit/f06e23bfa676995d578f64eff3401db917660742)
-
-<!-- auto-changelog-above -->
-
-We are excited to announce the **stable release** of the all-new **Portkey Python SDK**, version 0.1.44! This SDK makes it easier than ever to add production capabilities to your existing LLM systems with one line of change to your code.
-
-### Key Features and Enhancements of this release
-
-- **Stability and Reliability**: This release marks the stable version of Portkey Python SDK, thoroughly tested to ensure reliable performance in your projects.
-
-- **Ease of Use**: The SDK follows OpenAI SDK footprint, and with one line of change to your existing code, you can add Portkey's production features to your app. 
-
-- **Community Support**: [Join our growing community](https://discord.gg/QHJ3RgcvKT) of practitioners putting LLMs in production. Share ideas, resolve doubts, and collaborate on projects.
-
-Happy coding!
-
-- The Portkey Team
+<a href="https://twitter.com/intent/follow?screen_name=portkeyai"><img src="https://img.shields.io/twitter/follow/portkeyai?style=social&logo=twitter" alt="follow on Twitter"></a>
+<a href="https://discord.gg/sDk9JaNfK8" target="_blank"><img src="https://img.shields.io/discord/1143393887742861333?logo=discord" alt="Discord"></a>
