@@ -45,7 +45,7 @@ os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 
 ### 2️⃣: Construct your LLM, add Portkey features, provider features, and prompt
 
-**[Portkey Features](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L188)**
+#### **[List of Portkey Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L188)**
 
 | Feature             | Config Key              | Value(Type)                                      | Required    |
 |---------------------|-------------------------|--------------------------------------------------|-------------|
@@ -59,10 +59,13 @@ os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 | Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
 | Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
 
-**[Provider Features](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137)** 
+#### **[List of Provider Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137)** 
+
 All of your LLM provider features work as they would in their own SDKs. For example, you can also set `top_p`, `top_k`, `temperature`, `max_tokens` etc. with Portkey's LLM constructor.
 
-**[Prompt Input](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L132)**
+#### **[Prompt Input](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L132)**
+* Set `prompt` = `(str)` to set text input for models like Claude and GPT3
+* Set `messages` = `[array]` to set input for models like GPT3.5 & GPT4
 
 Let's see it in action.
 ```
@@ -73,11 +76,10 @@ llm = LLMOptions(
   virtual_key="key_a", 
   trace_id="portkey_sdk_test", 
   temperature=1, 
-  messages=[
-    {
-      "role": "user", 
-      "content": "Who are you ?"}
-    ]
+  messages=[{
+    "role": "user", 
+    "content": "Who are you ?"
+  }]
 )
 ```
 
@@ -90,7 +92,7 @@ Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
   * **Single** - This is the standard mode. Use it if you do not want Fallback OR Loadbalance features.
   * **Fallback** - Set this mode if you want to enable the Fallback feature.
   * **Loadbalance** - Set this mode if you want to enable the Loadbalance feature. 
-* `llms`: This is an array where we pass our LLMs constructred using the LLMOptions constructor.
+* `llms`: This is an array where we pass our LLMs constructed using the LLMOptions constructor.
 
 ```py
 import portkey
@@ -114,7 +116,7 @@ print(response.choices[0].message)
 
 You have integrated Portkey's Python SDK in just 4 steps!
 
-### **🔁 Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
+### **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
 
 ```py
 import os
