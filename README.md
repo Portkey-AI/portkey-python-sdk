@@ -34,6 +34,8 @@ pip install portkey-ai
 
 Let's dive in! If you are an advanced user and want to directly jump to various full-fledged examples, [click here](https://github.com/Portkey-AI/portkey-python-sdk/tree/main/examples).
 
+---
+
 ### 1️⃣: Get your Portkey API Key and your Virtual Keys for AI providers
 
 **Portkey API Key:** Log into [Portkey here](https://app.portkey.ai/), then click on the profile icon on top left and “Copy API Key”.
@@ -42,6 +44,8 @@ import os
 os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 ```
 **Virtual Keys:** Navigate to the "Virtual Keys" page on [Portkey](https://app.portkey.ai/) and hit the "Add Key" button. Choose your AI provider and assign a unique name to your key. Your virtual key is ready!
+
+---
 
 ### 2️⃣: Construct your LLM, add Portkey features, provider features, and prompt
 #### **Portkey Features**:
@@ -83,6 +87,8 @@ llm = LLMOptions(
 )
 ```
 
+---
+
 ### 3️⃣: Construct the Portkey Client
 
 Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
@@ -101,6 +107,8 @@ from portkey import Config
 portkey.config = Config(mode="single",llms=[llm])
 ```
 
+---
+
 ### 4️⃣: Let's Call the Portkey Client!
 
 The Portkey client can do `ChatCompletions` and `Completions`.
@@ -114,6 +122,8 @@ print(response.choices[0].message)
 ```
 
 You have integrated Portkey's Python SDK in just 4 steps!
+
+---
 
 ## **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
 
