@@ -10,7 +10,7 @@ from .utils import (
     ChatCompletion,
     TextCompletion,
     TextCompletionChunk,
-    ApiType,
+    GenericResponse,
 )
 
 from .streaming import Stream
@@ -49,7 +49,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Stream[TextCompletionChunk]:
         ...
 
@@ -65,7 +65,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> TextCompletion:
         ...
 
@@ -81,7 +81,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
         ...
 
@@ -96,7 +96,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
         if config is None:
             config = retrieve_config()
@@ -107,7 +107,7 @@ class Completions(APIResource):
             max_tokens=max_tokens,
             top_k=top_k,
             top_p=top_p,
-            **kwargs
+            **kwargs,
         )
         if config.mode == Modes.SINGLE.value:
             return cls(_client)._post(
@@ -118,7 +118,6 @@ class Completions(APIResource):
                 cast_to=TextCompletion,
                 stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
-                _type=ApiType.COMPLETIONS,
             )
         if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
@@ -129,7 +128,6 @@ class Completions(APIResource):
                 cast_to=TextCompletion,
                 stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
-                _type=ApiType.COMPLETIONS,
             )
         if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
@@ -140,7 +138,6 @@ class Completions(APIResource):
                 cast_to=TextCompletion,
                 stream_cls=Stream[TextCompletionChunk],
                 stream=stream,
-                _type=ApiType.COMPLETIONS,
             )
         raise NotImplementedError("Mode not implemented.")
 
@@ -158,7 +155,7 @@ class ChatCompletions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Stream[ChatCompletionChunk]:
         ...
 
@@ -174,7 +171,7 @@ class ChatCompletions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> ChatCompletion:
         ...
 
@@ -190,7 +187,7 @@ class ChatCompletions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
         ...
 
@@ -205,7 +202,7 @@ class ChatCompletions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
         if config is None:
             config = retrieve_config()
@@ -216,7 +213,7 @@ class ChatCompletions(APIResource):
             max_tokens=max_tokens,
             top_k=top_k,
             top_p=top_p,
-            **kwargs
+            **kwargs,
         )
         if config.mode == Modes.SINGLE.value:
             return cls(_client)._post(
@@ -227,7 +224,6 @@ class ChatCompletions(APIResource):
                 cast_to=ChatCompletion,
                 stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
-                _type=ApiType.CHAT_COMPLETION,
             )
         if config.mode == Modes.FALLBACK.value:
             return cls(_client)._post(
@@ -238,7 +234,6 @@ class ChatCompletions(APIResource):
                 cast_to=ChatCompletion,
                 stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
-                _type=ApiType.CHAT_COMPLETION,
             )
         if config.mode == Modes.AB_TEST.value:
             return cls(_client)._post(
@@ -249,6 +244,24 @@ class ChatCompletions(APIResource):
                 cast_to=ChatCompletion,
                 stream_cls=Stream[ChatCompletionChunk],
                 stream=stream,
-                _type=ApiType.CHAT_COMPLETION,
             )
         raise NotImplementedError("Mode not implemented.")
+
+
+class Generations(APIResource):
+    @classmethod
+    def create(
+        cls, *, prompt_id: str, config: Optional[Config] = None, **kwargs
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        if config is None:
+            config = retrieve_config()
+        _client = APIClient(api_key=config.api_key, base_url=config.base_url)
+        return cls(_client)._post(
+            f"/v1/prompts/{prompt_id}/generate",
+            body=config.llms,
+            mode=None,
+            params=None,
+            cast_to=GenericResponse,
+            stream_cls=Stream[GenericResponse],
+            stream=False,
+        )

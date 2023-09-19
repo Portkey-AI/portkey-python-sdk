@@ -48,7 +48,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion]",
+    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion, GenericResponse]",
 )
 
 
@@ -98,6 +98,7 @@ ModesLiteral = Literal["fallback", "ab_test", "single", "proxy"]
 class PortkeyApiPaths(Enum):
     CHAT_COMPLETION = "/v1/chatComplete"
     COMPLETION = "/v1/complete"
+    GENERATION = "/v1/prompts/{prompt_id}/generate"
 
 
 class Options(BaseModel):
@@ -400,6 +401,11 @@ class TextCompletionChunk(BaseModel):
         return getattr(self, key, None) or default
 
 
+class GenericResponse(BaseModel, extra="allow"):
+    success: Optional[bool]
+    data: Optional[Mapping[str, Any]]
+
+
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str:
     env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
     if provider is None:
@@ -452,7 +458,7 @@ class Config(BaseModel):
     api_key: Optional[str] = None
     base_url: Optional[str] = None
     mode: Optional[Union[Modes, ModesLiteral]] = None
-    llms: Union[List[LLMOptions], LLMOptions]
+    llms: Optional[Union[List[LLMOptions], LLMOptions]] = None
 
     @validator("mode", always=True)
     @classmethod
