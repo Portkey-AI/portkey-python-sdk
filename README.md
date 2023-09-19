@@ -44,42 +44,42 @@ os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 **Virtual Keys:** Navigate to the "Virtual Keys" page on [Portkey](https://app.portkey.ai/) and hit the "Add Key" button. Choose your AI provider and assign a unique name to your key. Your virtual key is ready!
 
 ### 2️⃣: Construct your LLM, add Portkey features, provider features, and prompt
+#### **Portkey Features**:
+You can find a comprehensive [list of Portkey features here](#📔-list-of-portkey-features). This includes settings for caching, retries, metadata, and more.
 
-#### **[List of Portkey Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L188)**
+#### **Provider Features**:
+Portkey is designed to be flexible. All the features you're familiar with from your LLM provider, like `top_p`, `top_k`, and `temperature`, can be used seamlessly. Check out the [complete list of provider features here](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137).
 
-| Feature             | Config Key              | Value(Type)                                      | Required    |
-|---------------------|-------------------------|--------------------------------------------------|-------------|
-| Provider Name       | `provider`        | `string`                                         | ✅ Required  |
-| Model Name        | `model`        | `string`                                         | ✅ Required |
-| Virtual Key OR API Key        | `virtual_key` or `api_key`        | `string`                                         | ✅ Required (can be set externally) |
-| Cache Type          | `cache_status`          | `simple`, `semantic`                             | ❔ Optional |
-| Force Cache Refresh | `cache_force_refresh`   | `True`, `False` (Boolean)                                 | ❔ Optional |
-| Cache Age           | `cache_age`             | `integer` (in seconds)                           | ❔ Optional |
-| Trace ID            | `trace_id`              | `string`                                         | ❔ Optional |
-| Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
-| Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
+#### **Setting the Prompt Input**:
+You can set the input in two ways:
+- For models like Claude and GPT3, use `prompt` = `(str)`
+- For models like GPT3.5 & GPT4, use `messages` = `[array]`
 
-#### **[List of Provider Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137)** 
+Here's how you can combine everything:
 
-All of your LLM provider features work as they would in their own SDKs. For example, you can also set `top_p`, `top_k`, `temperature`, `max_tokens` etc. with Portkey's LLM constructor.
-
-#### **[Prompt Input](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L132)**
-* Set `prompt` = `(str)` to set text input for models like Claude and GPT3
-* Set `messages` = `[array]` to set input for models like GPT3.5 & GPT4
-
-Let's see it in action.
-```
+```python
 from portkey import LLMOptions
+
+# Portkey Config
+provider = "openai"
+virtual_key = "key_a"
+trace_id = "portkey_sdk_test"
+
+# Model Settings
+model = "gpt-4"
+temperature = 1
+
+# User Prompt
+messages = [{"role": "user", "content": "Who are you?"}]
+
+# Construct LLM
 llm = LLMOptions(
-  provider="openai", 
-  model="gpt-4", 
-  virtual_key="key_a", 
-  trace_id="portkey_sdk_test", 
-  temperature=1, 
-  messages=[{
-    "role": "user", 
-    "content": "Who are you ?"
-  }]
+    provider=provider,
+    virtual_key=virtual_key,
+    trace_id=trace_id,
+    model=model,
+    temperature=temperature,
+    messages=messages
 )
 ```
 
@@ -97,6 +97,7 @@ Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
 ```py
 import portkey
 from portkey import Config
+
 portkey.config = Config(mode="single",llms=[llm])
 ```
 
@@ -107,16 +108,14 @@ The Portkey client can do `ChatCompletions` and `Completions`.
 Since our LLM is GPT4, we will use ChatCompletions:
 
 ```py
-response = portkey.ChatCompletions.create(
-    messages=[{"role": "user", "content": "Who are you ?"}]
-)
+response = portkey.ChatCompletions.create()
 
 print(response.choices[0].message)
 ```
 
 You have integrated Portkey's Python SDK in just 4 steps!
 
-### **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
+## **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
 
 ```py
 import os
@@ -140,6 +139,20 @@ response = portkey.ChatCompletions.create()
 
 print(response.choices[0].message)
 ```
+
+## **📔 List of Portkey Features**
+
+| Feature             | Config Key              | Value(Type)                                      | Required    |
+|---------------------|-------------------------|--------------------------------------------------|-------------|
+| Provider Name       | `provider`        | `string`                                         | ✅ Required  |
+| Model Name        | `model`        | `string`                                         | ✅ Required |
+| Virtual Key OR API Key        | `virtual_key` or `api_key`        | `string`                                         | ✅ Required (can be set externally) |
+| Cache Type          | `cache_status`          | `simple`, `semantic`                             | ❔ Optional |
+| Force Cache Refresh | `cache_force_refresh`   | `True`, `False` (Boolean)                                 | ❔ Optional |
+| Cache Age           | `cache_age`             | `integer` (in seconds)                           | ❔ Optional |
+| Trace ID            | `trace_id`              | `string`                                         | ❔ Optional |
+| Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
+| Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
 
 ## **🤝 Supported Providers**
 
