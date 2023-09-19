@@ -1,4 +1,4 @@
-from typing import Optional, Union, overload, Literal, List
+from typing import Optional, Union, overload, Literal, List, Mapping, Any
 from portkey.api_resources.base_client import APIClient
 from .utils import (
     Modes,
@@ -251,14 +251,19 @@ class ChatCompletions(APIResource):
 class Generations(APIResource):
     @classmethod
     def create(
-        cls, *, prompt_id: str, config: Optional[Config] = None, **kwargs
+        cls,
+        *,
+        prompt_id: str,
+        config: Optional[Config] = None,
+        variables: Optional[Mapping[str, Any]] = None,
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
         if config is None:
             config = retrieve_config()
         _client = APIClient(api_key=config.api_key, base_url=config.base_url)
+        body = {"variables": variables}
         return cls(_client)._post(
             f"/v1/prompts/{prompt_id}/generate",
-            body=config.llms,
+            body=body,
             mode=None,
             params=None,
             cast_to=GenericResponse,
