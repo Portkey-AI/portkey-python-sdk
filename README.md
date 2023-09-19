@@ -68,7 +68,7 @@ All of your LLM provider features work as they would in their own SDKs. For exam
 * Set `messages` = `[array]` to set input for models like GPT3.5 & GPT4
 
 Let's see it in action.
-```
+```python
 from portkey import LLMOptions
 llm = LLMOptions(
   provider="openai", 
