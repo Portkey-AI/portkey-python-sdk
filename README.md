@@ -25,8 +25,7 @@ pip install portkey-ai
 
 ## **🚀 Quick Start**
 
-### **4️⃣ Steps to Integrate the SDK**
-
+**4️ Steps to Integrate the SDK**
 1. Get your Portkey API key and your virtual key for AI providers.
 2. Construct your LLM, add Portkey features, provider features, and prompt.
 3. Construct the Portkey client and set your usage mode.
@@ -34,56 +33,50 @@ pip install portkey-ai
 
 Let's dive in! If you are an advanced user and want to directly jump to various full-fledged examples, [click here](https://github.com/Portkey-AI/portkey-python-sdk/tree/main/examples).
 
-### 1️⃣: Get your Portkey API Key and your Virtual Keys for AI providers
+---
+
+### **Step 1️⃣ : Get your Portkey API Key and your Virtual Keys for AI providers**
 
 **Portkey API Key:** Log into [Portkey here](https://app.portkey.ai/), then click on the profile icon on top left and “Copy API Key”.
-```py
+```python
 import os
 os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
 ```
 **Virtual Keys:** Navigate to the "Virtual Keys" page on [Portkey](https://app.portkey.ai/) and hit the "Add Key" button. Choose your AI provider and assign a unique name to your key. Your virtual key is ready!
 
-### 2️⃣: Construct your LLM, add Portkey features, provider features, and prompt
+### **Step 2️⃣ : Construct your LLM, add Portkey features, provider features, and prompt**
 
-#### **[List of Portkey Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L188)**
+**Portkey Features**:
+You can find a comprehensive [list of Portkey features here](#📔-list-of-portkey-features). This includes settings for caching, retries, metadata, and more.
 
-| Feature             | Config Key              | Value(Type)                                      | Required    |
-|---------------------|-------------------------|--------------------------------------------------|-------------|
-| Provider Name       | `provider`        | `string`                                         | ✅ Required  |
-| Model Name        | `model`        | `string`                                         | ✅ Required |
-| Virtual Key OR API Key        | `virtual_key` or `api_key`        | `string`                                         | ✅ Required (can be set externally) |
-| Cache Type          | `cache_status`          | `simple`, `semantic`                             | ❔ Optional |
-| Force Cache Refresh | `cache_force_refresh`   | `True`, `False` (Boolean)                                 | ❔ Optional |
-| Cache Age           | `cache_age`             | `integer` (in seconds)                           | ❔ Optional |
-| Trace ID            | `trace_id`              | `string`                                         | ❔ Optional |
-| Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
-| Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
+**Provider Features**:
+Portkey is designed to be flexible. All the features you're familiar with from your LLM provider, like `top_p`, `top_k`, and `temperature`, can be used seamlessly. Check out the [complete list of provider features here](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137).
 
-#### **[List of Provider Features:](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137)** 
+**Setting the Prompt Input**:
+You can set the input in two ways. For models like Claude and GPT3, use `prompt` = `(str)`, and for models like GPT3.5 & GPT4, use `messages` = `[array]`.
 
-All of your LLM provider features work as they would in their own SDKs. For example, you can also set `top_p`, `top_k`, `temperature`, `max_tokens` etc. with Portkey's LLM constructor.
+Here's how you can combine everything:
 
-#### **[Prompt Input](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L132)**
-* Set `prompt` = `(str)` to set text input for models like Claude and GPT3
-* Set `messages` = `[array]` to set input for models like GPT3.5 & GPT4
-
-Let's see it in action.
-```
+```python
 from portkey import LLMOptions
-llm = LLMOptions(
-  provider="openai", 
-  model="gpt-4", 
-  virtual_key="key_a", 
-  trace_id="portkey_sdk_test", 
-  temperature=1, 
-  messages=[{
-    "role": "user", 
-    "content": "Who are you ?"
-  }]
-)
+
+# Portkey Config
+provider = "openai"
+virtual_key = "key_a"
+trace_id = "portkey_sdk_test"
+
+# Model Settings
+model = "gpt-4"
+temperature = 1
+
+# User Prompt
+messages = [{"role": "user", "content": "Who are you?"}]
+
+# Construct LLM
+llm = LLMOptions(provider=provider, virtual_key=virtual_key, trace_id=trace_id, model=model, temperature=temperature, messages=messages)
 ```
 
-### 3️⃣: Construct the Portkey Client
+### **Steo 3️⃣ : Construct the Portkey Client**
 
 Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
 
@@ -97,26 +90,27 @@ Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
 ```py
 import portkey
 from portkey import Config
+
 portkey.config = Config(mode="single",llms=[llm])
 ```
 
-### 4️⃣: Let's Call the Portkey Client!
+### **Step 4️⃣ : Let's Call the Portkey Client!**
 
 The Portkey client can do `ChatCompletions` and `Completions`.
 
 Since our LLM is GPT4, we will use ChatCompletions:
 
 ```py
-response = portkey.ChatCompletions.create(
-    messages=[{"role": "user", "content": "Who are you ?"}]
-)
+response = portkey.ChatCompletions.create()
 
 print(response.choices[0].message)
 ```
 
 You have integrated Portkey's Python SDK in just 4 steps!
 
-### **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
+---
+
+## **🔁 Demo: Implementing GPT4 to GPT3.5 Fallback Using the Portkey SDK**
 
 ```py
 import os
@@ -126,20 +120,30 @@ import portkey
 from portkey import Config, LLMOptions
 
 # Let's construct our LLMs.
-
 llm1 = LLMOptions(provider="openai", model="gpt-4", virtual_key="key_a"),
 llm2 = LLMOptions(provider="openai", model="gpt-3.5-turbo", virtual_key="key_a")
 
 # Now let's construct the Portkey client where we will set the fallback logic
-
 portkey.config = Config(mode="fallback",llms=[llm1,llm2])
 
 # And, that's it!
-
 response = portkey.ChatCompletions.create()
-
 print(response.choices[0].message)
 ```
+
+## **📔 Full List of Portkey Config**
+
+| Feature             | Config Key              | Value(Type)                                      | Required    |
+|---------------------|-------------------------|--------------------------------------------------|-------------|
+| Provider Name       | `provider`        | `string`                                         | ✅ Required  |
+| Model Name        | `model`        | `string`                                         | ✅ Required |
+| Virtual Key OR API Key        | `virtual_key` or `api_key`        | `string`                                         | ✅ Required (can be set externally) |
+| Cache Type          | `cache_status`          | `simple`, `semantic`                             | ❔ Optional |
+| Force Cache Refresh | `cache_force_refresh`   | `True`, `False` (Boolean)                                 | ❔ Optional |
+| Cache Age           | `cache_age`             | `integer` (in seconds)                           | ❔ Optional |
+| Trace ID            | `trace_id`              | `string`                                         | ❔ Optional |
+| Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
+| Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
 
 ## **🤝 Supported Providers**
 
