@@ -1,5 +1,5 @@
 """"""
-from .apis import ChatCompletions, Completions
+from .apis import ChatCompletions, Completions, Generations
 from .utils import (
     Modes,
     ModesLiteral,
@@ -41,4 +41,5 @@ __all__ = [
     "ChatCompletionChunk",
     "TextCompletion",
     "TextCompletionChunk",
+    "Generations",
 ]

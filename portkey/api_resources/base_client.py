@@ -13,6 +13,7 @@ from typing import (
     Type,
     overload,
     Literal,
+    get_args,
 )
 import httpx
 import platform
@@ -26,7 +27,7 @@ from .utils import (
     ProviderOptions,
     Params,
     Constructs,
-    ApiType,
+    PortkeyApiPaths,
 )
 from .exceptions import (
     APIStatusError,
@@ -91,7 +92,6 @@ class APIClient:
         stream: Literal[True],
         stream_cls: type[StreamT],
         params: Params,
-        _type: ApiType,
     ) -> StreamT:
         ...
 
@@ -106,7 +106,6 @@ class APIClient:
         stream: Literal[False],
         stream_cls: type[StreamT],
         params: Params,
-        _type: ApiType,
     ) -> ResponseT:
         ...
 
@@ -121,7 +120,6 @@ class APIClient:
         stream: bool,
         stream_cls: type[StreamT],
         params: Params,
-        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -129,26 +127,60 @@ class APIClient:
         self,
         path: str,
         *,
-        body: List[Body],
+        body: Union[List[Body], Any],
         mode: str,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
         params: Params,
-        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
-        body = cast(List[Body], body)
-        opts = self._construct(
-            method="post", url=path, body=body, mode=mode, stream=stream, params=params
-        )
+        if path in [PortkeyApiPaths.CHAT_COMPLETION, PortkeyApiPaths.COMPLETION]:
+            body = cast(List[Body], body)
+            opts = self._construct(
+                method="post",
+                url=path,
+                body=body,
+                mode=mode,
+                stream=stream,
+                params=params,
+            )
+        elif path.endswith("/generate"):
+            opts = self._construct_generate_options(
+                method="post",
+                url=path,
+                body=body,
+                mode=mode,
+                stream=stream,
+                params=params,
+            )
+        else:
+            raise NotImplementedError(f"This API path `{path}` is not implemented.")
+
         res = self._request(
             options=opts,
             stream=stream,
             cast_to=cast_to,
             stream_cls=stream_cls,
-            _type=_type,
         )
         return res
+
+    def _construct_generate_options(
+        self,
+        *,
+        method: str,
+        url: str,
+        body: Any,
+        mode: str,
+        stream: bool,
+        params: Params,
+    ) -> Options:
+        opts = Options.construct()
+        opts.method = method
+        opts.url = url
+        json_body = body
+        opts.json_body = remove_empty_values(json_body)
+        opts.headers = None
+        return opts
 
     def _construct(
         self,
@@ -252,7 +284,6 @@ class APIClient:
         stream: Literal[False],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        _type: ApiType,
     ) -> ResponseT:
         ...
 
@@ -264,7 +295,6 @@ class APIClient:
         stream: Literal[True],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        _type: ApiType,
     ) -> StreamT:
         ...
 
@@ -276,7 +306,6 @@ class APIClient:
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -287,7 +316,6 @@ class APIClient:
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-        _type: ApiType,
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
         try:
@@ -302,17 +330,27 @@ class APIClient:
             raise APITimeoutError(request=request) from err
         except Exception as err:
             raise APIConnectionError(request=request) from err
-        if stream:
-            # stream_cls = stream_cls
+        if stream or res.headers["content-type"] == "text/event-stream":
             if stream_cls is None:
                 raise MissingStreamClassError()
-            stream_response = stream_cls(response=res, _type=_type)
+            stream_response = stream_cls(
+                response=res, cast_to=self._extract_stream_chunk_type(stream_cls)
+            )
             return stream_response
+
         response = cast(
             ResponseT,
             cast_to(**res.json()),
         )
         return response
+
+    def _extract_stream_chunk_type(self, stream_cls: Type) -> type:
+        args = get_args(stream_cls)
+        if not args:
+            raise TypeError(
+                f"Expected stream_cls to have been given a generic type argument, e.g. Stream[Foo] but received {stream_cls}",
+            )
+        return cast(type, args[0])
 
     def _make_status_error_from_response(
         self,
