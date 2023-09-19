@@ -1,6 +1,9 @@
 ### Changelog
 #### Unreleased
 
+#### [v0.1.50](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.49...v0.1.50)
+> 19 September 2023
+
 - feat: introducing a "Generate" API for prompt-based content generation with saved prompts
 
 <!-- auto-changelog-below -->
