@@ -95,7 +95,7 @@ class ApiType(str, Enum, metaclass=MetaEnum):
 ModesLiteral = Literal["fallback", "ab_test", "single", "proxy"]
 
 
-class PortkeyApiPaths(Enum):
+class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     CHAT_COMPLETION = "/v1/chatComplete"
     COMPLETION = "/v1/complete"
     GENERATION = "/v1/prompts/{prompt_id}/generate"
