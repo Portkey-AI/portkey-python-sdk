@@ -1,5 +1,6 @@
 ### Changelog
 #### Unreleased
+- feat: added openschema for all integrations + anyscale integration
 
 #### [v0.1.50](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.49...v0.1.50)
 > 19 September 2023
