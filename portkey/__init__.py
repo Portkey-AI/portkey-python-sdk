@@ -19,6 +19,7 @@ from portkey.api_resources import (
     ChatCompletionChunk,
     TextCompletion,
     TextCompletionChunk,
+    Generations,
 )
 from portkey.version import VERSION
 from portkey.api_resources.global_constants import (
@@ -50,6 +51,7 @@ __all__ = [
     "ChatCompletionChunk",
     "TextCompletion",
     "TextCompletionChunk",
+    "Generations",
     "Config",
     "api_key",
     "base_url",

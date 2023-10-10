@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Iterator, Generic, cast, Union
+from typing import Any, Iterator, Generic, cast, Union, Type
 
 import httpx
 
@@ -140,12 +140,8 @@ class Stream(Generic[ResponseT]):
 
     response: httpx.Response
 
-    def __init__(self, *, response: httpx.Response, _type: str) -> None:
-        self.response_cls = (
-            ChatCompletionChunk
-            if _type == ApiType.CHAT_COMPLETION
-            else TextCompletionChunk
-        )
+    def __init__(self, *, response: httpx.Response, cast_to: Type[ResponseT]) -> None:
+        self._cast_to = cast_to
         self.response = response
         self._decoder = SSEDecoder()
         self._iterator = self.__stream__()
@@ -164,7 +160,7 @@ class Stream(Generic[ResponseT]):
         response = self.response
         for sse in self._iter_events():
             if sse.event is None:
-                yield cast(ResponseT, self.response_cls(**sse.json()))
+                yield cast(ResponseT, self._cast_to(**sse.json()))
 
             if sse.event == "ping":
                 continue

@@ -48,7 +48,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion]",
+    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion, GenericResponse]",
 )
 
 
@@ -95,9 +95,10 @@ class ApiType(str, Enum, metaclass=MetaEnum):
 ModesLiteral = Literal["fallback", "ab_test", "single", "proxy"]
 
 
-class PortkeyApiPaths(Enum):
+class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     CHAT_COMPLETION = "/v1/chatComplete"
     COMPLETION = "/v1/complete"
+    GENERATION = "/v1/prompts/{prompt_id}/generate"
 
 
 class Options(BaseModel):
@@ -186,7 +187,7 @@ def remove_empty_values(
 
 
 class Constructs(BaseModel):
-    provider: Union[ProviderTypes, ProviderTypesLiteral]
+    provider: Union[ProviderTypes, ProviderTypesLiteral, str]
     api_key: Optional[str] = None
     virtual_key: Optional[str] = None
     cache: Optional[bool] = None
@@ -400,7 +401,12 @@ class TextCompletionChunk(BaseModel):
         return getattr(self, key, None) or default
 
 
-def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral]) -> str:
+class GenericResponse(BaseModel, extra="allow"):
+    success: Optional[bool]
+    data: Optional[Mapping[str, Any]]
+
+
+def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
     env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
     if provider is None:
         return ""
@@ -451,8 +457,8 @@ def make_status_error(
 class Config(BaseModel):
     api_key: Optional[str] = None
     base_url: Optional[str] = None
-    mode: Optional[Union[Modes, ModesLiteral]] = None
-    llms: Union[List[LLMOptions], LLMOptions]
+    mode: Optional[Union[Modes, ModesLiteral, str]] = None
+    llms: Optional[Union[List[LLMOptions], LLMOptions]] = None
 
     @validator("mode", always=True)
     @classmethod
@@ -460,8 +466,6 @@ class Config(BaseModel):
         if mode is None:
             # You can access other fields' values via the 'values' dictionary
             mode = retrieve_mode()
-        if mode not in Modes:
-            raise ValueError(INVALID_PORTKEY_MODE.format(mode))
 
         return mode
 
@@ -498,7 +502,7 @@ def retrieve_config() -> Config:
     raise ValueError(MISSING_CONFIG_MESSAGE)
 
 
-def retrieve_mode() -> Union[Modes, ModesLiteral]:
+def retrieve_mode() -> Union[Modes, ModesLiteral, str]:
     if portkey.mode:
         return portkey.mode
     raise ValueError(MISSING_MODE_MESSAGE)

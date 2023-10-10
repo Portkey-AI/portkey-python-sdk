@@ -53,7 +53,8 @@ You can find a comprehensive [list of Portkey features here](#📔-list-of-portk
 Portkey is designed to be flexible. All the features you're familiar with from your LLM provider, like `top_p`, `top_k`, and `temperature`, can be used seamlessly. Check out the [complete list of provider features here](https://github.com/Portkey-AI/portkey-python-sdk/blob/af0814ebf4f1961b5dfed438918fe68b26ef5f1e/portkey/api_resources/utils.py#L137).
 
 **Setting the Prompt Input**:
-You can set the input in two ways. For models like Claude and GPT3, use `prompt` = `(str)`, and for models like GPT3.5 & GPT4, use `messages` = `[array]`.
+This param lets you override any prompt that is passed during the completion call - set a model-specific prompt here to optimise the model performance. You can set the input in two ways. For models like Claude and GPT3, use `prompt` = `(str)`, and for models like GPT3.5 & GPT4, use `messages` = `[array]`.
+
 
 Here's how you can combine everything:
 
@@ -73,7 +74,7 @@ temperature = 1
 messages = [{"role": "user", "content": "Who are you?"}]
 
 # Construct LLM
-llm = LLMOptions(provider=provider, virtual_key=virtual_key, trace_id=trace_id, model=model, temperature=temperature, messages=messages)
+llm = LLMOptions(provider=provider, virtual_key=virtual_key, trace_id=trace_id, model=model, temperature=temperature)
 ```
 
 ### **Steo 3️⃣ : Construct the Portkey Client**
@@ -101,8 +102,12 @@ The Portkey client can do `ChatCompletions` and `Completions`.
 Since our LLM is GPT4, we will use ChatCompletions:
 
 ```py
-response = portkey.ChatCompletions.create()
-
+response = portkey.ChatCompletions.create(
+    messages=[{
+      "role": "user",
+      "content": "Who are you ?"
+    }]
+)
 print(response.choices[0].message)
 ```
 
