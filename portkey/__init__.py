@@ -30,7 +30,7 @@ from portkey.api_resources.global_constants import (
 
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
 base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
-config: Optional[Config] = None
+config: Optional[Union[Config, str]] = None
 mode: Optional[Union[Modes, ModesLiteral]] = None
 __version__ = VERSION
 __all__ = [

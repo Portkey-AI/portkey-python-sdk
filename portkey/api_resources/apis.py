@@ -3,6 +3,7 @@ from portkey.api_resources.base_client import APIClient
 from .utils import (
     Modes,
     Config,
+    ConfigSlug,
     retrieve_config,
     Params,
     Message,
@@ -43,7 +44,7 @@ class Completions(APIResource):
         cls,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: Literal[True],
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -59,7 +60,7 @@ class Completions(APIResource):
         cls,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: Literal[False] = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -75,7 +76,7 @@ class Completions(APIResource):
         cls,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -90,7 +91,7 @@ class Completions(APIResource):
         cls,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -100,7 +101,6 @@ class Completions(APIResource):
     ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
         if config is None:
             config = retrieve_config()
-        _client = APIClient(api_key=config.api_key, base_url=config.base_url)
         params = Params(
             prompt=prompt,
             temperature=temperature,
@@ -109,6 +109,24 @@ class Completions(APIResource):
             top_p=top_p,
             **kwargs,
         )
+        _client = (
+            APIClient()
+            if isinstance(config, str)
+            else APIClient(api_key=config.api_key, base_url=config.base_url)
+        )
+
+        if isinstance(config, str):
+            body = ConfigSlug(config=config)
+            return cls(_client)._post(
+                "/v1/complete",
+                body=body,
+                params=params,
+                cast_to=ChatCompletion,
+                stream_cls=Stream[TextCompletionChunk],
+                stream=stream,
+                mode="",
+            )
+
         if config.mode == Modes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/complete",
@@ -149,7 +167,7 @@ class ChatCompletions(APIResource):
         cls,
         *,
         messages: Optional[List[Message]] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: Literal[True],
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -165,7 +183,7 @@ class ChatCompletions(APIResource):
         cls,
         *,
         messages: Optional[List[Message]] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: Literal[False] = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -181,7 +199,7 @@ class ChatCompletions(APIResource):
         cls,
         *,
         messages: Optional[List[Message]] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -196,7 +214,7 @@ class ChatCompletions(APIResource):
         cls,
         *,
         messages: Optional[List[Message]] = None,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -206,7 +224,6 @@ class ChatCompletions(APIResource):
     ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
         if config is None:
             config = retrieve_config()
-        _client = APIClient(api_key=config.api_key, base_url=config.base_url)
         params = Params(
             messages=messages,
             temperature=temperature,
@@ -215,6 +232,24 @@ class ChatCompletions(APIResource):
             top_p=top_p,
             **kwargs,
         )
+        _client = (
+            APIClient()
+            if isinstance(config, str)
+            else APIClient(api_key=config.api_key, base_url=config.base_url)
+        )
+
+        if isinstance(config, str):
+            body = ConfigSlug(config=config)
+            return cls(_client)._post(
+                "/v1/chatComplete",
+                body=body,
+                params=params,
+                cast_to=ChatCompletion,
+                stream_cls=Stream[ChatCompletionChunk],
+                stream=stream,
+                mode="",
+            )
+
         if config.mode == Modes.SINGLE.value:
             return cls(_client)._post(
                 "/v1/chatComplete",
@@ -254,12 +289,16 @@ class Generations(APIResource):
         cls,
         *,
         prompt_id: str,
-        config: Optional[Config] = None,
+        config: Optional[Union[Config, str]] = None,
         variables: Optional[Mapping[str, Any]] = None,
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
         if config is None:
             config = retrieve_config()
-        _client = APIClient(api_key=config.api_key, base_url=config.base_url)
+        _client = (
+            APIClient()
+            if isinstance(config, str)
+            else APIClient(api_key=config.api_key, base_url=config.base_url)
+        )
         body = {"variables": variables}
         return cls(_client)._post(
             f"/v1/prompts/{prompt_id}/generate",

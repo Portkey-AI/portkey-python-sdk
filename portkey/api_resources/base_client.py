@@ -21,6 +21,7 @@ from .global_constants import PORTKEY_HEADER_PREFIX
 from .utils import (
     remove_empty_values,
     Body,
+    ConfigSlug,
     Options,
     RequestConfig,
     OverrideParams,
@@ -127,7 +128,7 @@ class APIClient:
         self,
         path: str,
         *,
-        body: Union[List[Body], Any],
+        body: Union[List[Body], Any, ConfigSlug],
         mode: str,
         cast_to: Type[ResponseT],
         stream: bool,
@@ -187,7 +188,7 @@ class APIClient:
         *,
         method: str,
         url: str,
-        body: List[Body],
+        body: Union[List[Body], ConfigSlug],
         mode: str,
         stream: bool,
         params: Params,
@@ -196,8 +197,13 @@ class APIClient:
         opts.method = method
         opts.url = url
         params_dict = {} if params is None else params.dict()
+        config = (
+            body.config
+            if isinstance(body, ConfigSlug)
+            else self._config(mode, body).dict()
+        )
         json_body = {
-            "config": self._config(mode, body).dict(),
+            "config": config,
             "params": {**params_dict, "stream": stream},
         }
         opts.json_body = remove_empty_values(json_body)
