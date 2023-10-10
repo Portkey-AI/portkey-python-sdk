@@ -1,11 +1,15 @@
 ### Changelog
 #### Unreleased
 
-#### [v0.1.51](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.51...v0.1.52)
+#### [v0.1.53](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.52...v0.1.53)
+> 10 October 2023
+- feat: Added support for configslug in the apis
+
+#### [v0.1.52](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.51...v0.1.52)
 > 21 September 2023
 - feat: added openschema for all integrations + anyscale integration
 
-#### [v0.1.50](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.50...v0.1.51)
+#### [v0.1.51](https://github.com/Portkey-AI/portkey-python-sdk/compare/v0.1.50...v0.1.51)
 > 21 September 2023
 - fix: Issue with the str comparison on the api path
 
