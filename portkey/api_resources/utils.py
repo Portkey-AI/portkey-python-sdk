@@ -145,7 +145,6 @@ class ModelParams(BaseModel):
     n: Optional[int] = None
     stop_sequences: Optional[List[str]] = None
     timeout: Union[float, None] = None
-    retry_settings: Optional[RetrySettings] = None
     functions: Optional[List[Function]] = None
     function_call: Optional[Union[None, str, Function]] = None
     logprobs: Optional[int] = None
@@ -232,6 +231,10 @@ class RequestConfig(BaseModel):
 
 class Body(LLMOptions):
     ...
+
+
+class ConfigSlug(BaseModel):
+    config: str
 
 
 class Params(ConversationInput, ModelParams, extra="forbid"):
@@ -496,7 +499,7 @@ def default_base_url() -> str:
     raise ValueError(MISSING_BASE_URL)
 
 
-def retrieve_config() -> Config:
+def retrieve_config() -> Union[Config, str]:
     if portkey.config:
         return portkey.config
     raise ValueError(MISSING_CONFIG_MESSAGE)
