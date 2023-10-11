@@ -6,11 +6,8 @@ from typing import Any, Iterator, Generic, cast, Union, Type
 import httpx
 
 from .utils import (
-    ChatCompletionChunk,
     ResponseT,
-    TextCompletionChunk,
     make_status_error,
-    ApiType,
 )
 
 

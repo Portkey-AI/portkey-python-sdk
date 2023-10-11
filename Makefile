@@ -15,6 +15,9 @@ watch-docs: ## Build and watch documentation
 	sphinx-autobuild docs/ docs/_build/html --open-browser --watch $(GIT_ROOT)/llama_index/
 
 build:
+	mypy .
+	black . --check
+	ruff check .
 	rm -rf dist/ build/
 	python -m pip install build
 	python -m build .
@@ -23,3 +26,6 @@ upload:
 	python -m pip install twine
 	python -m twine upload dist/portkey-ai-*
 	rm -rf dist
+
+dev: 
+	pip install -e ".[dev]"

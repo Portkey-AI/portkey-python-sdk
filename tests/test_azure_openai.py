@@ -4,7 +4,7 @@ import os
 from typing import Any
 import pytest
 import portkey
-from portkey import TextCompletion, TextCompletionChunk, Config, LLMOptions
+from portkey import Config, LLMOptions
 from dotenv import load_dotenv
 
 # from tests.utils import assert_matches_type
@@ -34,7 +34,7 @@ class TestAzureChatCompletions:
             ),
         )
         client.config = config
-        completion = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
         )
@@ -57,7 +57,7 @@ class TestAzureChatCompletions:
             ),
         )
         client.config = config
-        completion = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
             stop_sequences=["string", "string", "string"],
@@ -84,7 +84,7 @@ class TestAzureChatCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
             stream=True,
@@ -109,7 +109,7 @@ class TestAzureChatCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
             stream=True,
@@ -128,8 +128,8 @@ class TestOpenaiGenerations:
 
     @parametrize
     def test_method_create_stream(self, client: Any) -> None:
-        config = Config()
+        config = Config(mode="")
         client.config = config
-        completion = client.Generations.create(
+        _ = client.Generations.create(
             prompt_id="",
         )

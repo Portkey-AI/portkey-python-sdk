@@ -4,7 +4,7 @@ import os
 from typing import Any
 import pytest
 import portkey
-from portkey import TextCompletion, TextCompletionChunk, Config, LLMOptions
+from portkey import Config, LLMOptions
 from dotenv import load_dotenv
 
 # from tests.utils import assert_matches_type
@@ -31,7 +31,7 @@ class TestCohereCompletions:
             ),
         )
         client.config = config
-        completion = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             model="text-davinci-003",
             prompt="why is the sky blue ?",
@@ -52,7 +52,7 @@ class TestCohereCompletions:
             ),
         )
         client.config = config
-        completion = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             model="text-davinci-003",
             prompt="why is the sky blue ?",
@@ -77,7 +77,7 @@ class TestCohereCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             model="text-davinci-003",
             prompt="why is the sky blue ?",
@@ -100,7 +100,7 @@ class TestCohereCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             model="text-davinci-003",
             prompt="why is the sky blue ?",
@@ -120,8 +120,8 @@ class TestOpenaiGenerations:
 
     @parametrize
     def test_method_create_stream(self, client: Any) -> None:
-        config = Config()
+        config = Config(mode="")
         client.config = config
-        completion = client.Generations.create(
-            prompt_id="",
+        _ = client.Generations.create(
+            prompt_id="22a96a48-95ef-47cd-84a8-fd37c7930313",
         )

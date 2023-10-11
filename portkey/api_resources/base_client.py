@@ -354,7 +354,8 @@ class APIClient:
         args = get_args(stream_cls)
         if not args:
             raise TypeError(
-                f"Expected stream_cls to have been given a generic type argument, e.g. Stream[Foo] but received {stream_cls}",
+                f"Expected stream_cls to have been given a generic type argument, e.g. \
+                    Stream[Foo] but received {stream_cls}",
             )
         return cast(type, args[0])
 
