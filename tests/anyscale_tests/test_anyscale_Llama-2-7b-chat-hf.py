@@ -4,7 +4,7 @@ import os
 from typing import Any
 import pytest
 import portkey
-from portkey import TextCompletion, TextCompletionChunk, Config, LLMOptions
+from portkey import Config, LLMOptions
 from dotenv import load_dotenv
 
 # from tests.utils import assert_matches_type
@@ -31,7 +31,7 @@ class TestAnyscaleCompletions:
             ),
         )
         client.config = config
-        completion = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             prompt="why is the sky blue ?",
         )
@@ -51,7 +51,7 @@ class TestAnyscaleCompletions:
             ),
         )
         client.config = config
-        completion = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             prompt="why is the sky blue ?",
             stop_sequences=["string", "string", "string"],
@@ -75,7 +75,7 @@ class TestAnyscaleCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             prompt="why is the sky blue ?",
             stream=True,
@@ -97,7 +97,7 @@ class TestAnyscaleCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.Completions.create(
+        _ = client.Completions.create(
             max_tokens=256,
             prompt="why is the sky blue ?",
             stream=True,
@@ -126,7 +126,7 @@ class TestAnyscaleChatCompletions:
             ),
         )
         client.config = config
-        completion = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
         )
@@ -146,7 +146,7 @@ class TestAnyscaleChatCompletions:
             ),
         )
         client.config = config
-        completion = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
             stop_sequences=["string", "string", "string"],
@@ -170,7 +170,7 @@ class TestAnyscaleChatCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
             stream=True,
@@ -192,7 +192,7 @@ class TestAnyscaleChatCompletions:
             ),
         )
         client.config = config
-        completion_streaming = client.ChatCompletions.create(
+        _ = client.ChatCompletions.create(
             max_tokens=256,
             messages=[{"role": "user", "content": "why is the sky blue ?"}],
             stream=True,

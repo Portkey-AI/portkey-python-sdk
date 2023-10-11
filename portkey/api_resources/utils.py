@@ -19,7 +19,6 @@ from .exceptions import (
 )
 from .global_constants import (
     MISSING_API_KEY_ERROR_MESSAGE,
-    INVALID_PORTKEY_MODE,
     MISSING_BASE_URL,
     MISSING_CONFIG_MESSAGE,
     MISSING_MODE_MESSAGE,
@@ -48,7 +47,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion, GenericResponse]",
+    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion, GenericResponse]",  # noqa: E501
 )
 
 

@@ -1,4 +1,4 @@
-from typing import TypeVar, Union, Any
+from typing import TypeVar, Union
 from .streaming import Stream
 from .utils import ChatCompletionChunk, TextCompletionChunk, GenericResponse
 
