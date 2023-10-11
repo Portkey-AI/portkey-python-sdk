@@ -23,3 +23,6 @@ upload:
 	python -m pip install twine
 	python -m twine upload dist/portkey-ai-*
 	rm -rf dist
+
+dev: 
+	pip install -e ".[dev]"
