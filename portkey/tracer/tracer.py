@@ -77,7 +77,7 @@ class Connector:
     Example:
 
         ```python
-        # Import the Conector module
+        # Import the portkey module
         import portkey
         import openai
 
