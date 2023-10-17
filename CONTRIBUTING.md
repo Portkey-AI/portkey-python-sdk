@@ -15,7 +15,7 @@ $ source .venv/bin/activate # On macOS and Linux
 ```
 4. Install dependencies
 ```sh
-$ pip install -r requirements.txt.
+$ pip install -e .
 ```
 
 ## 🖋 Types of Contributions
