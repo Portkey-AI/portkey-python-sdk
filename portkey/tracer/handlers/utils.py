@@ -24,7 +24,8 @@ def check_api_signature(
                 return True, item
     return False, {}
 
-def update_url(url: str | bytes, config: Dict[str, Any])->str | bytes:
+
+def update_url(url: str | bytes, config: Dict[str, Any]) -> str | bytes:
     base_url = config["base_url"]
     url = url.decode("utf-8") if isinstance(url, bytes) else str(url)
     proxy_url = get_proxy_url()
@@ -32,7 +33,9 @@ def update_url(url: str | bytes, config: Dict[str, Any])->str | bytes:
     return new_url
 
 
-def update_headers(headers: Optional[Mapping[str, str]], config: Dict[str, Any]) -> Mapping[str, str]:
+def update_headers(
+    headers: Optional[Mapping[str, str]], config: Dict[str, Any]
+) -> Mapping[str, str]:
     api_key = default_api_key()
     mode = config["mode"]
     if not headers:
