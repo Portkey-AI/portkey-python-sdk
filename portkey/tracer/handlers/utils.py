@@ -1,4 +1,3 @@
-from turtle import update
 import yaml
 from typing import Any, Tuple, Mapping, Dict, Optional
 from portkey.api_resources.utils import get_proxy_url, default_api_key
@@ -61,6 +60,7 @@ def intitiate_tracing(
 
 def read_signature_configs():
     config = []
+    # TODO: Get the config files from users to customise this signature validation on portkey.
     with open("portkey/tracer/config.yaml", "r") as config_file:
         configs_file = yaml.safe_load(config_file)
         for i in configs_file["routes"]:
