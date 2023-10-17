@@ -79,6 +79,7 @@ class Connector:
         ```python
         # Import the Conector module
         import portkey
+        import openai
 
         # Use the connector to make requests through Portkey
         response = openai.Completion.create(
