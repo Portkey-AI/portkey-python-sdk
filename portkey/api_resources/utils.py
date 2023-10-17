@@ -498,6 +498,11 @@ def default_base_url() -> str:
     raise ValueError(MISSING_BASE_URL)
 
 
+def get_proxy_url(base_url=None) -> str:
+    base_url = base_url or default_base_url()
+    return f"{base_url}/v1/proxy"
+
+
 def retrieve_config() -> Union[Config, str]:
     if portkey.config:
         return portkey.config

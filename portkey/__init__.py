@@ -1,5 +1,6 @@
 import os
 from typing import Optional, Union
+from portkey.tracer import Connector
 from portkey.api_resources import (
     LLMOptions,
     Modes,
@@ -32,6 +33,10 @@ api_key = os.environ.get(PORTKEY_API_KEY_ENV)
 base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
 config: Optional[Union[Config, str]] = None
 mode: Optional[Union[Modes, ModesLiteral]] = None
+
+
+Connector().initialize()
+
 __version__ = VERSION
 __all__ = [
     "LLMOptions",

@@ -1,0 +1,27 @@
+routes:
+  # Openai Signatures
+  - base_url: https://api.openai.com/v1
+    mode: openai
+    paths:
+      - path: /chat/completions
+        method: post
+      - path: /embeddings
+        method: post
+
+  # Anthropic Signatures
+  - base_url: https://api.anthropic.com/v1
+    mode: anthropic
+    paths:
+      - path: /complete
+        method: post
+
+  # Cohere Signatures
+  - base_url: https://api.cohere.ai/v1
+    mode: cohere
+    paths:
+      - path: /generate
+        method: post
+      - path: /embed
+        method: post
+      - path: /chat
+        method: post
