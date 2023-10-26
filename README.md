@@ -1,5 +1,5 @@
 <div align="center">
-<img src="docs/images/header.png" height=150><br />
+<img src="https://assets.portkey.ai/header.png" height=150><br />
 
 ## Build reliable, secure, and production-ready AI apps easily.
 
@@ -154,10 +154,10 @@ print(response.choices[0].message)
 
 || Provider  | Support Status  | Supported Endpoints |
 |---|---|---|---|
-| <img src="docs/images/openai.png" width=18 />| OpenAI | ✅ Supported  | `/completion`, `/embed` |
-| <img src="docs/images/azure.png" width=18>| Azure OpenAI | ✅ Supported  | `/completion`, `/embed` |
-| <img src="docs/images/anthropic.png" width=18>| Anthropic  | ✅ Supported  | `/complete` |
-| <img src="docs/images/cohere.png" width=18>| Cohere  | 🚧 Coming Soon  | `generate`, `embed` |
+| <img src="https://assets.portkey.ai/openai.png" width=18 />| OpenAI | ✅ Supported  | `/completion`, `/embed` |
+| <img src="https://assets.portkey.ai/azure.png" width=18>| Azure OpenAI | ✅ Supported  | `/completion`, `/embed` |
+| <img src="https://assets.portkey.ai/anthropic.png" width=18>| Anthropic  | ✅ Supported  | `/complete` |
+| <img src="https://assets.portkey.ai/cohere.png" width=18>| Cohere  | 🚧 Coming Soon  | `generate`, `embed` |
 
 
 ---
