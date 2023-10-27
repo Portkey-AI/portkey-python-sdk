@@ -183,7 +183,7 @@ print(response.choices[0].message)
 | <img src="https://assets.portkey.ai/openai.png" width=18 />| OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="https://assets.portkey.ai/azure.png" width=18>| Azure OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="https://assets.portkey.ai/anthropic.png" width=18>| Anthropic  | ✅ Supported  | `/complete` |
-| <img src="/docs/images/anyscale.png" width=18>| Anyscale  | ✅ Supported  | `/chat/completions` |
+| <img src="https://assets.portkey.ai/anyscale.png" width=18>| Anyscale  | ✅ Supported  | `/chat/completions` |
 | <img src="https://assets.portkey.ai/cohere.png" width=18>| Cohere  | 🚧 Coming Soon  | `generate`, `embed` |
 
 
@@ -193,3 +193,6 @@ print(response.choices[0].message)
 
 <a href="https://twitter.com/intent/follow?screen_name=portkeyai"><img src="https://img.shields.io/twitter/follow/portkeyai?style=social&logo=twitter" alt="follow on Twitter"></a>
 <a href="https://discord.gg/sDk9JaNfK8" target="_blank"><img src="https://img.shields.io/discord/1143393887742861333?logo=discord" alt="Discord"></a>
+
+## **🛠️ Contributing**
+Get started by checking out Github issues. Feel free to open an issue, or reach out if you would like to add to the project!
