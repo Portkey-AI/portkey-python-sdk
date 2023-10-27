@@ -176,9 +176,6 @@ print(response.choices[0].message)
 | Retries         | `retry`           | `{dict}` with two required keys: `"attempts"` which expects integers in [0,5] and `"on_status_codes"` which expects array of status codes like [429,502] <br> `Example`: { "attempts": 5, "on_status_codes":[429,500] }                      | ❔ Optional |
 | Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
 
-**Retries Details:**
-- `attempts` (integer) - Number of retry attempts.
-- `on_status_codes` (array of integers) - List of HTTP status codes that trigger a retry.
 
 ## **🤝 Supported Providers**
 
