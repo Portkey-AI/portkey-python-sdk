@@ -173,7 +173,7 @@ print(response.choices[0].message)
 | Force Cache Refresh | `cache_force_refresh`   | `True`, `False` (Boolean)                                 | ❔ Optional |
 | Cache Age           | `cache_age`             | `integer` (in seconds)                           | ❔ Optional |
 | Trace ID            | `trace_id`              | `string`                                         | ❔ Optional |
-| Retries         | `retry`           | `integer` [0,5]                                  | ❔ Optional |
+| Retries         | `retry`           | `json object` - ```{"attempts": integer, "on_status_codes": [integer]}```                          | ❔ Optional |
 | Metadata            | `metadata`              | `json object` [More info](https://docs.portkey.ai/key-features/custom-metadata)          | ❔ Optional |
 
 ## **🤝 Supported Providers**
