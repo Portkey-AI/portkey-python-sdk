@@ -25,8 +25,39 @@ pip install portkey-ai
 
 ## **🚀 Quick Start**
 
-**4️ Steps to Integrate the SDK**
-1. Get your Portkey API key and your virtual key for AI providers.
+#### First, install the SDK & export Portkey API Key
+[Get Portkey API key here.](https://app.portkey.ai/signup)
+```bash
+$ pip install portkey-ai
+$ export PORTKEY_API_KEY=PORTKEY_API_KEY
+```
+
+#### Now, let's make a request with GPT-4
+
+```py
+import portkey
+from portkey import Config, LLMOptions
+
+portkey.config = Config(
+    mode="single",
+    llms=LLMOptions(provider="openai", api_key="OPENAI_API_KEY")
+)
+
+r = portkey.ChatCompletions.create(
+    model="gpt-4", 
+    messages=[
+        {"role": "user","content": "Hello World!"}
+    ]
+)
+```
+
+Portkey fully adheres to the OpenAI SDK signature. This means that you can instantly switch to Portkey and start using Portkey's advanced production features right out of the box.
+
+
+## **🪜 Detailed Integration Guide**
+
+**4 Steps to Integrate the SDK**
+1. Get your virtual key for AI providers.
 2. Construct your LLM, add Portkey features, provider features, and prompt.
 3. Construct the Portkey client and set your usage mode.
 4. Now call Portkey regularly like you would call your OpenAI constructor.
@@ -35,14 +66,9 @@ Let's dive in! If you are an advanced user and want to directly jump to various 
 
 ---
 
-### **Step 1️⃣ : Get your Portkey API Key and your Virtual Keys for AI providers**
+### **Step 1️⃣ : Get your Virtual Keys for AI providers**
 
-**Portkey API Key:** Log into [Portkey here](https://app.portkey.ai/), then click on the profile icon on top left and “Copy API Key”.
-```python
-import os
-os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY"
-```
-**Virtual Keys:** Navigate to the "Virtual Keys" page on [Portkey](https://app.portkey.ai/) and hit the "Add Key" button. Choose your AI provider and assign a unique name to your key. Your virtual key is ready!
+Navigate to the "Virtual Keys" page on [Portkey](https://app.portkey.ai/) and hit the "Add Key" button. Choose your AI provider and assign a unique name to your key. Your virtual key is ready!
 
 ### **Step 2️⃣ : Construct your LLM, add Portkey features, provider features, and prompt**
 
@@ -77,7 +103,7 @@ messages = [{"role": "user", "content": "Who are you?"}]
 llm = LLMOptions(provider=provider, virtual_key=virtual_key, trace_id=trace_id, model=model, temperature=temperature)
 ```
 
-### **Steo 3️⃣ : Construct the Portkey Client**
+### **Step 3️⃣ : Construct the Portkey Client**
 
 Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
 
@@ -157,6 +183,7 @@ print(response.choices[0].message)
 | <img src="https://assets.portkey.ai/openai.png" width=18 />| OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="https://assets.portkey.ai/azure.png" width=18>| Azure OpenAI | ✅ Supported  | `/completion`, `/embed` |
 | <img src="https://assets.portkey.ai/anthropic.png" width=18>| Anthropic  | ✅ Supported  | `/complete` |
+| <img src="/docs/images/anyscale.png" width=18>| Anyscale  | ✅ Supported  | `/chat/completions` |
 | <img src="https://assets.portkey.ai/cohere.png" width=18>| Cohere  | 🚧 Coming Soon  | `generate`, `embed` |
 
 
