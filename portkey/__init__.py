@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Union
+from typing import Mapping, Optional, Union
 from portkey.api_resources import (
     LLMOptions,
     Modes,
@@ -11,7 +11,7 @@ from portkey.api_resources import (
     Message,
     PortkeyResponse,
     ChatCompletions,
-    Completions,
+    Completion,
     Params,
     Config,
     RetrySettings,
@@ -19,19 +19,22 @@ from portkey.api_resources import (
     ChatCompletionChunk,
     TextCompletion,
     TextCompletionChunk,
-    Generations,
+    CreateHeaders,
+    Prompt,
 )
 from portkey.version import VERSION
 from portkey.api_resources.global_constants import (
     PORTKEY_BASE_URL,
     PORTKEY_API_KEY_ENV,
     PORTKEY_PROXY_ENV,
+    PORTKEY_GATEWEAY_URL,
 )
 
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
 base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
-config: Optional[Union[Config, str]] = None
+config: Optional[Union[Mapping, str]] = None
 mode: Optional[Union[Modes, ModesLiteral]] = None
+
 __version__ = VERSION
 __all__ = [
     "LLMOptions",
@@ -44,15 +47,17 @@ __all__ = [
     "CacheLiteral",
     "Message",
     "ChatCompletions",
-    "Completions",
+    "Completion",
     "Params",
     "RetrySettings",
     "ChatCompletion",
     "ChatCompletionChunk",
     "TextCompletion",
     "TextCompletionChunk",
-    "Generations",
     "Config",
     "api_key",
     "base_url",
+    "PORTKEY_GATEWEAY_URL",
+    "CreateHeaders",
+    "Prompt",
 ]

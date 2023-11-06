@@ -30,6 +30,12 @@ VERSION = "0.1.0"
 DEFAULT_TIMEOUT = 60
 PORTKEY_HEADER_PREFIX = "x-portkey-"
 PORTKEY_BASE_URL = "https://api.portkey.ai"
-
+PORTKEY_GATEWEAY_URL = f"{PORTKEY_BASE_URL}/v1/proxy"
 PORTKEY_API_KEY_ENV = "PORTKEY_API_KEY"
 PORTKEY_PROXY_ENV = "PORTKEY_PROXY"
+
+# API routes
+CHAT_COMPLETE_API = "/v1/chat/complete"
+TEXT_COMPLETE_API = "/v1/complete"
+PROMPT_API = "/v1/prompt/complete"
+FEEDBACK_API = "/v1/feedback"

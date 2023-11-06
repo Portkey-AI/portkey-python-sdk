@@ -21,12 +21,10 @@ from .global_constants import PORTKEY_HEADER_PREFIX
 from .utils import (
     remove_empty_values,
     Body,
-    ConfigSlug,
     Options,
     RequestConfig,
     OverrideParams,
     ProviderOptions,
-    Params,
     Constructs,
     PortkeyApiPaths,
 )
@@ -87,12 +85,13 @@ class APIClient:
         self,
         path: str,
         *,
-        body: List[Body],
+        body: Mapping[str, Any],
         mode: str,
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
-        params: Params,
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
     ) -> StreamT:
         ...
 
@@ -101,12 +100,13 @@ class APIClient:
         self,
         path: str,
         *,
-        body: List[Body],
+        body: Mapping[str, Any],
         mode: str,
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
-        params: Params,
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
     ) -> ResponseT:
         ...
 
@@ -115,12 +115,13 @@ class APIClient:
         self,
         path: str,
         *,
-        body: List[Body],
+        body: Mapping[str, Any],
         mode: str,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
-        params: Params,
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
     ) -> Union[ResponseT, StreamT]:
         ...
 
@@ -128,15 +129,15 @@ class APIClient:
         self,
         path: str,
         *,
-        body: Union[List[Body], Any, ConfigSlug],
+        body: Mapping[str, Any],
         mode: str,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
-        params: Params,
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
     ) -> Union[ResponseT, StreamT]:
         if path in [PortkeyApiPaths.CHAT_COMPLETION, PortkeyApiPaths.COMPLETION]:
-            body = cast(List[Body], body)
             opts = self._construct(
                 method="post",
                 url=path,
@@ -144,6 +145,7 @@ class APIClient:
                 mode=mode,
                 stream=stream,
                 params=params,
+                headers=headers,
             )
         elif path.endswith("/generate"):
             opts = self._construct_generate_options(
@@ -153,6 +155,7 @@ class APIClient:
                 mode=mode,
                 stream=stream,
                 params=params,
+                headers=headers,
             )
         else:
             raise NotImplementedError(f"This API path `{path}` is not implemented.")
@@ -173,14 +176,15 @@ class APIClient:
         body: Any,
         mode: str,
         stream: bool,
-        params: Params,
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
     ) -> Options:
         opts = Options.construct()
         opts.method = method
         opts.url = url
         json_body = body
         opts.json_body = remove_empty_values(json_body)
-        opts.headers = None
+        opts.headers = remove_empty_values(headers)
         return opts
 
     def _construct(
@@ -188,26 +192,17 @@ class APIClient:
         *,
         method: str,
         url: str,
-        body: Union[List[Body], ConfigSlug],
+        body: Mapping[str, Any],
         mode: str,
         stream: bool,
-        params: Params,
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
     ) -> Options:
         opts = Options.construct()
         opts.method = method
         opts.url = url
-        params_dict = {} if params is None else params.dict()
-        config = (
-            body.config
-            if isinstance(body, ConfigSlug)
-            else self._config(mode, body).dict()
-        )
-        json_body = {
-            "config": config,
-            "params": {**params_dict, "stream": stream},
-        }
-        opts.json_body = remove_empty_values(json_body)
-        opts.headers = None
+        opts.json_body = remove_empty_values(body)
+        opts.headers = remove_empty_values(headers)
         return opts
 
     def _config(self, mode: str, body: List[Body]) -> RequestConfig:
@@ -324,6 +319,7 @@ class APIClient:
         stream_cls: Type[StreamT],
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
+        print(options)
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
             res.raise_for_status()

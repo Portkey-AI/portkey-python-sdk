@@ -20,10 +20,10 @@ from .exceptions import (
 from .global_constants import (
     MISSING_API_KEY_ERROR_MESSAGE,
     MISSING_BASE_URL,
-    MISSING_CONFIG_MESSAGE,
     MISSING_MODE_MESSAGE,
     PORTKEY_BASE_URL,
     PORTKEY_API_KEY_ENV,
+    PORTKEY_HEADER_PREFIX,
     PORTKEY_PROXY_ENV,
 )
 
@@ -47,7 +47,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletion, TextCompletionChunk, TextCompletion, GenericResponse]",  # noqa: E501
+    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletionChunk, TextCompletion, GenericResponse]",  # noqa: E501
 )
 
 
@@ -236,7 +236,7 @@ class ConfigSlug(BaseModel):
     config: str
 
 
-class Params(ConversationInput, ModelParams, extra="forbid"):
+class Params(Constructs, ConversationInput, ModelParams, extra="forbid"):
     ...
 
 
@@ -332,7 +332,7 @@ class Usage(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ChatCompletion(BaseModel):
+class ChatCompletions(BaseModel):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
@@ -406,6 +406,7 @@ class TextCompletionChunk(BaseModel):
 class GenericResponse(BaseModel, extra="allow"):
     success: Optional[bool]
     data: Optional[Mapping[str, Any]]
+    warning: Optional[str]
 
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
@@ -498,13 +499,18 @@ def default_base_url() -> str:
     raise ValueError(MISSING_BASE_URL)
 
 
-def retrieve_config() -> Union[Config, str]:
+def retrieve_config() -> Union[Mapping, str]:
     if portkey.config:
         return portkey.config
-    raise ValueError(MISSING_CONFIG_MESSAGE)
+    # raise ValueError(MISSING_CONFIG_MESSAGE)
+    return {}
 
 
 def retrieve_mode() -> Union[Modes, ModesLiteral, str]:
     if portkey.mode:
         return portkey.mode
     raise ValueError(MISSING_MODE_MESSAGE)
+
+
+def get_portkey_header(key: str) -> str:
+    return f"{PORTKEY_HEADER_PREFIX}{key}"

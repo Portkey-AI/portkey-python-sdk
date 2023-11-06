@@ -1,5 +1,12 @@
 """"""
-from .apis import ChatCompletions, Completions, Generations
+from .apis import (
+    Completion,
+    ChatCompletion,
+    Generations,
+    Prompt,
+    Feedback,
+    CreateHeaders,
+)
 from .utils import (
     Modes,
     ModesLiteral,
@@ -13,7 +20,7 @@ from .utils import (
     Params,
     Config,
     RetrySettings,
-    ChatCompletion,
+    ChatCompletions,
     ChatCompletionChunk,
     TextCompletion,
     TextCompletionChunk,
@@ -33,7 +40,7 @@ __all__ = [
     "CacheLiteral",
     "Message",
     "ChatCompletions",
-    "Completions",
+    "Completion",
     "Params",
     "Config",
     "RetrySettings",
@@ -42,4 +49,7 @@ __all__ = [
     "TextCompletion",
     "TextCompletionChunk",
     "Generations",
+    "Prompt",
+    "Feedback",
+    "CreateHeaders",
 ]
