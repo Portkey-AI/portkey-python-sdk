@@ -1,0 +1,11 @@
+name: verify-conventional-commits
+
+on: [pull_request]
+
+jobs:
+  conventional-commits-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: verify conventional commits
+        uses: taskmedia/action-conventional-commits@v1.1.8
+            
