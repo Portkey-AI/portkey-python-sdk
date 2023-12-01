@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union
+from typing import Any, Dict, Union, overload, Literal
 
 from portkey_ai.api_resources.base_client import APIClient
 
@@ -10,10 +10,41 @@ class Post(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
+    @overload
     def create(
         self,
         *,
         url: str,
+        stream: Literal[True],
+        **kwargs,
+    ) -> Stream[Dict[str, Any]]:
+        ...
+
+    @overload
+    def create(
+        self,
+        *,
+        url: str,
+        stream: Literal[False] = False,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        ...
+
+    @overload
+    def create(
+        self,
+        *,
+        url: str,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[Dict[str, Any], Stream[Dict[str, Any]]]:
+        ...
+
+    def create(
+        self,
+        *,
+        url: str,
+        stream: bool = False,
         **kwargs,
     ) -> Union[Dict[str, Any], Stream[Dict[str, Any]]]:
         return self._post(
@@ -22,6 +53,6 @@ class Post(APIResource):
             params=None,
             cast_to=dict,
             stream_cls=Stream[dict],
-            stream=False,
+            stream=stream,
             headers={},
         )

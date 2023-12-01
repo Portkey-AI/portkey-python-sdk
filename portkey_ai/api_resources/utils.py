@@ -258,7 +258,7 @@ class PortkeyResponse(BaseModel):
 
 
 # Models for Chat Stream
-class Delta(BaseModel):
+class Delta(BaseModel, extra="allow"):
     role: Optional[str] = None
     content: Optional[str] = ""
 
@@ -272,7 +272,7 @@ class Delta(BaseModel):
         return getattr(self, key, None) or default
 
 
-class StreamChoice(BaseModel):
+class StreamChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
     delta: Union[Delta, Dict[Any, Any]] = {}
     finish_reason: Optional[str] = None
@@ -287,7 +287,7 @@ class StreamChoice(BaseModel):
         return getattr(self, key, None)
 
 
-class ChatCompletionChunk(BaseModel):
+class ChatCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
@@ -305,7 +305,7 @@ class ChatCompletionChunk(BaseModel):
 
 
 # Models for Chat Non-stream
-class ChatChoice(BaseModel):
+class ChatChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
     message: Optional[Message] = None
     finish_reason: Optional[str] = None
@@ -320,7 +320,7 @@ class ChatChoice(BaseModel):
         return getattr(self, key, None) or default
 
 
-class Usage(BaseModel):
+class Usage(BaseModel, extra="allow"):
     prompt_tokens: Optional[int] = None
     completion_tokens: Optional[int] = None
     total_tokens: Optional[int] = None
@@ -335,7 +335,7 @@ class Usage(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ChatCompletions(BaseModel):
+class ChatCompletions(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
@@ -354,7 +354,7 @@ class ChatCompletions(BaseModel):
 
 
 # Models for text completion Non-stream
-class TextChoice(BaseModel):
+class TextChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
     text: Optional[str] = None
     logprobs: Any
@@ -370,7 +370,7 @@ class TextChoice(BaseModel):
         return getattr(self, key, None) or default
 
 
-class TextCompletion(BaseModel):
+class TextCompletion(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
@@ -389,7 +389,7 @@ class TextCompletion(BaseModel):
 
 
 # Models for text completion stream
-class TextCompletionChunk(BaseModel):
+class TextCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None

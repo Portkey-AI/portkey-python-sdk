@@ -17,8 +17,7 @@ class Feedback(APIResource):
         weight: Optional[float] = None,
         metadata: Optional[Dict[str, Any]] = None
     ) -> None:
-        body = dict(trace_id=trace_id, value=value,
-                    weight=weight, metadata=metadata)
+        body = dict(trace_id=trace_id, value=value, weight=weight, metadata=metadata)
         return self._post(
             PortkeyApiPaths.FEEDBACK_API,
             body=body,
