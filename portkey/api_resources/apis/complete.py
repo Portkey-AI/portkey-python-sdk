@@ -1,11 +1,7 @@
-from typing import Mapping, Optional, Union, overload, Literal
+from typing import Optional, Union, overload, Literal
 from portkey.api_resources.base_client import APIClient
-from portkey.api_resources.global_constants import TEXT_COMPLETE_API
 from portkey.api_resources.utils import (
-    Modes,
-    ConfigSlug,
-    retrieve_config,
-    Params,
+    PortkeyApiPaths,
     TextCompletion,
     TextCompletionChunk,
 )
@@ -15,13 +11,14 @@ from portkey.api_resources.apis.api_resource import APIResource
 
 
 class Completion(APIResource):
-    @classmethod
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
     @overload
     def create(
-        cls,
+        self,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Union[Mapping, str]] = None,
         stream: Literal[True],
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -31,13 +28,11 @@ class Completion(APIResource):
     ) -> Stream[TextCompletionChunk]:
         ...
 
-    @classmethod
     @overload
     def create(
-        cls,
+        self,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Union[Mapping, str]] = None,
         stream: Literal[False] = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -47,13 +42,11 @@ class Completion(APIResource):
     ) -> TextCompletion:
         ...
 
-    @classmethod
     @overload
     def create(
-        cls,
+        self,
         *,
         prompt: Optional[str] = None,
-        config: Optional[Union[Mapping, str]] = None,
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -63,14 +56,10 @@ class Completion(APIResource):
     ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
         ...
 
-    @classmethod
     def create(
-        cls,
+        self,
         *,
-        provider: str,
-        api_key: Optional[str] = None,
         prompt: Optional[str] = None,
-        config: Optional[Union[Mapping, str]] = None,
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
@@ -78,9 +67,7 @@ class Completion(APIResource):
         top_p: Optional[float] = None,
         **kwargs,
     ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
-        if config is None:
-            config = retrieve_config()
-        params = Params(
+        body = dict(
             prompt=prompt,
             temperature=temperature,
             max_tokens=max_tokens,
@@ -88,54 +75,12 @@ class Completion(APIResource):
             top_p=top_p,
             **kwargs,
         )
-        _client = (
-            APIClient()
-            if isinstance(config, str)
-            else APIClient(
-                api_key=config.get("api_key"), base_url=config.get("base_url")
-            )
+        return self._post(
+            PortkeyApiPaths.TEXT_COMPLETE_API,
+            body=body,
+            params=None,
+            cast_to=TextCompletion,
+            stream_cls=Stream[TextCompletionChunk],
+            stream=stream,
+            headers={},
         )
-
-        if isinstance(config, str):
-            body = ConfigSlug(config=config)
-            return cls(_client)._post(
-                TEXT_COMPLETE_API,
-                body=body,
-                params=params,
-                cast_to=TextCompletion,
-                stream_cls=Stream[TextCompletionChunk],
-                stream=stream,
-                mode="",
-            )
-
-        if config.get("mode") == Modes.SINGLE.value:
-            return cls(_client)._post(
-                TEXT_COMPLETE_API,
-                body=config.get("options"),
-                mode=Modes.SINGLE.value,
-                params=params,
-                cast_to=TextCompletion,
-                stream_cls=Stream[TextCompletionChunk],
-                stream=stream,
-            )
-        if config.get("mode") == Modes.FALLBACK.value:
-            return cls(_client)._post(
-                TEXT_COMPLETE_API,
-                body=config.get("options"),
-                mode=Modes.FALLBACK,
-                params=params,
-                cast_to=TextCompletion,
-                stream_cls=Stream[TextCompletionChunk],
-                stream=stream,
-            )
-        if config.get("mode") == Modes.AB_TEST.value:
-            return cls(_client)._post(
-                TEXT_COMPLETE_API,
-                body=config.get("options"),
-                mode=Modes.AB_TEST,
-                params=params,
-                cast_to=TextCompletion,
-                stream_cls=Stream[TextCompletionChunk],
-                stream=stream,
-            )
-        raise NotImplementedError("Mode not implemented.")

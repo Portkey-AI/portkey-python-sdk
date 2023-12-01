@@ -19,15 +19,16 @@ from portkey.api_resources import (
     ChatCompletionChunk,
     TextCompletion,
     TextCompletionChunk,
-    CreateHeaders,
+    createHeaders,
     Prompt,
+    Portkey,
 )
 from portkey.version import VERSION
 from portkey.api_resources.global_constants import (
     PORTKEY_BASE_URL,
     PORTKEY_API_KEY_ENV,
     PORTKEY_PROXY_ENV,
-    PORTKEY_GATEWEAY_URL,
+    PORTKEY_GATEWAY_URL,
 )
 
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
@@ -57,7 +58,8 @@ __all__ = [
     "Config",
     "api_key",
     "base_url",
-    "PORTKEY_GATEWEAY_URL",
-    "CreateHeaders",
+    "PORTKEY_GATEWAY_URL",
+    "createHeaders",
     "Prompt",
+    "Portkey",
 ]

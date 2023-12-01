@@ -2,7 +2,9 @@ from .chat_complete import ChatCompletion
 from .complete import Completion
 from .generation import Generations, Prompt
 from .feedback import Feedback
-from .create_headers import CreateHeaders
+from .create_headers import createHeaders
+from .post import Post
+from .embeddings import Embeddings
 
 __all__ = [
     "Completion",
@@ -10,5 +12,7 @@ __all__ = [
     "Generations",
     "Feedback",
     "Prompt",
-    "CreateHeaders",
+    "createHeaders",
+    "Post",
+    "Embeddings",
 ]

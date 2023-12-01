@@ -1,8 +1,8 @@
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
 from portkey.api_resources.base_client import APIClient
-from portkey.api_resources.global_constants import PROMPT_API
 from portkey.api_resources.utils import (
+    PortkeyApiPaths,
     retrieve_config,
     GenericResponse,
 )
@@ -12,9 +12,11 @@ from portkey.api_resources.apis.api_resource import APIResource
 
 
 class Generations(APIResource):
-    @classmethod
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
     def create(
-        cls,
+        self,
         *,
         prompt_id: str,
         config: Optional[Union[Mapping, str]] = None,
@@ -28,15 +30,8 @@ class Generations(APIResource):
         )
         if config is None:
             config = retrieve_config()
-        _client = (
-            APIClient()
-            if isinstance(config, str)
-            else APIClient(
-                api_key=config.get("api_key"), base_url=config.get("base_url")
-            )
-        )
         body = {"variables": variables}
-        response = cls(_client)._post(
+        response = self._post(
             f"/v1/prompts/{prompt_id}/generate",
             body=body,
             mode=None,
@@ -50,10 +45,12 @@ class Generations(APIResource):
 
 
 class Prompt(APIResource):
-    @classmethod
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
     @overload
     def create(
-        cls,
+        self,
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
@@ -67,10 +64,9 @@ class Prompt(APIResource):
     ) -> Stream[GenericResponse]:
         ...
 
-    @classmethod
     @overload
     def create(
-        cls,
+        self,
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
@@ -84,10 +80,9 @@ class Prompt(APIResource):
     ) -> GenericResponse:
         ...
 
-    @classmethod
     @overload
     def create(
-        cls,
+        self,
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
@@ -101,9 +96,8 @@ class Prompt(APIResource):
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
         ...
 
-    @classmethod
     def create(
-        cls,
+        self,
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
@@ -117,19 +111,11 @@ class Prompt(APIResource):
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
         if config is None:
             config = retrieve_config()
-        _client = (
-            APIClient()
-            if isinstance(config, str)
-            else APIClient(
-                api_key=config.get("api_key"), base_url=config.get("base_url")
-            )
-        )
         body = {"variables": variables}
-        return cls(_client)._post(
+        return self._post(
             # TODO: Update this API with new Rubeus API.
-            PROMPT_API,
+            PortkeyApiPaths.PROMPT_API,
             body=body,
-            mode=None,
             params=None,
             cast_to=GenericResponse,
             stream_cls=Stream[GenericResponse],

@@ -1,5 +1,8 @@
 from typing import Mapping
+import json
 from portkey.api_resources.utils import get_portkey_header
+
+__all__ = ["createHeaders"]
 
 
 class CreateHeaders:
@@ -12,5 +15,15 @@ class CreateHeaders:
             if k == "mode" and "proxy" not in v:
                 v = f"proxy {v}"
             k = "-".join(k.split("_"))
-            headers[get_portkey_header(k)] = v
+            if isinstance(v, Mapping):
+                v = json.dumps(v)
+            if v:
+                if k.lower() != "authorization":
+                    headers[get_portkey_header(k)] = str(v)
+                else:
+                    headers[k] = str(v)
         return headers
+
+
+def createHeaders(**kwargs):
+    return CreateHeaders(**kwargs).json()

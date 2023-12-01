@@ -1,0 +1,27 @@
+{
+    "strategy": {
+        "mode": "loadbalance"
+    },
+    "targets": [
+        {
+            "virtual_key": "open-ai-apikey-3368e0"
+        },
+        {
+            "strategy": {
+                "mode": "fallback",
+                "on_status_codes": [
+                    429,
+                    241
+                ]
+            },
+            "targets": [
+                {
+                    "virtual_key": "cohere-api-key-fffe27"
+                },
+                {
+                    "virtual_key": "open-ai-apikey-3368e0"
+                }
+            ]
+        }
+    ]
+}

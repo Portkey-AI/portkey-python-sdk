@@ -157,7 +157,9 @@ class Stream(Generic[ResponseT]):
         response = self.response
         for sse in self._iter_events():
             if sse.event is None:
-                yield cast(ResponseT, self._cast_to(**sse.json()))
+                yield cast(ResponseT, self._cast_to(**sse.json())) if isinstance(
+                    self._cast_to, httpx.Response
+                ) else cast(ResponseT, sse)
 
             if sse.event == "ping":
                 continue

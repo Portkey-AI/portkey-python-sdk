@@ -8,7 +8,6 @@ from typing import (
     Union,
     Mapping,
     cast,
-    List,
     Optional,
     Type,
     overload,
@@ -17,16 +16,12 @@ from typing import (
 )
 import httpx
 import platform
+
+from portkey.api_resources.apis.create_headers import createHeaders
 from .global_constants import PORTKEY_HEADER_PREFIX
 from .utils import (
     remove_empty_values,
-    Body,
     Options,
-    RequestConfig,
-    OverrideParams,
-    ProviderOptions,
-    Constructs,
-    PortkeyApiPaths,
 )
 from .exceptions import (
     APIStatusError,
@@ -56,12 +51,35 @@ class APIClient:
         *,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
+        virtual_key: Optional[str] = None,
+        config: Optional[Union[Mapping, str]] = None,
+        provider: Optional[str] = None,
+        trace_id: Optional[str] = None,
+        metadata: Optional[str] = None,
+        **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
         self.base_url = base_url or default_base_url()
+        self.virtual_key = virtual_key
+        self.config = config
+        self.provider = provider
+        self.trace_id = trace_id
+        self.metadata = metadata
+        self.kwargs = kwargs
+
+        self.custom_headers = createHeaders(
+            virtual_key=virtual_key,
+            config=config,
+            provider=provider,
+            trace_id=trace_id,
+            metadata=metadata,
+            **kwargs,
+        )
         self._client = httpx.Client(
             base_url=self.base_url,
-            headers={"Accept": "application/json"},
+            headers={
+                "Accept": "application/json",
+            },
         )
 
     def _serialize_header_values(
@@ -86,7 +104,6 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
-        mode: str,
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
@@ -101,7 +118,6 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
-        mode: str,
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
@@ -116,7 +132,6 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
-        mode: str,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
@@ -130,35 +145,30 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
-        mode: str,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Union[ResponseT, StreamT]:
-        if path in [PortkeyApiPaths.CHAT_COMPLETION, PortkeyApiPaths.COMPLETION]:
-            opts = self._construct(
-                method="post",
-                url=path,
-                body=body,
-                mode=mode,
-                stream=stream,
-                params=params,
-                headers=headers,
-            )
-        elif path.endswith("/generate"):
+        if path.endswith("/generate"):
             opts = self._construct_generate_options(
                 method="post",
                 url=path,
                 body=body,
-                mode=mode,
                 stream=stream,
                 params=params,
                 headers=headers,
             )
         else:
-            raise NotImplementedError(f"This API path `{path}` is not implemented.")
+            opts = self._construct(
+                method="post",
+                url=path,
+                body=body,
+                stream=stream,
+                params=params,
+                headers=headers,
+            )
 
         res = self._request(
             options=opts,
@@ -174,7 +184,6 @@ class APIClient:
         method: str,
         url: str,
         body: Any,
-        mode: str,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -193,7 +202,6 @@ class APIClient:
         method: str,
         url: str,
         body: Mapping[str, Any],
-        mode: str,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -204,17 +212,6 @@ class APIClient:
         opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
         return opts
-
-    def _config(self, mode: str, body: List[Body]) -> RequestConfig:
-        config = RequestConfig(mode=mode, options=[])
-        for i in body:
-            override_params = cast(OverrideParams, i)
-            constructs = cast(Constructs, i)
-            options = ProviderOptions(
-                override_params=override_params, **constructs.dict()
-            )
-            config.options.append(options)
-        return config
 
     @property
     def _default_headers(self) -> Mapping[str, str]:
@@ -227,20 +224,24 @@ class APIClient:
         }
 
     def _build_headers(self, options: Options) -> httpx.Headers:
-        custom_headers = options.headers or {}
-        headers_dict = self._merge_mappings(self._default_headers, custom_headers)
+        option_headers = options.headers or {}
+        headers_dict = self._merge_mappings(
+            self._default_headers, option_headers, self.custom_headers
+        )
         headers = httpx.Headers(headers_dict)
         return headers
 
     def _merge_mappings(
         self,
-        obj1: Mapping[str, Any],
-        obj2: Mapping[str, Any],
+        *args,
     ) -> Dict[str, Any]:
         """Merge two mappings of the given type
         In cases with duplicate keys the second mapping takes precedence.
         """
-        return {**obj1, **obj2}
+        mapped_headers = {}
+        for i in args:
+            mapped_headers.update(i)
+        return mapped_headers
 
     def is_closed(self) -> bool:
         return self._client.is_closed
@@ -319,7 +320,11 @@ class APIClient:
         stream_cls: Type[StreamT],
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
-        print(options)
+        print("sending the requests to Rubeus...")
+        print(json.dumps(options.json_body))
+        print(request.url)
+        for k, v in request.headers.items():
+            print(f"{k}:{v}")
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
             res.raise_for_status()
@@ -340,10 +345,15 @@ class APIClient:
             )
             return stream_response
 
-        response = cast(
-            ResponseT,
-            cast_to(**res.json()),
+        response = (
+            cast(
+                ResponseT,
+                cast_to(**res.json()),
+            )
+            if not isinstance(cast_to, httpx.Response)
+            else cast(ResponseT, res)
         )
+
         return response
 
     def _extract_stream_chunk_type(self, stream_cls: Type) -> type:

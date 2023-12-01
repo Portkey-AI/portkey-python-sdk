@@ -5,7 +5,7 @@ from .apis import (
     Generations,
     Prompt,
     Feedback,
-    CreateHeaders,
+    createHeaders,
 )
 from .utils import (
     Modes,
@@ -25,6 +25,7 @@ from .utils import (
     TextCompletion,
     TextCompletionChunk,
 )
+from .client import Portkey
 
 from portkey.version import VERSION
 
@@ -51,5 +52,6 @@ __all__ = [
     "Generations",
     "Prompt",
     "Feedback",
-    "CreateHeaders",
+    "createHeaders",
+    "Portkey",
 ]
