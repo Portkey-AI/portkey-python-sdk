@@ -6,8 +6,6 @@ the functionality and usability of the Portkey class
 """
 from typing import TYPE_CHECKING
 
-from portkey.api_resources.utils import PortkeyResponse
-
 
 if TYPE_CHECKING:
     pass
@@ -128,22 +126,3 @@ def modelname_to_contextsize(modelname: str) -> int:
         )
 
     return context_size
-
-
-def get_model(response: PortkeyResponse) -> str:
-    # TODO: Update this logic over here.
-    try:
-        from portkey import LLMOptions
-    except ImportError as exc:
-        raise ImportError(IMPORT_ERROR_MESSAGE) from exc
-    fallback_llm = LLMOptions.construct()
-    for llm in llms:
-        model = llm.model
-
-        if model == response.model:
-            fallback_llm = llm
-            break
-
-    if fallback_llm is None:
-        raise ValueError("Failed to get the fallback LLM")
-    return fallback_llm

@@ -1,10 +1,9 @@
-from portkey import Message, Portkey
+from portkey_ai import Message, Portkey
 from typing import TYPE_CHECKING, Optional, Union, List, Any, Mapping, cast, Sequence
-from portkey.api_resources.utils import PortkeyResponse
+from portkey_ai.api_resources.utils import PortkeyResponse
 
-from portkey.llms.llama_index.utils import (
+from portkey_ai.llms.llama_index.utils import (
     IMPORT_ERROR_MESSAGE,
-    get_model,
     is_chat_model,
     modelname_to_contextsize,
 )
@@ -196,4 +195,4 @@ class PortkeyLLM(CustomLLM):
         return is_chat_model(self.model or "")
 
     def _get_model(self, response: PortkeyResponse) -> str:
-        return get_model(response)
+        return response.model

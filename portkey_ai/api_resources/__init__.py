@@ -27,7 +27,7 @@ from .utils import (
 )
 from .client import Portkey
 
-from portkey.version import VERSION
+from portkey_ai.version import VERSION
 
 __version__ = VERSION
 __all__ = [

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from typing import Mapping, Optional, Union
-from portkey.api_resources import apis
-from portkey.api_resources.base_client import APIClient
+from portkey_ai.api_resources import apis
+from portkey_ai.api_resources.base_client import APIClient
 
 
 class Portkey(APIClient):

@@ -10,7 +10,7 @@ def main():
         "--version",
         "-v",
         action="version",
-        version=f"portkey {VERSION}",
+        version=f"portkey_ai {VERSION}",
         help="Print version and exit.",
     )
 

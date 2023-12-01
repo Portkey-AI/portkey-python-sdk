@@ -1,4 +1,4 @@
-from portkey.api_resources.base_client import APIClient
+from portkey_ai.api_resources.base_client import APIClient
 
 
 class APIResource:

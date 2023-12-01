@@ -6,7 +6,7 @@ from os import walk
 from typing import Any, Dict, List
 import pytest
 from uuid import uuid4
-from portkey import Portkey
+from portkey_ai import Portkey
 from time import sleep
 from dotenv import load_dotenv
 from .utils import read_json_file

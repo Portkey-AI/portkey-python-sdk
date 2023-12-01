@@ -17,7 +17,7 @@ from typing import (
 import httpx
 import platform
 
-from portkey.api_resources.apis.create_headers import createHeaders
+from portkey_ai.api_resources.apis.create_headers import createHeaders
 from .global_constants import PORTKEY_HEADER_PREFIX
 from .utils import (
     remove_empty_values,
@@ -28,7 +28,7 @@ from .exceptions import (
     APITimeoutError,
     APIConnectionError,
 )
-from portkey.version import VERSION
+from portkey_ai.version import VERSION
 from .utils import ResponseT, make_status_error, default_api_key, default_base_url
 from .common_types import StreamT
 from .streaming import Stream
@@ -320,11 +320,6 @@ class APIClient:
         stream_cls: Type[StreamT],
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
-        print("sending the requests to Rubeus...")
-        print(json.dumps(options.json_body))
-        print(request.url)
-        for k, v in request.headers.items():
-            print(f"{k}:{v}")
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
             res.raise_for_status()

@@ -35,8 +35,8 @@ $ export PORTKEY_API_KEY=PORTKEY_API_KEY
 #### Now, let's make a request with GPT-4
 
 ```py
-import portkey
-from portkey import Config, LLMOptions
+import portkey_ai
+from portkey_ai import Config, LLMOptions
 
 portkey.config = Config(
     mode="single",
@@ -85,7 +85,7 @@ This param lets you override any prompt that is passed during the completion cal
 Here's how you can combine everything:
 
 ```python
-from portkey import LLMOptions
+from portkey_aiimport LLMOptions
 
 # Portkey Config
 provider = "openai"
@@ -115,8 +115,8 @@ Portkey client's config takes 3 params: `api_key`, `mode`, `llms`.
 * `llms`: This is an array where we pass our LLMs constructed using the LLMOptions constructor.
 
 ```py
-import portkey
-from portkey import Config
+import portkey_ai
+from portkey_aiimport Config
 
 portkey.config = Config(mode="single",llms=[llm])
 ```
@@ -147,8 +147,8 @@ You have integrated Portkey's Python SDK in just 4 steps!
 import os
 os.environ["PORTKEY_API_KEY"] = "PORTKEY_API_KEY" # Setting the Portkey API Key
 
-import portkey
-from portkey import Config, LLMOptions
+import portkey_ai
+from portkey_aiimport Config, LLMOptions
 
 # Let's construct our LLMs.
 llm1 = LLMOptions(provider="openai", model="gpt-4", virtual_key="key_a"),

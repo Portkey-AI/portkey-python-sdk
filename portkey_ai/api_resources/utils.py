@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, 
 from enum import Enum, EnumMeta
 from typing_extensions import TypedDict
 import httpx
-import portkey
+import portkey_ai
 from pydantic import BaseModel, validator
 from .exceptions import (
     APIStatusError,
@@ -484,8 +484,8 @@ class Config(BaseModel):
 
 
 def default_api_key() -> str:
-    if portkey.api_key:
-        return portkey.api_key
+    if portkey_ai.api_key:
+        return portkey_ai.api_key
     env_api_key = os.environ.get(PORTKEY_API_KEY_ENV, "")
     if env_api_key:
         return env_api_key
@@ -493,8 +493,8 @@ def default_api_key() -> str:
 
 
 def default_base_url() -> str:
-    if portkey.base_url:
-        return portkey.base_url
+    if portkey_ai.base_url:
+        return portkey_ai.base_url
 
     env_base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
     if env_base_url:
@@ -503,15 +503,15 @@ def default_base_url() -> str:
 
 
 def retrieve_config() -> Union[Mapping, str]:
-    if portkey.config:
-        return portkey.config
+    if portkey_ai.config:
+        return portkey_ai.config
     # raise ValueError(MISSING_CONFIG_MESSAGE)
     return {}
 
 
 def retrieve_mode() -> Union[Modes, ModesLiteral, str]:
-    if portkey.mode:
-        return portkey.mode
+    if portkey_ai.mode:
+        return portkey_ai.mode
     raise ValueError(MISSING_MODE_MESSAGE)
 
 

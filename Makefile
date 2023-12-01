@@ -25,7 +25,7 @@ build:
 
 upload:
 	python -m pip install twine
-	python -m twine upload dist/portkey-ai-*
+	python -m twine upload dist/portkey_ai-*
 	rm -rf dist
 
 dev: 

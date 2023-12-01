@@ -1,5 +1,5 @@
 from __future__ import annotations
-from portkey import Portkey
+from portkey_ai import Portkey
 
 import logging
 from typing import Any, Iterator, List, Mapping, Optional, Union

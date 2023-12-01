@@ -1,6 +1,6 @@
 import os
 from typing import Mapping, Optional, Union
-from portkey.api_resources import (
+from portkey_ai.api_resources import (
     LLMOptions,
     Modes,
     ModesLiteral,
@@ -23,8 +23,8 @@ from portkey.api_resources import (
     Prompt,
     Portkey,
 )
-from portkey.version import VERSION
-from portkey.api_resources.global_constants import (
+from portkey_ai.version import VERSION
+from portkey_ai.api_resources.global_constants import (
     PORTKEY_BASE_URL,
     PORTKEY_API_KEY_ENV,
     PORTKEY_PROXY_ENV,

@@ -1,6 +1,6 @@
 from typing import Mapping
 import json
-from portkey.api_resources.utils import get_portkey_header
+from portkey_ai.api_resources.utils import get_portkey_header
 
 __all__ = ["createHeaders"]
 

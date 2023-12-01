@@ -1,5 +1,5 @@
 from __future__ import annotations
-from portkey import Portkey
+from portkey_ai import Portkey
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -39,7 +39,7 @@ except ImportError as exc:
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from portkey import LLMOptions, Modes, ModesLiteral
+    from portkey_ai import LLMOptions, Modes, ModesLiteral
 
 
 IMPORT_ERROR_MESSAGE = (
@@ -161,7 +161,7 @@ class ChatPortkey(SimpleChatModel):
             self
         """
         try:
-            from portkey import LLMOptions
+            from portkey_ai import LLMOptions
         except ImportError as exc:
             raise ImportError(IMPORT_ERROR_MESSAGE) from exc
         if isinstance(llm_params, LLMOptions):

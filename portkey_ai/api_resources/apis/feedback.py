@@ -1,8 +1,8 @@
 from typing import Optional
-from portkey.api_resources.apis.api_resource import APIResource
-from portkey.api_resources.base_client import APIClient
-from portkey.api_resources.streaming import Stream
-from portkey.api_resources.utils import GenericResponse, PortkeyApiPaths
+from portkey_ai.api_resources.apis.api_resource import APIResource
+from portkey_ai.api_resources.base_client import APIClient
+from portkey_ai.api_resources.streaming import Stream
+from portkey_ai.api_resources.utils import GenericResponse, PortkeyApiPaths
 
 
 class Feedback(APIResource):
