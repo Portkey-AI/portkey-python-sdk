@@ -40,6 +40,7 @@ class Portkey(APIClient):
         self.generations = apis.Generations(self)
         self.prompt = apis.Prompt(self)
         self.embeddings = apis.Embeddings(self)
+        self.feedback = apis.Feedback(self)
 
     def copy(
         self,

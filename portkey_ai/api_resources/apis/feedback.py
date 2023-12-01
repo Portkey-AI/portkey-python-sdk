@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from portkey_ai.api_resources.apis.api_resource import APIResource
 from portkey_ai.api_resources.base_client import APIClient
 from portkey_ai.api_resources.streaming import Stream
@@ -16,8 +16,20 @@ class Feedback(APIResource):
         value: Optional[int] = None,
         weight: Optional[float] = None,
         metadata: Optional[Dict[str, Any]] = None
-    ) -> None:
+    ) -> GenericResponse:
         body = dict(trace_id=trace_id, value=value, weight=weight, metadata=metadata)
+        return self._post(
+            PortkeyApiPaths.FEEDBACK_API,
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream_cls=Stream[GenericResponse],
+            stream=False,
+            headers={},
+        )
+
+    def bulk_create(self, *, feedbacks: List[Dict[str, Any]]) -> GenericResponse:
+        body = feedbacks
         return self._post(
             PortkeyApiPaths.FEEDBACK_API,
             body=body,
