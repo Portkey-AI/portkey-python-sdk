@@ -16,4 +16,4 @@ class APIResource:
         # self._delete = client.delete
 
     def _post(self, *args, **kwargs):
-        return self._client.post(*args, **kwargs)
+        return self._client._post(*args, **kwargs)

@@ -66,7 +66,7 @@ class Portkey(APIClient):
             **kwargs,
         )
 
-    def _post(self, url: str, **kwargs):
+    def post(self, url: str, **kwargs):
         return apis.Post(self).create(url=url, **kwargs)
 
     with_options = copy

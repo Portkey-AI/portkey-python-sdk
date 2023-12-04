@@ -99,7 +99,7 @@ class APIClient:
         return None
 
     @overload
-    def post(
+    def _post(
         self,
         path: str,
         *,
@@ -113,7 +113,7 @@ class APIClient:
         ...
 
     @overload
-    def post(
+    def _post(
         self,
         path: str,
         *,
@@ -127,7 +127,7 @@ class APIClient:
         ...
 
     @overload
-    def post(
+    def _post(
         self,
         path: str,
         *,
@@ -140,7 +140,7 @@ class APIClient:
     ) -> Union[ResponseT, StreamT]:
         ...
 
-    def post(
+    def _post(
         self,
         path: str,
         *,
