@@ -127,7 +127,7 @@ class Completions(APIResource):
             "top_k": top_k,
             "top_p": top_p,
             "stream": stream,
-            ** kwargs,
+            **kwargs,
         }
         return self._post(
             f"/prompts/{prompt_id}/completions",
