@@ -111,10 +111,16 @@ class Prompt(APIResource):
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
         if config is None:
             config = retrieve_config()
-        body = {"variables": variables}
+        body = {
+            "variables": variables,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "top_k": top_k,
+            "top_p": top_p,
+            **kwargs,
+        }
         return self._post(
-            # TODO: Update this API with new Rubeus API.
-            PortkeyApiPaths.PROMPT_API,
+            f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
             cast_to=GenericResponse,
