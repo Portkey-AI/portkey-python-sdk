@@ -157,7 +157,7 @@ class Stream(Generic[ResponseT]):
         response = self.response
         for sse in self._iter_events():
             if sse.event is None:
-                yield cast(ResponseT, self._cast_to(**sse.json())) if isinstance(
+                yield cast(ResponseT, self._cast_to(**sse.json())) if not isinstance(
                     self._cast_to, httpx.Response
                 ) else cast(ResponseT, sse)
 

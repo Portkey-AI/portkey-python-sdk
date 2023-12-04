@@ -95,12 +95,12 @@ ModesLiteral = Literal["fallback", "ab_test", "single", "proxy"]
 
 
 class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
-    GENERATION = "/v1/prompts/{prompt_id}/generate"
-    CHAT_COMPLETE_API = "/v1/chat/completions"
-    TEXT_COMPLETE_API = "/v1/completions"
-    PROMPT_API = "/v1/prompt/complete"
-    FEEDBACK_API = "/v1/feedback"
-    EMBEDDING_API = "/v1/embeddings"
+    GENERATION = "/prompts/{prompt_id}/generate"
+    CHAT_COMPLETE_API = "/chat/completions"
+    TEXT_COMPLETE_API = "/completions"
+    PROMPT_API = "/prompt/complete"
+    FEEDBACK_API = "/feedback"
+    EMBEDDING_API = "/embeddings"
 
 
 class Options(BaseModel):

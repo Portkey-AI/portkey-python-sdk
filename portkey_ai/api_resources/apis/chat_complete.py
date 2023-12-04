@@ -24,8 +24,6 @@ class ChatCompletion(APIResource):
         super().__init__(client)
         self.completions = Completions(client)
 
-    pass
-
 
 class Completions(APIResource):
     def __init__(self, client: APIClient) -> None:
@@ -93,6 +91,7 @@ class Completions(APIResource):
             max_tokens=max_tokens,
             top_k=top_k,
             top_p=top_p,
+            stream=stream,
             **kwargs,
         )
 

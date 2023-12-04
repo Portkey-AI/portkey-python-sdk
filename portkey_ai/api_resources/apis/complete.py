@@ -73,6 +73,7 @@ class Completion(APIResource):
             max_tokens=max_tokens,
             top_k=top_k,
             top_p=top_p,
+            stream=stream,
             **kwargs,
         )
         return self._post(

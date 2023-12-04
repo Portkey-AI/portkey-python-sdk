@@ -1,8 +1,8 @@
+from __future__ import annotations
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
 from portkey_ai.api_resources.base_client import APIClient
 from portkey_ai.api_resources.utils import (
-    PortkeyApiPaths,
     retrieve_config,
     GenericResponse,
 )
@@ -45,6 +45,14 @@ class Generations(APIResource):
 
 
 class Prompt(APIResource):
+    completions: Completions
+
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+        self.completions = Completions(client)
+
+
+class Completions(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
@@ -109,6 +117,7 @@ class Prompt(APIResource):
         top_p: Optional[float] = None,
         **kwargs,
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
         body = {
@@ -117,7 +126,8 @@ class Prompt(APIResource):
             "max_tokens": max_tokens,
             "top_k": top_k,
             "top_p": top_p,
-            **kwargs,
+            "stream": stream,
+            ** kwargs,
         }
         return self._post(
             f"/prompts/{prompt_id}/completions",
