@@ -320,15 +320,13 @@ class APIClient:
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
         try:
-            res = self._client.send(
-                request, auth=self.custom_auth, stream=stream)
+            res = self._client.send(request, auth=self.custom_auth, stream=stream)
             res.raise_for_status()
         except httpx.HTTPStatusError as err:  # 4xx and 5xx errors
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
             err.response.read()
-            raise self._make_status_error_from_response(
-                request, err.response) from None
+            raise self._make_status_error_from_response(request, err.response) from None
         except httpx.TimeoutException as err:
             raise APITimeoutError(request=request) from err
         except Exception as err:
@@ -339,8 +337,7 @@ class APIClient:
             if stream_cls is None:
                 raise MissingStreamClassError()
             stream_response = stream_cls(
-                response=res, cast_to=self._extract_stream_chunk_type(
-                    stream_cls)
+                response=res, cast_to=self._extract_stream_chunk_type(stream_cls)
             )
             return stream_response
 
@@ -352,7 +349,7 @@ class APIClient:
             if not isinstance(cast_to, httpx.Response)
             else cast(ResponseT, res)
         )
-        response._headers = res.headers  # type: ignore pylint: disable=W0212
+        response._headers = res.headers  # type: ignore
         return response
 
     def _extract_stream_chunk_type(self, stream_cls: Type) -> type:
