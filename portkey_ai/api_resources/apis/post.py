@@ -1,9 +1,10 @@
-from typing import Any, Dict, Union, overload, Literal
+from typing import Union, overload, Literal
 
 from portkey_ai.api_resources.base_client import APIClient
 
 from portkey_ai.api_resources.streaming import Stream
 from portkey_ai.api_resources.apis.api_resource import APIResource
+from portkey_ai.api_resources.utils import GenericResponse
 
 
 class Post(APIResource):
@@ -17,7 +18,7 @@ class Post(APIResource):
         url: str,
         stream: Literal[True],
         **kwargs,
-    ) -> Stream[Dict[str, Any]]:
+    ) -> Stream[GenericResponse]:
         ...
 
     @overload
@@ -27,7 +28,7 @@ class Post(APIResource):
         url: str,
         stream: Literal[False] = False,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> GenericResponse:
         ...
 
     @overload
@@ -37,7 +38,7 @@ class Post(APIResource):
         url: str,
         stream: bool = False,
         **kwargs,
-    ) -> Union[Dict[str, Any], Stream[Dict[str, Any]]]:
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
         ...
 
     def create(
@@ -46,13 +47,13 @@ class Post(APIResource):
         url: str,
         stream: bool = False,
         **kwargs,
-    ) -> Union[Dict[str, Any], Stream[Dict[str, Any]]]:
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
         return self._post(
             url,
             body=kwargs,
             params=None,
             cast_to=dict,
-            stream_cls=Stream[dict],
+            stream_cls=Stream[GenericResponse],
             stream=stream,
             headers={},
         )

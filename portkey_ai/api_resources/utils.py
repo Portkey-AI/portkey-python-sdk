@@ -47,7 +47,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletionChunk, TextCompletion, GenericResponse, httpx.Response, Dict]",  # noqa: E501
+    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletionChunk, TextCompletion, GenericResponse, httpx.Response]",  # noqa: E501
 )
 
 
@@ -342,6 +342,7 @@ class ChatCompletions(BaseModel, extra="allow"):
     model: Optional[str] = None
     choices: Union[List[ChatChoice], Dict[Any, Any]] = {}
     usage: Optional[Usage] = None
+    _headers: Optional[httpx.Headers] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -351,6 +352,9 @@ class ChatCompletions(BaseModel, extra="allow"):
 
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
 
 # Models for text completion Non-stream
@@ -377,6 +381,7 @@ class TextCompletion(BaseModel, extra="allow"):
     model: Optional[str] = None
     choices: Union[List[TextChoice], Dict[Any, Any]] = {}
     usage: Optional[Usage] = None
+    _headers: Optional[httpx.Headers] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -386,6 +391,9 @@ class TextCompletion(BaseModel, extra="allow"):
 
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
 
 # Models for text completion stream
@@ -410,6 +418,10 @@ class GenericResponse(BaseModel, extra="allow"):
     success: Optional[bool]
     data: Optional[Mapping[str, Any]]
     warning: Optional[str]
+    _headers: Optional[httpx.Headers] = None
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
@@ -517,3 +529,16 @@ def retrieve_mode() -> Union[Modes, ModesLiteral, str]:
 
 def get_portkey_header(key: str) -> str:
     return f"{PORTKEY_HEADER_PREFIX}{key}"
+
+
+def parse_headers(headers: httpx.Headers | None) -> dict:
+    if headers is None:
+        return {}
+
+    _headers = {}
+    for k, v in headers.items():
+        if k.startswith(PORTKEY_HEADER_PREFIX):
+            k = k.replace(PORTKEY_HEADER_PREFIX, "")
+            _headers[k] = v
+
+    return _headers

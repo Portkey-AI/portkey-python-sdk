@@ -19,10 +19,7 @@ import platform
 
 from portkey_ai.api_resources.apis.create_headers import createHeaders
 from .global_constants import PORTKEY_HEADER_PREFIX
-from .utils import (
-    remove_empty_values,
-    Options,
-)
+from .utils import remove_empty_values, Options
 from .exceptions import (
     APIStatusError,
     APITimeoutError,
@@ -81,6 +78,8 @@ class APIClient:
                 "Accept": "application/json",
             },
         )
+
+        self.response_headers: httpx.Headers | None = None
 
     def _serialize_header_values(
         self, headers: Optional[Mapping[str, Any]]
@@ -321,22 +320,27 @@ class APIClient:
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
         try:
-            res = self._client.send(request, auth=self.custom_auth, stream=stream)
+            res = self._client.send(
+                request, auth=self.custom_auth, stream=stream)
             res.raise_for_status()
         except httpx.HTTPStatusError as err:  # 4xx and 5xx errors
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
             err.response.read()
-            raise self._make_status_error_from_response(request, err.response) from None
+            raise self._make_status_error_from_response(
+                request, err.response) from None
         except httpx.TimeoutException as err:
             raise APITimeoutError(request=request) from err
         except Exception as err:
             raise APIConnectionError(request=request) from err
+
+        self.response_headers = res.headers
         if stream or res.headers["content-type"] == "text/event-stream":
             if stream_cls is None:
                 raise MissingStreamClassError()
             stream_response = stream_cls(
-                response=res, cast_to=self._extract_stream_chunk_type(stream_cls)
+                response=res, cast_to=self._extract_stream_chunk_type(
+                    stream_cls)
             )
             return stream_response
 
@@ -348,7 +352,7 @@ class APIClient:
             if not isinstance(cast_to, httpx.Response)
             else cast(ResponseT, res)
         )
-
+        response._headers = res.headers  # type: ignore pylint: disable=W0212
         return response
 
     def _extract_stream_chunk_type(self, stream_cls: Type) -> type:
