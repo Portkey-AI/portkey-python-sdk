@@ -45,11 +45,7 @@ class ServerSentEvent:
         return self._data
 
     def json(self) -> Any:
-        return (
-            {"model": "", "choices": [{}]}
-            if self.data == "[DONE]"
-            else json.loads(self.data)
-        )
+        return json.loads(self.data)
 
     def __repr__(self) -> str:
         return f"ServerSentEvent(event={self.event}, data={self.data}, id={self.id},\
@@ -156,6 +152,8 @@ class Stream(Generic[ResponseT]):
     def __stream__(self) -> Iterator[ResponseT]:
         response = self.response
         for sse in self._iter_events():
+            if sse.data.startswith("[DONE]"):
+                break
             if sse.event is None:
                 yield cast(ResponseT, self._cast_to(**sse.json())) if not isinstance(
                     self._cast_to, httpx.Response
