@@ -1,3 +1,3 @@
-from .completions import Portkey
+from .completions import PortkeyLLM
 
-__all__ = ["Portkey"]
+__all__ = ["PortkeyLLM"]

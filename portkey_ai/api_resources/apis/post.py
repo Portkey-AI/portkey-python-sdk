@@ -52,7 +52,7 @@ class Post(APIResource):
             url,
             body=kwargs,
             params=None,
-            cast_to=dict,
+            cast_to=GenericResponse,
             stream_cls=Stream[GenericResponse],
             stream=stream,
             headers={},

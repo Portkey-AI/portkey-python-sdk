@@ -38,7 +38,7 @@ class Portkey(APIClient):
         self.completions = apis.Completion(self)
         self.chat = apis.ChatCompletion(self)
         self.generations = apis.Generations(self)
-        self.prompt = apis.Prompt(self)
+        self.prompts = apis.Prompt(self)
         self.embeddings = apis.Embeddings(self)
         self.feedback = apis.Feedback(self)
 
