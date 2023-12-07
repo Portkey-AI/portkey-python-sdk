@@ -35,6 +35,14 @@ class PortkeyLLM(CustomLLM):
     _client: Any = PrivateAttr()
     model: str = ""
 
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    virtual_key: Optional[str] = None
+    config: Optional[Union[Mapping, str]] = None
+    provider: Optional[str] = None
+    trace_id: Optional[str] = None
+    custom_metadata: Optional[str] = None
+
     def __init__(
         self,
         *,
@@ -42,6 +50,10 @@ class PortkeyLLM(CustomLLM):
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
         config: Optional[Union[Mapping, str]] = None,
+        provider: Optional[str] = None,
+        trace_id: Optional[str] = None,
+        custom_metadata: Optional[str] = None,
+        **kwargs,
     ) -> None:
         """
         Initialize a Portkey instance.
@@ -56,7 +68,14 @@ class PortkeyLLM(CustomLLM):
             api_key=api_key,
         )
         self._client = Portkey(
-            api_key=api_key, base_url=base_url, virtual_key=virtual_key, config=config
+            api_key=api_key,
+            base_url=base_url,
+            virtual_key=virtual_key,
+            config=config,
+            provider=provider,
+            trace_id=trace_id,
+            metadata=custom_metadata,
+            **kwargs,
         )
         self.model = ""
 
@@ -70,7 +89,8 @@ class PortkeyLLM(CustomLLM):
         except ImportError as exc:
             raise ImportError(IMPORT_ERROR_MESSAGE) from exc
         return LLMMetadata(
-            _context_window=modelname_to_contextsize(self.model) if self.model else 0,
+            _context_window=modelname_to_contextsize(
+                self.model) if self.model else 0,
             is_chat_model=is_chat_model(self.model),
             model_name=self.model,
         )
@@ -104,7 +124,8 @@ class PortkeyLLM(CustomLLM):
             List[Message],
             [{"role": i.role.value, "content": i.content} for i in messages],
         )
-        response = self._client.chat.completions.create(messages=_messages, **kwargs)
+        response = self._client.chat.completions.create(
+            messages=_messages, **kwargs)
         self.model = self._get_model(response)
 
         message = response.choices[0].message
@@ -167,7 +188,8 @@ class PortkeyLLM(CustomLLM):
         return gen()
 
     def _stream_complete(self, prompt: str, **kwargs: Any) -> CompletionResponseGen:
-        response = self._client.completions.create(prompt=prompt, stream=True, **kwargs)
+        response = self._client.completions.create(
+            prompt=prompt, stream=True, **kwargs)
 
         def gen() -> CompletionResponseGen:
             text = ""

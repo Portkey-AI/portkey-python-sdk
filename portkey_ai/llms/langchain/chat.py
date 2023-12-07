@@ -111,12 +111,15 @@ class ChatPortkey(SimpleChatModel):
     )
 
     model: Optional[str] = Field(default="gpt-3.5-turbo")
-    llm: "LLMOptions" = Field(description="LLM parameter", default_factory=dict)
-    streaming: bool = False
-
-    llms: List["LLMOptions"] = Field(description="LLM parameters", default_factory=list)
 
     _client: Any = PrivateAttr()
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None
+    virtual_key: Optional[str] = None
+    config: Optional[Union[Mapping, str]] = None
+    provider: Optional[str] = None
+    trace_id: Optional[str] = None
+    metadata: Optional[str] = None
 
     def __init__(
         self,
@@ -125,11 +128,22 @@ class ChatPortkey(SimpleChatModel):
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
         config: Optional[Union[Mapping, str]] = None,
+        provider: Optional[str] = None,
+        trace_id: Optional[str] = None,
+        metadata: Optional[str] = None,
+        **kwargs,
     ) -> None:
         super().__init__()
 
         self._client = Portkey(
-            api_key=api_key, base_url=base_url, virtual_key=virtual_key, config=config
+            api_key=api_key,
+            base_url=base_url,
+            virtual_key=virtual_key,
+            config=config,
+            provider=provider,
+            trace_id=trace_id,
+            metadata=metadata,
+            **kwargs,
         )
         self.model = None
 
