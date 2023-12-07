@@ -537,7 +537,7 @@ def get_portkey_header(key: str) -> str:
     return f"{PORTKEY_HEADER_PREFIX}{key}"
 
 
-def parse_headers(headers: httpx.Headers | None) -> dict:
+def parse_headers(headers: Optional[httpx.Headers]) -> dict:
     if headers is None:
         return {}
 
