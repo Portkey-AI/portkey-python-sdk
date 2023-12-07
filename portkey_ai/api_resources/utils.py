@@ -345,6 +345,7 @@ class ChatCompletions(BaseModel, extra="allow"):
     _headers: Optional[httpx.Headers] = None
 
     def __str__(self):
+        del self._headers
         return json.dumps(self.dict(), indent=4)
 
     def __getitem__(self, key):
@@ -384,6 +385,7 @@ class TextCompletion(BaseModel, extra="allow"):
     _headers: Optional[httpx.Headers] = None
 
     def __str__(self):
+        del self._headers
         return json.dumps(self.dict(), indent=4)
 
     def __getitem__(self, key):
