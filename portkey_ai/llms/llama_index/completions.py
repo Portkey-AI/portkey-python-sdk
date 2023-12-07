@@ -70,7 +70,7 @@ class PortkeyLLM(CustomLLM):
         except ImportError as exc:
             raise ImportError(IMPORT_ERROR_MESSAGE) from exc
         return LLMMetadata(
-            _context_window=modelname_to_contextsize(self.model),
+            _context_window=modelname_to_contextsize(self.model) if self.model else 0,
             is_chat_model=is_chat_model(self.model),
             model_name=self.model,
         )
