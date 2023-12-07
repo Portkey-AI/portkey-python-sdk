@@ -1,5 +1,5 @@
 from portkey_ai import Message, Portkey
-from typing import TYPE_CHECKING, Optional, Union, List, Any, Mapping, cast, Sequence
+from typing import Optional, Union, List, Any, Mapping, cast, Sequence
 from portkey_ai.api_resources.utils import PortkeyResponse
 
 from portkey_ai.llms.llama_index.utils import (
@@ -8,7 +8,9 @@ from portkey_ai.llms.llama_index.utils import (
     modelname_to_contextsize,
 )
 
-if TYPE_CHECKING:
+try:
+    from llama_index.llms.custom import CustomLLM
+    from llama_index.bridge.pydantic import PrivateAttr
     from llama_index.llms.base import (
         ChatMessage,
         ChatResponse,
@@ -19,10 +21,6 @@ if TYPE_CHECKING:
         llm_chat_callback,
         llm_completion_callback,
     )
-
-try:
-    from llama_index.llms.custom import CustomLLM
-    from llama_index.bridge.pydantic import PrivateAttr
 except ImportError as exc:
     raise ImportError(IMPORT_ERROR_MESSAGE) from exc
 
@@ -106,8 +104,7 @@ class PortkeyLLM(CustomLLM):
             List[Message],
             [{"role": i.role.value, "content": i.content} for i in messages],
         )
-        response = self._client.chat.completions.create(
-            messages=_messages, **kwargs)
+        response = self._client.chat.completions.create(messages=_messages, **kwargs)
         self.model = self._get_model(response)
 
         message = response.choices[0].message
@@ -170,8 +167,7 @@ class PortkeyLLM(CustomLLM):
         return gen()
 
     def _stream_complete(self, prompt: str, **kwargs: Any) -> CompletionResponseGen:
-        response = self._client.completions.create(
-            prompt=prompt, stream=True, **kwargs)
+        response = self._client.completions.create(prompt=prompt, stream=True, **kwargs)
 
         def gen() -> CompletionResponseGen:
             text = ""

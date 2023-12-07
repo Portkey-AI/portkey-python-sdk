@@ -416,7 +416,7 @@ class TextCompletionChunk(BaseModel, extra="allow"):
 
 class GenericResponse(BaseModel, extra="allow"):
     success: Optional[bool]
-    data: Optional[Mapping[str, Any]]
+    data: Optional[Any]
     warning: Optional[str]
     _headers: Optional[httpx.Headers] = None
 
