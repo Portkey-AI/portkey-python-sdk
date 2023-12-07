@@ -422,6 +422,10 @@ class GenericResponse(BaseModel, extra="allow"):
     warning: Optional[str]
     _headers: Optional[httpx.Headers] = None
 
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 

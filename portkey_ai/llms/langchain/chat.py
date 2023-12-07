@@ -39,7 +39,7 @@ except ImportError as exc:
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from portkey_ai import LLMOptions, Modes, ModesLiteral
+    pass
 
 
 IMPORT_ERROR_MESSAGE = (
@@ -106,10 +106,6 @@ class ChatPortkey(SimpleChatModel):
             response = client("What are the biggest risks facing humanity?")
     """
 
-    mode: Optional[Union["Modes", "ModesLiteral"]] = Field(
-        description="The mode for using the Portkey integration", default=None
-    )
-
     model: Optional[str] = Field(default="gpt-3.5-turbo")
 
     _client: Any = PrivateAttr()
@@ -119,7 +115,7 @@ class ChatPortkey(SimpleChatModel):
     config: Optional[Union[Mapping, str]] = None
     provider: Optional[str] = None
     trace_id: Optional[str] = None
-    metadata: Optional[str] = None
+    custom_metadata: Optional[str] = None
 
     def __init__(
         self,
@@ -130,7 +126,7 @@ class ChatPortkey(SimpleChatModel):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        custom_metadata: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -142,48 +138,10 @@ class ChatPortkey(SimpleChatModel):
             config=config,
             provider=provider,
             trace_id=trace_id,
-            metadata=metadata,
+            metadata=custom_metadata,
             **kwargs,
         )
         self.model = None
-
-    def add_llms(
-        self, llm_params: Union[LLMOptions, List[LLMOptions]]
-    ) -> "ChatPortkey":
-        """
-        Adds the specified LLM parameters to the list of LLMs. This may be used for
-        fallbacks or load-balancing as specified in the mode.
-        Args:
-            llm_params (Union[LLMOptions, List[LLMOptions]]): A single LLM parameter \
-            set or a list of LLM parameter sets. Each set should be an instance of \
-            LLMOptions with
-            the specified attributes.
-                > provider: Optional[ProviderTypes]
-                > model: str
-                > temperature: float
-                > max_tokens: Optional[int]
-                > max_retries: int
-                > trace_id: Optional[str]
-                > cache_status: Optional[CacheType]
-                > cache: Optional[bool]
-                > metadata: Dict[str, Any]
-                > weight: Optional[float]
-                > **kwargs : Other additional parameters that are supported by \
-                    LLMOptions in portkey-ai
-            NOTE: User may choose to pass additional params as well.
-        Returns:
-            self
-        """
-        try:
-            from portkey_ai import LLMOptions
-        except ImportError as exc:
-            raise ImportError(IMPORT_ERROR_MESSAGE) from exc
-        if isinstance(llm_params, LLMOptions):
-            llm_params = [llm_params]
-        self.llms.extend(llm_params)
-        if self.model is None:
-            self.model = self.llms[0].model
-        return self
 
     def _call(
         self,

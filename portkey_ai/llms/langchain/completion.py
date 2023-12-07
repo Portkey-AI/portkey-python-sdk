@@ -45,7 +45,6 @@ class PortkeyLLM(LLM):
     """
 
     model: Optional[str] = Field(default="gpt-3.5-turbo")
-    streaming: bool = False
     _client: Any = PrivateAttr()
 
     api_key: Optional[str] = None
@@ -54,7 +53,7 @@ class PortkeyLLM(LLM):
     config: Optional[Union[Mapping, str]] = None
     provider: Optional[str] = None
     trace_id: Optional[str] = None
-    metadata: Optional[str] = None
+    custom_metadata: Optional[str] = None
 
     def __init__(
         self,
@@ -65,7 +64,7 @@ class PortkeyLLM(LLM):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        custom_metadata: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -77,7 +76,7 @@ class PortkeyLLM(LLM):
             config=config,
             provider=provider,
             trace_id=trace_id,
-            metadata=metadata,
+            metadata=custom_metadata,
             **kwargs,
         )
         self.model = None
