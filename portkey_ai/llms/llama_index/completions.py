@@ -89,8 +89,7 @@ class PortkeyLLM(CustomLLM):
         except ImportError as exc:
             raise ImportError(IMPORT_ERROR_MESSAGE) from exc
         return LLMMetadata(
-            _context_window=modelname_to_contextsize(
-                self.model) if self.model else 0,
+            _context_window=modelname_to_contextsize(self.model) if self.model else 0,
             is_chat_model=is_chat_model(self.model),
             model_name=self.model,
         )
@@ -124,8 +123,7 @@ class PortkeyLLM(CustomLLM):
             List[Message],
             [{"role": i.role.value, "content": i.content} for i in messages],
         )
-        response = self._client.chat.completions.create(
-            messages=_messages, **kwargs)
+        response = self._client.chat.completions.create(messages=_messages, **kwargs)
         self.model = self._get_model(response)
 
         message = response.choices[0].message
@@ -188,8 +186,7 @@ class PortkeyLLM(CustomLLM):
         return gen()
 
     def _stream_complete(self, prompt: str, **kwargs: Any) -> CompletionResponseGen:
-        response = self._client.completions.create(
-            prompt=prompt, stream=True, **kwargs)
+        response = self._client.completions.create(prompt=prompt, stream=True, **kwargs)
 
         def gen() -> CompletionResponseGen:
             text = ""
