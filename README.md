@@ -66,7 +66,7 @@ Portkey fully adheres to the OpenAI SDK signature. This means that you can insta
 
 ---
 
-#### [📝 Full Documentation](https://docs.portkey.ai/) | [🛠️ Integration Requests](https://github.com/Portkey-AI/portkey-python-sdk/issues) | 
+#### [📝 Full Documentation](https://docs.portkey.ai/docs) | [🛠️ Integration Requests](https://github.com/Portkey-AI/portkey-python-sdk/issues) | 
 
 <a href="https://twitter.com/intent/follow?screen_name=portkeyai"><img src="https://img.shields.io/twitter/follow/portkeyai?style=social&logo=twitter" alt="follow on Twitter"></a>
 <a href="https://discord.gg/sDk9JaNfK8" target="_blank"><img src="https://img.shields.io/discord/1143393887742861333?logo=discord" alt="Discord"></a>
