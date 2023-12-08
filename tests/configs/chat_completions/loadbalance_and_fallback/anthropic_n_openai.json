@@ -1,0 +1,28 @@
+{
+    "strategy": {
+        "mode": "loadbalance"
+    },
+    "targets": [
+        {
+            "provider": "openai",
+            "virtual_key": "open-ai-apikey-3368e0"
+        },
+        {
+            "strategy": {
+                "mode": "fallback",
+                "on_status_codes": [
+                    429,
+                    241
+                ]
+            },
+            "targets": [
+                {
+                    "virtual_key": "anthropic-419f08"
+                },
+                {
+                    "virtual_key": "open-ai-apikey-3368e0"
+                }
+            ]
+        }
+    ]
+}

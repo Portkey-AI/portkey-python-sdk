@@ -5,6 +5,7 @@ help: ## Show all Makefile targets
 .PHONY: format lint
 format: ## Run code formatter: black
 	black .
+	ruff check . --fix         
 lint: ## Run linters: mypy, black, ruff
 	mypy .
 	black . --check
@@ -24,7 +25,7 @@ build:
 
 upload:
 	python -m pip install twine
-	python -m twine upload dist/portkey-ai-*
+	python -m twine upload dist/portkey_ai-*
 	rm -rf dist
 
 dev: 

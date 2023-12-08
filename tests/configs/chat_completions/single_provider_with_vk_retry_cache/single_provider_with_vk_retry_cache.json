@@ -1,0 +1,13 @@
+{
+    "virtual_key": "open-ai-apikey-3368e0",
+    "cache": {
+        "mode": "semantic",
+        "max_age": 60
+    },
+    "retry": {
+        "attempts": 5,
+        "on_status_codes": [
+            429
+        ]
+    }
+}

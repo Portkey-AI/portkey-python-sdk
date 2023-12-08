@@ -1,0 +1,97 @@
+{
+    "openai": {
+        "env_variable": "OPENAI_API_KEY",
+        "chat": [
+            "gpt-4-32k-0613",
+            "gpt-3.5-turbo-0613",
+            "gpt-4-1106-preview",
+            "gpt-3.5-turbo-1106",
+            "gpt-3.5-turbo-16k",
+            "gpt-4",
+            "gpt-4-0314",
+            "gpt-4-32k",
+            "gpt-4-32k-0314",
+            "gpt-3.5-turbo-0301",
+            "gpt-3.5-turbo",
+            "gpt-4-0613"
+        ],
+        "text": [
+            "gpt-3.5-turbo-instruct",
+            "text-davinci-003",
+            "text-davinci-002",
+            "text-curie-001",
+            "text-babbage-001",
+            "text-ada-001",
+            "babbage-002",
+            "davinci-002",
+            "text-davinci-001"
+        ]
+    },
+    "anyscale": {
+        "env_variable": "ANYSCALE_API_KEY",
+        "chat": [
+            "meta-llama/Llama-2-7b-chat-hf",
+            "meta-llama/Llama-2-13b-chat-hf",
+            "meta-llama/Llama-2-70b-chat-hf",
+            "codellama/CodeLlama-34b-Instruct-hf",
+            "mistralai/Mistral-7B-Instruct-v0.1"
+        ],
+        "text": [
+            "meta-llama/Llama-2-7b-chat-hf",
+            "meta-llama/Llama-2-13b-chat-hf",
+            "meta-llama/Llama-2-70b-chat-hf",
+            "codellama/CodeLlama-34b-Instruct-hf",
+            "mistralai/Mistral-7B-Instruct-v0.1"
+        ]
+    },
+    "anthropic": {
+        "env_variable": "ANTHROPIC_API_KEY",
+        "chat": [
+            "claude-instant-1.2",
+            "claude-1",
+            "claude-1-100k",
+            "claude-instant-1",
+            "claude-instant-1-100k",
+            "claude-1.3",
+            "claude-1.3-100k",
+            "claude-1.2",
+            "claude-1.0",
+            "claude-instant-1.1",
+            "claude-instant-1.1-100k",
+            "claude-instant-1.0",
+            "claude-2"
+        ],
+        "text": [
+            "claude-instant-1.2",
+            "claude-1",
+            "claude-1-100k",
+            "claude-instant-1",
+            "claude-instant-1-100k",
+            "claude-1.3",
+            "claude-1.3-100k",
+            "claude-1.2",
+            "claude-1.0",
+            "claude-instant-1.1",
+            "claude-instant-1.1-100k",
+            "claude-instant-1.0",
+            "claude-2"
+        ]
+    },
+    "cohere": {
+        "env_variable": "COHERE_API_KEY",
+        "chat": [
+            "command-light",
+            "command",
+            "base-light",
+            "base",
+            "embed-english-v2.0",
+            "embed-english-light-v2.0",
+            "embed-multilingual-v2.0",
+            "embed-english-v3.0",
+            "embed-english-light-v3.0",
+            "embed-multilingual-v3.0",
+            "embed-multilingual-light-v3.0"
+        ],
+        "text": []
+    }
+}

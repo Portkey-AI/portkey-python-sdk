@@ -1,0 +1,15 @@
+{
+    "strategy": {
+        "mode": "loadbalance"
+    },
+    "targets": [
+        {
+            "provider": "openai",
+            "virtual_key": "open-ai-apikey-3368e0"
+        },
+        {
+            "provider": "anthropic",
+            "virtual_key": "anthropic-419f08"
+        }
+    ]
+}
