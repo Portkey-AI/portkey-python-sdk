@@ -44,7 +44,7 @@ class Generations(APIResource):
         return response
 
 
-class Prompt(APIResource):
+class Prompts(APIResource):
     completions: Completions
 
     def __init__(self, client: APIClient) -> None:
