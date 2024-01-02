@@ -20,7 +20,7 @@ from portkey_ai.api_resources import (
     TextCompletion,
     TextCompletionChunk,
     createHeaders,
-    Prompt,
+    Prompts,
     Portkey,
 )
 from portkey_ai.version import VERSION
@@ -60,6 +60,6 @@ __all__ = [
     "base_url",
     "PORTKEY_GATEWAY_URL",
     "createHeaders",
-    "Prompt",
+    "Prompts",
     "Portkey",
 ]
