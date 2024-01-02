@@ -9,7 +9,7 @@ class Portkey(APIClient):
     completions: apis.Completion
     chat: apis.ChatCompletion
     generations: apis.Generations
-    prompt: apis.Prompt
+    prompts: apis.Prompts
     embeddings: apis.Embeddings
 
     def __init__(
@@ -38,7 +38,7 @@ class Portkey(APIClient):
         self.completions = apis.Completion(self)
         self.chat = apis.ChatCompletion(self)
         self.generations = apis.Generations(self)
-        self.prompts = apis.Prompt(self)
+        self.prompts = apis.Prompts(self)
         self.embeddings = apis.Embeddings(self)
         self.feedback = apis.Feedback(self)
 

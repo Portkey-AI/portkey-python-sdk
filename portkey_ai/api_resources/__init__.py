@@ -3,7 +3,7 @@ from .apis import (
     Completion,
     ChatCompletion,
     Generations,
-    Prompt,
+    Prompts,
     Feedback,
     createHeaders,
 )
@@ -50,7 +50,7 @@ __all__ = [
     "TextCompletion",
     "TextCompletionChunk",
     "Generations",
-    "Prompt",
+    "Prompts",
     "Feedback",
     "createHeaders",
     "Portkey",
