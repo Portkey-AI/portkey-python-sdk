@@ -54,6 +54,7 @@ class PortkeyLLM(LLM):
     provider: Optional[str] = None
     trace_id: Optional[str] = None
     custom_metadata: Optional[str] = None
+    streaming: bool = False
 
     def __init__(
         self,
