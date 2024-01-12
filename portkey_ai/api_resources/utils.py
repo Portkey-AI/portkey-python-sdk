@@ -141,8 +141,8 @@ class DeltaToolCall(BaseModel):
 
 class Message(TypedDict):
     role: str
-    content: Optional[str]
-    tool_calls: NotRequired[List[ToolCall]]
+    content: NotRequired[Union[None, str]]
+    tool_calls: NotRequired[Union[None, List[ToolCall]]]
 
 
 class Function(BaseModel):
