@@ -120,10 +120,12 @@ class FunctionCall(BaseModel):
     name: str
     arguments: str
 
+
 class ToolCall(BaseModel):
     id: str
     function: FunctionCall
     type: str
+
 
 class DeltaToolCallFunction(BaseModel):
     arguments: Optional[str] = None
@@ -136,6 +138,7 @@ class DeltaToolCall(BaseModel):
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
 
+
 class Message(TypedDict):
     role: str
     content: Optional[str]
@@ -146,6 +149,7 @@ class Function(BaseModel):
     name: str
     description: str
     parameters: Dict[str, object]
+
 
 class Tool(BaseModel):
     function: Function
@@ -331,6 +335,7 @@ class ChatCompletionChunk(BaseModel, extra="allow"):
 
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
+
 
 class TopLogprob(BaseModel):
     token: str
