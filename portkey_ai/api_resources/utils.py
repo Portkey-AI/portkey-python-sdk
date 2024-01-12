@@ -337,29 +337,11 @@ class ChatCompletionChunk(BaseModel, extra="allow"):
         return getattr(self, key, None) or default
 
 
-class TopLogprob(BaseModel):
-    token: str
-    bytes: Optional[List[int]] = None
-    logprob: float
-
-
-class ChatCompletionTokenLogprob(BaseModel):
-    token: str
-    bytes: Optional[List[int]] = None
-    logprob: float
-    top_logprobs: List[TopLogprob]
-
-
-class ChoiceLogprobs(BaseModel):
-    content: Optional[List[ChatCompletionTokenLogprob]] = None
-
-
 # Models for Chat Non-stream
 class ChatChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
     message: Optional[Message] = None
     finish_reason: Optional[str] = None
-    logprobs: Optional[ChoiceLogprobs] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
