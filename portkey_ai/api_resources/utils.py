@@ -184,9 +184,8 @@ class ModelParams(BaseModel):
     logit_bias: Optional[Dict[str, int]] = None
     user: Optional[str] = None
     organization: Optional[str] = None
-    tool_choice: Optional[Union[None, str]] = None,
-    tools: Optional[List[Tool]] = None,
-    stream: Optional[bool] = False
+    tool_choice: Optional[Union[None, str]] = None
+    tools: Optional[List[Tool]] = None
 
 
 class OverrideParams(ModelParams, ConversationInput):
