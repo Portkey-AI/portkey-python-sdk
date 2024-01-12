@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from enum import Enum, EnumMeta
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
 from pydantic import BaseModel, validator
@@ -116,15 +116,44 @@ class Options(BaseModel):
     json_body: Optional[Mapping[str, Any]] = None
 
 
+class FunctionCall(BaseModel):
+    name: str
+    arguments: str
+
+
+class ToolCall(BaseModel):
+    id: str
+    function: FunctionCall
+    type: str
+
+
+class DeltaToolCallFunction(BaseModel):
+    arguments: Optional[str] = None
+    name: Optional[str] = None
+
+
+class DeltaToolCall(BaseModel):
+    index: int
+    id: Optional[str] = None
+    function: Optional[DeltaToolCallFunction] = None
+    type: Optional[str] = None
+
+
 class Message(TypedDict):
     role: str
-    content: str
+    content: NotRequired[Union[None, str]]
+    tool_calls: NotRequired[Union[None, List[ToolCall]]]
 
 
 class Function(BaseModel):
     name: str
     description: str
-    parameters: str
+    parameters: Dict[str, object]
+
+
+class Tool(BaseModel):
+    function: Function
+    type: str
 
 
 class RetrySettings(TypedDict):
@@ -149,7 +178,8 @@ class ModelParams(BaseModel):
     timeout: Union[float, None] = None
     functions: Optional[List[Function]] = None
     function_call: Optional[Union[None, str, Function]] = None
-    logprobs: Optional[int] = None
+    logprobs: Optional[bool] = None
+    top_logprobs: Optional[int] = None
     echo: Optional[bool] = None
     stop: Optional[Union[str, List[str]]] = None
     presence_penalty: Optional[int] = None
@@ -158,6 +188,8 @@ class ModelParams(BaseModel):
     logit_bias: Optional[Dict[str, int]] = None
     user: Optional[str] = None
     organization: Optional[str] = None
+    tool_choice: Optional[Union[None, str]] = None
+    tools: Optional[List[Tool]] = None
 
 
 class OverrideParams(ModelParams, ConversationInput):
@@ -261,6 +293,7 @@ class PortkeyResponse(BaseModel):
 class Delta(BaseModel, extra="allow"):
     role: Optional[str] = None
     content: Optional[str] = ""
+    tool_calls: Optional[List[DeltaToolCall]] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
