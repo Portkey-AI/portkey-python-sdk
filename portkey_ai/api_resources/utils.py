@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from enum import Enum, EnumMeta
-from typing_extensions import TypedDict
+from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
 from pydantic import BaseModel, validator
@@ -136,10 +136,10 @@ class DeltaToolCall(BaseModel):
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
 
-class Message(BaseModel):
+class Message(TypedDict):
     role: str
-    content: Optional[str] = None
-    tool_calls: Optional[List[ToolCall]] = None
+    content: Optional[str]
+    tool_calls: NotRequired[List[ToolCall]]
 
 
 class Function(BaseModel):
