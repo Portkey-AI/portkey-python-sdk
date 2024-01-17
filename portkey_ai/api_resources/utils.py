@@ -450,9 +450,9 @@ class TextCompletionChunk(BaseModel, extra="allow"):
 
 
 class GenericResponse(BaseModel, extra="allow"):
-    success: Optional[bool]
-    data: Optional[Any]
-    warning: Optional[str]
+    success: Optional[bool] = None
+    data: Optional[Any] = None
+    warning: Optional[str] = None
     _headers: Optional[httpx.Headers] = None
 
     def __str__(self):
