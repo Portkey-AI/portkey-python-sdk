@@ -8,8 +8,25 @@ class Embeddings(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
-    def create(self, *, input: str, model: Optional[str] = None) -> GenericResponse:
-        body = {"input": input, "model": model}
+    def create(
+        self,
+        *,
+        input: str,
+        model: Optional[str] = None,
+        dimensions: Optional[int] = None,
+        encoding_format: Optional[str] = None,
+        user: Optional[str] = None,
+        **kwargs
+    ) -> GenericResponse:
+        body = dict(
+            input=input,
+            model=model,
+            dimensions=dimensions,
+            encoding_format=encoding_format,
+            user=user,
+            **kwargs,
+        )
+
         return self._post(
             PortkeyApiPaths.EMBEDDING_API,
             body=body,
