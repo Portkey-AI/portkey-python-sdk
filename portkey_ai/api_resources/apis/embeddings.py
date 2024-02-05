@@ -18,14 +18,14 @@ class Embeddings(APIResource):
         user: Optional[str] = None,
         **kwargs
     ) -> GenericResponse:
-        body = dict(
+        body = {
             input=input,
             model=model,
             dimensions=dimensions,
             encoding_format=encoding_format,
             user=user,
             **kwargs,
-        )
+        }
 
         return self._post(
             PortkeyApiPaths.EMBEDDING_API,

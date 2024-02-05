@@ -20,10 +20,7 @@ CONFIGS_PATH = "./tests/configs/completions"
 
 
 def get_configs(folder_path) -> List[Dict[str, Any]]:
-    config_files = []
-    for dirpath, _, file_names in walk(folder_path):
-        for f in file_names:
-            config_files.append(read_json_file(os.path.join(dirpath, f)))
+    config_files = [read_json_file(os.path.join(dirpath, f)) for (dirpath, _, file_names) in walk(folder_path) for f in file_names]
 
     return config_files
 
@@ -71,9 +68,7 @@ class TestChatCompletions:
 
     # --------------------------
     # Test -2
-    t2_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config"):
-        t2_params.append((client, i))
+    t2_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config")]
 
     @pytest.mark.parametrize("client, config", t2_params)
     def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
@@ -119,9 +114,7 @@ class TestChatCompletions:
 
     # --------------------------
     # Test-3
-    t3_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/single_provider_with_vk_retry_cache"):
-        t3_params.append((client, i))
+    t3_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/single_provider_with_vk_retry_cache")]
 
     @pytest.mark.parametrize("client, config", t3_params)
     def test_method_single_provider_with_vk_retry_cache(
@@ -159,9 +152,7 @@ class TestChatCompletions:
 
     # --------------------------
     # Test-4
-    t4_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/loadbalance_with_two_apikeys"):
-        t4_params.append((client, i))
+    t4_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/loadbalance_with_two_apikeys")]
 
     @pytest.mark.parametrize("client, config", t4_params)
     def test_method_loadbalance_with_two_apikeys(
@@ -184,9 +175,7 @@ class TestChatCompletions:
 
     # --------------------------
     # Test-5
-    t5_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/loadbalance_and_fallback"):
-        t5_params.append((client, i))
+    t5_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/loadbalance_and_fallback")]
 
     @pytest.mark.parametrize("client, config", t5_params)
     def test_method_loadbalance_and_fallback(self, client: Any, config: Dict) -> None:
@@ -205,9 +194,7 @@ class TestChatCompletions:
 
     # --------------------------
     # Test-6
-    t6_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/single_provider"):
-        t6_params.append((client, i))
+    t6_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/single_provider")]
 
     @pytest.mark.parametrize("client, config", t6_params)
     def test_method_single_provider(self, client: Any, config: Dict) -> None:
@@ -266,9 +253,7 @@ class TestChatCompletionsStreaming:
 
     # --------------------------
     # Test -2
-    t2_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config"):
-        t2_params.append((client, i))
+    t2_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config")]
 
     @pytest.mark.parametrize("client, config", t2_params)
     def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
@@ -312,9 +297,7 @@ class TestChatCompletionsStreaming:
 
     # --------------------------
     # Test-3
-    t3_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/single_provider_with_vk_retry_cache"):
-        t3_params.append((client, i))
+    t3_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/single_provider_with_vk_retry_cache")]
 
     @pytest.mark.parametrize("client, config", t3_params)
     def test_method_single_provider_with_vk_retry_cache(
@@ -350,9 +333,7 @@ class TestChatCompletionsStreaming:
 
     # --------------------------
     # Test-4
-    t4_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/loadbalance_with_two_apikeys"):
-        t4_params.append((client, i))
+    t4_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/loadbalance_with_two_apikeys")]
 
     @pytest.mark.parametrize("client, config", t4_params)
     def test_method_loadbalance_with_two_apikeys(
@@ -375,9 +356,7 @@ class TestChatCompletionsStreaming:
 
     # --------------------------
     # Test-5
-    t5_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/loadbalance_and_fallback"):
-        t5_params.append((client, i))
+    t5_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/loadbalance_and_fallback")]
 
     @pytest.mark.parametrize("client, config", t5_params)
     def test_method_loadbalance_and_fallback(self, client: Any, config: Dict) -> None:
@@ -396,9 +375,7 @@ class TestChatCompletionsStreaming:
 
     # --------------------------
     # Test-6
-    t6_params = []
-    for i in get_configs(f"{CONFIGS_PATH}/single_provider"):
-        t6_params.append((client, i))
+    t6_params = [(client, i) for i in get_configs(f"{CONFIGS_PATH}/single_provider")]
 
     @pytest.mark.parametrize("client, config", t6_params)
     def test_method_single_provider(self, client: Any, config: Dict) -> None:

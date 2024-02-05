@@ -207,7 +207,7 @@ def remove_empty_values(
                 if cleaned_value is not None and cleaned_value != "":
                     cleaned_dict[key] = cleaned_value
         return cleaned_dict
-    elif isinstance(data, list):
+    if isinstance(data, list):
         cleaned_list = []
 
         for item in data:  # type: ignore
@@ -215,8 +215,7 @@ def remove_empty_values(
             if cleaned_item is not None and cleaned_item != "":
                 cleaned_list.append(cleaned_item)
         return cleaned_list  # type: ignore
-    else:
-        return cast(dict, data)
+    return cast(dict, data)
 
 
 class Constructs(BaseModel):
