@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Iterator, Generic, cast, Union, Type
+from typing import Any, Iterator, AsyncIterator, Generic, cast, Union, Type
 
 import httpx
 
@@ -74,6 +74,14 @@ class SSEDecoder:
             if sse is not None:
                 yield sse
 
+    async def aiter(self, iterator: AsyncIterator[str]) -> AsyncIterator[ServerSentEvent]:
+        """Given an async iterator that yields lines, iterate over it & yield every event encountered"""
+        async for line in iterator:
+            line = line.rstrip("\n")
+            sse = self.decode(line)
+            if sse is not None:
+                yield sse
+
     def decode(self, line: str) -> Union[ServerSentEvent, None]:
         # See: https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation  # noqa: E501
 
@@ -127,7 +135,6 @@ class SSEDecoder:
 
         return None
 
-
 class Stream(Generic[ResponseT]):
     """Provides the core interface to iterate over a synchronous stream response."""
 
@@ -152,6 +159,58 @@ class Stream(Generic[ResponseT]):
     def __stream__(self) -> Iterator[ResponseT]:
         response = self.response
         for sse in self._iter_events():
+            if sse.data.startswith("[DONE]"):
+                break
+            if sse.event is None:
+                yield cast(ResponseT, self._cast_to(**sse.json())) if not isinstance(
+                    self._cast_to, httpx.Response
+                ) else cast(ResponseT, sse)
+
+            if sse.event == "ping":
+                continue
+
+            if sse.event == "error":
+                body = sse.data
+
+                try:
+                    body = sse.json()
+                    err_msg = f"{body}"
+                except Exception:
+                    err_msg = sse.data or f"Error code: {response.status_code}"
+
+                raise make_status_error(
+                    err_msg,
+                    body=body,
+                    response=self.response,
+                    request=self.response.request,
+                )
+
+class AsyncStream(Generic[ResponseT]):
+    """Provides the core interface to iterate over a asynchronous stream response."""
+
+    response: httpx.Response
+
+    def __init__(self, *, response: httpx.Response, cast_to: Type[ResponseT]) -> None:
+        self._cast_to = cast_to
+        self.response = response
+        self._decoder = SSEDecoder()
+        self._iterator = self.__stream__()
+
+    async def __anext__(self) -> ResponseT:
+        return await self._iterator.__anext__()
+
+    async def __aiter__(self) -> AsyncIterator[ResponseT]:
+        async for item in self._iterator:
+            yield item
+
+    async def _iter_events(self) -> AsyncIterator[ServerSentEvent]:
+        async for sse in self._decoder.aiter(self.response.aiter_lines()):
+            yield sse
+
+    async def __stream__(self) -> AsyncIterator[ResponseT]:
+        response = self.response
+
+        async for sse in self._iter_events():
             if sse.data.startswith("[DONE]"):
                 break
             if sse.event is None:
