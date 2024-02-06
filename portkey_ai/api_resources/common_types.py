@@ -16,4 +16,4 @@ AsyncStreamT = TypeVar(
     bound=AsyncStream[
         Union[ChatCompletionChunk, TextCompletionChunk, GenericResponse, httpx.Response]
     ],
-)
+) 
