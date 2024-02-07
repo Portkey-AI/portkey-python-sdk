@@ -1,6 +1,7 @@
 """"""
 from .apis import (
     Completion,
+    AsyncCompletion,
     ChatCompletion,
     Generations,
     Prompts,
@@ -42,6 +43,7 @@ __all__ = [
     "Message",
     "ChatCompletions",
     "Completion",
+    "AsyncCompletion",
     "Params",
     "Config",
     "RetrySettings",
