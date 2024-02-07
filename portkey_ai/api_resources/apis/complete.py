@@ -1,5 +1,5 @@
 from typing import Optional, Union, overload, Literal
-from portkey_ai.api_resources.base_client import APIClient
+from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.utils import (
     PortkeyApiPaths,
     TextCompletion,
@@ -87,7 +87,7 @@ class Completion(APIResource):
         )
 
 class AsyncCompletion(AsyncAPIResource):
-    def __init__(self, client: AsyncAPIResource) -> None:
+    def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
     @overload

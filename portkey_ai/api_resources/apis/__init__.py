@@ -1,4 +1,4 @@
-from .chat_complete import ChatCompletion
+from .chat_complete import ChatCompletion, AsyncChatCompletion
 from .complete import Completion, AsyncCompletion
 from .generation import Generations, AsyncGenerations, Prompts, AsyncPrompts
 from .feedback import Feedback, AsyncFeedback
@@ -10,6 +10,7 @@ __all__ = [
     "Completion",
     "AsyncCompletion",
     "ChatCompletion",
+    "AsyncChatCompletion",
     "Generations",
     "AsyncGenerations",
     "Feedback",
