@@ -30,7 +30,7 @@ from .utils import (
     TextCompletion,
     TextCompletionChunk,
 )
-from .client import Portkey
+from .client import Portkey, AsyncPortkey
 
 from portkey_ai.version import VERSION
 
@@ -64,4 +64,5 @@ __all__ = [
     "AsyncFeedback",
     "createHeaders",
     "Portkey",
+    "AsyncPortkey"
 ]

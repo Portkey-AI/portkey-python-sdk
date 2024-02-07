@@ -25,6 +25,7 @@ from portkey_ai.api_resources import (
     Prompts,
     AsyncPrompts,
     Portkey,
+    AsyncPortkey
 )
 from portkey_ai.version import VERSION
 from portkey_ai.api_resources.global_constants import (
@@ -68,4 +69,5 @@ __all__ = [
     "Prompts",
     "AsyncPrompts",
     "Portkey",
+    "AsyncPortkey",
 ]
