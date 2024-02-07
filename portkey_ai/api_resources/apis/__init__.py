@@ -1,7 +1,7 @@
 from .chat_complete import ChatCompletion
 from .complete import Completion, AsyncCompletion
 from .generation import Generations, Prompts
-from .feedback import Feedback
+from .feedback import Feedback, AsyncFeedback
 from .create_headers import createHeaders
 from .post import Post, AsyncPost
 from .embeddings import Embeddings, AsyncEmbeddings
@@ -12,6 +12,7 @@ __all__ = [
     "ChatCompletion",
     "Generations",
     "Feedback",
+    "AsyncFeedback",
     "Prompts",
     "createHeaders",
     "Post",

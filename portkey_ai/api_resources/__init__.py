@@ -6,6 +6,7 @@ from .apis import (
     Generations,
     Prompts,
     Feedback,
+    AsyncFeedback,
     createHeaders,
 )
 from .utils import (
@@ -54,6 +55,7 @@ __all__ = [
     "Generations",
     "Prompts",
     "Feedback",
+    "AsyncFeedback",
     "createHeaders",
     "Portkey",
 ]
