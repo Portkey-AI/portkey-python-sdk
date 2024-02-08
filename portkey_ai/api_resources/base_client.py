@@ -421,7 +421,7 @@ class AsyncAPIClient:
             **kwargs,
         )
         
-        self._client = httpx.AsyncClient or AsyncHttpxClientWrapper(
+        self._client = AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
@@ -435,7 +435,7 @@ class AsyncAPIClient:
     ) -> Dict[str, str]:
         if headers is None:
             return await {}
-        return await {
+        return {
             f"{PORTKEY_HEADER_PREFIX}{k}": json.dumps(v)
             if isinstance(v, (dict, list))
             else str(v)
@@ -443,8 +443,8 @@ class AsyncAPIClient:
         }
 
     @property
-    async def custom_auth(self) -> Optional[httpx.Auth]:
-        return await None
+    def custom_auth(self) -> Optional[httpx.Auth]:
+        return None
 
     
     @overload
@@ -560,7 +560,7 @@ class AsyncAPIClient:
         opts.url = url
         opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
-        return await opts
+        return opts
 
     @property
     def _default_headers(self) -> Mapping[str, str]:
@@ -617,7 +617,7 @@ class AsyncAPIClient:
         headers = self._build_headers(options)
         params = options.params
         json_body = options.json_body
-        request = await self._client.build_request(
+        request = self._client.build_request(
             method=options.method,
             url=options.url,
             headers=headers,
@@ -686,30 +686,30 @@ class AsyncAPIClient:
         if stream or res.headers["content-type"] == "text/event-stream":
             if stream_cls is None:
                 raise MissingStreamClassError()
-            stream_response = await stream_cls(
-                response=res, cast_to= self._extract_stream_chunk_type(stream_cls)
+            stream_response = stream_cls(
+                response=res, cast_to=self._extract_stream_chunk_type(stream_cls)
             )
             return stream_response
 
-        response = await (
+        response = (
             cast(
                 ResponseT,
                 cast_to(**res.json()),
             )
             if not isinstance(cast_to, httpx.Response)
-            else await cast(ResponseT, res)
+            else  cast(ResponseT, res)
         )
         response._headers = res.headers  # type: ignore
         return response
 
-    async def _extract_stream_chunk_type(self, stream_cls: Type) -> type:
+    def _extract_stream_chunk_type(self, stream_cls: Type) -> type:
         args = get_args(stream_cls)
         if not args:
             raise TypeError(
                 f"Expected stream_cls to have been given a generic type argument, e.g. \
                     Stream[Foo] but received {stream_cls}",
             )
-        return await cast(type, args[0])
+        return cast(type, args[0])
 
     def _make_status_error_from_response(
         self,
