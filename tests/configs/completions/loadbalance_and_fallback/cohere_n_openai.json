@@ -4,7 +4,7 @@
     },
     "targets": [
         {
-            "virtual_key": "open-ai-apikey-3368e0"
+            "virtual_key": "vdkey-ff9e7c"
         },
         {
             "strategy": {
@@ -16,10 +16,10 @@
             },
             "targets": [
                 {
-                    "virtual_key": "cohere-api-key-fffe27"
+                    "virtual_key": "vdcohere-1402b0"
                 },
                 {
-                    "virtual_key": "open-ai-apikey-3368e0"
+                    "virtual_key": "vdkey-ff9e7c"
                 }
             ]
         }
