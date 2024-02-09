@@ -64,5 +64,5 @@ __all__ = [
     "AsyncFeedback",
     "createHeaders",
     "Portkey",
-    "AsyncPortkey"
+    "AsyncPortkey",
 ]

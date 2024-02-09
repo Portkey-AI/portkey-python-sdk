@@ -386,7 +386,7 @@ class AsyncHttpxClientWrapper(httpx.AsyncClient):
         except Exception:
             pass
 
-        
+
 class AsyncAPIClient:
     _client: httpx.AsyncClient
     _default_stream_cls: Union[type[AsyncStream[Any]], None] = None
@@ -420,7 +420,7 @@ class AsyncAPIClient:
             metadata=metadata,
             **kwargs,
         )
-        
+
         self._client = AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
@@ -430,11 +430,11 @@ class AsyncAPIClient:
 
         self.response_headers: httpx.Headers | None = None
 
-    async def _serialize_header_values(
+    def _serialize_header_values(
         self, headers: Optional[Mapping[str, Any]]
     ) -> Dict[str, str]:
         if headers is None:
-            return await {}
+            return {}
         return {
             f"{PORTKEY_HEADER_PREFIX}{k}": json.dumps(v)
             if isinstance(v, (dict, list))
@@ -446,7 +446,6 @@ class AsyncAPIClient:
     def custom_auth(self) -> Optional[httpx.Auth]:
         return None
 
-    
     @overload
     async def _post(
         self,
@@ -697,7 +696,7 @@ class AsyncAPIClient:
                 cast_to(**res.json()),
             )
             if not isinstance(cast_to, httpx.Response)
-            else  cast(ResponseT, res)
+            else cast(ResponseT, res)
         )
         response._headers = res.headers  # type: ignore
         return response
@@ -726,4 +725,3 @@ class AsyncAPIClient:
             err_msg = err_text or f"Error code: {response.status_code}"
 
         return make_status_error(err_msg, body=body, request=request, response=response)
-    

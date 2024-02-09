@@ -24,12 +24,14 @@ class ChatCompletion(APIResource):
         super().__init__(client)
         self.completions = Completions(client)
 
+
 class AsyncChatCompletion(AsyncAPIResource):
     completions: AsyncCompletions
 
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
         self.completions = AsyncCompletions(client)
+
 
 class Completions(APIResource):
     def __init__(self, client: APIClient) -> None:
@@ -113,6 +115,7 @@ class Completions(APIResource):
 
     def _get_config_string(self, config: Union[Mapping, str]) -> str:
         return config if isinstance(config, str) else json.dumps(config)
+
 
 class AsyncCompletions(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:

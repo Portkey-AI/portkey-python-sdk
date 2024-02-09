@@ -71,6 +71,7 @@ class Portkey(APIClient):
 
     with_options = copy
 
+
 class AsyncPortkey(AsyncAPIClient):
     completions: apis.AsyncCompletion
     chat: apis.AsyncChatCompletion

@@ -37,6 +37,7 @@ class Embeddings(APIResource):
             headers={},
         )
 
+
 class AsyncEmbeddings(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)

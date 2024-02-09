@@ -86,6 +86,7 @@ class Completion(APIResource):
             headers={},
         )
 
+
 class AsyncCompletion(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)

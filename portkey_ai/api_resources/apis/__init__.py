@@ -21,5 +21,5 @@ __all__ = [
     "Post",
     "AsyncPost",
     "Embeddings",
-    "AsyncEmbeddings"
+    "AsyncEmbeddings",
 ]

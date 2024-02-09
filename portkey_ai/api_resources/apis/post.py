@@ -58,6 +58,7 @@ class Post(APIResource):
             headers={},
         )
 
+
 class AsyncPost(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)

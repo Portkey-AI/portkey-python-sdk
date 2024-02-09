@@ -40,6 +40,7 @@ class Feedback(APIResource):
             headers={},
         )
 
+
 class AsyncFeedback(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
@@ -74,4 +75,3 @@ class AsyncFeedback(AsyncAPIResource):
             stream=False,
             headers={},
         )
-    

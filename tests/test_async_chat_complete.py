@@ -78,7 +78,9 @@ class TestChatCompletions:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t2_params)
-    async def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
+    async def test_method_single_with_basic_config(
+        self, client: Any, config: Dict
+    ) -> None:
         """
         Test the creation of a chat completion with a virtual key using the specified
         Portkey client.
@@ -200,7 +202,9 @@ class TestChatCompletions:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t5_params)
-    async def test_method_loadbalance_and_fallback(self, client: Any, config: Dict) -> None:
+    async def test_method_loadbalance_and_fallback(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
@@ -294,7 +298,9 @@ class TestChatCompletionsStreaming:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t2_params)
-    async def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
+    async def test_method_single_with_basic_config(
+        self, client: Any, config: Dict
+    ) -> None:
         """
         Test the creation of a chat completion with a virtual key using the specified
         Portkey client.
@@ -421,7 +427,9 @@ class TestChatCompletionsStreaming:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t5_params)
-    async def test_method_loadbalance_and_fallback(self, client: Any, config: Dict) -> None:
+    async def test_method_loadbalance_and_fallback(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,

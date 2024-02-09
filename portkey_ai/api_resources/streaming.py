@@ -74,8 +74,11 @@ class SSEDecoder:
             if sse is not None:
                 yield sse
 
-    async def aiter(self, iterator: AsyncIterator[str]) -> AsyncIterator[ServerSentEvent]:
-        """Given an async iterator that yields lines, iterate over it & yield every event encountered"""
+    async def aiter(
+        self, iterator: AsyncIterator[str]
+    ) -> AsyncIterator[ServerSentEvent]:
+        """Given an async iterator that yields lines,
+        iterate over it & yield every event encountered"""
         async for line in iterator:
             line = line.rstrip("\n")
             sse = self.decode(line)
@@ -135,6 +138,7 @@ class SSEDecoder:
 
         return None
 
+
 class Stream(Generic[ResponseT]):
     """Provides the core interface to iterate over a synchronous stream response."""
 
@@ -184,6 +188,7 @@ class Stream(Generic[ResponseT]):
                     response=self.response,
                     request=self.response.request,
                 )
+
 
 class AsyncStream(Generic[ResponseT]):
     """Provides the core interface to iterate over a asynchronous stream response."""

@@ -43,6 +43,7 @@ class Generations(APIResource):
         response["warning"] = warning_message
         return response
 
+
 class AsyncGenerations(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
@@ -75,6 +76,7 @@ class AsyncGenerations(AsyncAPIResource):
         response["warning"] = warning_message
         return response
 
+
 class Prompts(APIResource):
     completions: Completions
 
@@ -82,12 +84,14 @@ class Prompts(APIResource):
         super().__init__(client)
         self.completions = Completions(client)
 
+
 class AsyncPrompts(AsyncAPIResource):
     completions: AsyncCompletions
 
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
         self.completions = AsyncCompletions(client)
+
 
 class Completions(APIResource):
     def __init__(self, client: APIClient) -> None:
@@ -175,6 +179,7 @@ class Completions(APIResource):
             stream=stream,
             headers={},
         )
+
 
 class AsyncCompletions(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
