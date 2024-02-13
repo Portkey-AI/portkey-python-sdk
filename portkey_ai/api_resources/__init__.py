@@ -1,10 +1,15 @@
 """"""
 from .apis import (
     Completion,
+    AsyncCompletion,
     ChatCompletion,
+    AsyncChatCompletion,
     Generations,
+    AsyncGenerations,
     Prompts,
+    AsyncPrompts,
     Feedback,
+    AsyncFeedback,
     createHeaders,
 )
 from .utils import (
@@ -25,7 +30,7 @@ from .utils import (
     TextCompletion,
     TextCompletionChunk,
 )
-from .client import Portkey
+from .client import Portkey, AsyncPortkey
 
 from portkey_ai.version import VERSION
 
@@ -42,16 +47,22 @@ __all__ = [
     "Message",
     "ChatCompletions",
     "Completion",
+    "AsyncCompletion",
     "Params",
     "Config",
     "RetrySettings",
     "ChatCompletion",
+    "AsyncChatCompletion",
     "ChatCompletionChunk",
     "TextCompletion",
     "TextCompletionChunk",
     "Generations",
+    "AsyncGenerations",
     "Prompts",
+    "AsyncPrompts",
     "Feedback",
+    "AsyncFeedback",
     "createHeaders",
     "Portkey",
+    "AsyncPortkey",
 ]
