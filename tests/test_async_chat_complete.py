@@ -31,7 +31,7 @@ def get_configs(folder_path) -> List[Dict[str, Any]]:
 class TestChatCompletions:
     client = AsyncPortkey
     parametrize = pytest.mark.parametrize("client", [client], ids=["strict"])
-    models = read_json_file("./models.json")
+    models = read_json_file("./tests/models.json")
 
     def get_metadata(self):
         return {
