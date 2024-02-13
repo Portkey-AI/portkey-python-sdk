@@ -238,7 +238,7 @@ class TestChatCompletions:
 class TestChatCompletionsStreaming:
     client = AsyncPortkey
     parametrize = pytest.mark.parametrize("client", [client], ids=["strict"])
-    models = read_json_file("./models.json")
+    models = read_json_file("./tests/models.json")
 
     def get_metadata(self):
         return {
