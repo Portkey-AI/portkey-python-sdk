@@ -674,7 +674,7 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as err:  # 4xx and 5xx errors
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
-            err.response.read()
+            await err.response.aread()
             raise self._make_status_error_from_response(request, err.response) from None
         except httpx.TimeoutException as err:
             raise APITimeoutError(request=request) from err
