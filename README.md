@@ -45,9 +45,30 @@ portkey = Portkey(
 
 completion = portkey.chat.completions.create(
     messages = [{ "role": 'user', "content": 'Say this is a test' }],
-    model = 'gpt-3.5-turbo'
+    model = 'gpt-4'
 )
 print(completion)
+```
+
+#### Asynchronous calls are also supported
+
+```py
+from portkey_ai import AsyncPortkey
+
+# Construct a client with a virtual key
+portkey = AsyncPortkey(
+    api_key="PORTKEY_API_KEY",
+    virtual_key="VIRTUAL_KEY"
+)
+
+async def main():
+    chat_completion = await portkey.chat.completions.create(
+        messages=[{'role': 'user', 'content': 'Say this is a test'}],
+        model='gpt-3.5-turbo'
+    )
+    print(chat_completion)
+
+await main()
 ```
 
 Portkey fully adheres to the OpenAI SDK signature. This means that you can instantly switch to Portkey and start using Portkey's advanced production features right out of the box.
