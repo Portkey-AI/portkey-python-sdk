@@ -54,6 +54,7 @@ print(completion)
 
 ```py
 from portkey_ai import AsyncPortkey
+import asyncio
 
 # Construct a client with a virtual key
 portkey = AsyncPortkey(
@@ -68,7 +69,7 @@ async def main():
     )
     print(chat_completion)
 
-await main()
+asyncio.run(main())
 ```
 
 Portkey fully adheres to the OpenAI SDK signature. This means that you can instantly switch to Portkey and start using Portkey's advanced production features right out of the box.
