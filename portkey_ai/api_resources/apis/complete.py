@@ -1,5 +1,7 @@
+import json
 from typing import Optional, Union, overload, Literal
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
+from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.utils import (
     PortkeyApiPaths,
     TextCompletion,
@@ -11,8 +13,10 @@ from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIReso
 
 
 class Completion(APIResource):
-    def __init__(self, client: APIClient) -> None:
+    def __init__(self, client: Portkey) -> None:
         super().__init__(client)
+        self.openai_client = client.openai_client
+        self.client = client
 
     @overload
     def create(
@@ -58,38 +62,38 @@ class Completion(APIResource):
 
     def create(
         self,
-        *,
-        prompt: Optional[str] = None,
-        stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
         **kwargs,
     ) -> Union[TextCompletion, Stream[TextCompletionChunk]]:
-        body = dict(
-            prompt=prompt,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            top_k=top_k,
-            top_p=top_p,
-            stream=stream,
-            **kwargs,
-        )
-        return self._post(
-            PortkeyApiPaths.TEXT_COMPLETE_API,
-            body=body,
-            params=None,
-            cast_to=TextCompletion,
-            stream_cls=Stream[TextCompletionChunk],
-            stream=stream,
-            headers={},
-        )
+        
+        if 'stream' in kwargs and kwargs['stream'] == True:
+            final_responses = []
+            response = self.openai_client.completions.create(**kwargs)
+            for chunk in response:
+                finalResponse = {}
+                finalResponse['id'] = chunk.id
+                finalResponse['object'] = chunk.object
+                finalResponse['created'] = chunk.created
+                finalResponse['model'] = chunk.model
+                finalResponse['choices'] = [{'index': chunk.choices[0].index,
+                                            'text': chunk.choices[0].text,
+                                            'logprobs': chunk.choices[0].logprobs,
+                                            'finish_reason': chunk.choices[0].finish_reason}]
+                final_responses.append(finalResponse)
+            return final_responses
+        elif 'stream' in kwargs and kwargs['stream'] == False:
+            response = self.openai_client.with_raw_response.completions.create(**kwargs)
+            response = response.text
+            return json.loads(response)
+        else:
+            response = self.openai_client.with_raw_response.completions.create(**kwargs)
+            response = response.text
+            return json.loads(response)
 
 
 class AsyncCompletion(AsyncAPIResource):
-    def __init__(self, client: AsyncAPIClient) -> None:
+    def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
+        self.openai_client = client.openai_client
 
     @overload
     async def create(
@@ -135,30 +139,29 @@ class AsyncCompletion(AsyncAPIResource):
 
     async def create(
         self,
-        *,
-        prompt: Optional[str] = None,
-        stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
         **kwargs,
     ) -> Union[TextCompletion, AsyncStream[TextCompletionChunk]]:
-        body = dict(
-            prompt=prompt,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            top_k=top_k,
-            top_p=top_p,
-            stream=stream,
-            **kwargs,
-        )
-        return await self._post(
-            PortkeyApiPaths.TEXT_COMPLETE_API,
-            body=body,
-            params=None,
-            cast_to=TextCompletion,
-            stream_cls=AsyncStream[TextCompletionChunk],
-            stream=stream,
-            headers={},
-        )
+
+        if 'stream' in kwargs and kwargs['stream'] == True:
+            final_responses = []
+            response = await self.openai_client.completions.create(**kwargs)
+            async for chunk in response:
+                finalResponse = {}
+                finalResponse['id'] = chunk.id
+                finalResponse['object'] = chunk.object
+                finalResponse['created'] = chunk.created
+                finalResponse['model'] = chunk.model
+                finalResponse['choices'] = [{'index': chunk.choices[0].index,
+                                            'text': chunk.choices[0].text,
+                                            'logprobs': chunk.choices[0].logprobs,
+                                            'finish_reason': chunk.choices[0].finish_reason}]
+                final_responses.append(finalResponse)
+            return final_responses
+        elif 'stream' in kwargs and kwargs['stream'] == False:
+            response = await self.openai_client.with_raw_response.completions.create(**kwargs)
+            response = response.text
+            return json.loads(response)
+        else:
+            response = await self.openai_client.with_raw_response.completions.create(**kwargs)
+            response = response.text
+            return json.loads(response)

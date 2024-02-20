@@ -26,17 +26,33 @@ from portkey_ai.api_resources import (
     AsyncPrompts,
     Portkey,
     AsyncPortkey,
+    Images,
+    AsyncImages,
+    Assistants,
+    AsyncAssistants,
+    Threads,
+    AsyncThreads,
+    Messages,
+    AsyncMessages,
+    Files,
+    AsyncFiles,
+    Runs,
+    AsyncRuns,
+    Steps,
+    AsyncSteps
 )
+
 from portkey_ai.version import VERSION
 from portkey_ai.api_resources.global_constants import (
     PORTKEY_BASE_URL,
+    PORTKEY_DEV_BASE_URL,
     PORTKEY_API_KEY_ENV,
     PORTKEY_PROXY_ENV,
     PORTKEY_GATEWAY_URL,
 )
 
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
-base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
+base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_DEV_BASE_URL)
 config: Optional[Union[Mapping, str]] = None
 mode: Optional[Union[Modes, ModesLiteral]] = None
 
@@ -70,4 +86,18 @@ __all__ = [
     "AsyncPrompts",
     "Portkey",
     "AsyncPortkey",
+    "Images",
+    "AsyncImages",
+    "Assistants",
+    "AsyncAssistants",
+    "Threads",
+    "AsyncThreads",
+    "Messages",
+    "AsyncMessages",
+    "Files",
+    "AsyncFiles",
+    "Runs",
+    "AsyncRuns",
+    "Steps",
+    "AsyncSteps"
 ]

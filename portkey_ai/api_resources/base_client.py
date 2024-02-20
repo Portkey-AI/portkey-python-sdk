@@ -66,6 +66,7 @@ class APIClient:
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
+            api_key=api_key,
             virtual_key=virtual_key,
             config=config,
             provider=provider,
@@ -413,6 +414,7 @@ class AsyncAPIClient:
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
+            api_key=api_key,
             virtual_key=virtual_key,
             config=config,
             provider=provider,

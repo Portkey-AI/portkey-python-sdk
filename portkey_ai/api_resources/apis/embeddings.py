@@ -1,72 +1,36 @@
-from typing import Optional
+import json
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
+from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.utils import PortkeyApiPaths, GenericResponse
 
 
 class Embeddings(APIResource):
-    def __init__(self, client: APIClient) -> None:
+
+    def __init__(self, client: Portkey) -> None:
         super().__init__(client)
+        self.openai_client = client.openai_client
 
     def create(
         self,
-        *,
-        input: str,
-        model: Optional[str] = None,
-        dimensions: Optional[int] = None,
-        encoding_format: Optional[str] = None,
-        user: Optional[str] = None,
         **kwargs
     ) -> GenericResponse:
-        body = dict(
-            input=input,
-            model=model,
-            dimensions=dimensions,
-            encoding_format=encoding_format,
-            user=user,
-            **kwargs,
-        )
-
-        return self._post(
-            PortkeyApiPaths.EMBEDDING_API,
-            body=body,
-            params=None,
-            cast_to=GenericResponse,
-            stream_cls=None,
-            stream=False,
-            headers={},
-        )
+        
+        response = self.openai_client.with_raw_response.embeddings.create(**kwargs)
+        response = response.text
+        return json.loads(response)
 
 
 class AsyncEmbeddings(AsyncAPIResource):
-    def __init__(self, client: AsyncAPIClient) -> None:
+    def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
+        self.openai_client = client.openai_client
 
     async def create(
         self,
-        *,
-        input: str,
-        model: Optional[str] = None,
-        dimensions: Optional[int] = None,
-        encoding_format: Optional[str] = None,
-        user: Optional[str] = None,
         **kwargs
     ) -> GenericResponse:
-        body = dict(
-            input=input,
-            model=model,
-            user=user,
-            dimensions=dimensions,
-            encoding_format=encoding_format,
-            **kwargs,
-        )
-
-        return await self._post(
-            PortkeyApiPaths.EMBEDDING_API,
-            body=body,
-            params=None,
-            cast_to=GenericResponse,
-            stream_cls=None,
-            stream=False,
-            headers={},
-        )
+        
+        response = await self.openai_client.with_raw_response.embeddings.create(**kwargs)
+        response = response.text
+        return json.loads(response)

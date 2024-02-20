@@ -4,6 +4,8 @@ from typing import Mapping, Optional, Union
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
+from openai import AsyncOpenAI, OpenAI
+from portkey_ai.api_resources.global_constants import OPEN_AI_API_KEY, PORTKEY_DEV_BASE_URL
 
 class Portkey(APIClient):
     completions: apis.Completion
@@ -11,6 +13,13 @@ class Portkey(APIClient):
     generations: apis.Generations
     prompts: apis.Prompts
     embeddings: apis.Embeddings
+    images: apis.Images
+
+    class beta:
+        def __init__(self, client:Portkey) -> None:
+            self.assistants = apis.Assistants(client)
+            self.threads = apis.Threads(client)
+
 
     def __init__(
         self,
@@ -35,12 +44,21 @@ class Portkey(APIClient):
             **kwargs,
         )
 
+        self.openai_client = OpenAI(
+            api_key=OPEN_AI_API_KEY,
+            base_url=PORTKEY_DEV_BASE_URL,
+            default_headers= self.custom_headers
+        )
+        
+
         self.completions = apis.Completion(self)
         self.chat = apis.ChatCompletion(self)
         self.generations = apis.Generations(self)
         self.prompts = apis.Prompts(self)
         self.embeddings = apis.Embeddings(self)
         self.feedback = apis.Feedback(self)
+        self.images = apis.Images(self)
+        self.beta = self.beta(self)
 
     def copy(
         self,
@@ -78,6 +96,12 @@ class AsyncPortkey(AsyncAPIClient):
     generations: apis.AsyncGenerations
     prompts: apis.AsyncPrompts
     embeddings: apis.AsyncEmbeddings
+    images: apis.AsyncImages
+
+    class beta:
+        def __init__(self, client:AsyncPortkey) -> None:
+            self.assistants = apis.AsyncAssistants(client)
+            self.threads = apis.AsyncThreads(client)
 
     def __init__(
         self,
@@ -102,12 +126,20 @@ class AsyncPortkey(AsyncAPIClient):
             **kwargs,
         )
 
+        self.openai_client = AsyncOpenAI(
+            api_key=OPEN_AI_API_KEY,
+            base_url=PORTKEY_DEV_BASE_URL,
+            default_headers= self.custom_headers
+        )
+
         self.completions = apis.AsyncCompletion(self)
         self.chat = apis.AsyncChatCompletion(self)
         self.generations = apis.AsyncGenerations(self)
         self.prompts = apis.AsyncPrompts(self)
         self.embeddings = apis.AsyncEmbeddings(self)
         self.feedback = apis.AsyncFeedback(self)
+        self.images = apis.AsyncImages(self)
+        self.beta = self.beta(self)
 
     def copy(
         self,
