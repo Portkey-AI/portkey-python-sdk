@@ -396,7 +396,7 @@ class ChatCompletions(BaseModel, extra="allow"):
 class TextChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
     text: Optional[str] = None
-    logprobs: Any
+    logprobs: Optional[Any] = None
     finish_reason: Optional[str] = None
 
     def __str__(self):
@@ -433,12 +433,14 @@ class TextCompletion(BaseModel, extra="allow"):
 
 
 # Models for text completion stream
+
 class TextCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
     model: Optional[str] = None
-    choices: Union[List[TextChoice], Dict[Any, Any]] = {}
+    provider: Optional[str] = None
+    choices: List[TextChoice]
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
