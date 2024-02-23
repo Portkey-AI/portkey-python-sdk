@@ -14,6 +14,7 @@ class Portkey(APIClient):
     prompts: apis.Prompts
     embeddings: apis.Embeddings
     images: apis.Images
+    files: apis.MainFiles
 
     class beta:
         def __init__(self, client:Portkey) -> None:
@@ -58,6 +59,7 @@ class Portkey(APIClient):
         self.embeddings = apis.Embeddings(self)
         self.feedback = apis.Feedback(self)
         self.images = apis.Images(self)
+        self.files = apis.MainFiles(self)
         self.beta = self.beta(self)
 
     def copy(
@@ -97,6 +99,7 @@ class AsyncPortkey(AsyncAPIClient):
     prompts: apis.AsyncPrompts
     embeddings: apis.AsyncEmbeddings
     images: apis.AsyncImages
+    files: apis.AsyncMainFiles
 
     class beta:
         def __init__(self, client:AsyncPortkey) -> None:
@@ -139,6 +142,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.embeddings = apis.AsyncEmbeddings(self)
         self.feedback = apis.AsyncFeedback(self)
         self.images = apis.AsyncImages(self)
+        self.files = apis.AsyncMainFiles(self)
         self.beta = self.beta(self)
 
     def copy(

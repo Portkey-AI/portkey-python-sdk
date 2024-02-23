@@ -8,6 +8,7 @@ from .embeddings import Embeddings, AsyncEmbeddings
 from .images import Images, AsyncImages
 from .assistants import Assistants, Files, AsyncAssistants, AsyncFiles
 from .threads import Threads, Messages, Files, Runs, Steps, AsyncThreads, AsyncMessages, AsyncFiles, AsyncRuns, AsyncSteps
+from .mainFiles import MainFiles, AsyncMainFiles
 
 __all__ = [
     "Completion",
@@ -29,6 +30,8 @@ __all__ = [
     "AsyncImages",
     "Assistants",
     "AsyncAssistants",
+    "MainFiles",
+    "AsyncMainFiles",
     "Files",
     "AsyncFiles",
     "Threads",
