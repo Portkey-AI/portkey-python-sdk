@@ -5,7 +5,11 @@ from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
 from openai import AsyncOpenAI, OpenAI
-from portkey_ai.api_resources.global_constants import OPEN_AI_API_KEY, PORTKEY_DEV_BASE_URL
+from portkey_ai.api_resources.global_constants import (
+    OPEN_AI_API_KEY,
+    PORTKEY_DEV_BASE_URL,
+)
+
 
 class Portkey(APIClient):
     completions: apis.Completion
@@ -17,10 +21,9 @@ class Portkey(APIClient):
     files: apis.MainFiles
 
     class beta:
-        def __init__(self, client:Portkey) -> None:
+        def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
-
 
     def __init__(
         self,
@@ -48,9 +51,8 @@ class Portkey(APIClient):
         self.openai_client = OpenAI(
             api_key=OPEN_AI_API_KEY,
             base_url=PORTKEY_DEV_BASE_URL,
-            default_headers= self.custom_headers
+            default_headers=self.custom_headers,
         )
-        
 
         self.completions = apis.Completion(self)
         self.chat = apis.ChatCompletion(self)
@@ -60,7 +62,7 @@ class Portkey(APIClient):
         self.feedback = apis.Feedback(self)
         self.images = apis.Images(self)
         self.files = apis.MainFiles(self)
-        self.beta = self.beta(self)
+        self.beta = self.beta(self)  # type: ignore
 
     def copy(
         self,
@@ -102,7 +104,7 @@ class AsyncPortkey(AsyncAPIClient):
     files: apis.AsyncMainFiles
 
     class beta:
-        def __init__(self, client:AsyncPortkey) -> None:
+        def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
 
@@ -132,7 +134,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.openai_client = AsyncOpenAI(
             api_key=OPEN_AI_API_KEY,
             base_url=PORTKEY_DEV_BASE_URL,
-            default_headers= self.custom_headers
+            default_headers=self.custom_headers,
         )
 
         self.completions = apis.AsyncCompletion(self)
@@ -143,7 +145,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.feedback = apis.AsyncFeedback(self)
         self.images = apis.AsyncImages(self)
         self.files = apis.AsyncMainFiles(self)
-        self.beta = self.beta(self)
+        self.beta = self.beta(self)  # type: ignore
 
     def copy(
         self,

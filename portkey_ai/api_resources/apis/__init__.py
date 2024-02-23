@@ -6,8 +6,19 @@ from .create_headers import createHeaders
 from .post import Post, AsyncPost
 from .embeddings import Embeddings, AsyncEmbeddings
 from .images import Images, AsyncImages
-from .assistants import Assistants, Files, AsyncAssistants, AsyncFiles
-from .threads import Threads, Messages, Files, Runs, Steps, AsyncThreads, AsyncMessages, AsyncFiles, AsyncRuns, AsyncSteps
+from .assistants import Assistants, AssistantFiles, AsyncAssistants, AsyncAssistantFiles
+from .threads import (
+    Threads,
+    Messages,
+    ThreadFiles,
+    Runs,
+    Steps,
+    AsyncThreads,
+    AsyncMessages,
+    AsyncThreadFiles,
+    AsyncRuns,
+    AsyncSteps,
+)
 from .mainFiles import MainFiles, AsyncMainFiles
 
 __all__ = [
@@ -32,8 +43,10 @@ __all__ = [
     "AsyncAssistants",
     "MainFiles",
     "AsyncMainFiles",
-    "Files",
-    "AsyncFiles",
+    "AssistantFiles",
+    "ThreadFiles",
+    "AsyncAssistantFiles",
+    "AsyncThreadFiles",
     "Threads",
     "AsyncThreads",
     "Messages",
@@ -41,5 +54,5 @@ __all__ = [
     "Runs",
     "AsyncRuns",
     "Steps",
-    "AsyncSteps"
+    "AsyncSteps",
 ]

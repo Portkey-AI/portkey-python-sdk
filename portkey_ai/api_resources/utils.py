@@ -22,7 +22,6 @@ from .global_constants import (
     MISSING_BASE_URL,
     MISSING_MODE_MESSAGE,
     PORTKEY_BASE_URL,
-    PORTKEY_DEV_BASE_URL,
     PORTKEY_API_KEY_ENV,
     PORTKEY_HEADER_PREFIX,
     PORTKEY_PROXY_ENV,
@@ -434,6 +433,7 @@ class TextCompletion(BaseModel, extra="allow"):
 
 # Models for text completion stream
 
+
 class TextCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
@@ -584,3 +584,25 @@ def parse_headers(headers: Optional[httpx.Headers]) -> dict:
             _headers[k] = v
 
     return _headers
+
+
+class FileDeleteResponse(BaseModel):
+    id: str
+
+    deleted: bool
+
+    object: Literal["assistant.file.deleted"]
+
+
+class AssistantFile(BaseModel):
+    id: str
+    """The identifier, which can be referenced in API endpoints."""
+
+    assistant_id: str
+    """The assistant ID that the file is attached to."""
+
+    created_at: int
+    """The Unix timestamp (in seconds) for when the assistant file was created."""
+
+    object: Literal["assistant.file"]
+    """The object type, which is always `assistant.file`."""

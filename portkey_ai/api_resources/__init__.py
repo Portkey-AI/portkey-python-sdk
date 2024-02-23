@@ -21,12 +21,14 @@ from .apis import (
     AsyncMessages,
     MainFiles,
     AsyncMainFiles,
-    Files,
-    AsyncFiles,
+    ThreadFiles,
+    AsyncThreadFiles,
+    AssistantFiles,
+    AsyncAssistantFiles,
     Runs,
     AsyncRuns,
     Steps,
-    AsyncSteps
+    AsyncSteps,
 )
 from .utils import (
     Modes,
@@ -91,10 +93,12 @@ __all__ = [
     "AsyncMessages",
     "MainFiles",
     "AsyncMainFiles",
-    "Files",
-    "AsyncFiles",
+    "ThreadFiles",
+    "AsyncThreadFiles",
+    "AssistantFiles",
+    "AsyncAssistantFiles",
     "Runs",
     "AsyncRuns",
     "Steps",
-    "AsyncSteps"
+    "AsyncSteps",
 ]
