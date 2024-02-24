@@ -63,12 +63,12 @@ $ export PORTKEY_API_KEY=PORTKEY_API_KEY
 ```py
 from portkey_ai import Portkey
 
-openai = Portkey(
+portkey = Portkey(
     api_key="PORTKEY_API_KEY",
     virtual_key="VIRTUAL_KEY"
 )
 
-chat_completion = openai.chat.completions.create(
+chat_completion = portkey.chat.completions.create(
     messages = [{ "role": 'user', "content": 'Say this is a test' }],
     model = 'gpt-4'
 )
@@ -82,13 +82,13 @@ print(chat_completion)
 import asyncio
 from portkey_ai import AsyncPortkey
 
-client = AsyncPortkey(
+portkey = AsyncPortkey(
     api_key="PORTKEY_API_KEY",
     virtual_key="VIRTUAL_KEY"
 )
 
 async def main():
-    chat_completion = await client.chat.completions.create(
+    chat_completion = await portkey.chat.completions.create(
         messages=[{'role': 'user', 'content': 'Say this is a test'}],
         model='gpt-4'
     )
