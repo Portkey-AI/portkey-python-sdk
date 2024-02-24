@@ -1,5 +1,5 @@
 {
-    "virtual_key": "vdkey-ff9e7c",
+    "virtual_key": "openai-virtual-key",
     "cache": {
         "mode": "semantic",
         "max_age": 60

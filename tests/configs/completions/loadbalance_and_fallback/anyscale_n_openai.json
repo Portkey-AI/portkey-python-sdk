@@ -5,7 +5,7 @@
     "targets": [
         {
             "provider": "openai",
-            "virtual_key": "vdkey-ff9e7c"
+            "virtual_key": "openai-virtual-key"
         },
         {
             "strategy": {
@@ -17,10 +17,10 @@
             },
             "targets": [
                 {
-                    "virtual_key": "vdanyscale-354c5b"
+                    "virtual_key": "anyscale-virtual-key"
                 },
                 {
-                    "virtual_key": "vdkey-ff9e7c"
+                    "virtual_key": "openai-virtual-key"
                 }
             ]
         }

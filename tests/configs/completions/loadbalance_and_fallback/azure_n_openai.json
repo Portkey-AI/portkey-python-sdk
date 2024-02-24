@@ -5,7 +5,7 @@
     "targets": [
         {
             "provider": "openai",
-            "virtual_key": "vdkey-ff9e7c"
+            "virtual_key": "openai-virtual-key"
         },
         {
             "strategy": {
@@ -17,10 +17,10 @@
             },
             "targets": [
                 {
-                    "virtual_key": "azure-api-key-993da0"
+                    "virtual_key": "azure-virtual-key"
                 },
                 {
-                    "virtual_key": "vdkey-ff9e7c"
+                    "virtual_key": "openai-virtual-key"
                 }
             ]
         }
