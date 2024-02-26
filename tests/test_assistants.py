@@ -1,18 +1,13 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List
 from uuid import uuid4
 
 import pytest
 from os import walk
 
 from portkey_ai import Portkey
-from openai.pagination import SyncCursorPage, AsyncCursorPage
-from openai.types.beta import (
-    Assistant,
-    AssistantDeleted,
-)
 import inspect
 from tests.utils import read_json_file
 
@@ -21,6 +16,7 @@ api_key = os.environ.get("PORTKEY_API_KEY")
 virtual_api_key = os.environ.get("OPENAI_VIRTUAL_KEY")
 
 CONFIGS_PATH = "./tests/configs/assistants"
+
 
 def get_configs(folder_path) -> List[Dict[str, Any]]:
     config_files = []
@@ -71,10 +67,9 @@ class TestAssistants:
         )
         print(assistant)
 
-
     # --------------------------
     # Test-3
-    
+
     t3_params = []
     for i in get_configs(f"{CONFIGS_PATH}/single_provider"):
         t3_params.append((client, i))
@@ -96,7 +91,8 @@ class TestAssistants:
             model=model,
             description="string",
             file_ids=["file-m9QiEaDT9Le28LydiUTsUwDv"],
-            instructions="You are a personal math tutor. Write and run code to answer math questions.",
+            instructions="You are a personal math tutor."
+            + "Write and run code to answer math questions.",
             metadata=metadata,
             name="Math Tutor",
             tools=[{"type": "code_interpreter"}],

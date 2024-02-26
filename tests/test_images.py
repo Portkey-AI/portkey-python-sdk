@@ -66,10 +66,7 @@ class TestImages:
         )
 
         portkey.images.generate(
-            model=model,
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model=model, prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
     # --------------------------
@@ -89,12 +86,8 @@ class TestImages:
         )
 
         portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
-
 
     # --------------------------
     # Test-3
@@ -120,10 +113,7 @@ class TestImages:
         )
 
         portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
         # Sleeping for the cache to reflect across the workers. The cache has an
         # eventual consistency and not immediate consistency.
@@ -138,10 +128,7 @@ class TestImages:
         )
 
         portkey_2.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
     # --------------------------
@@ -164,10 +151,7 @@ class TestImages:
         )
 
         image = portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
         print(image.data)
@@ -188,10 +172,7 @@ class TestImages:
         )
 
         image = portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
         print(image.data)
@@ -212,10 +193,7 @@ class TestImages:
         )
 
         image = portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
         print(image.data)

@@ -1,17 +1,12 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List
 from uuid import uuid4
 
 import pytest
 
 from portkey_ai import Portkey
-from openai.pagination import SyncCursorPage, AsyncCursorPage
-from openai.types.beta import (
-    Assistant,
-    AssistantDeleted,
-)
 import inspect
 from tests.utils import read_json_file
 
@@ -29,6 +24,7 @@ def get_configs(folder_path) -> List[Dict[str, Any]]:
             config_files.append(read_json_file(os.path.join(dirpath, f)))
 
     return config_files
+
 
 class TestThreads:
     client = Portkey
@@ -66,9 +62,9 @@ class TestThreads:
     #         trace_id=str(uuid4()),
     #         metadata=metadata,
     #     )
-    #     thread = portkey.beta.threads.retrieve(thread_id="thread_6dWkyyEFNNI8pQw8YEObrlna")
+    #     thread =
+    #    portkey.beta.threads.retrieve(thread_id="thread_6dWkyyEFNNI8pQw8YEObrlna")
     #     print(thread)
-
 
     # --------------------------
     # Test-1

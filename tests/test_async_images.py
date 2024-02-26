@@ -50,6 +50,7 @@ class TestImages:
             t.append((client, k, os.environ.get(v["env_variable"]), i))
 
         t1_params.extend(t)
+
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, provider, auth, model", t1_params)
     async def test_method_single_with_vk_and_provider(
@@ -65,10 +66,7 @@ class TestImages:
         )
 
         await portkey.images.generate(
-            model=model,
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model=model, prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
     # --------------------------
@@ -79,7 +77,9 @@ class TestImages:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t2_params)
-    async def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
+    async def test_method_single_with_basic_config(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
@@ -89,12 +89,8 @@ class TestImages:
         )
 
         await portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
-        
 
     # --------------------------
     # Test-3
@@ -121,10 +117,7 @@ class TestImages:
         )
 
         await portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
         # Sleeping for the cache to reflect across the workers. The cache has an
         # eventual consistency and not immediate consistency.
@@ -139,10 +132,7 @@ class TestImages:
         )
 
         await portkey_2.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
     # --------------------------
@@ -166,10 +156,7 @@ class TestImages:
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
         print(image.data)
@@ -182,7 +169,9 @@ class TestImages:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t5_params)
-    async def test_method_loadbalance_and_fallback(self, client: Any, config: Dict) -> None:
+    async def test_method_loadbalance_and_fallback(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
@@ -191,10 +180,7 @@ class TestImages:
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
         print(image.data)
@@ -216,10 +202,7 @@ class TestImages:
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3",
-            prompt="A cute baby sea otter",
-            n=1,
-            size="1024x1024"
+            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
         print(image.data)
