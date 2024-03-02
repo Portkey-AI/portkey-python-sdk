@@ -79,7 +79,6 @@ class Completions(APIResource):
             return self.normal_create(**kwargs)
 
 
-
 class AsyncCompletions(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
