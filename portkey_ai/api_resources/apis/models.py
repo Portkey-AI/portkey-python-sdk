@@ -19,7 +19,8 @@ class Models(APIResource):
     def delete(self, model, **kwargs) -> Any:
         response = self.openai_client.models.delete(model=model, **kwargs)
         return response
-    
+
+
 class AsyncModels(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)

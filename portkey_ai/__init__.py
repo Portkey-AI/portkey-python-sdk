@@ -102,7 +102,7 @@ __all__ = [
     "MainFiles",
     "AsyncMainFiles",
     "Models",
-    "AsyncModels"
+    "AsyncModels",
     "ThreadFiles",
     "AsyncThreadFiles",
     "AssistantFiles",
