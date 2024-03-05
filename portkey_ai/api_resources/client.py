@@ -7,7 +7,7 @@ from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from openai import AsyncOpenAI, OpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
-    PORTKEY_DEV_BASE_URL,
+    PORTKEY_BASE_URL,
 )
 
 
@@ -19,6 +19,7 @@ class Portkey(APIClient):
     embeddings: apis.Embeddings
     images: apis.Images
     files: apis.MainFiles
+    models: apis.Models
 
     class beta:
         def __init__(self, client: Portkey) -> None:
@@ -50,7 +51,7 @@ class Portkey(APIClient):
 
         self.openai_client = OpenAI(
             api_key=OPEN_AI_API_KEY,
-            base_url=PORTKEY_DEV_BASE_URL,
+            base_url=PORTKEY_BASE_URL,
             default_headers=self.custom_headers,
         )
 
@@ -62,6 +63,7 @@ class Portkey(APIClient):
         self.feedback = apis.Feedback(self)
         self.images = apis.Images(self)
         self.files = apis.MainFiles(self)
+        self.models = apis.Models(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -102,6 +104,7 @@ class AsyncPortkey(AsyncAPIClient):
     embeddings: apis.AsyncEmbeddings
     images: apis.AsyncImages
     files: apis.AsyncMainFiles
+    models: apis.AsyncModels
 
     class beta:
         def __init__(self, client: AsyncPortkey) -> None:
@@ -133,7 +136,7 @@ class AsyncPortkey(AsyncAPIClient):
 
         self.openai_client = AsyncOpenAI(
             api_key=OPEN_AI_API_KEY,
-            base_url=PORTKEY_DEV_BASE_URL,
+            base_url=PORTKEY_BASE_URL,
             default_headers=self.custom_headers,
         )
 
@@ -145,6 +148,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.feedback = apis.AsyncFeedback(self)
         self.images = apis.AsyncImages(self)
         self.files = apis.AsyncMainFiles(self)
+        self.models = apis.AsyncModels(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(

@@ -20,6 +20,7 @@ from .threads import (
     AsyncSteps,
 )
 from .mainFiles import MainFiles, AsyncMainFiles
+from .models import Models, AsyncModels
 
 __all__ = [
     "Completion",
@@ -43,6 +44,8 @@ __all__ = [
     "AsyncAssistants",
     "MainFiles",
     "AsyncMainFiles",
+    "Models",
+    "AsyncModels",
     "AssistantFiles",
     "ThreadFiles",
     "AsyncAssistantFiles",

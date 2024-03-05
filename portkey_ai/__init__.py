@@ -36,6 +36,8 @@ from portkey_ai.api_resources import (
     AsyncMessages,
     MainFiles,
     AsyncMainFiles,
+    Models,
+    AsyncModels,
     ThreadFiles,
     AsyncThreadFiles,
     AssistantFiles,
@@ -48,14 +50,14 @@ from portkey_ai.api_resources import (
 
 from portkey_ai.version import VERSION
 from portkey_ai.api_resources.global_constants import (
-    PORTKEY_DEV_BASE_URL,
+    PORTKEY_BASE_URL,
     PORTKEY_API_KEY_ENV,
     PORTKEY_PROXY_ENV,
     PORTKEY_GATEWAY_URL,
 )
 
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
-base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_DEV_BASE_URL)
+base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
 config: Optional[Union[Mapping, str]] = None
 mode: Optional[Union[Modes, ModesLiteral]] = None
 
@@ -99,6 +101,8 @@ __all__ = [
     "AsyncMessages",
     "MainFiles",
     "AsyncMainFiles",
+    "Models",
+    "AsyncModels"
     "ThreadFiles",
     "AsyncThreadFiles",
     "AssistantFiles",
