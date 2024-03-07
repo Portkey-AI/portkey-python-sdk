@@ -9,8 +9,10 @@ class Embeddings(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def create(self, **kwargs) -> GenericResponse:
-        response = self.openai_client.with_raw_response.embeddings.create(**kwargs)
+    def create(self, *, input: str, model: str, **kwargs) -> GenericResponse:
+        response = self.openai_client.with_raw_response.embeddings.create(
+            input=input, model=model, **kwargs
+        )
         response_text = response.text
         return json.loads(response_text)
 
@@ -20,9 +22,9 @@ class AsyncEmbeddings(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def create(self, **kwargs) -> GenericResponse:
+    async def create(self, *, input: str, model: str, **kwargs) -> GenericResponse:
         response = await self.openai_client.with_raw_response.embeddings.create(
-            **kwargs
+            input=input, model=model, **kwargs
         )
         response_text = response.text
         return json.loads(response_text)

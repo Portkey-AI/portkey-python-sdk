@@ -8,16 +8,16 @@ class Images(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def generate(self, **kwargs) -> Any:
-        response = self.openai_client.images.generate(**kwargs)
+    def generate(self, prompt: str, **kwargs) -> Any:
+        response = self.openai_client.images.generate(prompt=prompt, **kwargs)
         return response
 
-    def edit(self, **kwargs) -> Any:
-        response = self.openai_client.images.edit(**kwargs)
+    def edit(self, prompt: str, image, **kwargs) -> Any:
+        response = self.openai_client.images.edit(prompt=prompt, image=image, **kwargs)
         return response
 
-    def create_variation(self, **kwargs) -> Any:
-        response = self.openai_client.images.create_variation(**kwargs)
+    def create_variation(self, image, **kwargs) -> Any:
+        response = self.openai_client.images.create_variation(image=image, **kwargs)
         return response
 
 
@@ -26,14 +26,18 @@ class AsyncImages(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def generate(self, **kwargs) -> Any:
-        response = await self.openai_client.images.generate(**kwargs)
+    async def generate(self, prompt: str, **kwargs) -> Any:
+        response = await self.openai_client.images.generate(prompt=prompt, **kwargs)
         return response
 
-    async def edit(self, **kwargs) -> Any:
-        response = await self.openai_client.images.edit(**kwargs)
+    async def edit(self, prompt: str, image, **kwargs) -> Any:
+        response = await self.openai_client.images.edit(
+            prompt=prompt, image=image, **kwargs
+        )
         return response
 
-    async def create_variation(self, **kwargs) -> Any:
-        response = await self.openai_client.images.create_variation(**kwargs)
+    async def create_variation(self, image, **kwargs) -> Any:
+        response = await self.openai_client.images.create_variation(
+            image=image, **kwargs
+        )
         return response
