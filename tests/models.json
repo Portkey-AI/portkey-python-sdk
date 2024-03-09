@@ -66,8 +66,7 @@
             "claude-instant-1.0",
             "claude-2"
         ], 
-        "image":["dall-e-3",
-        "dall-e-2"]
+        "image":[]
     },
     "cohere": {
         "env_variable": "COHERE_API_KEY",
@@ -85,7 +84,6 @@
             "embed-multilingual-light-v3.0"
         ],
         "text": [],
-        "image":["dall-e-3",
-        "dall-e-2"]
+        "image":[]
     }
 }
