@@ -39,10 +39,7 @@
             "codellama/CodeLlama-34b-Instruct-hf",
             "mistralai/Mistral-7B-Instruct-v0.1"
         ],
-        "image":[
-            "dall-e-3",
-            "dall-e-2"
-        ]
+        "image":[]
     },
     "anthropic": {
         "env_variable": "ANTHROPIC_API_KEY",
