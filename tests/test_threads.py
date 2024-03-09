@@ -38,37 +38,6 @@ class TestThreads:
             "random_id": str(uuid4()),
         }
 
-    # # --------------------------
-    # # Test-1
-
-    # t1_params = []
-    # t = []
-    # for k, v in models.items():
-    #     for i in v["chat"]:
-    #         t.append((client, k, os.environ.get(v["env_variable"]), i))
-
-    #     t1_params.extend(t)
-
-    # @pytest.mark.parametrize("client, provider, auth, model", t1_params)
-    # def test_method_single_with_vk_and_provider(
-    #     self, client: Any, provider: str, auth: str, model
-    # ) -> None:
-    #     metadata = self.get_metadata()
-    #     portkey = client(
-    #         base_url=base_url,
-    #         api_key=api_key,
-    #         provider=f"{provider}",
-    #         Authorization=f"Bearer {auth}",
-    #         trace_id=str(uuid4()),
-    #         metadata=metadata,
-    #     )
-    #     thread =
-    #    portkey.beta.threads.retrieve(thread_id="thread_6dWkyyEFNNI8pQw8YEObrlna")
-    #     print(thread)
-
-    # --------------------------
-    # Test-1
-
     t2_params = []
     for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config"):
         t2_params.append((client, i))
