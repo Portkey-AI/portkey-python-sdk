@@ -74,7 +74,7 @@ class TestAssistants:
     for i in get_configs(f"{CONFIGS_PATH}/single_provider"):
         t3_params.append((client, i))
 
-    @pytest.mark.parametrize("client, provider, auth, model", t3_params)
+    @pytest.mark.parametrize("client, config", t3_params)
     def test_method_all_params(
         self, client: Any, provider: str, auth: str, model
     ) -> None:

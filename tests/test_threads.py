@@ -42,7 +42,7 @@ class TestThreads:
     for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config"):
         t2_params.append((client, i))
 
-    @pytest.mark.parametrize("client, provider, auth, model", t2_params)
+    @pytest.mark.parametrize("client, config", t2_params)
     def test_method_single_with_vk_and_provider(
         self, client: Any, provider: str, auth: str, model
     ) -> None:
