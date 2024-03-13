@@ -39,8 +39,9 @@ class Completion(APIResource):
         response = self.openai_client.with_raw_response.completions.create(
             model=model, prompt=prompt, **kwargs
         )
-        json_response = json.loads(response.text)
-        return TextCompletion(**json_response)
+        data = TextCompletion(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
     def create(
         self,
@@ -86,8 +87,9 @@ class AsyncCompletion(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.completions.create(
             model=model, prompt=prompt, **kwargs
         )
-        json_response = json.loads(response.text)
-        return TextCompletion(**json_response)
+        data = TextCompletion(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
     async def create(
         self,

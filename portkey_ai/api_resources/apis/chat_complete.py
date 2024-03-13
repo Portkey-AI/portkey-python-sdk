@@ -67,8 +67,9 @@ class Completions(APIResource):
         response = self.openai_client.with_raw_response.chat.completions.create(
             model=model, messages=messages, **kwargs
         )
-        json_response = json.loads(response.text)
-        return ChatCompletions(**json_response)
+        data = ChatCompletions(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
     def create(
         self,
@@ -114,8 +115,9 @@ class AsyncCompletions(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.chat.completions.create(
             model=model, messages=messages, **kwargs
         )
-        json_response = json.loads(response.text)
-        return ChatCompletions(**json_response)
+        data = ChatCompletions(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
     async def create(
         self,
