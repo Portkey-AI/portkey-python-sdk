@@ -568,6 +568,7 @@ class ModelList(BaseModel):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+
 class Assistant(BaseModel):
     id: Optional[str]
     created_at: Optional[int]
@@ -588,6 +589,7 @@ class Assistant(BaseModel):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+
 class AssistantList(BaseModel):
     object: Optional[str]
     data: Optional[List[Any]]
@@ -599,7 +601,8 @@ class AssistantList(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
+
 class AssistantDeleted(BaseModel):
     id: Optional[str]
     object: Optional[str]
@@ -743,10 +746,10 @@ class AssistantFileDeleted(BaseModel):
     def __str__(self):
         del self._headers
         return json.dumps(self.dict(), indent=4)
-    
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
 
 class AssistantFile(BaseModel):
     id: Optional[str]
@@ -758,10 +761,11 @@ class AssistantFile(BaseModel):
     def __str__(self):
         del self._headers
         return json.dumps(self.dict(), indent=4)
-    
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
+
 class AssistantFileList(BaseModel):
     object: Optional[str]
     data: Optional[List[Any]]
@@ -773,6 +777,6 @@ class AssistantFileList(BaseModel):
     def __str__(self):
         del self._headers
         return json.dumps(self.dict(), indent=4)
-    
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
