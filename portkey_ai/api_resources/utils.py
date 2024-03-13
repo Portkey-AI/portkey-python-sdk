@@ -568,6 +568,51 @@ class ModelList(BaseModel):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+class Assistant(BaseModel):
+    id: Optional[str]
+    created_at: Optional[int]
+    description: Optional[str] = None
+    file_ids: Optional[List[str]]
+    instructions: Optional[str] = None
+    metadata: Optional[object] = None
+    model: Optional[str]
+    name: Optional[str] = None
+    object: Optional[str]
+    tools: Optional[List[Any]]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+class AssistantList(BaseModel):
+    object: Optional[str]
+    data: Optional[List[Any]]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+    
+class AssistantDeleted(BaseModel):
+    id: Optional[str]
+    object: Optional[str]
+    deleted: Optional[bool]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
     env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
@@ -689,23 +734,45 @@ def parse_headers(headers: Optional[httpx.Headers]) -> dict:
     return _headers
 
 
-class FileDeleteResponse(BaseModel):
-    id: str
+class AssistantFileDeleted(BaseModel):
+    id: Optional[str]
+    deleted: Optional[bool]
+    object: Optional[str]
+    _headers: Optional[httpx.Headers] = None
 
-    deleted: bool
-
-    object: Literal["assistant.file.deleted"]
-
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+    
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+    
 
 class AssistantFile(BaseModel):
-    id: str
-    """The identifier, which can be referenced in API endpoints."""
+    id: Optional[str]
+    assistant_id: Optional[str]
+    created_at: Optional[int]
+    object: Optional[str]
+    _headers: Optional[httpx.Headers] = None
 
-    assistant_id: str
-    """The assistant ID that the file is attached to."""
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+    
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+    
+class AssistantFileList(BaseModel):
+    object: Optional[str]
+    data: Optional[List[Any]]
+    first_id: Optional[str]
+    last_id: Optional[str]
+    has_more: Optional[bool]
+    _headers: Optional[httpx.Headers] = None
 
-    created_at: int
-    """The Unix timestamp (in seconds) for when the assistant file was created."""
-
-    object: Literal["assistant.file"]
-    """The object type, which is always `assistant.file`."""
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+    
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)

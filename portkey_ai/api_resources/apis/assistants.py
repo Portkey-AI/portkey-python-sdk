@@ -1,6 +1,8 @@
+import json
 from typing import Any
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.utils import Assistant, AssistantDeleted, AssistantFile, AssistantFileDeleted, AssistantFileList, AssistantList
 
 
 class Assistants(APIResource):
@@ -9,27 +11,48 @@ class Assistants(APIResource):
         self.openai_client = client.openai_client
         self.files = AssistantFiles(client)
 
-    def create(self, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.create(**kwargs)
-        return response
+    def create(self, **kwargs) -> Assistant:
+        response = self.openai_client.with_raw_response.beta.assistants.create(
+            **kwargs)
+        data = Assistant(**json.loads(response.text))
+        data._headers = response.headers
 
-    def retrieve(self, assistant_id, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.retrieve(
+        return data
+
+    def retrieve(self, assistant_id, **kwargs) -> Assistant:
+        response = self.openai_client.with_raw_response.beta.assistants.retrieve(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = Assistant(**json.loads(response.text))
+        data._headers = response.headers
 
-    def update(self, assistant_id, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.update(
+        return data
+
+    def update(self, assistant_id, **kwargs) -> Assistant:
+        response = self.openai_client.with_raw_response.beta.assistants.update(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = Assistant(**json.loads(response.text))
+        data._headers = response.headers
 
-    def delete(self, assistant_id, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.delete(
+        return data
+
+    def list(self, **kwargs) -> AssistantList:
+        response = self.openai_client.with_raw_response.beta.assistants.list(
+            **kwargs)
+        data = AssistantList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def delete(self, assistant_id, **kwargs) -> AssistantDeleted:
+        response = self.openai_client.with_raw_response.beta.assistants.delete(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = AssistantDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class AssistantFiles(APIResource):
@@ -37,27 +60,37 @@ class AssistantFiles(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def create(self, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.files.create(**kwargs)
-        return response
+    def create(self, assistant_id, file_id, **kwargs) -> AssistantFile:
+        response = self.openai_client.with_raw_response.beta.assistants.files.create(
+            assistant_id=assistant_id, file_id=file_id, **kwargs)
+        data = AssistantFile(**json.loads(response.text))
+        data._headers = response.headers
 
-    def list(self, assistant_id, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.files.list(
-            assistant_id=assistant_id, **kwargs
-        )
-        return response
+        return data
 
-    def retrieve(self, assistant_id, file_id, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.files.retrieve(
-            assistant_id=assistant_id, file_id=file_id, **kwargs
-        )
-        return response
+    def list(self, assistant_id, **kwargs) -> AssistantFileList:
+        response = self.openai_client.with_raw_response.beta.assistants.files.list(
+            assistant_id=assistant_id, **kwargs)
+        data = AssistantFileList(**json.loads(response.text))
+        data._headers = response.headers
+        
+        return data
 
-    def delete(self, assistant_id, file_id, **kwargs) -> Any:
-        response = self.openai_client.beta.assistants.files.delete(
-            assistant_id=assistant_id, file_id=file_id, **kwargs
-        )
-        return response
+    def retrieve(self, assistant_id, file_id, **kwargs) -> AssistantFile:
+        response = self.openai_client.with_raw_response.beta.assistants.files.retrieve(
+            assistant_id=assistant_id, file_id=file_id, **kwargs)
+        data = AssistantFile(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def delete(self, assistant_id, file_id, **kwargs) -> AssistantFileDeleted:
+        response = self.openai_client.with_raw_response.beta.assistants.files.delete(
+            assistant_id=assistant_id, file_id=file_id, **kwargs)
+        data = AssistantFileDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class AsyncAssistants(AsyncAPIResource):
@@ -66,27 +99,46 @@ class AsyncAssistants(AsyncAPIResource):
         self.openai_client = client.openai_client
         self.files = AsyncAssistantFiles(client)
 
-    async def create(self, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.create(**kwargs)
-        return response
+    async def create(self, **kwargs) -> Assistant:
+        response = await self.openai_client.with_raw_response.beta.assistants.create(**kwargs)
+        data = Assistant(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def retrieve(self, assistant_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.retrieve(
+        return data
+
+    async def retrieve(self, assistant_id, **kwargs) -> Assistant:
+        response = await self.openai_client.with_raw_response.beta.assistants.retrieve(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = Assistant(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def update(self, assistant_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.update(
+        return data
+
+    async def update(self, assistant_id, **kwargs) -> Assistant:
+        response = await self.openai_client.with_raw_response.beta.assistants.update(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = Assistant(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def delete(self, assistant_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.delete(
+        return data
+
+    async def list(self, **kwargs) -> AssistantList:
+        response = await self.openai_client.with_raw_response.beta.assistants.list(**kwargs)
+        data = AssistantList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def delete(self, assistant_id, **kwargs) -> AssistantDeleted:
+        response = await self.openai_client.with_raw_response.beta.assistants.delete(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = AssistantDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class AsyncAssistantFiles(AsyncAPIResource):
@@ -94,24 +146,34 @@ class AsyncAssistantFiles(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def create(self, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.files.create(**kwargs)
-        return response
+    async def create(self, assistant_id, file_id, **kwargs) -> AssistantFile:
+        response = await self.openai_client.with_raw_response.beta.assistants.files.create(
+            assistant_id=assistant_id, file_id=file_id, **kwargs)
+        data = AssistantFile(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def list(self, assistant_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.files.list(
-            assistant_id=assistant_id, **kwargs
-        )
-        return response
+        return data
 
-    async def retrieve(self, assistant_id, file_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.files.retrieve(
-            assistant_id=assistant_id, file_id=file_id, **kwargs
-        )
-        return response
+    async def list(self, assistant_id, **kwargs) -> AssistantFileList:
+        response = await self.openai_client.with_raw_response.beta.assistants.files.list(
+            assistant_id=assistant_id, **kwargs)
+        data = AssistantFileList(**json.loads(response.text))
+        data._headers = response.headers
+        
+        return data
 
-    async def delete(self, assistant_id, file_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.assistants.files.delete(
-            assistant_id=assistant_id, file_id=file_id, **kwargs
-        )
-        return response
+    async def retrieve(self, assistant_id, file_id, **kwargs) -> AssistantFile:
+        response = await self.openai_client.with_raw_response.beta.assistants.files.retrieve(
+            assistant_id=assistant_id, file_id=file_id, **kwargs)
+        data = AssistantFile(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def delete(self, assistant_id, file_id, **kwargs) -> AssistantFileDeleted:
+        response = await self.openai_client.with_raw_response.beta.assistants.files.delete(
+            assistant_id=assistant_id, file_id=file_id, **kwargs)
+        data = AssistantFileDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
