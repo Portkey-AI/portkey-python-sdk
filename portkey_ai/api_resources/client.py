@@ -52,7 +52,7 @@ class Portkey(APIClient):
         self.openai_client = OpenAI(
             api_key=OPEN_AI_API_KEY,
             base_url=PORTKEY_BASE_URL,
-            default_headers=self.custom_headers,
+            default_headers=self.allHeaders,
         )
 
         self.completions = apis.Completion(self)
@@ -137,7 +137,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.openai_client = AsyncOpenAI(
             api_key=OPEN_AI_API_KEY,
             base_url=PORTKEY_BASE_URL,
-            default_headers=self.custom_headers,
+            default_headers=self.allHeaders,
         )
 
         self.completions = apis.AsyncCompletion(self)
