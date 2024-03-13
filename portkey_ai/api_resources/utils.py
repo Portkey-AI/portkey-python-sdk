@@ -465,6 +465,18 @@ class GenericResponse(BaseModel, extra="allow"):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+class ImageResponse(BaseModel, extra="allow"):
+    created: int
+
+    data: List[Any]
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
     env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
