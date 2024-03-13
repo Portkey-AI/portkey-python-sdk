@@ -465,6 +465,7 @@ class GenericResponse(BaseModel, extra="allow"):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+
 class ImageResponse(BaseModel, extra="allow"):
     created: int
     data: List[Any]
@@ -477,24 +478,28 @@ class ImageResponse(BaseModel, extra="allow"):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+
 class FileObject(BaseModel):
     id: Optional[str]
     bytes: Optional[int]
     created_at: Optional[int]
     filename: Optional[str]
     object: Optional[Literal["file"]]
-    purpose: Optional[Literal["fine-tune", "fine-tune-results", "assistants", "assistants_output"]]
+    purpose: Optional[
+        Literal["fine-tune", "fine-tune-results", "assistants", "assistants_output"]
+    ]
     status: Optional[Literal["uploaded", "processed", "error"]]
     status_details: Optional[str] = None
     _headers: Optional[httpx.Headers] = None
-    
+
     def __str__(self):
         del self._headers
         return json.dumps(self.dict(), indent=4)
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
+
 class FileList(BaseModel):
     object: str
     data: List[Any]
@@ -506,6 +511,7 @@ class FileList(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
 
 class FileDeleted(BaseModel):
     id: Optional[str]
@@ -520,6 +526,7 @@ class FileDeleted(BaseModel):
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
+
 class ModelDeleted(BaseModel):
     id: str
     deleted: bool
@@ -532,6 +539,7 @@ class ModelDeleted(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
 
 class Model(BaseModel):
     id: str
@@ -546,7 +554,8 @@ class Model(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
+
 class ModelList(BaseModel):
     object: str
     data: List[Any]
@@ -558,6 +567,7 @@ class ModelList(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
     env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
