@@ -1,6 +1,18 @@
-from typing import Any
+import json
+
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.utils import (
+    MessageList,
+    Run,
+    RunList,
+    RunStep,
+    RunStepList,
+    Thread,
+    ThreadDeleted,
+    ThreadMessage,
+    ThreadMessageFileRetrieve,
+)
 
 
 class Threads(APIResource):
@@ -12,32 +24,50 @@ class Threads(APIResource):
 
     def create(
         self,
-    ) -> Any:
-        response = self.openai_client.beta.threads.create()
-        return response
+    ) -> Thread:
+        response = self.openai_client.with_raw_response.beta.threads.create()
+        data = Thread(**json.loads(response.text))
+        data._headers = response.headers
 
-    def retrieve(self, thread_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.retrieve(
+        return data
+
+    def retrieve(self, thread_id, **kwargs) -> Thread:
+        response = self.openai_client.with_raw_response.beta.threads.retrieve(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = Thread(**json.loads(response.text))
+        data._headers = response.headers
 
-    def update(self, thread_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.update(thread_id=thread_id, **kwargs)
-        return response
+        return data
+
+    def update(self, thread_id, **kwargs) -> Thread:
+        response = self.openai_client.with_raw_response.beta.threads.update(
+            thread_id=thread_id, **kwargs
+        )
+        data = Thread(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
     def delete(
         self,
         thread_id,
-    ) -> Any:
-        response = self.openai_client.beta.threads.delete(thread_id=thread_id)
-        return response
+    ) -> ThreadDeleted:
+        response = self.openai_client.with_raw_response.beta.threads.delete(
+            thread_id=thread_id
+        )
+        data = ThreadDeleted(**json.loads(response.text))
+        data._headers = response.headers
 
-    def create_and_run(self, assistant_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.create_and_run(
+        return data
+
+    def create_and_run(self, assistant_id, **kwargs) -> Run:
+        response = self.openai_client.with_raw_response.beta.threads.create_and_run(
             assistant_id=assistant_id, **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class Messages(APIResource):
@@ -46,29 +76,38 @@ class Messages(APIResource):
         self.openai_client = client.openai_client
         self.files = ThreadFiles(client)
 
-    def create(self, thread_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.messages.create(
+    def create(self, thread_id, **kwargs) -> ThreadMessage:
+        response = self.openai_client.with_raw_response.beta.threads.messages.create(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
 
-    def list(self, thread_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.messages.list(
+        return data
+
+    def list(self, thread_id, **kwargs) -> MessageList:
+        response = self.openai_client.with_raw_response.beta.threads.messages.list(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = MessageList(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
-    def retrieve(self, thread_id, message_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.messages.retrieve(
+    def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
+        response = self.openai_client.with_raw_response.beta.threads.messages.retrieve(
             thread_id=thread_id, message_id=message_id, **kwargs
         )
-        return response
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
-    def update(self, thread_id, message_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.messages.update(
+    def update(self, thread_id, message_id, **kwargs) -> ThreadMessage:
+        response = self.openai_client.with_raw_response.beta.threads.messages.update(
             thread_id=thread_id, message_id=message_id, **kwargs
         )
-        return response
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class ThreadFiles(APIResource):
@@ -76,17 +115,29 @@ class ThreadFiles(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def list(self, thread_id, message_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.messages.files.list(
-            thread_id=thread_id, message_id=message_id, **kwargs
+    def list(self, thread_id, message_id, **kwargs) -> MessageList:
+        response = (
+            self.openai_client.with_raw_response.beta.threads.messages.files.list(
+                thread_id=thread_id, message_id=message_id, **kwargs
+            )
         )
-        return response
+        data = MessageList(**json.loads(response.text))
+        data._headers = response.headers
 
-    def retrieve(self, thread_id, message_id, file_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.messages.files.retrieve(
-            thread_id=thread_id, message_id=message_id, file_id=file_id**kwargs
+        return data
+
+    def retrieve(
+        self, thread_id, message_id, file_id, **kwargs
+    ) -> ThreadMessageFileRetrieve:
+        response = (
+            self.openai_client.with_raw_response.beta.threads.messages.files.retrieve(
+                thread_id=thread_id, message_id=message_id, file_id=file_id**kwargs
+            )
         )
-        return response
+        data = ThreadMessageFileRetrieve(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class Runs(APIResource):
@@ -95,39 +146,61 @@ class Runs(APIResource):
         self.openai_client = client.openai_client
         self.steps = Steps(client)
 
-    def create(self, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.create(**kwargs)
-        return response
+    def create(self, **kwargs) -> Run:
+        response = self.openai_client.with_raw_response.beta.threads.runs.create(
+            **kwargs
+        )
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
 
-    def retrieve(self, thread_id, run_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.retrieve(
+        return data
+
+    def retrieve(self, thread_id, run_id, **kwargs) -> Run:
+        response = self.openai_client.with_raw_response.beta.threads.runs.retrieve(
             thread_id=thread_id, run_id=run_id, **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
 
-    def list(self, thread_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.list(
+        return data
+
+    def list(self, thread_id, **kwargs) -> RunList:
+        response = self.openai_client.with_raw_response.beta.threads.runs.list(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = RunList(**json.loads(response.text))
+        data._headers = response.headers
 
-    def update(self, thread_id, run_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.update(
+        return data
+
+    def update(self, thread_id, run_id, **kwargs) -> Run:
+        response = self.openai_client.with_raw_response.beta.threads.runs.update(
             thread_id=thread_id, run_id=run_id, **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
 
-    def submit_tool_outputs(self, thread_id, tool_outputs, run_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.submit_tool_outputs(
-            thread_id=thread_id, run_id=run_id, tool_outputs=tool_outputs, **kwargs
+        return data
+
+    def submit_tool_outputs(self, thread_id, tool_outputs, run_id, **kwargs) -> Run:
+        response = (
+            self.openai_client.with_raw_response.beta.threads.runs.submit_tool_outputs(
+                thread_id=thread_id, run_id=run_id, tool_outputs=tool_outputs, **kwargs
+            )
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
 
-    def cancel(self, thread_id, run_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.cancel(
+        return data
+
+    def cancel(self, thread_id, run_id, **kwargs) -> Run:
+        response = self.openai_client.with_raw_response.beta.threads.runs.cancel(
             thread_id=thread_id, run_id=run_id, **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class Steps(APIResource):
@@ -135,17 +208,25 @@ class Steps(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def list(self, thread_id, run_id, **kwargs) -> Any:
-        reponse = self.openai_client.beta.threads.runs.steps.list(
+    def list(self, thread_id, run_id, **kwargs) -> RunStepList:
+        response = self.openai_client.with_raw_response.beta.threads.runs.steps.list(
             thread_id=thread_id, run_id=run_id, **kwargs
         )
-        return reponse
+        data = RunStepList(**json.loads(response.text))
+        data._headers = response.headers
 
-    def retrieve(self, thread_id, run_id, step_id, **kwargs) -> Any:
-        response = self.openai_client.beta.threads.runs.steps.retrieve(
-            thread_id=thread_id, run_id=run_id, step_id=step_id, **kwargs
+        return data
+
+    def retrieve(self, thread_id, run_id, step_id, **kwargs) -> RunStep:
+        response = (
+            self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
+                thread_id=thread_id, run_id=run_id, step_id=step_id, **kwargs
+            )
         )
-        return response
+        data = RunStep(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class AsyncThreads(AsyncAPIResource):
@@ -157,34 +238,52 @@ class AsyncThreads(AsyncAPIResource):
 
     async def create(
         self,
-    ) -> Any:
-        response = await self.openai_client.beta.threads.create()
-        return response
+    ) -> Thread:
+        response = await self.openai_client.with_raw_response.beta.threads.create()
+        data = Thread(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def retrieve(self, thread_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.retrieve(
+        return data
+
+    async def retrieve(self, thread_id, **kwargs) -> Thread:
+        response = await self.openai_client.with_raw_response.beta.threads.retrieve(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = Thread(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def update(self, thread_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.update(
+        return data
+
+    async def update(self, thread_id, **kwargs) -> Thread:
+        response = await self.openai_client.with_raw_response.beta.threads.update(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = Thread(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
     async def delete(
         self,
         thread_id,
-    ) -> Any:
-        response = await self.openai_client.beta.threads.delete(thread_id=thread_id)
-        return response
-
-    async def create_and_run(self, assistant_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.create_and_run(
-            assistant_id=assistant_id, **kwargs
+    ) -> ThreadDeleted:
+        response = await self.openai_client.with_raw_response.beta.threads.delete(
+            thread_id=thread_id
         )
-        return response
+        data = ThreadDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def create_and_run(self, assistant_id, **kwargs) -> Run:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.create_and_run(
+                assistant_id=assistant_id, **kwargs
+            )
+        )
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class AsyncMessages(AsyncAPIResource):
@@ -193,29 +292,46 @@ class AsyncMessages(AsyncAPIResource):
         self.openai_client = client.openai_client
         self.files = AsyncThreadFiles(client)
 
-    async def create(self, thread_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.messages.create(
-            thread_id=thread_id, **kwargs
+    async def create(self, thread_id, **kwargs) -> ThreadMessage:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.messages.create(
+                thread_id=thread_id, **kwargs
+            )
         )
-        return response
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def list(self, thread_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.messages.list(
-            thread_id=thread_id, **kwargs
-        )
-        return response
+        return data
 
-    async def retrieve(self, thread_id, message_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.messages.retrieve(
-            thread_id=thread_id, message_id=message_id, **kwargs
+    async def list(self, thread_id, **kwargs) -> MessageList:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.messages.list(
+                thread_id=thread_id, **kwargs
+            )
         )
-        return response
+        data = MessageList(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
-    async def update(self, thread_id, message_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.messages.update(
-            thread_id=thread_id, message_id=message_id, **kwargs
+    async def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.messages.retrieve(
+                thread_id=thread_id, message_id=message_id, **kwargs
+            )
         )
-        return response
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    async def update(self, thread_id, message_id, **kwargs) -> ThreadMessage:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.messages.update(
+                thread_id=thread_id, message_id=message_id, **kwargs
+            )
+        )
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class AsyncThreadFiles(AsyncAPIResource):
@@ -223,17 +339,38 @@ class AsyncThreadFiles(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def list(self, thread_id, message_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.messages.files.list(
-            thread_id=thread_id, message_id=message_id, **kwargs
+    async def list(self, thread_id, message_id, **kwargs) -> MessageList:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.messages.files.list(
+                thread_id=thread_id, message_id=message_id, **kwargs
+            )
         )
-        return response
+        data = MessageList(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def retrieve(self, thread_id, message_id, file_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.messages.files.retrieve(
-            thread_id=thread_id, message_id=message_id, file_id=file_id**kwargs
-        )
-        return response
+        return data
+
+    async def retrieve(
+        self, thread_id, message_id, file_id, **kwargs
+    ) -> ThreadMessageFileRetrieve:
+        # fmt: off
+        response = await self.openai_client\
+            .with_raw_response\
+            .beta\
+            .threads\
+            .messages\
+            .files\
+            .retrieve(
+                thread_id=thread_id, 
+                message_id=message_id, 
+                file_id=file_id, 
+                **kwargs
+            )
+        # fmt: off
+        data = ThreadMessageFileRetrieve(**json.loads( response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class AsyncRuns(AsyncAPIResource):
@@ -242,41 +379,73 @@ class AsyncRuns(AsyncAPIResource):
         self.openai_client = client.openai_client
         self.steps = AsyncSteps(client)
 
-    async def create(self, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.runs.create(**kwargs)
-        return response
-
-    async def retrieve(self, thread_id, run_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.runs.retrieve(
-            thread_id=thread_id, run_id=run_id, **kwargs
+    async def create(self, **kwargs) -> Run:
+        response = await self.openai_client.with_raw_response.beta.threads.runs.create(
+            **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def list(self, thread_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.runs.list(
+        return data
+
+    async def retrieve(self, thread_id, run_id, **kwargs) -> Run:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.runs.retrieve(
+                thread_id=thread_id, run_id=run_id, **kwargs
+            )
+        )
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def list(self, thread_id, **kwargs) -> RunList:
+        response = await self.openai_client.with_raw_response.beta.threads.runs.list(
             thread_id=thread_id, **kwargs
         )
-        return response
+        data = RunList(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def update(self, thread_id, run_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.runs.update(
+        return data
+
+    async def update(self, thread_id, run_id, **kwargs) -> Run:
+        response = await self.openai_client.with_raw_response.beta.threads.runs.update(
             thread_id=thread_id, run_id=run_id, **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
     async def submit_tool_outputs(
         self, thread_id, tool_outputs, run_id, **kwargs
-    ) -> Any:
-        response = await self.openai_client.beta.threads.runs.submit_tool_outputs(
-            thread_id=thread_id, run_id=run_id, tool_outputs=tool_outputs, **kwargs
+    ) -> Run:
+        # fmt: off
+        response = await self.openai_client\
+            .with_raw_response\
+            .beta\
+            .threads\
+            .runs\
+            .submit_tool_outputs(
+                thread_id=thread_id,
+                run_id=run_id,
+                tool_outputs=tool_outputs,
+                **kwargs
         )
-        return response
+        # fmt: on
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def cancel(self, thread_id, run_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.runs.cancel(
+        return data
+
+    async def cancel(self, thread_id, run_id, **kwargs) -> Run:
+        response = await self.openai_client.with_raw_response.beta.threads.runs.cancel(
             thread_id=thread_id, run_id=run_id, **kwargs
         )
-        return response
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
 
 
 class AsyncSteps(AsyncAPIResource):
@@ -284,14 +453,24 @@ class AsyncSteps(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def list(self, thread_id, run_id, **kwargs) -> Any:
-        reponse = await self.openai_client.beta.threads.runs.steps.list(
-            thread_id=thread_id, run_id=run_id, **kwargs
+    async def list(self, thread_id, run_id, **kwargs) -> RunStepList:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.runs.steps.list(
+                thread_id=thread_id, run_id=run_id, **kwargs
+            )
         )
-        return reponse
+        data = RunStepList(**json.loads(response.text))
+        data._headers = response.headers
 
-    async def retrieve(self, thread_id, run_id, step_id, **kwargs) -> Any:
-        response = await self.openai_client.beta.threads.runs.steps.retrieve(
-            thread_id=thread_id, run_id=run_id, step_id=step_id, **kwargs
+        return data
+
+    async def retrieve(self, thread_id, run_id, step_id, **kwargs) -> RunStep:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
+                thread_id=thread_id, run_id=run_id, step_id=step_id, **kwargs
+            )
         )
-        return response
+        data = RunStep(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data

@@ -479,7 +479,7 @@ class ImageResponse(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class FileObject(BaseModel):
+class FileObject(BaseModel, extra="allow"):
     id: Optional[str]
     bytes: Optional[int]
     created_at: Optional[int]
@@ -500,7 +500,7 @@ class FileObject(BaseModel):
         return parse_headers(self._headers)
 
 
-class FileList(BaseModel):
+class FileList(BaseModel, extra="allow"):
     object: str
     data: List[Any]
     _headers: Optional[httpx.Headers] = None
@@ -513,7 +513,7 @@ class FileList(BaseModel):
         return parse_headers(self._headers)
 
 
-class FileDeleted(BaseModel):
+class FileDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[Literal["file"]]
@@ -527,7 +527,7 @@ class FileDeleted(BaseModel):
         return parse_headers(self._headers)
 
 
-class ModelDeleted(BaseModel):
+class ModelDeleted(BaseModel, extra="allow"):
     id: str
     deleted: bool
     object: str
@@ -541,7 +541,7 @@ class ModelDeleted(BaseModel):
         return parse_headers(self._headers)
 
 
-class Model(BaseModel):
+class Model(BaseModel, extra="allow"):
     id: str
     created: int
     object: Literal["model"]
@@ -556,7 +556,7 @@ class Model(BaseModel):
         return parse_headers(self._headers)
 
 
-class ModelList(BaseModel):
+class ModelList(BaseModel, extra="allow"):
     object: str
     data: List[Any]
     _headers: Optional[httpx.Headers] = None
@@ -569,7 +569,7 @@ class ModelList(BaseModel):
         return parse_headers(self._headers)
 
 
-class Assistant(BaseModel):
+class Assistant(BaseModel, extra="allow"):
     id: Optional[str]
     created_at: Optional[int]
     description: Optional[str] = None
@@ -590,7 +590,7 @@ class Assistant(BaseModel):
         return parse_headers(self._headers)
 
 
-class AssistantList(BaseModel):
+class AssistantList(BaseModel, extra="allow"):
     object: Optional[str]
     data: Optional[List[Any]]
     _headers: Optional[httpx.Headers] = None
@@ -603,7 +603,7 @@ class AssistantList(BaseModel):
         return parse_headers(self._headers)
 
 
-class AssistantDeleted(BaseModel):
+class AssistantDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     object: Optional[str]
     deleted: Optional[bool]
@@ -737,7 +737,7 @@ def parse_headers(headers: Optional[httpx.Headers]) -> dict:
     return _headers
 
 
-class AssistantFileDeleted(BaseModel):
+class AssistantFileDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[str]
@@ -751,7 +751,7 @@ class AssistantFileDeleted(BaseModel):
         return parse_headers(self._headers)
 
 
-class AssistantFile(BaseModel):
+class AssistantFile(BaseModel, extra="allow"):
     id: Optional[str]
     assistant_id: Optional[str]
     created_at: Optional[int]
@@ -766,7 +766,177 @@ class AssistantFile(BaseModel):
         return parse_headers(self._headers)
 
 
-class AssistantFileList(BaseModel):
+class AssistantFileList(BaseModel, extra="allow"):
+    object: Optional[str]
+    data: Optional[List[Any]]
+    first_id: Optional[str]
+    last_id: Optional[str]
+    has_more: Optional[bool]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class Thread(BaseModel, extra="allow"):
+    id: Optional[str]
+    created_at: Optional[int]
+    metadata: Optional[object] = None
+    object: Optional[str]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class ThreadDeleted(BaseModel, extra="allow"):
+    id: Optional[str]
+    object: Optional[str]
+    deleted: Optional[bool]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class Run(BaseModel, extra="allow"):
+    id: Optional[str]
+    assistant_id: Optional[str]
+    cancelled_at: Optional[int] = None
+    completed_at: Optional[int] = None
+    created_at: Optional[int]
+    expires_at: Optional[int]
+    failed_at: Optional[int] = None
+    file_ids: Optional[List[str]] = None
+    instructions: Optional[str]
+    last_error: Optional[Any] = None
+    metadata: Optional[object] = None
+    model: Optional[str]
+    object: Optional[str]
+    required_action: Optional[str] = None
+    started_at: Optional[int] = None
+    status: Optional[str]
+    thread_id: Optional[str]
+    tools: Optional[List[Any]] = None
+    usage: Optional[Any] = None
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class ThreadMessage(BaseModel, extra="allow"):
+    id: Optional[str]
+    assistant_id: Optional[str] = None
+    content: Optional[List[Any]]
+    created_at: Optional[int]
+    file_ids: Optional[List[str]]
+    metadata: Optional[object] = None
+    object: Optional[str]
+    role: Optional[str]
+    run_id: Optional[str] = None
+    thread_id: Optional[str]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class MessageList(BaseModel, extra="allow"):
+    object: Optional[str]
+    data: Optional[List[Any]]
+    first_id: Optional[str]
+    last_id: Optional[str]
+    has_more: Optional[bool]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class ThreadMessageFileRetrieve(BaseModel, extra="allow"):
+    id: Optional[str]
+    object: Optional[str]
+    created_at: Optional[int]
+    message_id: Optional[str]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class RunList(BaseModel, extra="allow"):
+    object: Optional[str]
+    data: Optional[List[Any]]
+    first_id: Optional[str]
+    last_id: Optional[str]
+    has_more: Optional[bool]
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class RunStep(BaseModel, extra="allow"):
+    id: Optional[str]
+    assistant_id: Optional[str]
+    cancelled_at: Optional[int] = None
+    completed_at: Optional[int] = None
+    created_at: Optional[int]
+    expired_at: Optional[int] = None
+    failed_at: Optional[int] = None
+    last_error: Optional[Any] = None
+    metadata: Optional[object] = None
+    object: Optional[str]
+    run_id: Optional[str]
+    status: Optional[str]
+    step_details: Optional[Any]
+    thread_id: Optional[str]
+    type: Optional[str]
+    usage: Optional[Any] = None
+    _headers: Optional[httpx.Headers] = None
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class RunStepList(BaseModel, extra="allow"):
     object: Optional[str]
     data: Optional[List[Any]]
     first_id: Optional[str]
