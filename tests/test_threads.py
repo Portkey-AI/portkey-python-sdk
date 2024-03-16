@@ -42,15 +42,15 @@ class TestThreads:
     for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config"):
         t2_params.append((client, i))
 
-    @pytest.mark.parametrize("client, config", t2_params)
+    @pytest.mark.parametrize("client, virtual_key", t2_params)
     def test_method_single_with_vk_and_provider(
-        self, client: Any, provider: str, auth: str, model
+        self, client: Any, auth: str, virtual_key:str
     ) -> None:
         metadata = self.get_metadata()
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            provider=f"{provider}",
+            virtual_key=virtual_key,
             Authorization=f"Bearer {auth}",
             trace_id=str(uuid4()),
             metadata=metadata,

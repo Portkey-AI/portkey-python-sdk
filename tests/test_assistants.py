@@ -74,15 +74,15 @@ class TestAssistants:
     for i in get_configs(f"{CONFIGS_PATH}/single_provider"):
         t3_params.append((client, i))
 
-    @pytest.mark.parametrize("client, config", t3_params)
+    @pytest.mark.parametrize("client, virtual_key", t3_params)
     def test_method_all_params(
-        self, client: Any, provider: str, auth: str, model
+        self, client: Any, auth: str, model, virtual_key:str
     ) -> None:
         metadata = self.get_metadata()
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            provider=f"{provider}",
+            virtual_key=virtual_key,
             Authorization=f"Bearer {auth}",
             trace_id=str(uuid4()),
             metadata=metadata,
