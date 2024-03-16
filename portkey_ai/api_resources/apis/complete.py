@@ -94,7 +94,7 @@ class AsyncCompletion(AsyncAPIResource):
     async def create(
         self,
         *,
-        model: Optional[str] = "portkey-default-model",
+        model: Optional[str] = "portkey-default",
         prompt: Optional[str] = None,
         **kwargs,
     ) -> Any:
