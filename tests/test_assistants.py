@@ -76,7 +76,7 @@ class TestAssistants:
 
     @pytest.mark.parametrize("client, virtual_key", t3_params)
     def test_method_all_params(
-        self, client: Any, auth: str, model, virtual_key:str
+        self, client: Any, auth: str, model, virtual_key: str
     ) -> None:
         metadata = self.get_metadata()
         portkey = client(

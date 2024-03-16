@@ -44,7 +44,7 @@ class TestThreads:
 
     @pytest.mark.parametrize("client, virtual_key", t2_params)
     def test_method_single_with_vk_and_provider(
-        self, client: Any, auth: str, virtual_key:str
+        self, client: Any, auth: str, virtual_key: str
     ) -> None:
         metadata = self.get_metadata()
         portkey = client(
