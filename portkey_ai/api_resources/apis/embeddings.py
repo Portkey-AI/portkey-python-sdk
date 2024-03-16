@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.utils import GenericResponse
@@ -9,7 +10,7 @@ class Embeddings(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def create(self, *, input: str, model: str, **kwargs) -> GenericResponse:
+    def create(self, *, input: str, model: Optional[str] = "portkey-default", **kwargs) -> GenericResponse:
         response = self.openai_client.with_raw_response.embeddings.create(
             input=input, model=model, **kwargs
         )
@@ -25,7 +26,7 @@ class AsyncEmbeddings(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def create(self, *, input: str, model: str, **kwargs) -> GenericResponse:
+    async def create(self, *, input: str, model: Optional[str] = "portkey-default", **kwargs) -> GenericResponse:
         response = await self.openai_client.with_raw_response.embeddings.create(
             input=input, model=model, **kwargs
         )

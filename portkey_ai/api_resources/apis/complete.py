@@ -46,7 +46,7 @@ class Completion(APIResource):
     def create(
         self,
         *,
-        model: Optional[str] = None,
+        model: Optional[str] = "portkey-default",
         prompt: Optional[str] = None,
         **kwargs,
     ) -> TextCompletion:
@@ -94,7 +94,7 @@ class AsyncCompletion(AsyncAPIResource):
     async def create(
         self,
         *,
-        model: Optional[str] = None,
+        model: Optional[str] = "portkey-default-model",
         prompt: Optional[str] = None,
         **kwargs,
     ) -> Any:

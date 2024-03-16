@@ -74,7 +74,7 @@ class Completions(APIResource):
     def create(
         self,
         *,
-        model: Optional[str] = None,
+        model: Optional[str] = "portkey-default",
         messages: Iterable[Any],
         **kwargs,
     ) -> ChatCompletions:
@@ -122,7 +122,7 @@ class AsyncCompletions(AsyncAPIResource):
     async def create(
         self,
         *,
-        model: Optional[str] = None,
+        model: Optional[str] = "portkey-default",
         messages: Iterable[Any],
         **kwargs,
     ) -> ChatCompletions:
