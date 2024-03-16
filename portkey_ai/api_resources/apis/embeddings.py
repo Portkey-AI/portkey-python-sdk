@@ -10,9 +10,11 @@ class Embeddings(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def create(self, *, input: str, model: Optional[str] = "portkey-default", **kwargs) -> GenericResponse:
+    def create(
+        self, *, input: str, model: Optional[str] = "portkey-default", **kwargs
+    ) -> GenericResponse:
         response = self.openai_client.with_raw_response.embeddings.create(
-            input=input, model=model, **kwargs
+            input=input, model=model, **kwargs  # type: ignore
         )
 
         data = GenericResponse(**json.loads(response.text))
@@ -26,9 +28,11 @@ class AsyncEmbeddings(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def create(self, *, input: str, model: Optional[str] = "portkey-default", **kwargs) -> GenericResponse:
+    async def create(
+        self, *, input: str, model: Optional[str] = "portkey-default", **kwargs
+    ) -> GenericResponse:
         response = await self.openai_client.with_raw_response.embeddings.create(
-            input=input, model=model, **kwargs
+            input=input, model=model, **kwargs  # type: ignore
         )
         data = GenericResponse(**json.loads(response.text))
         data._headers = response.headers
