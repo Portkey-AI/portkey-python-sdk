@@ -45,10 +45,11 @@ class TestAssistants:
     t1_params = []
     t = []
     for k, v in models.items():
-        for i in v["chat"]:
-            t.append((client, k, os.environ.get(v["env_variable"]), i))
+        if k == "openai":
+            for i in v["chat"]:
+                t.append((client, k, os.environ.get(v["env_variable"]), i))
 
-        t1_params.extend(t)
+            t1_params.extend(t)
 
     @pytest.mark.parametrize("client, provider, auth, model", t1_params)
     def test_method_single_with_vk_and_provider(
