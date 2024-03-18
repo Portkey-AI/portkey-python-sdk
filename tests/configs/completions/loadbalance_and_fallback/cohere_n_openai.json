@@ -4,7 +4,10 @@
     },
     "targets": [
         {
-            "virtual_key": "openai-virtual-key"
+            "virtual_key": "openai-virtual-key",
+            "override_params": {
+                "model": "gpt-3.5-turbo-instruct"
+            }
         },
         {
             "strategy": {
@@ -16,10 +19,16 @@
             },
             "targets": [
                 {
-                    "virtual_key": "cohere-virtual-key"
+                    "virtual_key": "cohere-virtual-key",
+                    "override_params": {
+                        "model": "command"
+                    }
                 },
                 {
-                    "virtual_key": "openai-virtual-key"
+                    "virtual_key": "openai-virtual-key",
+                    "override_params": {
+                        "model": "gpt-3.5-turbo-instruct"
+                    }
                 }
             ]
         }
