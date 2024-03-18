@@ -21,7 +21,7 @@ class CreateHeaders:
                 if k.lower() != "authorization":
                     headers[get_portkey_header(k)] = str(v)
                 else:
-                    headers[k] = str(v)
+                    headers[k] = str('Bearer ' + v)
         return headers
 
 
