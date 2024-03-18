@@ -7,7 +7,6 @@ from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from openai import AsyncOpenAI, OpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
-    PORTKEY_BASE_URL,
 )
 
 
