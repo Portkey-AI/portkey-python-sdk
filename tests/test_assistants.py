@@ -59,7 +59,7 @@ class TestAssistants:
             base_url=base_url,
             api_key=api_key,
             provider=f"{provider}",
-            Authorization=f"Bearer {auth}",
+            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
         )
@@ -84,7 +84,7 @@ class TestAssistants:
             base_url=base_url,
             api_key=api_key,
             virtual_key=virtual_key,
-            Authorization=f"Bearer {auth}",
+            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=metadata,
         )
