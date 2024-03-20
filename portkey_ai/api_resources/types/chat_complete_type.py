@@ -1,7 +1,7 @@
 import json
 from typing import Dict, Optional
 import httpx
-from portkey_ai.api_resources.utils import parse_headers
+from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel
 
@@ -15,6 +15,10 @@ __all__ = [
     "ChoiceLogprobs",
     "Choice",
     "Usage",
+    "DeltaToolCall",
+    "Delta",
+    "StreamChoice",
+    "ChatCompletionChunk",
 ]
 
 
@@ -22,6 +26,39 @@ class Usage(BaseModel, extra="allow"):
     prompt_tokens: Optional[int] = None
     completion_tokens: Optional[int] = None
     total_tokens: Optional[int] = None
+
+
+class DeltaToolCallFunction(BaseModel):
+    arguments: Optional[str] = None
+    name: Optional[str] = None
+
+
+class DeltaToolCall(BaseModel):
+    index: int
+    id: Optional[str] = None
+    function: Optional[DeltaToolCallFunction] = None
+    type: Optional[str] = None
+
+
+class Delta(BaseModel):
+    role: Optional[str] = None
+    content: Optional[str] = ""
+    tool_calls: Optional[List[DeltaToolCall]] = None
+
+
+class StreamChoice(BaseModel, extra="allow"):
+    index: Optional[int] = None
+    delta: Optional[Delta]
+    finish_reason: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
 
 
 class FunctionCall(BaseModel):
@@ -88,3 +125,20 @@ class ChatCompletions(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
+
+class ChatCompletionChunk(BaseModel):
+    id: Optional[str] = None
+    object: Optional[str] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    choices: Optional[List[StreamChoice]]
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default

@@ -45,8 +45,6 @@ from .utils import (
     Params,
     Config,
     RetrySettings,
-    ChatCompletionChunk,
-    TextCompletionChunk,
 )
 from .client import Portkey, AsyncPortkey
 
@@ -70,8 +68,6 @@ __all__ = [
     "RetrySettings",
     "ChatCompletion",
     "AsyncChatCompletion",
-    "ChatCompletionChunk",
-    "TextCompletionChunk",
     "Generations",
     "AsyncGenerations",
     "Prompts",

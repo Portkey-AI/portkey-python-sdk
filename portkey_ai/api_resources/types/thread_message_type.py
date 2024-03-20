@@ -1,7 +1,7 @@
 import json
 from typing import Dict, List, Optional, Union
 import httpx
-from portkey_ai.api_resources.utils import parse_headers
+from .utils import parse_headers
 from pydantic import BaseModel
 
 __all__ = [

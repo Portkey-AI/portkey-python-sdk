@@ -11,11 +11,12 @@ from typing import (
     Union,
 )
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.types.chat_complete_type import ChatCompletions
+from portkey_ai.api_resources.types.chat_complete_type import (
+    ChatCompletionChunk,
+    ChatCompletions,
+)
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
-
-from portkey_ai.api_resources.utils import ChatCompletionChunk
 
 __all__ = ["ChatCompletion", "AsyncChatCompletion"]
 
@@ -75,7 +76,7 @@ class Completions(APIResource):
         model: Optional[str] = "portkey-default",
         messages: Iterable[Any],
         **kwargs,
-    ) -> ChatCompletions:
+    ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
         if "stream" in kwargs and kwargs["stream"] is True:
             return self.stream_create(model=model, messages=messages, **kwargs)  # type: ignore
         elif "stream" in kwargs and kwargs["stream"] is False:
@@ -91,7 +92,7 @@ class AsyncCompletions(AsyncAPIResource):
 
     async def stream_create(
         self, model, messages, **kwargs
-    ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:  # type: ignore
+    ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
         async with self.openai_client.with_streaming_response.chat.completions.create(
             model=model, messages=messages, **kwargs
         ) as response:
@@ -123,7 +124,7 @@ class AsyncCompletions(AsyncAPIResource):
         model: Optional[str] = "portkey-default",
         messages: Iterable[Any],
         **kwargs,
-    ) -> ChatCompletions:
+    ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
         if "stream" in kwargs and kwargs["stream"] is True:
             return self.stream_create(model=model, messages=messages, **kwargs)  # type: ignore
         elif "stream" in kwargs and kwargs["stream"] is False:

@@ -1,7 +1,7 @@
 import json
 from typing import Dict, Optional
 import httpx
-from portkey_ai.api_resources.utils import parse_headers
+from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel
 
@@ -50,3 +50,37 @@ class TextCompletion(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
+
+class TextChoice(BaseModel, extra="allow"):
+    index: Optional[int] = None
+    text: Optional[str] = None
+    logprobs: Optional[Logprobs] = None
+    finish_reason: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+
+class TextCompletionChunk(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    object: Optional[str] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    provider: Optional[str] = None
+    choices: List[TextChoice]
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default

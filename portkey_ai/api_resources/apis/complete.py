@@ -1,8 +1,12 @@
 import json
 from typing import AsyncIterator, Iterator, Optional, Union
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.utils import TextCompletionChunk
-from portkey_ai.api_resources.types.complete_type import TextCompletion
+
+# from portkey_ai.api_resources.utils import TextCompletionChunk
+from portkey_ai.api_resources.types.complete_type import (
+    TextCompletion,
+    TextCompletionChunk,
+)
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 
 
@@ -46,7 +50,7 @@ class Completion(APIResource):
         model: Optional[str] = "portkey-default",
         prompt: Optional[str] = None,
         **kwargs,
-    ) -> TextCompletion:
+    ) -> Union[TextCompletion, Iterator[TextCompletionChunk]]:
         if "stream" in kwargs and kwargs["stream"] is True:
             return self.stream_create(model=model, prompt=prompt, **kwargs)  # type: ignore
         elif "stream" in kwargs and kwargs["stream"] is False:
@@ -94,7 +98,7 @@ class AsyncCompletion(AsyncAPIResource):
         model: Optional[str] = "portkey-default",
         prompt: Optional[str] = None,
         **kwargs,
-    ) -> TextCompletion:
+    ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
         if "stream" in kwargs and kwargs["stream"] is True:
             return self.stream_create(model=model, prompt=prompt, **kwargs)  # type: ignore
         elif "stream" in kwargs and kwargs["stream"] is False:
