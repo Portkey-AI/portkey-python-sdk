@@ -66,9 +66,11 @@ class TestImages:
             metadata=self.get_metadata(),
         )
 
-        portkey.images.generate(
+        generation = portkey.images.generate(
             model=model, prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
+        assert type(generation.data[0].url) is str
 
     # --------------------------
     # Test -2
@@ -86,9 +88,11 @@ class TestImages:
             config=config,
         )
 
-        portkey.images.generate(
+        generation = portkey.images.generate(
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
+        assert type(generation.data[0].url) is str
 
     # --------------------------
     # Test-3
@@ -128,9 +132,11 @@ class TestImages:
             config=config,
         )
 
-        portkey_2.images.generate(
+        cached_generation = portkey_2.images.generate(
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
+        assert type(cached_generation.data[0].url) is str
 
     # --------------------------
     # Test-4
@@ -155,7 +161,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
 
     # --------------------------
     # Test-5
@@ -176,7 +182,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
 
     # --------------------------
     # Test-6
@@ -197,7 +203,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
 
     # --------------------------
     # Test-7
@@ -225,4 +231,4 @@ class TestImages:
             user="user-1234",
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str

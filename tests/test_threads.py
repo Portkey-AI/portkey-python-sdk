@@ -40,20 +40,45 @@ class TestThreads:
 
     t2_params = []
     for i in get_configs(f"{CONFIGS_PATH}/single_with_basic_config"):
-        t2_params.append((client, i))
+        t2_params.append((client, i["virtual_key"]))
 
     @pytest.mark.parametrize("client, virtual_key", t2_params)
     def test_method_single_with_vk_and_provider(
-        self, client: Any, auth: str, virtual_key: str
+        self, client: Any, virtual_key: str
     ) -> None:
         metadata = self.get_metadata()
         portkey = client(
             base_url=base_url,
             api_key=api_key,
             virtual_key=virtual_key,
-            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=metadata,
         )
         thread = portkey.beta.threads.create()
-        print(thread)
+
+        assert type(thread.id) is str
+        assert thread.object == "thread"
+
+        retrieve_thread = portkey.beta.threads.retrieve(thread.id)
+
+        assert retrieve_thread.id == thread.id
+        assert retrieve_thread.object == "thread"
+        assert type(retrieve_thread.metadata) is dict
+
+        update_thread = portkey.beta.threads.update(
+            thread.id,
+            metadata={
+                "modified": "true",
+            },
+        )
+
+        assert update_thread.id == thread.id
+        assert update_thread.object == "thread"
+        assert type(update_thread.metadata) is dict
+        assert update_thread.metadata["modified"] == "true"
+
+        delete_thread = portkey.beta.threads.delete(thread.id)
+
+        assert delete_thread.id == thread.id
+        assert delete_thread.object == "thread.deleted"
+        assert delete_thread.deleted == True

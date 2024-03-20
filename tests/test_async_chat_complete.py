@@ -9,7 +9,7 @@ from uuid import uuid4
 from portkey_ai import AsyncPortkey
 from time import sleep
 from dotenv import load_dotenv
-from .utils import read_json_file
+from .utils import read_json_file, check_chat_streaming_chunk
 
 
 load_dotenv(override=True)
@@ -59,16 +59,18 @@ class TestChatCompletions:
             base_url=base_url,
             api_key=api_key,
             provider=f"{provider}",
-            Authorization=f"Bearer {auth}",
+            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
         )
 
-        await portkey.chat.completions.create(
+        completion = await portkey.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model=model,
             max_tokens=245,
         )
+
+        assert type(completion.choices[0].message.content) is str
 
     # --------------------------
     # Test -2
@@ -113,15 +115,12 @@ class TestChatCompletions:
             config=config,
         )
 
-        await portkey.chat.completions.create(
+        completion = await portkey.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model="gpt-3.5-turbo",
         )
 
-        # print(completion.choices)
-        # assert("True", "True")
-
-        # assert_matches_type(TextCompletion, completion, path=["response"])
+        assert type(completion.choices[0].message.content) is str
 
     # --------------------------
     # Test-3
@@ -163,10 +162,11 @@ class TestChatCompletions:
             config=config,
         )
 
-        portkey_2.chat.completions.create(
+        cached_completion = portkey_2.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model="gpt-3.5-turbo",
         )
+        assert type(cached_completion.choices[0].message.content) is str
 
     # --------------------------
     # Test-4
@@ -192,7 +192,7 @@ class TestChatCompletions:
             messages=[{"role": "user", "content": "Say this is a test"}], max_tokens=245
         )
 
-        print(completion.choices)
+        assert type(completion.choices[0].message.content) is str
 
     # --------------------------
     # Test-5
@@ -221,7 +221,7 @@ class TestChatCompletions:
             ],
         )
 
-        print(completion.choices)
+        assert type(completion.choices[0].message.content) is str
 
     # --------------------------
     # Test-6
@@ -244,7 +244,7 @@ class TestChatCompletions:
             model="gpt-3.5-turbo",
         )
 
-        print(completion.choices)
+        assert type(completion.choices[0].message.content) is str
 
 
 class TestChatCompletionsStreaming:
@@ -278,17 +278,20 @@ class TestChatCompletionsStreaming:
             base_url=base_url,
             api_key=api_key,
             provider=f"{provider}",
-            Authorization=f"Bearer {auth}",
+            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
         )
 
-        await portkey.chat.completions.create(
+        completion = await portkey.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model=model,
             max_tokens=245,
             stream=True,
         )
+
+        async for chunk in completion:
+            assert check_chat_streaming_chunk(chunk) == True
 
     # --------------------------
     # Test -2
@@ -333,16 +336,14 @@ class TestChatCompletionsStreaming:
             config=config,
         )
 
-        await portkey.chat.completions.create(
+        completion = await portkey.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model="gpt-3.5-turbo",
             stream=True,
         )
 
-        # print(completion.choices)
-        # assert("True", "True")
-
-        # assert_matches_type(TextCompletion, completion, path=["response"])
+        async for chunk in completion:
+            assert check_chat_streaming_chunk(chunk) == True
 
     # --------------------------
     # Test-3
@@ -385,11 +386,14 @@ class TestChatCompletionsStreaming:
             config=config,
         )
 
-        portkey_2.chat.completions.create(
+        cached_completion = portkey_2.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model="gpt-3.5-turbo",
             stream=True,
         )
+
+        async for chunk in cached_completion:
+            assert check_chat_streaming_chunk(chunk) == True
 
     # --------------------------
     # Test-4
@@ -417,7 +421,8 @@ class TestChatCompletionsStreaming:
             stream=True,
         )
 
-        print(completion)
+        async for chunk in completion:
+            assert check_chat_streaming_chunk(chunk) == True
 
     # --------------------------
     # Test-5
@@ -446,8 +451,8 @@ class TestChatCompletionsStreaming:
             ],
             stream=True,
         )
-
-        print(completion)
+        async for chunk in completion:
+            assert check_chat_streaming_chunk(chunk) == True
 
     # --------------------------
     # Test-6
@@ -471,4 +476,5 @@ class TestChatCompletionsStreaming:
             stream=True,
         )
 
-        print(completion)
+        async for chunk in completion:
+            assert check_chat_streaming_chunk(chunk) == True

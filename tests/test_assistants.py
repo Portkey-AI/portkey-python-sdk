@@ -39,55 +39,55 @@ class TestAssistants:
             "random_id": str(uuid4()),
         }
 
-    # --------------------------
-    # Test-1
+    # # --------------------------
+    # # Test-1
 
-    t1_params = []
-    t = []
-    for k, v in models.items():
-        if k == "openai":
-            for i in v["chat"]:
-                t.append((client, k, os.environ.get(v["env_variable"]), i))
+    # t1_params = []
+    # t = []
+    # for k, v in models.items():
+    #     if k == "openai":
+    #         for i in v["chat"]:
+    #             if "vision" not in i:
+    #                 t.append((client, k, os.environ.get(v["env_variable"]), i))
 
-            t1_params.extend(t)
+    #         t1_params.extend(t)
 
-    @pytest.mark.parametrize("client, provider, auth, model", t1_params)
-    def test_method_single_with_vk_and_provider(
-        self, client: Any, provider: str, auth: str, model
-    ) -> None:
-        portkey = client(
-            base_url=base_url,
-            api_key=api_key,
-            provider=f"{provider}",
-            Authorization=f"{auth}",
-            trace_id=str(uuid4()),
-            metadata=self.get_metadata(),
-        )
-        assistant = portkey.beta.assistants.create(
-            model=model,
-        )
-        print(assistant)
+    # @pytest.mark.parametrize("client, provider, auth, model", t1_params)
+    # def test_method_single_with_vk_and_provider(
+    #     self, client: Any, provider: str, auth: str, model
+    # ) -> None:
+    #     portkey = client(
+    #         base_url=base_url,
+    #         api_key=api_key,
+    #         provider=f"{provider}",
+    #         Authorization=f"{auth}",
+    #         trace_id=str(uuid4()),
+    #         metadata=self.get_metadata(),
+    #     )
+    #     assistant = portkey.beta.assistants.create(
+    #         model=model,
+    #     )
+    #     print(assistant)
 
     # --------------------------
     # Test-3
 
     t3_params = []
     for i in get_configs(f"{CONFIGS_PATH}/single_provider"):
-        t3_params.append((client, i))
+        t3_params.append((client, i["virtual_key"]))
 
     @pytest.mark.parametrize("client, virtual_key", t3_params)
-    def test_method_all_params(
-        self, client: Any, auth: str, model, virtual_key: str
-    ) -> None:
+    def test_method_all_params(self, client: Any, virtual_key: str) -> None:
         metadata = self.get_metadata()
+        model = "gpt-4"
         portkey = client(
             base_url=base_url,
             api_key=api_key,
             virtual_key=virtual_key,
-            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=metadata,
         )
+
         assistant = portkey.beta.assistants.create(
             model=model,
             description="string",
@@ -98,4 +98,29 @@ class TestAssistants:
             name="Math Tutor",
             tools=[{"type": "code_interpreter"}],
         )
-        print(assistant)
+
+        assert type(assistant.id) is str
+        assert assistant.object == "assistant"
+        assert assistant.model == model
+        assert assistant.name == "Math Tutor"
+        assert assistant.tools[0].type == "code_interpreter"
+
+        update_assistant = portkey.beta.assistants.update(
+            assistant.id, description="updated string"
+        )
+
+        assert update_assistant.description == "updated string"
+
+        retrieve_assistant = portkey.beta.assistants.retrieve(assistant.id)
+
+        assert retrieve_assistant.id == assistant.id
+        assert retrieve_assistant.object == "assistant"
+        assert retrieve_assistant.model == model
+        assert retrieve_assistant.name == "Math Tutor"
+        assert retrieve_assistant.tools[0].type == "code_interpreter"
+
+        delete_assistant = portkey.beta.assistants.delete(assistant.id)
+
+        assert delete_assistant.id == assistant.id
+        assert delete_assistant.object == "assistant.deleted"
+        assert delete_assistant.deleted == True

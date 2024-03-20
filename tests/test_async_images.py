@@ -66,9 +66,11 @@ class TestImages:
             metadata=self.get_metadata(),
         )
 
-        await portkey.images.generate(
+        generation = await portkey.images.generate(
             model=model, prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
+        assert type(generation.data[0].url) is str
 
     # --------------------------
     # Test -2
@@ -89,9 +91,11 @@ class TestImages:
             config=config,
         )
 
-        await portkey.images.generate(
+        generation = await portkey.images.generate(
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
+        assert type(generation.data[0].url) is str
 
     # --------------------------
     # Test-3
@@ -120,6 +124,7 @@ class TestImages:
         await portkey.images.generate(
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
         # Sleeping for the cache to reflect across the workers. The cache has an
         # eventual consistency and not immediate consistency.
         sleep(20)
@@ -132,9 +137,11 @@ class TestImages:
             config=config,
         )
 
-        await portkey_2.images.generate(
+        cached_generation = await portkey_2.images.generate(
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
+
+        assert type(cached_generation.data[0].url) is str
 
     # --------------------------
     # Test-4
@@ -160,7 +167,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
 
     # --------------------------
     # Test-5
@@ -184,7 +191,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
 
     # --------------------------
     # Test-6
@@ -206,7 +213,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
 
     # --------------------------
     # Test-7
@@ -235,4 +242,4 @@ class TestImages:
             user="user-1234",
         )
 
-        print(image.data)
+        assert type(image.data[0].url) is str
