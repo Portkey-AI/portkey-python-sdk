@@ -2,7 +2,11 @@ import json
 from typing import Any
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.types.main_file_type import FileDeleted, FileList, FileObject
+from portkey_ai.api_resources.types.main_file_type import (
+    FileDeleted,
+    FileList,
+    FileObject,
+)
 
 
 class MainFiles(APIResource):

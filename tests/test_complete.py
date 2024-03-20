@@ -264,7 +264,7 @@ class TestChatCompletionsStreaming:
         )
 
         for chunk in completion:
-            assert check_text_streaming_chunk(chunk) == True
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test -2
@@ -310,7 +310,7 @@ class TestChatCompletionsStreaming:
         )
 
         for chunk in completion:
-            assert check_text_streaming_chunk(chunk) == True
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-3
@@ -353,7 +353,7 @@ class TestChatCompletionsStreaming:
         )
 
         for chunk in cached_completion:
-            assert check_text_streaming_chunk(chunk) == True
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-4
@@ -379,7 +379,7 @@ class TestChatCompletionsStreaming:
         )
 
         for chunk in completion:
-            assert check_text_streaming_chunk(chunk) == True
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-5
@@ -401,7 +401,7 @@ class TestChatCompletionsStreaming:
         )
 
         for chunk in completion:
-            assert check_text_streaming_chunk(chunk) == True
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-6
@@ -423,4 +423,4 @@ class TestChatCompletionsStreaming:
         )
 
         for chunk in completion:
-            assert check_text_streaming_chunk(chunk) == True
+            assert check_text_streaming_chunk(chunk) is True

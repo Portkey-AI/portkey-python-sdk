@@ -2,8 +2,17 @@ import json
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.types.thread_message_type import MessageFile, MessageList, ThreadMessage
-from portkey_ai.api_resources.types.thread_run_type import Run, RunList, RunStep, RunStepList
+from portkey_ai.api_resources.types.thread_message_type import (
+    MessageFile,
+    MessageList,
+    ThreadMessage,
+)
+from portkey_ai.api_resources.types.thread_run_type import (
+    Run,
+    RunList,
+    RunStep,
+    RunStepList,
+)
 from portkey_ai.api_resources.types.thread_type import Thread, ThreadDeleted
 
 
@@ -118,9 +127,7 @@ class ThreadFiles(APIResource):
 
         return data
 
-    def retrieve(
-        self, thread_id, message_id, file_id, **kwargs
-    ) -> MessageFile:
+    def retrieve(self, thread_id, message_id, file_id, **kwargs) -> MessageFile:
         response = (
             self.openai_client.with_raw_response.beta.threads.messages.files.retrieve(
                 thread_id=thread_id, message_id=message_id, file_id=file_id, **kwargs
@@ -342,9 +349,7 @@ class AsyncThreadFiles(AsyncAPIResource):
 
         return data
 
-    async def retrieve(
-        self, thread_id, message_id, file_id, **kwargs
-    ) -> MessageFile:
+    async def retrieve(self, thread_id, message_id, file_id, **kwargs) -> MessageFile:
         # fmt: off
         response = await self.openai_client\
             .with_raw_response\

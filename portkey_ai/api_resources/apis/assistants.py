@@ -1,7 +1,14 @@
 import json
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.types.assistant_type import Assistant, AssistantList, AssistantDeleted, AssistantFile, AssistantFileList, AssistantFileDeleted
+from portkey_ai.api_resources.types.assistant_type import (
+    Assistant,
+    AssistantList,
+    AssistantDeleted,
+    AssistantFile,
+    AssistantFileList,
+    AssistantFileDeleted,
+)
 
 
 class Assistants(APIResource):

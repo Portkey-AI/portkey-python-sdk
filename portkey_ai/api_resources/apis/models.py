@@ -3,6 +3,7 @@ from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIReso
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.models_type import Model, ModelDeleted, ModelList
 
+
 class Models(APIResource):
     def __init__(self, client: Portkey) -> None:
         super().__init__(client)

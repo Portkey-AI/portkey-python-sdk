@@ -123,4 +123,4 @@ class TestAssistants:
 
         assert delete_assistant.id == assistant.id
         assert delete_assistant.object == "assistant.deleted"
-        assert delete_assistant.deleted == True
+        assert delete_assistant.deleted is True

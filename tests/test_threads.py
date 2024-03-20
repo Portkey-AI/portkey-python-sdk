@@ -81,4 +81,4 @@ class TestThreads:
 
         assert delete_thread.id == thread.id
         assert delete_thread.object == "thread.deleted"
-        assert delete_thread.deleted == True
+        assert delete_thread.deleted is True

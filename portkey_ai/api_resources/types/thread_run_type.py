@@ -116,14 +116,14 @@ class LastError(BaseModel):
     message: Optional[str]
 
 
-class Function(BaseModel):
+class FunctionRA(BaseModel):
     arguments: Optional[str]
     name: Optional[str]
 
 
 class RequiredActionFunctionToolCall(BaseModel):
     id: Optional[str]
-    function: Optional[Function]
+    function: Optional[FunctionRA]
     type: Optional[str]
 
 

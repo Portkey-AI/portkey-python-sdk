@@ -9,7 +9,7 @@ from portkey_ai.api_resources import (
     CacheType,
     CacheLiteral,
     Message,
-    PortkeyResponse,  
+    PortkeyResponse,
     Completion,
     AsyncCompletion,
     Params,
