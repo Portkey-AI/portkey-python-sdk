@@ -11,13 +11,11 @@ from typing import (
     Union,
 )
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.utils import (
-    ChatCompletionChunk,
-    ChatCompletions,
-)
+from portkey_ai.api_resources.types.chat_complete_type import ChatCompletions
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 
+from portkey_ai.api_resources.utils import ChatCompletionChunk
 
 __all__ = ["ChatCompletion", "AsyncChatCompletion"]
 

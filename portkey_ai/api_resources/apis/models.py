@@ -1,8 +1,7 @@
 import json
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.utils import Model, ModelDeleted, ModelList
-
+from portkey_ai.api_resources.types.models_type import Model, ModelDeleted, ModelList
 
 class Models(APIResource):
     def __init__(self, client: Portkey) -> None:

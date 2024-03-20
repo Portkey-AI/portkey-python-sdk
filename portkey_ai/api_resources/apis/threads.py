@@ -2,17 +2,9 @@ import json
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.utils import (
-    MessageList,
-    Run,
-    RunList,
-    RunStep,
-    RunStepList,
-    Thread,
-    ThreadDeleted,
-    ThreadMessage,
-    ThreadMessageFileRetrieve,
-)
+from portkey_ai.api_resources.types.thread_message_type import MessageFile, MessageList, ThreadMessage
+from portkey_ai.api_resources.types.thread_run_type import Run, RunList, RunStep, RunStepList
+from portkey_ai.api_resources.types.thread_type import Thread, ThreadDeleted
 
 
 class Threads(APIResource):
@@ -128,13 +120,13 @@ class ThreadFiles(APIResource):
 
     def retrieve(
         self, thread_id, message_id, file_id, **kwargs
-    ) -> ThreadMessageFileRetrieve:
+    ) -> MessageFile:
         response = (
             self.openai_client.with_raw_response.beta.threads.messages.files.retrieve(
-                thread_id=thread_id, message_id=message_id, file_id=file_id**kwargs
+                thread_id=thread_id, message_id=message_id, file_id=file_id, **kwargs
             )
         )
-        data = ThreadMessageFileRetrieve(**json.loads(response.text))
+        data = MessageFile(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -352,7 +344,7 @@ class AsyncThreadFiles(AsyncAPIResource):
 
     async def retrieve(
         self, thread_id, message_id, file_id, **kwargs
-    ) -> ThreadMessageFileRetrieve:
+    ) -> MessageFile:
         # fmt: off
         response = await self.openai_client\
             .with_raw_response\
@@ -367,7 +359,7 @@ class AsyncThreadFiles(AsyncAPIResource):
                 **kwargs
             )
         # fmt: off
-        data = ThreadMessageFileRetrieve(**json.loads( response.text))
+        data = MessageFile(**json.loads( response.text))
         data._headers = response.headers
 
         return data

@@ -45,9 +45,7 @@ from .utils import (
     Params,
     Config,
     RetrySettings,
-    ChatCompletions,
     ChatCompletionChunk,
-    TextCompletion,
     TextCompletionChunk,
 )
 from .client import Portkey, AsyncPortkey
@@ -65,7 +63,6 @@ __all__ = [
     "CacheType",
     "CacheLiteral",
     "Message",
-    "ChatCompletions",
     "Completion",
     "AsyncCompletion",
     "Params",
@@ -74,7 +71,6 @@ __all__ = [
     "ChatCompletion",
     "AsyncChatCompletion",
     "ChatCompletionChunk",
-    "TextCompletion",
     "TextCompletionChunk",
     "Generations",
     "AsyncGenerations",
