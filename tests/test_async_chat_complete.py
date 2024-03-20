@@ -386,7 +386,7 @@ class TestChatCompletionsStreaming:
             config=config,
         )
 
-        cached_completion = portkey_2.chat.completions.create(
+        cached_completion = await portkey_2.chat.completions.create(
             messages=[{"role": "user", "content": "Say this is a test"}],
             model="gpt-3.5-turbo",
             stream=True,
