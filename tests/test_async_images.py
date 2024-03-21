@@ -163,7 +163,11 @@ class TestImages:
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024", response_format="b64_json"
+            model="dall-e-3",
+            prompt="A cute baby sea otter",
+            n=1,
+            size="1024x1024",
+            response_format="b64_json",
         )
 
         assert type(image.data[0].b64_json) is str
@@ -187,7 +191,11 @@ class TestImages:
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024", response_format="b64_json"
+            model="dall-e-3",
+            prompt="A cute baby sea otter",
+            n=1,
+            size="1024x1024",
+            response_format="b64_json",
         )
 
         assert type(image.data[0].b64_json) is str
