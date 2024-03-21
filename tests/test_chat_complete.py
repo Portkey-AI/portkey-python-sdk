@@ -69,7 +69,7 @@ class TestChatCompletions:
             max_tokens=245,
         )
 
-        assert type(completion.choices[0].message.content) is str
+        assert isinstance(completion.choices[0].message.content, str) is True
 
     # --------------------------
     # Test -2
@@ -116,7 +116,7 @@ class TestChatCompletions:
             model="gpt-3.5-turbo",
         )
 
-        assert type(completion.choices[0].message.content) is str
+        assert isinstance(completion.choices[0].message.content, str) is True
 
     # --------------------------
     # Test-3
@@ -162,7 +162,7 @@ class TestChatCompletions:
             model="gpt-3.5-turbo",
         )
 
-        assert type(cached_completion.choices[0].message.content) is str
+        assert isinstance(cached_completion.choices[0].message.content, str) is True
 
     # --------------------------
     # Test-4
@@ -186,7 +186,7 @@ class TestChatCompletions:
             messages=[{"role": "user", "content": "Say this is a test"}], max_tokens=245
         )
 
-        assert type(completion.choices[0].message.content) is str
+        assert isinstance(completion.choices[0].message.content, str) is True
 
     # --------------------------
     # Test-5
@@ -212,7 +212,7 @@ class TestChatCompletions:
             ],
         )
 
-        assert type(completion.choices[0].message.content) is str
+        assert isinstance(completion.choices[0].message.content, str) is True
 
     # --------------------------
     # Test-6
@@ -234,7 +234,7 @@ class TestChatCompletions:
             model="gpt-3.5-turbo",
         )
 
-        assert type(completion.choices[0].message.content) is str
+        assert isinstance(completion.choices[0].message.content, str) is True
 
 
 class TestChatCompletionsStreaming:

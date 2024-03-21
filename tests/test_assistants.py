@@ -68,7 +68,7 @@ class TestAssistants:
             model=model,
         )
 
-        assert type(assistant.id) is str
+        assert isinstance(assistant.id, str) is True
         assert assistant.object == "assistant"
         assert assistant.model == model
 
@@ -120,7 +120,7 @@ class TestAssistants:
             tools=[{"type": "code_interpreter"}],
         )
 
-        assert type(assistant.id) is str
+        assert isinstance(assistant.id, str)
         assert assistant.object == "assistant"
         assert assistant.model == model
         assert assistant.name == "Math Tutor"
