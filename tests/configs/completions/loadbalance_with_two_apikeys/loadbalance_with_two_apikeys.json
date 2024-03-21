@@ -4,12 +4,16 @@
     },
     "targets": [
         {
-            "provider": "openai",
-            "virtual_key": "vdkey-ff9e7c"
+            "virtual_key": "openai-virtual-key",
+            "override_params": {
+                "model": "gpt-3.5-turbo-instruct"
+            }
         },
         {
-            "provider": "anthropic",
-            "virtual_key": "vdanthropic-87ad2c"
+            "virtual_key": "anthropic-virtual-key",
+            "override_params": {
+                "model": "claude-2.1"
+            }
         }
     ]
 }

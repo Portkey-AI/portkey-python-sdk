@@ -5,6 +5,22 @@ from .feedback import Feedback, AsyncFeedback
 from .create_headers import createHeaders
 from .post import Post, AsyncPost
 from .embeddings import Embeddings, AsyncEmbeddings
+from .images import Images, AsyncImages
+from .assistants import Assistants, AssistantFiles, AsyncAssistants, AsyncAssistantFiles
+from .threads import (
+    Threads,
+    Messages,
+    ThreadFiles,
+    Runs,
+    Steps,
+    AsyncThreads,
+    AsyncMessages,
+    AsyncThreadFiles,
+    AsyncRuns,
+    AsyncSteps,
+)
+from .main_files import MainFiles, AsyncMainFiles
+from .models import Models, AsyncModels
 
 __all__ = [
     "Completion",
@@ -22,4 +38,24 @@ __all__ = [
     "AsyncPost",
     "Embeddings",
     "AsyncEmbeddings",
+    "Images",
+    "AsyncImages",
+    "Assistants",
+    "AsyncAssistants",
+    "MainFiles",
+    "AsyncMainFiles",
+    "Models",
+    "AsyncModels",
+    "AssistantFiles",
+    "ThreadFiles",
+    "AsyncAssistantFiles",
+    "AsyncThreadFiles",
+    "Threads",
+    "AsyncThreads",
+    "Messages",
+    "AsyncMessages",
+    "Runs",
+    "AsyncRuns",
+    "Steps",
+    "AsyncSteps",
 ]

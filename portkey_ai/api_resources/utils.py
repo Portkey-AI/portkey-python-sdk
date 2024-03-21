@@ -6,6 +6,15 @@ from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
 from pydantic import BaseModel, validator
+
+from portkey_ai.api_resources.types.chat_complete_type import (
+    ChatCompletionChunk,
+    ChatCompletions,
+)
+from portkey_ai.api_resources.types.complete_type import (
+    TextCompletionChunk,
+    TextCompletion,
+)
 from .exceptions import (
     APIStatusError,
     BadRequestError,
@@ -47,7 +56,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletionChunk, TextCompletion, GenericResponse, httpx.Response]",  # noqa: E501
+    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletion, TextCompletionChunk, GenericResponse, httpx.Response]",  # noqa: E501
 )
 
 
@@ -289,155 +298,10 @@ class PortkeyResponse(BaseModel):
         return json.dumps(self.dict(), indent=4)
 
 
-# Models for Chat Stream
-class Delta(BaseModel, extra="allow"):
-    role: Optional[str] = None
-    content: Optional[str] = ""
-    tool_calls: Optional[List[DeltaToolCall]] = None
-
-    def __str__(self):
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-
-class StreamChoice(BaseModel, extra="allow"):
-    index: Optional[int] = None
-    delta: Union[Delta, Dict[Any, Any]] = {}
-    finish_reason: Optional[str] = None
-
-    def __str__(self):
-        return json.dumps(self.dict(), indent=4)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-
-class ChatCompletionChunk(BaseModel, extra="allow"):
-    id: Optional[str] = None
-    object: Optional[str] = None
-    created: Optional[int] = None
-    model: Optional[str] = None
-    choices: Union[List[StreamChoice], Dict[Any, Any]] = {}
-
-    def __str__(self):
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-
-# Models for Chat Non-stream
-class ChatChoice(BaseModel, extra="allow"):
-    index: Optional[int] = None
-    message: Optional[Message] = None
-    finish_reason: Optional[str] = None
-
-    def __str__(self):
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-
 class Usage(BaseModel, extra="allow"):
     prompt_tokens: Optional[int] = None
     completion_tokens: Optional[int] = None
     total_tokens: Optional[int] = None
-
-    def __str__(self):
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-
-class ChatCompletions(BaseModel, extra="allow"):
-    id: Optional[str] = None
-    object: Optional[str] = None
-    created: Optional[int] = None
-    model: Optional[str] = None
-    choices: Union[List[ChatChoice], Dict[Any, Any]] = {}
-    usage: Optional[Usage] = None
-    _headers: Optional[httpx.Headers] = None
-
-    def __str__(self):
-        del self._headers
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-    def get_headers(self) -> Optional[Dict[str, str]]:
-        return parse_headers(self._headers)
-
-
-# Models for text completion Non-stream
-class TextChoice(BaseModel, extra="allow"):
-    index: Optional[int] = None
-    text: Optional[str] = None
-    logprobs: Any
-    finish_reason: Optional[str] = None
-
-    def __str__(self):
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-
-class TextCompletion(BaseModel, extra="allow"):
-    id: Optional[str] = None
-    object: Optional[str] = None
-    created: Optional[int] = None
-    model: Optional[str] = None
-    choices: Union[List[TextChoice], Dict[Any, Any]] = {}
-    usage: Optional[Usage] = None
-    _headers: Optional[httpx.Headers] = None
-
-    def __str__(self):
-        del self._headers
-        return json.dumps(self.dict(), indent=4)
-
-    def __getitem__(self, key):
-        return getattr(self, key, None)
-
-    def get(self, key: str, default: Optional[Any] = None):
-        return getattr(self, key, None) or default
-
-    def get_headers(self) -> Optional[Dict[str, str]]:
-        return parse_headers(self._headers)
-
-
-# Models for text completion stream
-class TextCompletionChunk(BaseModel, extra="allow"):
-    id: Optional[str] = None
-    object: Optional[str] = None
-    created: Optional[int] = None
-    model: Optional[str] = None
-    choices: Union[List[TextChoice], Dict[Any, Any]] = {}
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -460,7 +324,7 @@ class GenericResponse(BaseModel, extra="allow"):
         return json.dumps(self.dict(), indent=4)
 
     def get_headers(self) -> Optional[Dict[str, str]]:
-        return parse_headers(self._headers)
+        return parse_headers_generic(self._headers)
 
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
@@ -570,7 +434,7 @@ def get_portkey_header(key: str) -> str:
     return f"{PORTKEY_HEADER_PREFIX}{key}"
 
 
-def parse_headers(headers: Optional[httpx.Headers]) -> dict:
+def parse_headers_generic(headers: Optional[httpx.Headers]) -> dict:
     if headers is None:
         return {}
 

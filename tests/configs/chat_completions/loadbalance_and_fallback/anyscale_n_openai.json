@@ -4,8 +4,10 @@
     },
     "targets": [
         {
-            "provider": "openai",
-            "virtual_key": "vdkey-ff9e7c"
+            "virtual_key": "openai-virtual-key",
+            "override_params": {
+                "model": "gpt-3.5-turbo"
+            }
         },
         {
             "strategy": {
@@ -17,10 +19,16 @@
             },
             "targets": [
                 {
-                    "virtual_key": "vdanyscale-354c5b"
+                    "virtual_key": "anyscale-virtual-key",
+                    "override_params": {
+                        "model": "mistralai/Mistral-7B-Instruct-v0.1"
+                    }
                 },
                 {
-                    "virtual_key": "vdkey-ff9e7c"
+                    "virtual_key": "openai-virtual-key",
+                    "override_params": {
+                        "model": "gpt-3.5-turbo"
+                    }
                 }
             ]
         }

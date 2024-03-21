@@ -4,8 +4,10 @@
     },
     "targets": [
         {
-            "provider": "openai",
-            "virtual_key": "vdkey-ff9e7c"
+            "virtual_key": "openai-virtual-key",
+            "override_params": {
+                "model": "gpt-3.5-turbo"
+            }
         },
         {
             "strategy": {
@@ -17,10 +19,16 @@
             },
             "targets": [
                 {
-                    "virtual_key": "azure-api-key-993da0"
+                    "virtual_key": "azure-virtual-key",
+                    "override_params": {
+                        "model": "gpt-35-turbo"
+                    }
                 },
                 {
-                    "virtual_key": "vdkey-ff9e7c"
+                    "virtual_key": "openai-virtual-key",
+                    "override_params": {
+                        "model": "gpt-3.5-turbo"
+                    }
                 }
             ]
         }

@@ -1,0 +1,19 @@
+{
+    "strategy": {
+        "mode": "loadbalance"
+    },
+    "targets": [
+        {
+            "virtual_key": "openai-virtual-key",
+            "override_params": {
+                "model": "dall-e-2"
+            }
+        },
+        {
+            "virtual_key": "stability-virtual-key",
+            "override_params": {
+                "model": "stable-diffusion-v1-6"
+            }
+        }
+    ]
+}

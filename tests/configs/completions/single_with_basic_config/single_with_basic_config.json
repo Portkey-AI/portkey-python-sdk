@@ -1,3 +1,6 @@
 {
-    "virtual_key": "vdkey-ff9e7c"
+    "virtual_key": "openai-virtual-key",
+    "override_params": {
+        "model": "gpt-3.5-turbo-instruct"
+    }
 }

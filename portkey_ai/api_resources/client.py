@@ -4,6 +4,11 @@ from typing import Mapping, Optional, Union
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
+from openai import AsyncOpenAI, OpenAI
+from portkey_ai.api_resources.global_constants import (
+    OPEN_AI_API_KEY,
+)
+
 
 class Portkey(APIClient):
     completions: apis.Completion
@@ -11,6 +16,14 @@ class Portkey(APIClient):
     generations: apis.Generations
     prompts: apis.Prompts
     embeddings: apis.Embeddings
+    images: apis.Images
+    files: apis.MainFiles
+    models: apis.Models
+
+    class beta:
+        def __init__(self, client: Portkey) -> None:
+            self.assistants = apis.Assistants(client)
+            self.threads = apis.Threads(client)
 
     def __init__(
         self,
@@ -35,12 +48,22 @@ class Portkey(APIClient):
             **kwargs,
         )
 
+        self.openai_client = OpenAI(
+            api_key=OPEN_AI_API_KEY,
+            base_url=self.base_url,
+            default_headers=self.allHeaders,
+        )
+
         self.completions = apis.Completion(self)
         self.chat = apis.ChatCompletion(self)
         self.generations = apis.Generations(self)
         self.prompts = apis.Prompts(self)
         self.embeddings = apis.Embeddings(self)
         self.feedback = apis.Feedback(self)
+        self.images = apis.Images(self)
+        self.files = apis.MainFiles(self)
+        self.models = apis.Models(self)
+        self.beta = self.beta(self)  # type: ignore
 
     def copy(
         self,
@@ -78,6 +101,14 @@ class AsyncPortkey(AsyncAPIClient):
     generations: apis.AsyncGenerations
     prompts: apis.AsyncPrompts
     embeddings: apis.AsyncEmbeddings
+    images: apis.AsyncImages
+    files: apis.AsyncMainFiles
+    models: apis.AsyncModels
+
+    class beta:
+        def __init__(self, client: AsyncPortkey) -> None:
+            self.assistants = apis.AsyncAssistants(client)
+            self.threads = apis.AsyncThreads(client)
 
     def __init__(
         self,
@@ -102,12 +133,22 @@ class AsyncPortkey(AsyncAPIClient):
             **kwargs,
         )
 
+        self.openai_client = AsyncOpenAI(
+            api_key=OPEN_AI_API_KEY,
+            base_url=self.base_url,
+            default_headers=self.allHeaders,
+        )
+
         self.completions = apis.AsyncCompletion(self)
         self.chat = apis.AsyncChatCompletion(self)
         self.generations = apis.AsyncGenerations(self)
         self.prompts = apis.AsyncPrompts(self)
         self.embeddings = apis.AsyncEmbeddings(self)
         self.feedback = apis.AsyncFeedback(self)
+        self.images = apis.AsyncImages(self)
+        self.files = apis.AsyncMainFiles(self)
+        self.models = apis.AsyncModels(self)
+        self.beta = self.beta(self)  # type: ignore
 
     def copy(
         self,

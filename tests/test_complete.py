@@ -9,7 +9,7 @@ from uuid import uuid4
 from portkey_ai import Portkey
 from time import sleep
 from dotenv import load_dotenv
-from .utils import read_json_file
+from .utils import read_json_file, check_text_streaming_chunk
 
 
 load_dotenv(override=True)
@@ -58,16 +58,18 @@ class TestChatCompletions:
             base_url=base_url,
             api_key=api_key,
             provider=f"{provider}",
-            Authorization=f"Bearer {auth}",
+            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
         )
 
-        portkey.completions.create(
+        completion = portkey.completions.create(
             prompt="Say this is a test",
             model=model,
             max_tokens=245,
         )
+
+        assert type(completion.choices[0].text) is str
 
     # --------------------------
     # Test -2
@@ -108,14 +110,11 @@ class TestChatCompletions:
             config=config,
         )
 
-        portkey.completions.create(
+        completion = portkey.completions.create(
             prompt="Say this is a test",
         )
 
-        # print(completion.choices)
-        # assert("True", "True")
-
-        # assert_matches_type(TextCompletion, completion, path=["response"])
+        assert type(completion.choices[0].text) is str
 
     # --------------------------
     # Test-3
@@ -155,7 +154,8 @@ class TestChatCompletions:
             config=config,
         )
 
-        portkey_2.completions.create(prompt="Say this is a test")
+        cached_completion = portkey_2.completions.create(prompt="Say this is a test")
+        assert type(cached_completion.choices[0].text) is str
 
     # --------------------------
     # Test-4
@@ -170,7 +170,6 @@ class TestChatCompletions:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,
@@ -179,8 +178,7 @@ class TestChatCompletions:
         completion = portkey.completions.create(
             prompt="Say this is a test", max_tokens=245
         )
-
-        print(completion.choices)
+        assert type(completion.choices[0].text) is str
 
     # --------------------------
     # Test-5
@@ -201,7 +199,7 @@ class TestChatCompletions:
             prompt="Say this is just a loadbalance and fallback test test"
         )
 
-        print(completion.choices)
+        assert type(completion.choices[0].text) is str
 
     # --------------------------
     # Test-6
@@ -222,7 +220,7 @@ class TestChatCompletions:
             prompt="Say this is a test",
         )
 
-        print(completion.choices)
+        assert type(completion.choices[0].text) is str
 
 
 class TestChatCompletionsStreaming:
@@ -255,14 +253,17 @@ class TestChatCompletionsStreaming:
             base_url=base_url,
             api_key=api_key,
             provider=f"{provider}",
-            Authorization=f"Bearer {auth}",
+            Authorization=f"{auth}",
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
         )
 
-        portkey.completions.create(
+        completion = portkey.completions.create(
             prompt="Say this is a test", model=model, max_tokens=245, stream=True
         )
+
+        for chunk in completion:
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test -2
@@ -303,12 +304,12 @@ class TestChatCompletionsStreaming:
             config=config,
         )
 
-        portkey.completions.create(prompt="Say this is a test", stream=True)
+        completion = portkey.completions.create(
+            prompt="Say this is a test", stream=True
+        )
 
-        # print(completion.choices)
-        # assert("True", "True")
-
-        # assert_matches_type(TextCompletion, completion, path=["response"])
+        for chunk in completion:
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-3
@@ -346,7 +347,12 @@ class TestChatCompletionsStreaming:
             config=config,
         )
 
-        portkey_2.completions.create(prompt="Say this is a test", stream=True)
+        cached_completion = portkey_2.completions.create(
+            prompt="Say this is a test", stream=True
+        )
+
+        for chunk in cached_completion:
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-4
@@ -361,7 +367,6 @@ class TestChatCompletionsStreaming:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,
@@ -371,7 +376,8 @@ class TestChatCompletionsStreaming:
             prompt="Say this is a test", max_tokens=245, stream=True
         )
 
-        print(completion)
+        for chunk in completion:
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-5
@@ -392,7 +398,8 @@ class TestChatCompletionsStreaming:
             prompt="Say this is just a loadbalance and fallback test test", stream=True
         )
 
-        print(completion)
+        for chunk in completion:
+            assert check_text_streaming_chunk(chunk) is True
 
     # --------------------------
     # Test-6
@@ -413,4 +420,5 @@ class TestChatCompletionsStreaming:
             prompt="Say this is a test", stream=True
         )
 
-        print(completion)
+        for chunk in completion:
+            assert check_text_streaming_chunk(chunk) is True

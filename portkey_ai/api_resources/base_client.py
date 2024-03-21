@@ -66,6 +66,7 @@ class APIClient:
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
+            api_key=api_key,
             virtual_key=virtual_key,
             config=config,
             provider=provider,
@@ -73,6 +74,8 @@ class APIClient:
             metadata=metadata,
             **kwargs,
         )
+
+        self.allHeaders = self._build_headers(Options.construct())
         self._client = httpx.Client(
             base_url=self.base_url,
             headers={
@@ -223,13 +226,12 @@ class APIClient:
             f"{PORTKEY_HEADER_PREFIX}runtime-version": platform.python_version(),
         }
 
-    def _build_headers(self, options: Options) -> httpx.Headers:
+    def _build_headers(self, options: Options) -> Dict[str, Any]:
         option_headers = options.headers or {}
         headers_dict = self._merge_mappings(
             self._default_headers, option_headers, self.custom_headers
         )
-        headers = httpx.Headers(headers_dict)
-        return headers
+        return headers_dict
 
     def _merge_mappings(
         self,
@@ -413,6 +415,7 @@ class AsyncAPIClient:
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
+            api_key=api_key,
             virtual_key=virtual_key,
             config=config,
             provider=provider,
@@ -421,6 +424,7 @@ class AsyncAPIClient:
             **kwargs,
         )
 
+        self.allHeaders = self._build_headers(Options.construct())
         self._client = AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
@@ -571,13 +575,12 @@ class AsyncAPIClient:
             f"{PORTKEY_HEADER_PREFIX}runtime-version": platform.python_version(),
         }
 
-    def _build_headers(self, options: Options) -> httpx.Headers:
+    def _build_headers(self, options: Options) -> Dict[str, Any]:
         option_headers = options.headers or {}
         headers_dict = self._merge_mappings(
             self._default_headers, option_headers, self.custom_headers
         )
-        headers = httpx.Headers(headers_dict)
-        return headers
+        return headers_dict
 
     def _merge_mappings(
         self,
