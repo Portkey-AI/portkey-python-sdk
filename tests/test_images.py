@@ -157,7 +157,10 @@ class TestImages:
         )
 
         image = portkey.images.generate(
-            prompt="A cute baby sea otter", n=1, size="1024x1024", response_format="b64_json"
+            prompt="A cute baby sea otter",
+            n=1,
+            size="1024x1024",
+            response_format="b64_json",
         )
 
         assert type(image.data[0].b64_json) is str
@@ -178,7 +181,10 @@ class TestImages:
         )
 
         image = portkey.images.generate(
-            prompt="A cute baby sea otter", n=1, size="1024x1024", response_format="b64_json"
+            prompt="A cute baby sea otter",
+            n=1,
+            size="1024x1024",
+            response_format="b64_json",
         )
 
         assert type(image.data[0].b64_json) is str
