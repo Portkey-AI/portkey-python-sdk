@@ -10,9 +10,9 @@
             }
         },
         {
-            "virtual_key": "segmind-virtual-key",
+            "virtual_key": "stability-virtual-key",
             "override_params": {
-                "model": "sdxl1.0-newreality-lightning"
+                "model": "stable-diffusion-v1-6"
             }
         }
     ]
