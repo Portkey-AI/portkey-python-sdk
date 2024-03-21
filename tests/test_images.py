@@ -70,7 +70,7 @@ class TestImages:
             model=model, prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(generation.data[0].url) is str
+        assert isinstance(generation.data[0].url, str) is True
 
     # --------------------------
     # Test -2
@@ -92,7 +92,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(generation.data[0].url) is str
+        assert isinstance(generation.data[0].url, str) is True
 
     # --------------------------
     # Test-3
@@ -136,7 +136,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(cached_generation.data[0].url) is str
+        assert isinstance(cached_generation.data[0].url, str) is True
 
     # --------------------------
     # Test-4
@@ -163,7 +163,7 @@ class TestImages:
             response_format="b64_json",
         )
 
-        assert type(image.data[0].b64_json) is str
+        assert isinstance(image.data[0].b64_json, str) is True
 
     # --------------------------
     # Test-5
@@ -187,7 +187,7 @@ class TestImages:
             response_format="b64_json",
         )
 
-        assert type(image.data[0].b64_json) is str
+        assert isinstance(image.data[0].b64_json, str) is True
 
     # --------------------------
     # Test-6
@@ -208,7 +208,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(image.data[0].url) is str
+        assert isinstance(image.data[0].url, str) is True
 
     # --------------------------
     # Test-7
@@ -236,4 +236,4 @@ class TestImages:
             user="user-1234",
         )
 
-        assert type(image.data[0].url) is str
+        assert isinstance(image.data[0].url, str) is True

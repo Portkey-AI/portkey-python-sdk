@@ -70,7 +70,7 @@ class TestChatCompletions:
             max_tokens=245,
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test -2
@@ -118,7 +118,7 @@ class TestChatCompletions:
             prompt="Say this is a test",
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-3
@@ -163,7 +163,7 @@ class TestChatCompletions:
             prompt="Say this is a test"
         )
 
-        assert type(cached_completion.choices[0].text) is str
+        assert isinstance(cached_completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-4
@@ -188,7 +188,7 @@ class TestChatCompletions:
             prompt="Say this is a test", max_tokens=245
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-5
@@ -212,7 +212,7 @@ class TestChatCompletions:
             prompt="Say this is just a loadbalance and fallback test test"
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-6
@@ -234,7 +234,7 @@ class TestChatCompletions:
             prompt="Say this is a test",
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
 
 class TestChatCompletionsStreaming:
