@@ -170,7 +170,6 @@ class TestChatCompletions:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,
@@ -368,7 +367,6 @@ class TestChatCompletionsStreaming:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,
