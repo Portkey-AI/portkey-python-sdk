@@ -1,0 +1,36 @@
+{
+    "strategy": {
+        "mode": "loadbalance"
+    },
+    "targets": [
+        {
+            "virtual_key": "openai-virtual-key",
+            "override_params": {
+                "model": "dall-e-2"
+            }
+        },
+        {
+            "strategy": {
+                "mode": "fallback",
+                "on_status_codes": [
+                    429,
+                    241
+                ]
+            },
+            "targets": [
+                {
+                    "virtual_key": "openai-virtual-key",
+                    "override_params": {
+                        "model": "dall-e-2"
+                    }
+                },
+                {
+                    "virtual_key": "segmind-virtual-key",
+                    "override_params": {
+                        "model": "sdxl1.0-newreality-lightning"
+                    }
+                }
+            ]
+        }
+    ]
+}
