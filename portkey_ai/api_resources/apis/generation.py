@@ -89,24 +89,19 @@ class Prompts(APIResource):
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
-        stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+    ) -> GenericResponse:
         """Prompt render Method"""
-        if config is None:
-            config = retrieve_config()
         body = {
             "variables": variables,
             "temperature": temperature,
             "max_tokens": max_tokens,
             "top_k": top_k,
             "top_p": top_p,
-            "stream": stream,
             **kwargs,
         }
         return self._post(
@@ -115,7 +110,7 @@ class Prompts(APIResource):
             params=None,
             cast_to=GenericResponse,
             stream_cls=Stream[GenericResponse],
-            stream=stream,
+            stream=False,
             headers={},
         )
 
@@ -132,24 +127,19 @@ class AsyncPrompts(AsyncAPIResource):
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
-        stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
+    ) -> GenericResponse:
         """Prompt render Method"""
-        if config is None:
-            config = retrieve_config()
         body = {
             "variables": variables,
             "temperature": temperature,
             "max_tokens": max_tokens,
             "top_k": top_k,
             "top_p": top_p,
-            "stream": stream,
             **kwargs,
         }
         return await self._post(
@@ -157,8 +147,8 @@ class AsyncPrompts(AsyncAPIResource):
             body=body,
             params=None,
             cast_to=GenericResponse,
+            stream=False,
             stream_cls=AsyncStream[GenericResponse],
-            stream=stream,
             headers={},
         )
 
