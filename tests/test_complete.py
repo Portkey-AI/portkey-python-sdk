@@ -69,7 +69,7 @@ class TestChatCompletions:
             max_tokens=245,
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test -2
@@ -114,7 +114,7 @@ class TestChatCompletions:
             prompt="Say this is a test",
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-3
@@ -155,7 +155,7 @@ class TestChatCompletions:
         )
 
         cached_completion = portkey_2.completions.create(prompt="Say this is a test")
-        assert type(cached_completion.choices[0].text) is str
+        assert isinstance(cached_completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-4
@@ -170,7 +170,6 @@ class TestChatCompletions:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,
@@ -179,7 +178,7 @@ class TestChatCompletions:
         completion = portkey.completions.create(
             prompt="Say this is a test", max_tokens=245
         )
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-5
@@ -200,7 +199,7 @@ class TestChatCompletions:
             prompt="Say this is just a loadbalance and fallback test test"
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
     # --------------------------
     # Test-6
@@ -221,7 +220,7 @@ class TestChatCompletions:
             prompt="Say this is a test",
         )
 
-        assert type(completion.choices[0].text) is str
+        assert isinstance(completion.choices[0].text, str) is True
 
 
 class TestChatCompletionsStreaming:
@@ -368,7 +367,6 @@ class TestChatCompletionsStreaming:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,

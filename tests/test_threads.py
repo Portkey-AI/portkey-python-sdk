@@ -56,14 +56,14 @@ class TestThreads:
         )
         thread = portkey.beta.threads.create()
 
-        assert type(thread.id) is str
+        assert isinstance(thread.id, str) is True
         assert thread.object == "thread"
 
         retrieve_thread = portkey.beta.threads.retrieve(thread.id)
 
         assert retrieve_thread.id == thread.id
         assert retrieve_thread.object == "thread"
-        assert type(retrieve_thread.metadata) is dict
+        assert isinstance(retrieve_thread.metadata, dict) is True
 
         update_thread = portkey.beta.threads.update(
             thread.id,
@@ -74,7 +74,7 @@ class TestThreads:
 
         assert update_thread.id == thread.id
         assert update_thread.object == "thread"
-        assert type(update_thread.metadata) is dict
+        assert isinstance(update_thread.metadata, dict) is True
         assert update_thread.metadata["modified"] == "true"
 
         delete_thread = portkey.beta.threads.delete(thread.id)

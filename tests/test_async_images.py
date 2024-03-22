@@ -70,7 +70,7 @@ class TestImages:
             model=model, prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(generation.data[0].url) is str
+        assert isinstance(generation.data[0].url, str) is True
 
     # --------------------------
     # Test -2
@@ -95,7 +95,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(generation.data[0].url) is str
+        assert isinstance(generation.data[0].url, str) is True
 
     # --------------------------
     # Test-3
@@ -141,7 +141,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(cached_generation.data[0].url) is str
+        assert isinstance(cached_generation.data[0].url, str) is True
 
     # --------------------------
     # Test-4
@@ -157,17 +157,20 @@ class TestImages:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
-            # virtual_key=virtual_api_key,
             trace_id=str(uuid4()),
             metadata=self.get_metadata(),
             config=config,
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
+            model="dall-e-3",
+            prompt="A cute baby sea otter",
+            n=1,
+            size="1024x1024",
+            response_format="b64_json",
         )
 
-        assert type(image.data[0].url) is str
+        assert isinstance(image.data[0].b64_json, str) is True
 
     # --------------------------
     # Test-5
@@ -188,10 +191,14 @@ class TestImages:
         )
 
         image = await portkey.images.generate(
-            model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
+            model="dall-e-3",
+            prompt="A cute baby sea otter",
+            n=1,
+            size="1024x1024",
+            response_format="b64_json",
         )
 
-        assert type(image.data[0].url) is str
+        assert isinstance(image.data[0].b64_json, str) is True
 
     # --------------------------
     # Test-6
@@ -213,7 +220,7 @@ class TestImages:
             model="dall-e-3", prompt="A cute baby sea otter", n=1, size="1024x1024"
         )
 
-        assert type(image.data[0].url) is str
+        assert isinstance(image.data[0].url, str) is True
 
     # --------------------------
     # Test-7
@@ -242,4 +249,4 @@ class TestImages:
             user="user-1234",
         )
 
-        assert type(image.data[0].url) is str
+        assert isinstance(image.data[0].url, str) is True
