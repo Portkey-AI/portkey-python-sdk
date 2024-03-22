@@ -89,6 +89,7 @@ class Prompts(APIResource):
         *,
         prompt_id: str,
         variables: Optional[Mapping[str, Any]] = None,
+        stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
@@ -102,6 +103,7 @@ class Prompts(APIResource):
             "max_tokens": max_tokens,
             "top_k": top_k,
             "top_p": top_p,
+            "stream": stream,
             **kwargs,
         }
         return self._post(
