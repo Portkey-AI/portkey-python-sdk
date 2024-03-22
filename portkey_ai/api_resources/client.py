@@ -21,9 +21,6 @@ class Portkey(APIClient):
     models: apis.Models
 
     class beta:
-        assistants: apis.Assistants
-        threads: apis.Threads
-
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
@@ -109,9 +106,6 @@ class AsyncPortkey(AsyncAPIClient):
     models: apis.AsyncModels
 
     class beta:
-        assistants: apis.AsyncAssistants
-        threads: apis.AsyncThreads
-
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
