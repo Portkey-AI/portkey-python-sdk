@@ -84,6 +84,38 @@ class Prompts(APIResource):
         super().__init__(client)
         self.completions = Completions(client)
 
+    def render(
+        self,
+        *,
+        prompt_id: str,
+        variables: Optional[Mapping[str, Any]] = None,
+        stream: bool = False,
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        **kwargs,
+    ) -> GenericResponse:
+        """Prompt render Method"""
+        body = {
+            "variables": variables,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "top_k": top_k,
+            "top_p": top_p,
+            "stream": stream,
+            **kwargs,
+        }
+        return self._post(
+            f"/prompts/{prompt_id}/render",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream_cls=Stream[GenericResponse],
+            stream=False,
+            headers={},
+        )
+
 
 class AsyncPrompts(AsyncAPIResource):
     completions: AsyncCompletions
@@ -91,6 +123,36 @@ class AsyncPrompts(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
         self.completions = AsyncCompletions(client)
+
+    async def render(
+        self,
+        *,
+        prompt_id: str,
+        variables: Optional[Mapping[str, Any]] = None,
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        top_k: Optional[int] = None,
+        top_p: Optional[float] = None,
+        **kwargs,
+    ) -> GenericResponse:
+        """Prompt render Method"""
+        body = {
+            "variables": variables,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "top_k": top_k,
+            "top_p": top_p,
+            **kwargs,
+        }
+        return await self._post(
+            f"/prompts/{prompt_id}/render",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=AsyncStream[GenericResponse],
+            headers={},
+        )
 
 
 class Completions(APIResource):
