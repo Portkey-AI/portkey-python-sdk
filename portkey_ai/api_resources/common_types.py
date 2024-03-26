@@ -2,7 +2,7 @@ from typing import TypeVar, Union
 
 import httpx
 
-from portkey_ai.api_resources.types.generation_type import PromptCreateChunk
+from portkey_ai.api_resources.types.generation_type import PromptCompletionChunk
 from .streaming import Stream, AsyncStream
 from .utils import GenericResponse
 from .types.chat_complete_type import ChatCompletionChunk
@@ -15,7 +15,7 @@ StreamT = TypeVar(
             ChatCompletionChunk,
             TextCompletionChunk,
             GenericResponse,
-            PromptCreateChunk,
+            PromptCompletionChunk,
             httpx.Response,
         ]
     ],
@@ -28,7 +28,7 @@ AsyncStreamT = TypeVar(
             ChatCompletionChunk,
             TextCompletionChunk,
             GenericResponse,
-            PromptCreateChunk,
+            PromptCompletionChunk,
             httpx.Response,
         ]
     ],

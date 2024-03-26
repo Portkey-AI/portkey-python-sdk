@@ -14,7 +14,7 @@ from typing import List, Any
 from pydantic import BaseModel
 
 
-class PromptCreate(BaseModel):
+class PromptCompletion(BaseModel):
     id: Optional[str]
     choices: List[Choice]
     created: Optional[int]
@@ -41,7 +41,7 @@ class PromptCreate(BaseModel):
         return parse_headers(self._headers)
 
 
-class PromptCreateChunk(BaseModel):
+class PromptCompletionChunk(BaseModel):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
