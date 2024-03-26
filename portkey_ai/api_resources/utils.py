@@ -15,6 +15,10 @@ from portkey_ai.api_resources.types.complete_type import (
     TextCompletionChunk,
     TextCompletion,
 )
+from portkey_ai.api_resources.types.generation_type import (
+    PromptCreate,
+    PromptCreateChunk,
+)
 from .exceptions import (
     APIStatusError,
     BadRequestError,
@@ -56,7 +60,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletion, TextCompletionChunk, GenericResponse, httpx.Response]",  # noqa: E501
+    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletion, TextCompletionChunk, GenericResponse, PromptCreate, PromptCreateChunk,  httpx.Response]",  # noqa: E501
 )
 
 

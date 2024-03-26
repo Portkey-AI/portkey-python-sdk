@@ -2,11 +2,10 @@ from __future__ import annotations
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
-from portkey_ai.api_resources.types.chat_complete_type import (
-    ChatCompletionChunk,
-    ChatCompletions,
+from portkey_ai.api_resources.types.generation_type import (
+    PromptCreate,
+    PromptCreateChunk,
 )
-from portkey_ai.api_resources.types.complete_type import TextChoice, TextCompletionChunk
 from portkey_ai.api_resources.utils import (
     retrieve_config,
     GenericResponse,
@@ -177,7 +176,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[Stream[ChatCompletionChunk], Stream[TextCompletionChunk]]:
+    ) -> Stream[PromptCreateChunk]:
         ...
 
     @overload
@@ -193,7 +192,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[ChatCompletions, TextChoice]:
+    ) -> PromptCreate:
         ...
 
     @overload
@@ -209,12 +208,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[
-        ChatCompletions,
-        TextChoice,
-        Stream[ChatCompletionChunk],
-        Stream[TextCompletionChunk],
-    ]:
+    ) -> Union[PromptCreate, Stream[PromptCreateChunk]]:
         ...
 
     def create(
@@ -229,12 +223,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[
-        ChatCompletions,
-        TextChoice,
-        Stream[ChatCompletionChunk],
-        Stream[TextCompletionChunk],
-    ]:
+    ) -> Union[PromptCreate, Stream[PromptCreateChunk],]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
@@ -251,8 +240,8 @@ class Completions(APIResource):
             f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
-            cast_to=Union[ChatCompletions, TextChoice],
-            stream_cls=Union[Stream[ChatCompletionChunk], Stream[TextCompletionChunk]],
+            cast_to=PromptCreate,
+            stream_cls=Stream[PromptCreateChunk],
             stream=stream,
             headers={},
         )
@@ -275,7 +264,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[AsyncStream[ChatCompletionChunk], AsyncStream[TextCompletionChunk]]:
+    ) -> AsyncStream[PromptCreateChunk]:
         ...
 
     @overload
@@ -291,7 +280,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[ChatCompletions, TextChoice]:
+    ) -> PromptCreate:
         ...
 
     @overload
@@ -307,12 +296,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[
-        ChatCompletions,
-        TextChoice,
-        AsyncStream[ChatCompletionChunk],
-        AsyncStream[TextCompletionChunk],
-    ]:
+    ) -> Union[PromptCreate, AsyncStream[PromptCreateChunk]]:
         ...
 
     async def create(
@@ -327,12 +311,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[
-        ChatCompletions,
-        TextChoice,
-        AsyncStream[ChatCompletionChunk],
-        AsyncStream[TextCompletionChunk],
-    ]:
+    ) -> Union[PromptCreate, AsyncStream[PromptCreateChunk]]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
@@ -349,10 +328,8 @@ class AsyncCompletions(AsyncAPIResource):
             f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
-            cast_to=Union[ChatCompletions, TextChoice],
-            stream_cls=Union[
-                AsyncStream[ChatCompletionChunk], AsyncStream[TextCompletionChunk]
-            ],
+            cast_to=PromptCreate,
+            stream_cls=AsyncStream[PromptCreateChunk],
             stream=stream,
             headers={},
         )
