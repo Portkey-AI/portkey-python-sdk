@@ -2,6 +2,11 @@ from __future__ import annotations
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
+from portkey_ai.api_resources.types.chat_complete_type import (
+    ChatCompletionChunk,
+    ChatCompletions,
+)
+from portkey_ai.api_resources.types.complete_type import TextChoice, TextCompletionChunk
 from portkey_ai.api_resources.utils import (
     retrieve_config,
     GenericResponse,
@@ -172,7 +177,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Stream[GenericResponse]:
+    ) -> Union[Stream[ChatCompletionChunk], Stream[TextCompletionChunk]]:
         ...
 
     @overload
@@ -188,7 +193,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> GenericResponse:
+    ) -> Union[ChatCompletions, TextChoice]:
         ...
 
     @overload
@@ -204,7 +209,12 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+    ) -> Union[
+        ChatCompletions,
+        TextChoice,
+        Stream[ChatCompletionChunk],
+        Stream[TextCompletionChunk],
+    ]:
         ...
 
     def create(
@@ -219,7 +229,12 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+    ) -> Union[
+        ChatCompletions,
+        TextChoice,
+        Stream[ChatCompletionChunk],
+        Stream[TextCompletionChunk],
+    ]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
@@ -260,7 +275,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> AsyncStream[GenericResponse]:
+    ) -> Union[AsyncStream[ChatCompletionChunk], AsyncStream[TextCompletionChunk]]:
         ...
 
     @overload
@@ -276,7 +291,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> GenericResponse:
+    ) -> Union[ChatCompletions, TextChoice]:
         ...
 
     @overload
@@ -292,7 +307,12 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
+    ) -> Union[
+        ChatCompletions,
+        TextChoice,
+        AsyncStream[ChatCompletionChunk],
+        AsyncStream[TextCompletionChunk],
+    ]:
         ...
 
     async def create(
@@ -307,7 +327,12 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
+    ) -> Union[
+        ChatCompletions,
+        TextChoice,
+        AsyncStream[ChatCompletionChunk],
+        AsyncStream[TextCompletionChunk],
+    ]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
