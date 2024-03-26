@@ -251,8 +251,8 @@ class Completions(APIResource):
             f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
-            cast_to=GenericResponse,
-            stream_cls=Stream[GenericResponse],
+            cast_to=Union[ChatCompletions, TextChoice],
+            stream_cls=Union[Stream[ChatCompletionChunk], Stream[TextCompletionChunk]],
             stream=stream,
             headers={},
         )
@@ -349,8 +349,10 @@ class AsyncCompletions(AsyncAPIResource):
             f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
-            cast_to=GenericResponse,
-            stream_cls=AsyncStream[GenericResponse],
+            cast_to=Union[ChatCompletions, TextChoice],
+            stream_cls=Union[
+                AsyncStream[ChatCompletionChunk], AsyncStream[TextCompletionChunk]
+            ],
             stream=stream,
             headers={},
         )
