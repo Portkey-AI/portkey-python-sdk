@@ -10,6 +10,8 @@ pip install portkey-ai
 
 ## Features
 
+The Portkey SDK is built on top of the OpenAI SDK, allowing you to seamlessly integrate Portkey's advanced features while retaining full compatibility with OpenAI methods. With Portkey, you can enhance your interactions with OpenAI or any other OpenAI-like provider by leveraging robust monitoring, reliability, prompt management, and more features - without modifying much of your existing code.
+
 ### AI Gateway
 <table>
     <tr>
