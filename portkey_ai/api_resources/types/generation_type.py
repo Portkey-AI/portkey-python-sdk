@@ -59,16 +59,20 @@ class PromptCompletionChunk(BaseModel):
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
 
+
 FunctionParameters = Dict[str, object]
+
 
 class Function(BaseModel):
     name: Optional[str]
     description: Optional[str] = None
     parameters: Optional[FunctionParameters] = None
 
+
 class Tool(BaseModel):
     function: Function
     type: Optional[str]
+
 
 class PromptRenderData(BaseModel):
     messages: Optional[List[ChatCompletionMessage]] = None
@@ -97,7 +101,7 @@ class PromptRenderData(BaseModel):
     tool_choice: Optional[Union[None, str]] = None
     tools: Optional[List[Tool]] = None
 
-    
+
 class PromptRender(BaseModel):
     success: Optional[bool] = True
     data: PromptRenderData
@@ -110,9 +114,3 @@ class PromptRender(BaseModel):
 
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
-
-
-
-        
-
-
