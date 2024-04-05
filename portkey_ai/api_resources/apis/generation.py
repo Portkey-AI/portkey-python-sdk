@@ -2,6 +2,11 @@ from __future__ import annotations
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
+from portkey_ai.api_resources.types.generation_type import (
+    PromptCompletion,
+    PromptCompletionChunk,
+    PromptRender,
+)
 from portkey_ai.api_resources.utils import (
     retrieve_config,
     GenericResponse,
@@ -88,14 +93,14 @@ class Prompts(APIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
+        variables: Mapping[str, Any],
         stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> GenericResponse:
+    ) -> PromptRender:
         """Prompt render Method"""
         body = {
             "variables": variables,
@@ -110,8 +115,8 @@ class Prompts(APIResource):
             f"/prompts/{prompt_id}/render",
             body=body,
             params=None,
-            cast_to=GenericResponse,
-            stream_cls=Stream[GenericResponse],
+            cast_to=PromptRender,
+            stream_cls=Stream[PromptRender],
             stream=False,
             headers={},
         )
@@ -128,13 +133,14 @@ class AsyncPrompts(AsyncAPIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
+        variables: Mapping[str, Any],
+        stream: bool = False,
         temperature: Optional[float] = None,
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> GenericResponse:
+    ) -> PromptRender:
         """Prompt render Method"""
         body = {
             "variables": variables,
@@ -142,15 +148,16 @@ class AsyncPrompts(AsyncAPIResource):
             "max_tokens": max_tokens,
             "top_k": top_k,
             "top_p": top_p,
+            "stream": stream,
             **kwargs,
         }
         return await self._post(
             f"/prompts/{prompt_id}/render",
             body=body,
             params=None,
-            cast_to=GenericResponse,
+            cast_to=PromptRender,
             stream=False,
-            stream_cls=AsyncStream[GenericResponse],
+            stream_cls=AsyncStream[PromptRender],
             headers={},
         )
 
@@ -172,7 +179,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Stream[GenericResponse]:
+    ) -> Stream[PromptCompletionChunk]:
         ...
 
     @overload
@@ -188,7 +195,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> GenericResponse:
+    ) -> PromptCompletion:
         ...
 
     @overload
@@ -204,7 +211,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+    ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]:
         ...
 
     def create(
@@ -219,7 +226,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+    ) -> Union[PromptCompletion, Stream[PromptCompletionChunk],]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
@@ -236,8 +243,8 @@ class Completions(APIResource):
             f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
-            cast_to=GenericResponse,
-            stream_cls=Stream[GenericResponse],
+            cast_to=PromptCompletion,
+            stream_cls=Stream[PromptCompletionChunk],
             stream=stream,
             headers={},
         )
@@ -260,7 +267,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> AsyncStream[GenericResponse]:
+    ) -> AsyncStream[PromptCompletionChunk]:
         ...
 
     @overload
@@ -276,7 +283,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> GenericResponse:
+    ) -> PromptCompletion:
         ...
 
     @overload
@@ -292,7 +299,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
+    ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
         ...
 
     async def create(
@@ -307,7 +314,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
+    ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()
@@ -324,8 +331,8 @@ class AsyncCompletions(AsyncAPIResource):
             f"/prompts/{prompt_id}/completions",
             body=body,
             params=None,
-            cast_to=GenericResponse,
-            stream_cls=AsyncStream[GenericResponse],
+            cast_to=PromptCompletion,
+            stream_cls=AsyncStream[PromptCompletionChunk],
             stream=stream,
             headers={},
         )
