@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 from typing import Any, Dict, List, Optional
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.outputs import LLMResult
@@ -8,49 +9,32 @@ from portkey_ai.api_resources.apis.logger import Logger
 
 
 class PortkeyCallbackHandler(BaseCallbackHandler):
-    startTimestamp: int = 0
-    endTimestamp: int = 0
+    
 
     def __init__(
         self,
         api_key: str,
     ) -> None:
         super().__init__()
+        self.startTimestamp: float = 0
+        self.endTimestamp: float = 0
 
         self.api_key = api_key
 
         self.portkey_logger = Logger(api_key=api_key)
 
-        # ------------------------------------------------
         self.log_object: Dict[str, Any] = {}
         self.prompt_records: List[str] = []
-        self.usage_records: Any = {}
-        self.prompt_tokens: int = 0
-        self.completion_tokens: int = 0
-        self.total_tokens: int = 0
-        # ------------------------------------------------
 
-        # ------------------------------------------------
-        self.requestMethod: str = "POST"
-        self.requestURL: str = ""
-        self.requestHeaders: Dict[str, Any] = {}
-        self.requestBody: Any = {}
+        self.request: Any = {}
+
+        self.response: Any = {}
 
         self.responseHeaders: Dict[str, Any] = {}  # Nowhere to get this from
         self.responseBody: Any = None
         self.responseStatus: int = 0
-        self.responseTime: int = 0
 
         self.streamingMode: bool = False
-
-        # ------------------------------------------------
-        # self.config: Dict[str, Any] = {}
-        # self.organisationConfig: Dict[str, Any] = {}
-        # self.organisationDetails: Dict[str, Any] = {}
-        # self.cacheStatus: str = None
-        # self.retryCount: int = 0
-        # self.portkeyHeaders: Dict[str, Any] = {}
-        # ------------------------------------------------
 
         if not api_key:
             raise ValueError("Please provide an API key to use PortkeyCallbackHandler")
@@ -58,25 +42,28 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
     def on_llm_start(
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
     ) -> None:
-        print("on_llm_start serialized", serialized["id"][2])
+        print("on_llm_start serialized", serialized)
         print("on_llm_start prompts", prompts)
         print("on_llm_start kwargs", kwargs)
 
-        self.startTimestamp = int(datetime.now().timestamp())
-
         for prompt in prompts:
-            self.prompt_records.append(prompt.replace("\n", " "))
+            messages = prompt.split("\n")
+            for message in messages:
+                role, content = message.split(":",1)
+                self.prompt_records.append({'role':role.lower(), 'content':content.strip()})
 
-        self.requestURL = serialized.get("kwargs", "").get("base_url", "")
-        self.requestHeaders = serialized.get("kwargs", {}).get("default_headers", {})
-        self.requestHeaders.update({"provider": serialized["id"][2]})
-
-        self.requestBody = kwargs
-        self.requestBody["prompts"] = self.prompt_records
-
-        print("on_llm_start requestBody:", self.requestBody)
+        self.startTimestamp = float(datetime.now().timestamp())
 
         self.streamingMode = kwargs.get("invocation_params", False).get("stream", False)
+
+        self.request['url'] = serialized.get("kwargs", "").get("base_url", "")
+        self.request['method'] = "POST"
+        self.request['headers'] = serialized.get("kwargs", {}).get("default_headers", {})
+        self.request['headers'].update({"provider": serialized["id"][2]})
+        self.request['body']= {'messages':self.prompt_records}
+        self.request['body'].update({**kwargs.get("invocation_params", {})})
+        
+        print("on_llm_start request", self.request)
 
     def on_chain_start(
         self,
@@ -85,21 +72,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         **kwargs: Any,
     ) -> None:
         """Run when chain starts running."""
-        self.requestBody = {**inputs, **kwargs}
-        self.requestHeaders = (
-            serialized.get("kwargs", {})
-            .get("llm", {})
-            .get("kwargs", {})
-            .get("default_headers", {})
-        )
-        self.requestURL = (
-            serialized.get("kwargs", "")
-            .get("llm", "")
-            .get("kwargs", "")
-            .get("base_url", "")
-        )
-
-        self.startTimestamp = int(datetime.now().timestamp())
         print("on_chain_start inputs", inputs)
         print("on_chain_start kwargs", kwargs)
         print("on_chain_start serialized", serialized)
@@ -107,34 +79,45 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
     # --------------------------------------------------------------------------------
 
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
-        print("on_llm_end response", response.generations)
+        print("on_llm_end response", response)
         print("on_llm_end kwargs", kwargs)
         self.responseBody = response
         self.responseStatus = 200
-        self.endTimestamp = int(datetime.now().timestamp())
-        self.responseTime = self.endTimestamp - self.startTimestamp
+        self.endTimestamp = float(datetime.now().timestamp())
+        responseTime = self.endTimestamp - self.startTimestamp
 
-        """This will handle all the token usage information from the LLM."""
-        if response.llm_output and "token_usage" in response.llm_output:
-            usage = response.llm_output["token_usage"]
-            self.completion_tokens = usage.get("completion_tokens", 0)
-            self.prompt_tokens = usage.get("prompt_tokens", 0)
-            self.total_tokens = usage.get(
-                "total_tokens", self.completion_tokens + self.prompt_tokens
-            )
-            self.usage_records["usage"] = usage
-        """This will handle all the token usage information from the LLM."""
+        usage = response.llm_output.get("token_usage", {})
+
+        self.response['status'] = 200
+        self.response['body'] = {'choices': [{
+            "index":0,
+            "message": {
+                "role": "assistant",
+                "content": response.generations[0][0].text
+            },
+            "logprobs": response.generations[0][0].generation_info['logprobs'],
+            "finish_reason": response.generations[0][0].generation_info['finish_reason'],  
+
+        }]}
+        self.response['body'].update({'usage': usage})
+        self.response['body'].update({'id': str(kwargs.get("run_id", ""))})
+        self.response['body'].update({'created':int(time.time())})
+        self.response['body'].update({'model': response.llm_output.get("model_name", "")})
+        self.response['body'].update({'system_fingerprint': response.llm_output.get("system_fingerprint", "")})
+        self.response['responseTime'] = int(responseTime * 1000)
+
+        print("on_llm_end response", self.response)
 
         self.log_object.update(
             {
-                "requestMethod": self.requestMethod,
-                "requestURL": self.requestURL,
-                "requestHeaders": self.requestHeaders,
-                "requestBody": self.requestBody,
+                "requestMethod": self.request['method'],
+                "requestURL": self.request['url'],
+                "requestHeaders": self.request['headers'],
+                "requestBody": self.request['body'],
                 "responseHeaders": self.responseHeaders,
-                "responseBody": self.responseBody,
-                "responseStatus": self.responseStatus,
-                "responseTime": self.responseTime,
+                "responseBody": self.response['body'],
+                "responseStatus": self.response['status'],
+                "responseTime": self.response['responseTime'] ,
                 "streamingMode": self.streamingMode,
             }
         )
@@ -150,10 +133,7 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
     ) -> None:
         """Run when chain ends running."""
         print("on_chain_end outputs", outputs)
-        self.responseBody = outputs
-        self.responseStatus = 200
-        self.endTimestamp = int(datetime.now().timestamp())
-        self.responseTime = self.endTimestamp - self.startTimestamp
+        print("on_chain_end kwargs", kwargs)
 
     # --------------------------------------------------------------------------------
 
