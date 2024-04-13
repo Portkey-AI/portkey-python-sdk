@@ -42,9 +42,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
     def on_llm_start(
         self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
     ) -> None:
-        print("on_llm_start serialized", serialized)
-        print("on_llm_start prompts", prompts)
-        print("on_llm_start kwargs", kwargs)
 
         for prompt in prompts:
             messages = prompt.split("\n")
@@ -62,8 +59,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         self.request['headers'].update({"provider": serialized["id"][2]})
         self.request['body']= {'messages':self.prompt_records}
         self.request['body'].update({**kwargs.get("invocation_params", {})})
-        
-        print("on_llm_start request", self.request)
 
     def on_chain_start(
         self,
@@ -72,15 +67,10 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         **kwargs: Any,
     ) -> None:
         """Run when chain starts running."""
-        print("on_chain_start inputs", inputs)
-        print("on_chain_start kwargs", kwargs)
-        print("on_chain_start serialized", serialized)
 
     # --------------------------------------------------------------------------------
 
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
-        print("on_llm_end response", response)
-        print("on_llm_end kwargs", kwargs)
         self.responseBody = response
         self.responseStatus = 200
         self.endTimestamp = float(datetime.now().timestamp())
@@ -106,8 +96,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         self.response['body'].update({'system_fingerprint': response.llm_output.get("system_fingerprint", "")})
         self.response['responseTime'] = int(responseTime * 1000)
 
-        print("on_llm_end response", self.response)
-
         self.log_object.update(
             {
                 "requestMethod": self.request['method'],
@@ -122,8 +110,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
             }
         )
 
-        print("on_llm_end log_object", {**self.log_object})
-
         self.portkey_logger.log(log_object=self.log_object)
 
     def on_chain_end(
@@ -132,24 +118,19 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         **kwargs: Any,
     ) -> None:
         """Run when chain ends running."""
-        print("on_chain_end outputs", outputs)
-        print("on_chain_end kwargs", kwargs)
+        pass
 
     # --------------------------------------------------------------------------------
 
     def on_chain_error(self, error: BaseException, **kwargs: Any) -> None:
         self.responseBody = error
         self.responseStatus = error.status_code  # type: ignore[attr-defined]
-        print("on_chain_error error", error)
-        print("on_chain_error kwargs", kwargs)
         """Do nothing."""
         pass
 
     def on_llm_error(self, error: BaseException, **kwargs: Any) -> None:
         self.responseBody = error
         self.responseStatus = error.status_code  # type: ignore[attr-defined]
-        print("on_llm_error error", error)
-        print("on_llm_error kwargs", kwargs)
         """Do nothing."""
         pass
 
@@ -170,8 +151,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
 
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         self.streamingMode = True
-        print("on_llm_new_token token", token)
-        print("on_llm_new_token kwargs", kwargs)
         """Do nothing."""
         pass
 
@@ -183,15 +162,9 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         input_str: str,
         **kwargs: Any,
     ) -> None:
-        print("on_tool_start input_str", input_str)
-        print("on_tool_start serialized", serialized)
-        print("on_tool_start kwargs", kwargs)
-
         pass
 
     def on_agent_action(self, action: AgentAction, **kwargs: Any) -> Any:
-        print("on_agent_action action", action)
-        print("on_agent_action kwargs", kwargs)
         """Do nothing."""
         pass
 
@@ -202,10 +175,6 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         llm_prefix: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
-        print("on_tool_end output", output)
-        print("on_tool_end observation_prefix", observation_prefix)
-        print("on_tool_end llm_prefix", llm_prefix)
-        print("on_tool_end kwargs", kwargs)
         pass
 
 
