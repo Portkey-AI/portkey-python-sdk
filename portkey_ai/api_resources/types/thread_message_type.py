@@ -2,7 +2,7 @@ import json
 from typing import Dict, List, Optional, Union
 import httpx
 from .utils import parse_headers
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = [
     "ThreadMessage",
@@ -81,7 +81,7 @@ class ThreadMessage(BaseModel, extra="allow"):
     role: Optional[str]
     run_id: Optional[str] = None
     thread_id: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -97,7 +97,7 @@ class MessageList(BaseModel, extra="allow"):
     first_id: Optional[str]
     last_id: Optional[str]
     has_more: Optional[bool]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -112,7 +112,7 @@ class MessageFile(BaseModel, extra="allow"):
     object: Optional[str]
     created_at: Optional[int]
     message_id: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
