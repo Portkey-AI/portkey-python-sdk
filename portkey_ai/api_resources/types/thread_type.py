@@ -2,7 +2,7 @@ import json
 from typing import Dict, Optional
 import httpx
 from .utils import parse_headers
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 
 __all__ = ["Thread", "ThreadDeleted"]
@@ -13,7 +13,7 @@ class Thread(BaseModel, extra="allow"):
     created_at: Optional[int]
     metadata: Optional[object] = None
     object: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -27,7 +27,7 @@ class ThreadDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     object: Optional[str]
     deleted: Optional[bool]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers

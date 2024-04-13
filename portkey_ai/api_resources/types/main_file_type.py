@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import httpx
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = ["FileObject", "FileList", "FileDeleted"]
 
@@ -17,7 +17,7 @@ class FileObject(BaseModel):
     purpose: Optional[str]
     status: Optional[str]
     status_details: Optional[str] = None
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -36,7 +36,7 @@ class FileObject(BaseModel):
 class FileList(BaseModel):
     object: Optional[str]
     data: List[FileObject]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -56,7 +56,7 @@ class FileDeleted(BaseModel):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
