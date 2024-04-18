@@ -12,10 +12,8 @@ class Logger:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        chain: Optional[str] = None,
     ) -> None:
         api_key = api_key or os.getenv("PORTKEY_API_KEY")
-        self.chain = chain
 
         self.headers = {
             "Content-Type": "application/json",
@@ -33,19 +31,17 @@ class Logger:
     ):
         body = log_object
 
-        if self.chain == "llama_index":
-            self.headers.update({"x-portkey-provider": "openai"}) # placeholder
-        else:
-            self.headers.update(
-                {
-                    "x-portkey-provider": Logger.get_provider(
-                        body["requestHeaders"]["provider"]
-                    )
-                }
-            )
+
+        self.headers.update(
+            {
+                "x-portkey-provider": Logger.get_provider(
+                    body["requestHeaders"]["provider"]
+                )
+            }
+        )
 
         response = requests.post(
-            url=self.url, json=json.dumps(log_object), headers=self.headers
+            url=self.url, json=json.dumps(log_object, default='str'), headers=self.headers
         )
         return response.status_code
 
@@ -55,4 +51,4 @@ class Logger:
             "openai": "openai",
             "mistralai": "mistral-ai",
         }
-        return provider_dict.get(provider)
+        return provider_dict.get(provider, "openai") # placeholder
