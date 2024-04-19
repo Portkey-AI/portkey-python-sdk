@@ -16,6 +16,7 @@ class Portkey(APIClient):
     generations: apis.Generations
     prompts: apis.Prompts
     embeddings: apis.Embeddings
+    feedback: apis.Feedback
     images: apis.Images
     files: apis.MainFiles
     models: apis.Models
@@ -104,6 +105,7 @@ class AsyncPortkey(AsyncAPIClient):
     generations: apis.AsyncGenerations
     prompts: apis.AsyncPrompts
     embeddings: apis.AsyncEmbeddings
+    feedback: apis.AsyncFeedback
     images: apis.AsyncImages
     files: apis.AsyncMainFiles
     models: apis.AsyncModels
