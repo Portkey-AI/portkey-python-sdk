@@ -3,7 +3,7 @@ from typing import Dict, Literal, Optional, Union
 import httpx
 from .utils import parse_headers
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = [
     "Run",
@@ -183,7 +183,7 @@ class Run(BaseModel):
     thread_id: Optional[str]
     tools: Optional[List[Tool]]
     usage: Optional[Usage] = None
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -199,7 +199,7 @@ class RunList(BaseModel, extra="allow"):
     first_id: Optional[str]
     last_id: Optional[str]
     has_more: Optional[bool]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -226,7 +226,7 @@ class RunStep(BaseModel, extra="allow"):
     thread_id: Optional[str]
     type: Optional[str]
     usage: Optional[Usage] = None
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -242,7 +242,7 @@ class RunStepList(BaseModel, extra="allow"):
     first_id: Optional[str]
     last_id: Optional[str]
     has_more: Optional[bool]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers

@@ -12,7 +12,7 @@ from portkey_ai.api_resources.types.complete_type import Logprobs, TextChoice
 
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 
 class PromptCompletion(BaseModel):
@@ -27,7 +27,7 @@ class PromptCompletion(BaseModel):
     text: Optional[str] = None
     logprobs: Optional[Logprobs] = None
     finish_reason: Optional[str] = None
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)

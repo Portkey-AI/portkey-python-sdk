@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import httpx
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = ["ImagesResponse", "Image"]
 
@@ -17,7 +17,7 @@ class Image(BaseModel):
 class ImagesResponse(BaseModel):
     created: Optional[int]
     data: List[Image]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers

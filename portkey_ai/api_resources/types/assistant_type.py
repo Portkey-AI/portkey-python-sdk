@@ -3,7 +3,7 @@ from typing import Dict, Optional, Union
 import httpx
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = [
     "Assistant",
@@ -45,7 +45,7 @@ class Assistant(BaseModel):
     name: Optional[str] = None
     object: Optional[str]
     tools: Optional[List[Tool]]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -64,7 +64,7 @@ class Assistant(BaseModel):
 class AssistantList(BaseModel, extra="allow"):
     object: Optional[str]
     data: Optional[List[Assistant]]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -84,7 +84,7 @@ class AssistantDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     object: Optional[str]
     deleted: Optional[bool]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -99,7 +99,7 @@ class AssistantFile(BaseModel, extra="allow"):
     assistant_id: Optional[str]
     created_at: Optional[int]
     object: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -115,7 +115,7 @@ class AssistantFileList(BaseModel, extra="allow"):
     first_id: Optional[str]
     last_id: Optional[str]
     has_more: Optional[bool]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -129,7 +129,7 @@ class AssistantFileDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers

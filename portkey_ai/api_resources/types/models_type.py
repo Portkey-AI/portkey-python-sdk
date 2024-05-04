@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import httpx
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = ["Model", "ModelDeleted", "ModelList"]
 
@@ -13,7 +13,7 @@ class Model(BaseModel):
     created: Optional[int]
     object: Optional[str]
     owned_by: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -32,7 +32,7 @@ class Model(BaseModel):
 class ModelList(BaseModel, extra="allow"):
     object: Optional[str]
     data: List[Model]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
@@ -46,7 +46,7 @@ class ModelDeleted(BaseModel):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[str]
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers

@@ -4,7 +4,7 @@ import httpx
 
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = ["CreateEmbeddingResponse", "Usage", "Embedding"]
 
@@ -28,7 +28,7 @@ class CreateEmbeddingResponse(BaseModel):
     model: Optional[str]
     object: Optional[str]
     usage: Usage
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers

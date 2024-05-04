@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import httpx
 from .utils import parse_headers
 from typing import List, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, PrivateAttr
 
 __all__ = [
     "ChatCompletions",
@@ -111,7 +111,7 @@ class ChatCompletions(BaseModel):
     object: Optional[str]
     system_fingerprint: Optional[str] = None
     usage: Optional[Usage] = None
-    _headers: Optional[httpx.Headers] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
         del self._headers
