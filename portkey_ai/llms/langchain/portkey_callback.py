@@ -53,8 +53,9 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
 
         self.streamingMode = kwargs.get("invocation_params", False).get("stream", False)
 
-        self.request['url'] = serialized.get("kwargs", "").get("base_url", "")
         self.request['method'] = "POST"
+        self.request['url'] = serialized.get("kwargs", "").get("base_url", "https://api.openai.com/v1/chat/completions") # placeholder
+        self.request['provider'] = serialized["id"][2]
         self.request['headers'] = serialized.get("kwargs", {}).get("default_headers", {})
         self.request['headers'].update({"provider": serialized["id"][2]})
         self.request['body']= {'messages':self.prompt_records}
@@ -94,19 +95,14 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         self.response['body'].update({'created':int(time.time())})
         self.response['body'].update({'model': response.llm_output.get("model_name", "")})
         self.response['body'].update({'system_fingerprint': response.llm_output.get("system_fingerprint", "")})
-        self.response['responseTime'] = int(responseTime * 1000)
+        self.response['time'] = int(responseTime * 1000)
+        self.response['headers'] = {}
+        self.response['streamingMode'] = self.streamingMode
 
         self.log_object.update(
             {
-                "requestMethod": self.request['method'],
-                "requestURL": self.request['url'],
-                "requestHeaders": self.request['headers'],
-                "requestBody": self.request['body'],
-                "responseHeaders": self.responseHeaders,
-                "responseBody": self.response['body'],
-                "responseStatus": self.response['status'],
-                "responseTime": self.response['responseTime'] ,
-                "streamingMode": self.streamingMode,
+                "request": self.request,
+                "response": self.response,
             }
         )
 
@@ -176,26 +172,3 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         **kwargs: Any,
     ) -> None:
         pass
-
-
-"""
-winkychLogObject = {
-            requestMethod: store.requestMethod,
-            requestURL: store.proxyUrl,
-            requestHeaders: store.requestHeadersWithoutPortkeyHeaders,
-            requestBody: store.requestBody,
-
-            responseHeaders: Object.fromEntries(store.response.headers),
-            responseBody: {},
-            responseStatus: store.responseStatus,
-            responseTime: store.config.responseTime,
-            config: {
-                organisationConfig: { id: store.requestHeaders[globals.PORTKEY_CONFIG_HEADER], ...store.organisationConfig},
-                organisationDetails: store.organisationDetails,
-                cacheStatus: store.config.cacheStatus,
-                retryCount: store.retryCount,
-                isStreamingMode: store.streamingMode,
-                portkeyHeaders: store.requestHeadersPortkey
-            }
-        }
-"""

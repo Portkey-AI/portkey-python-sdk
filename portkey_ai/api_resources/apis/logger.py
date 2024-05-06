@@ -7,6 +7,8 @@ from portkey_ai.api_resources.base_client import APIClient
 from portkey_ai.api_resources.exceptions import AuthenticationError
 import requests
 
+from portkey_ai.api_resources.global_constants import PORTKEY_BASE_URL
+
 
 class Logger:
     def __init__(
@@ -20,7 +22,8 @@ class Logger:
             "x-portkey-api-key": api_key,
         }
 
-        self.url = "https://api.portkey.ai/v1/logger"
+        # self.url = PORTKEY_BASE_URL + "/logs" 
+        self.url = "https://api.portkeydev.com/v1/logs"
 
         if api_key is None:
             raise ValueError("API key is required to use the Logger API")
@@ -29,22 +32,13 @@ class Logger:
         self,
         log_object: dict,
     ):
-        body = log_object
-
-
-        self.headers.update(
-            {
-                "x-portkey-provider": Logger.get_provider(
-                    body["requestHeaders"]["provider"]
-                )
-            }
-        )
-
         response = requests.post(
-            url=self.url, json=json.dumps(log_object, default='str'), headers=self.headers
+            url=self.url, data=json.dumps(log_object, default='str'), headers=self.headers
         )
+
         return response.status_code
 
+    # Not using this function right now
     @staticmethod
     def get_provider(provider):
         provider_dict = {

@@ -31,12 +31,6 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
 
         self.portkey_logger = Logger(api_key=api_key)
 
-        # self.llm_flag_start = False
-        # self.embedding_flag_start = False
-
-        # self.llm_flag_stop = False
-        # self.embedding_flag_stop = False
-
         self.start = False
         self.end = False
 
@@ -91,11 +85,6 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         if(event_type == CBEventType.LLM):
             self.llm_event_start(payload)
 
-        print("on_event_start event_type", event_type)
-        print("on_event_start payload", payload)
-        print("on_event_start event_id", event_id)
-        print("on_event_start parent_id", parent_id)
-        print("on_event_start kwargs", kwargs)
 
     def on_event_end(
         self,
@@ -108,21 +97,12 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
 
         if(event_type == CBEventType.LLM):
             self.llm_event_stop(payload, event_id)
-        
-        # if(event_type == CBEventType.EMBEDDING):
-        #     self.embedding_event_stop(payload, self.embedding_flag_stop)            
-        
-        print("on_event_end event_type", event_type)
-        print("on_event_end event_id", event_id)
-        print("on_event_end payload", payload)
 
 
     def start_trace(self, trace_id: Optional[str] = None) -> None:
         """Run when an overall trace is launched."""    
         if not self.start:
             self.startTimestamp = int(datetime.now().timestamp())
-            # self.start = True
-        print("start_trace trace_id",trace_id)
 
     def end_trace(
         self,
@@ -130,32 +110,6 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         trace_map: Optional[Dict[str, List[str]]] = None,
     ) -> None:
         """Run when an overall trace is exited."""
-        # self.endTimestamp = int(datetime.now().timestamp())
-        # self.responseTime = self.endTimestamp - self.startTimestamp
-        # self.total_tokens = self.token_llm + self.token_embedding
-        # self.responseStatus = 200
-        # self.log_object.update(
-        #     {
-        #         "requestMethod": self.requestMethod,
-        #         "requestURL": self.requestURL,
-        #         "requestHeaders": self.requestHeaders,
-        #         "requestBody": self.requestBody,
-        #         "responseHeaders": self.responseHeaders,
-        #         "responseBody": self.responseBody,
-        #         "responseStatus": self.responseStatus,
-        #         "responseTime": self.responseTime,
-        #         "streamingMode": self.streamingMode,
-        #     }
-        # )
-        # print("LOGGER WILL BE CALLED NOW")
-        # # self.portkey_logger.log(log_object=self.log_object)
-        
-        # # self.end_trace_flag = True
-        
-
-        print("end_trace trace_id",trace_id)
-        print("end_trace trace_map",trace_map)
-        print("end_trace total_tokens", self.total_tokens)
 
 
     def llm_event_start(self, payload: Any) -> None:
@@ -163,39 +117,15 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         if EventPayload.MESSAGES in payload:
             messages = payload.get(EventPayload.MESSAGES, {})
             self.prompt_records = [{'role': m.role.value, 'content': m.content} for m in messages]
-        
-        print("llm_event_start prompt_records: ", self.prompt_records)
-
-        self.request['url'] = payload.get(EventPayload.SERIALIZED, {}).get("base_url", "")
         self.request['method'] = "POST"
-        self.requestHeaders["provider"] = "openai"
+        self.request['url'] = payload.get(EventPayload.SERIALIZED, {}).get("base_url", "https://api.openai.com/v1/chat/completions")
+        self.request["provider"] = "openai" # placeholder
+        self.request['headers'] = {}
         self.request['body'] = {'messages':self.prompt_records}
         self.request['body'].update({"model": payload.get(EventPayload.SERIALIZED, {}).get("model", "")})
         self.request['body'].update({"temperature": payload.get(EventPayload.SERIALIZED, {}).get("temperature", "")}) 
-
-
-
-        print("llm_event_start REQUEST: ", self.request)
-
-
-
-
-        # if not llm_flag_start and EventPayload.SERIALIZED in payload:
-        #     print("llm_event_start llm_flag_start: ", llm_flag_start)
-        #     print("llm_event_start payload: ", payload.get(EventPayload.SERIALIZED, {}))
-        #     self.requestBody["llm"] = payload.get(EventPayload.SERIALIZED, {})
-            
-            # self.llm_flag_start = True
         
         return None
-
-    # def embedding_event_start(self, payload: Any, embedding_flag_start: bool) -> None:
-
-    #     if not embedding_flag_start and EventPayload.SERIALIZED in payload:
-    #         print("embedding_event_start embedding_flag_start: ", embedding_flag_start)
-    #         print("embedding_event_start payload: ", payload.get(EventPayload.SERIALIZED, {}))
-    #         self.requestBody["embedding"] = payload.get(EventPayload.SERIALIZED, {})
-    #         # self.embedding_flag_start = True
 
     def llm_event_stop(self, payload: Any, event_id) -> None:
 
@@ -203,7 +133,7 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         responseTime = self.endTimestamp - self.startTimestamp
 
         data = payload.get(EventPayload.RESPONSE, {})
-        # print("llm_event_stop BODY: ", data)
+
         chunks = payload.get(EventPayload.MESSAGES, {})
         self.token_llm = self._token_counter.estimate_tokens_in_messages(chunks)
 
@@ -221,25 +151,16 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         self.response['body'].update({'id': event_id})
         self.response['body'].update({'created':int(time.time())})
         self.response['body'].update({'model': data.raw.get("model", "")})
-        self.response['responseTime'] = int(responseTime * 1000)
-
+        self.response['time'] = int(responseTime * 1000)
+        self.response['headers'] = {}
+        self.response['streamingMode'] = self.streamingMode
 
         self.log_object.update(
             {
-                "requestMethod": self.request['method'],
-                "requestURL": self.request['url'],
-                "requestHeaders": self.requestHeaders,
-                "requestBody": self.request['body'],
-                "responseHeaders": self.responseHeaders,
-                "responseBody": self.response['body'],
-                "responseStatus": self.response['status'],
-                "responseTime": self.response['responseTime'] ,
-                "streamingMode": self.streamingMode,
+                "request": self.request,
+                "response": self.response,
             }
         )
-
         self.portkey_logger.log(log_object=self.log_object)
-
-        print("llm_event_stop RESPONSE: ", self.response)
 
         return None
