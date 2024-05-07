@@ -21,6 +21,7 @@ class Portkey(APIClient):
     models: apis.Models
     moderations: apis.Moderations
     audio: apis.Audio
+    batches: apis.Batches
 
     class beta:
         assistants: apis.Assistants
@@ -70,6 +71,7 @@ class Portkey(APIClient):
         self.models = apis.Models(self)
         self.moderations = apis.Moderations(self)
         self.audio = apis.Audio(self)
+        self.batches = apis.Batches(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -113,6 +115,7 @@ class AsyncPortkey(AsyncAPIClient):
     models: apis.AsyncModels
     moderations: apis.AsyncModerations
     audio: apis.AsyncAudio
+    batches: apis.AsyncBatches
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -162,6 +165,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.models = apis.AsyncModels(self)
         self.moderations = apis.AsyncModerations(self)
         self.audio = apis.AsyncAudio(self)
+        self.batches = apis.AsyncBatches(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(

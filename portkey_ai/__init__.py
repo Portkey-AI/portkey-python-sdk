@@ -51,7 +51,9 @@ from portkey_ai.api_resources import (
     AsyncAudio,
     AsyncTranscriptions,
     AsyncTranslations,
-    AsyncSpeech
+    AsyncSpeech,
+    Batches,
+    AsyncBatches,
 )
 
 from portkey_ai.version import VERSION
@@ -123,4 +125,6 @@ __all__ = [
     "AsyncTranscriptions",
     "AsyncTranslations",
     "AsyncSpeech",
+    "Batches",
+    "AsyncBatches",
 ]

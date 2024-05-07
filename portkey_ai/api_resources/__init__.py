@@ -41,6 +41,8 @@ from .apis import (
     AsyncTranscriptions,
     AsyncTranslations,
     AsyncSpeech,
+    Batches,
+    AsyncBatches,
 )
 from .utils import (
     Modes,
@@ -117,4 +119,6 @@ __all__ = [
     "AsyncTranscriptions",
     "AsyncTranslations",
     "AsyncSpeech",
+    "Batches",
+    "AsyncBatches",
 ]

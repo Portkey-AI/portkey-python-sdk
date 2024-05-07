@@ -23,6 +23,7 @@ from .main_files import MainFiles, AsyncMainFiles
 from .models import Models, AsyncModels
 from .moderations import Moderations, AsyncModerations
 from .audio import Audio, Transcriptions, Translations, Speech, AsyncAudio, AsyncTranscriptions, AsyncTranslations, AsyncSpeech
+from .batches import Batches, AsyncBatches
 
 __all__ = [
     "Completion",
@@ -70,4 +71,6 @@ __all__ = [
     "AsyncTranscriptions",
     "AsyncTranslations",
     "AsyncSpeech",
+    "Batches",
+    "AsyncBatches",
 ]
