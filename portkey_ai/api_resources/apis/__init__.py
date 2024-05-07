@@ -21,6 +21,7 @@ from .threads import (
 )
 from .main_files import MainFiles, AsyncMainFiles
 from .models import Models, AsyncModels
+from .moderations import Moderations, AsyncModerations
 
 __all__ = [
     "Completion",
@@ -58,4 +59,6 @@ __all__ = [
     "AsyncRuns",
     "Steps",
     "AsyncSteps",
+    "Moderations",
+    "AsyncModerations",
 ]

@@ -42,6 +42,8 @@ from portkey_ai.api_resources import (
     AsyncRuns,
     Steps,
     AsyncSteps,
+    Moderations,
+    AsyncModerations,
 )
 
 from portkey_ai.version import VERSION
@@ -103,4 +105,6 @@ __all__ = [
     "AsyncRuns",
     "Steps",
     "AsyncSteps",
+    "Moderations",
+    "AsyncModerations",
 ]

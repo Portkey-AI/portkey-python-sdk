@@ -31,6 +31,8 @@ from .apis import (
     AsyncRuns,
     Steps,
     AsyncSteps,
+    Moderations,
+    AsyncModerations,
 )
 from .utils import (
     Modes,
@@ -97,4 +99,6 @@ __all__ = [
     "AsyncRuns",
     "Steps",
     "AsyncSteps",
+    "Moderations",
+    "AsyncModerations",
 ]
