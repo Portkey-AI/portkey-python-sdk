@@ -43,6 +43,12 @@ from .apis import (
     AsyncSpeech,
     Batches,
     AsyncBatches,
+    FineTuning,
+    Jobs,
+    Checkpoints,
+    AsyncFineTuning,
+    AsyncJobs,
+    AsyncCheckpoints,
 )
 from .utils import (
     Modes,
@@ -121,4 +127,10 @@ __all__ = [
     "AsyncSpeech",
     "Batches",
     "AsyncBatches",
+    "FineTuning",
+    "Jobs",
+    "Checkpoints",
+    "AsyncFineTuning",
+    "AsyncJobs",
+    "AsyncCheckpoints",
 ]

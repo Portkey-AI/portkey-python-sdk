@@ -22,6 +22,7 @@ class Portkey(APIClient):
     moderations: apis.Moderations
     audio: apis.Audio
     batches: apis.Batches
+    fine_tuning: apis.FineTuning
 
     class beta:
         assistants: apis.Assistants
@@ -72,6 +73,7 @@ class Portkey(APIClient):
         self.moderations = apis.Moderations(self)
         self.audio = apis.Audio(self)
         self.batches = apis.Batches(self)
+        self.fine_tuning = apis.FineTuning(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -116,6 +118,7 @@ class AsyncPortkey(AsyncAPIClient):
     moderations: apis.AsyncModerations
     audio: apis.AsyncAudio
     batches: apis.AsyncBatches
+    fine_tuning: apis.AsyncFineTuning
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -166,6 +169,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.moderations = apis.AsyncModerations(self)
         self.audio = apis.AsyncAudio(self)
         self.batches = apis.AsyncBatches(self)
+        self.fine_tuning = apis.AsyncFineTuning(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(

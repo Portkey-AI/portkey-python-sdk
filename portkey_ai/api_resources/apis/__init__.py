@@ -24,6 +24,7 @@ from .models import Models, AsyncModels
 from .moderations import Moderations, AsyncModerations
 from .audio import Audio, Transcriptions, Translations, Speech, AsyncAudio, AsyncTranscriptions, AsyncTranslations, AsyncSpeech
 from .batches import Batches, AsyncBatches
+from .fine_tuning import FineTuning, Jobs, Checkpoints, AsyncFineTuning, AsyncJobs, AsyncCheckpoints
 
 __all__ = [
     "Completion",
@@ -73,4 +74,10 @@ __all__ = [
     "AsyncSpeech",
     "Batches",
     "AsyncBatches",
+    "FineTuning",
+    "Jobs",
+    "Checkpoints",
+    "AsyncFineTuning",
+    "AsyncJobs",
+    "AsyncCheckpoints",
 ]

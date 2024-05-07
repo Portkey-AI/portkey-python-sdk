@@ -54,6 +54,12 @@ from portkey_ai.api_resources import (
     AsyncSpeech,
     Batches,
     AsyncBatches,
+    FineTuning,
+    Jobs,
+    Checkpoints,
+    AsyncFineTuning,
+    AsyncJobs,
+    AsyncCheckpoints,
 )
 
 from portkey_ai.version import VERSION
@@ -127,4 +133,10 @@ __all__ = [
     "AsyncSpeech",
     "Batches",
     "AsyncBatches",
+    "FineTuning",
+    "Jobs",
+    "Checkpoints",
+    "AsyncFineTuning",
+    "AsyncJobs",
+    "AsyncCheckpoints",
 ]
