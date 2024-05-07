@@ -33,6 +33,14 @@ from .apis import (
     AsyncSteps,
     Moderations,
     AsyncModerations,
+    Audio,
+    Transcriptions,
+    Translations,
+    Speech,
+    AsyncAudio,
+    AsyncTranscriptions,
+    AsyncTranslations,
+    AsyncSpeech,
 )
 from .utils import (
     Modes,
@@ -101,4 +109,12 @@ __all__ = [
     "AsyncSteps",
     "Moderations",
     "AsyncModerations",
+    "Audio",
+    "Transcriptions",
+    "Translations",
+    "Speech",
+    "AsyncAudio",
+    "AsyncTranscriptions",
+    "AsyncTranslations",
+    "AsyncSpeech",
 ]

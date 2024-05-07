@@ -22,6 +22,7 @@ from .threads import (
 from .main_files import MainFiles, AsyncMainFiles
 from .models import Models, AsyncModels
 from .moderations import Moderations, AsyncModerations
+from .audio import Audio, Transcriptions, Translations, Speech, AsyncAudio, AsyncTranscriptions, AsyncTranslations, AsyncSpeech
 
 __all__ = [
     "Completion",
@@ -61,4 +62,12 @@ __all__ = [
     "AsyncSteps",
     "Moderations",
     "AsyncModerations",
+    "Audio",
+    "Transcriptions",
+    "Translations",
+    "Speech",
+    "AsyncAudio",
+    "AsyncTranscriptions",
+    "AsyncTranslations",
+    "AsyncSpeech",
 ]
