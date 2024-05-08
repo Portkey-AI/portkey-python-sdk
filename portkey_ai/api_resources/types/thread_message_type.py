@@ -107,11 +107,24 @@ class MessageList(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class MessageFile(BaseModel, extra="allow"):
-    id: Optional[str]
-    object: Optional[str]
-    created_at: Optional[int]
-    message_id: Optional[str]
+# class MessageFile(BaseModel, extra="allow"):
+#     id: Optional[str]
+#     object: Optional[str]
+#     created_at: Optional[int]
+#     message_id: Optional[str]
+#     _headers: Optional[httpx.Headers] = PrivateAttr()
+
+#     def __str__(self):
+#         del self._headers
+#         return json.dumps(self.dict(), indent=4)
+
+#     def get_headers(self) -> Optional[Dict[str, str]]:
+#         return parse_headers(self._headers)
+
+class ThreadMessageDeleted(BaseModel):
+    id: str
+    deleted: bool
+    object: str
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

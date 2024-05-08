@@ -58,6 +58,12 @@ from portkey_ai.api_resources import (
     AsyncFineTuning,
     AsyncJobs,
     AsyncCheckpoints,
+    VectorStores,
+    VectorFiles,
+    VectorFileBatches,
+    AsyncVectorStores,
+    AsyncVectorFiles,
+    AsyncVectorFileBatches,
 )
 
 from portkey_ai.version import VERSION
@@ -135,4 +141,10 @@ __all__ = [
     "AsyncFineTuning",
     "AsyncJobs",
     "AsyncCheckpoints",
+    "VectorStores",
+    "VectorFiles",
+    "VectorFileBatches",
+    "AsyncVectorStores",
+    "AsyncVectorFiles",
+    "AsyncVectorFileBatches",
 ]

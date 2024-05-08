@@ -25,6 +25,8 @@ from .moderations import Moderations, AsyncModerations
 from .audio import Audio, Transcriptions, Translations, Speech, AsyncAudio, AsyncTranscriptions, AsyncTranslations, AsyncSpeech
 from .batches import Batches, AsyncBatches
 from .fine_tuning import FineTuning, Jobs, Checkpoints, AsyncFineTuning, AsyncJobs, AsyncCheckpoints
+from .vector_stores import VectorStores, VectorFiles, VectorFileBatches, AsyncVectorStores, AsyncVectorFiles, AsyncVectorFileBatches
+
 
 __all__ = [
     "Completion",
@@ -78,4 +80,10 @@ __all__ = [
     "AsyncFineTuning",
     "AsyncJobs",
     "AsyncCheckpoints",
+    "VectorStores",
+    "VectorFiles",
+    "VectorFileBatches",
+    "AsyncVectorStores",
+    "AsyncVectorFiles",
+    "AsyncVectorFileBatches",
 ]

@@ -27,10 +27,12 @@ class Portkey(APIClient):
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
+        vector_stores: apis.VectorStores
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
+            self.vector_stores = apis.VectorStores(client)
 
     def __init__(
         self,
@@ -123,10 +125,12 @@ class AsyncPortkey(AsyncAPIClient):
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
+        vector_stores: apis.AsyncVectorStores
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
+            self.vector_stores = apis.AsyncVectorStores(client)
 
     def __init__(
         self,

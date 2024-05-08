@@ -47,6 +47,12 @@ from .apis import (
     AsyncFineTuning,
     AsyncJobs,
     AsyncCheckpoints,
+    VectorStores,
+    VectorFiles,
+    VectorFileBatches,
+    AsyncVectorStores,
+    AsyncVectorFiles,
+    AsyncVectorFileBatches,
 )
 from .utils import (
     Modes,
@@ -129,4 +135,10 @@ __all__ = [
     "AsyncFineTuning",
     "AsyncJobs",
     "AsyncCheckpoints",
+    "VectorStores",
+    "VectorFiles",
+    "VectorFileBatches",
+    "AsyncVectorStores",
+    "AsyncVectorFiles",
+    "AsyncVectorFileBatches",
 ]
