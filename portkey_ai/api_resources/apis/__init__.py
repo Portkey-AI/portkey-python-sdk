@@ -6,7 +6,7 @@ from .create_headers import createHeaders
 from .post import Post, AsyncPost
 from .embeddings import Embeddings, AsyncEmbeddings
 from .images import Images, AsyncImages
-from .assistants import Assistants, AssistantFiles, AsyncAssistants, AsyncAssistantFiles
+from .assistants import Assistants, AsyncAssistants
 from .threads import (
     Threads,
     Messages,
@@ -50,9 +50,7 @@ __all__ = [
     "AsyncMainFiles",
     "Models",
     "AsyncModels",
-    "AssistantFiles",
     "ThreadFiles",
-    "AsyncAssistantFiles",
     "AsyncThreadFiles",
     "Threads",
     "AsyncThreads",
