@@ -10,12 +10,10 @@ from .assistants import Assistants, AsyncAssistants
 from .threads import (
     Threads,
     Messages,
-    ThreadFiles,
     Runs,
     Steps,
     AsyncThreads,
     AsyncMessages,
-    AsyncThreadFiles,
     AsyncRuns,
     AsyncSteps,
 )
@@ -52,8 +50,6 @@ __all__ = [
     "AsyncMainFiles",
     "Models",
     "AsyncModels",
-    "ThreadFiles",
-    "AsyncThreadFiles",
     "Threads",
     "AsyncThreads",
     "Messages",

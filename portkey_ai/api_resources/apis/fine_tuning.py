@@ -1,3 +1,4 @@
+import json
 from typing import Iterable, Optional, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -49,7 +50,7 @@ class Jobs(APIResource):
             validation_file=validation_file,
             **kwargs,
         )
-        data = FineTuningJob(**response.json())
+        data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -58,7 +59,7 @@ class Jobs(APIResource):
         response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
             fine_tuning_job_id=fine_tuning_job_id, **kwargs
         )
-        data = FineTuningJob(**response.json())
+        data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -73,7 +74,7 @@ class Jobs(APIResource):
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list(
             after=after, limit=limit, **kwargs
         )
-        data = FineTuningJobList(**response.json())
+        data = FineTuningJobList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -82,7 +83,7 @@ class Jobs(APIResource):
         response = self.openai_client.with_raw_response.fine_tuning.jobs.cancel(
             fine_tuning_job_id=fine_tuning_job_id, **kwargs
         )
-        data = FineTuningJob(**response.json())
+        data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -98,7 +99,7 @@ class Jobs(APIResource):
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list_events(
             fine_tuning_job_id=fine_tuning_job_id, after=after, limit=limit, **kwargs
         )
-        data = FineTuningJobEventList(**response.json())
+        data = FineTuningJobEventList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -126,13 +127,13 @@ class Checkpoints(APIResource):
             )
         )
 
-        data = FineTuningJobCheckpointList(**response.json())
+        data = FineTuningJobCheckpointList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
 
 
-class AsyncFineTuning(APIResource):
+class AsyncFineTuning(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
@@ -169,7 +170,7 @@ class AsyncJobs(AsyncAPIResource):
             validation_file=validation_file,
             **kwargs,
         )
-        data = FineTuningJob(**response.json())
+        data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -178,7 +179,7 @@ class AsyncJobs(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
             fine_tuning_job_id=fine_tuning_job_id, **kwargs
         )
-        data = FineTuningJob(**response.json())
+        data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -193,7 +194,7 @@ class AsyncJobs(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.list(
             after=after, limit=limit, **kwargs
         )
-        data = FineTuningJobList(**response.json())
+        data = FineTuningJobList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -202,7 +203,7 @@ class AsyncJobs(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.cancel(
             fine_tuning_job_id, **kwargs
         )
-        data = FineTuningJob(**response.json())
+        data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -223,7 +224,7 @@ class AsyncJobs(AsyncAPIResource):
                 **kwargs,
             )
         )
-        data = FineTuningJobEventList(**response.json())
+        data = FineTuningJobEventList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -251,7 +252,7 @@ class AsyncCheckpoints(AsyncAPIResource):
             )
         )
 
-        data = FineTuningJobCheckpointList(**response.json())
+        data = FineTuningJobCheckpointList(**json.loads(response.text))
         data._headers = response.headers
 
         return data

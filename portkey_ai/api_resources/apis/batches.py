@@ -1,5 +1,6 @@
 import json
 from typing import Dict, Optional, Union
+import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from openai._types import NotGiven, NOT_GIVEN
@@ -12,6 +13,7 @@ class Batches(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
+    @typing.no_type_check
     def create(
         self,
         *,
@@ -82,6 +84,7 @@ class AsyncBatches(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
+    @typing.no_type_check
     async def create(
         self,
         *,

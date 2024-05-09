@@ -91,10 +91,10 @@ class Threads(APIResource):
         self,
         *,
         assistant_id: str,
-        instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
-        max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
-        metadata: Optional[object] | NotGiven = NOT_GIVEN,
+        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
         response_format: Union[Optional[AssistantResponseFormatOptionParam] , NotGiven] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
@@ -228,34 +228,6 @@ class Messages(APIResource):
         data._headers = response.headers
 
         return data
-        
-
-# class ThreadFiles(APIResource):
-#     def __init__(self, client: Portkey) -> None:
-#         super().__init__(client)
-#         self.openai_client = client.openai_client
-
-#     def list(self, thread_id, message_id, **kwargs) -> MessageList:
-#         response = (
-#             self.openai_client.with_raw_response.beta.threads.messages.files.list(
-#                 thread_id=thread_id, message_id=message_id, **kwargs
-#             )
-#         )
-#         data = MessageList(**json.loads(response.text))
-#         data._headers = response.headers
-
-#         return data
-
-#     def retrieve(self, thread_id, message_id, file_id, **kwargs) -> MessageFile:
-#         response = (
-#             self.openai_client.with_raw_response.beta.threads.messages.files.retrieve(
-#                 thread_id=thread_id, message_id=message_id, file_id=file_id, **kwargs
-#             )
-#         )
-#         data = MessageFile(**json.loads(response.text))
-#         data._headers = response.headers
-
-#         return data
 
 
 class Runs(APIResource):
@@ -742,43 +714,6 @@ class AsyncMessages(AsyncAPIResource):
         return data
 
 
-# class AsyncThreadFiles(AsyncAPIResource):
-#     def __init__(self, client: AsyncPortkey) -> None:
-#         super().__init__(client)
-#         self.openai_client = client.openai_client
-
-#     async def list(self, thread_id, message_id, **kwargs) -> MessageList:
-#         response = (
-#             await self.openai_client.with_raw_response.beta.threads.messages.files.list(
-#                 thread_id=thread_id, message_id=message_id, **kwargs
-#             )
-#         )
-#         data = MessageList(**json.loads(response.text))
-#         data._headers = response.headers
-
-#         return data
-
-#     async def retrieve(self, thread_id, message_id, file_id, **kwargs) -> MessageFile:
-#         # fmt: off
-#         response = await self.openai_client\
-#             .with_raw_response\
-#             .beta\
-#             .threads\
-#             .messages\
-#             .files\
-#             .retrieve(
-#                 thread_id=thread_id, 
-#                 message_id=message_id, 
-#                 file_id=file_id, 
-#                 **kwargs
-#             )
-#         # fmt: off
-#         data = MessageFile(**json.loads( response.text))
-#         data._headers = response.headers
-
-#         return data
-
-
 class AsyncRuns(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
@@ -981,8 +916,8 @@ class AsyncRuns(AsyncAPIResource):
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
     ) -> (
-        AsyncAssistantStreamManager[AsyncAssistantEventHandler] 
-        | AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]
+        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler], 
+              AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
     ):
         response = await self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
@@ -1032,8 +967,8 @@ class AsyncRuns(AsyncAPIResource):
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,  
     ) -> (
-        AsyncAssistantStreamManager[AsyncAssistantEventHandler] 
-        | AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]
+        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler], 
+              AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
     ):
         response = await self.openai_client.beta.threads.runs.submit_tool_outputs_stream(
             tool_outputs=tool_outputs,

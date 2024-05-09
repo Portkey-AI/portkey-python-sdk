@@ -1,15 +1,17 @@
-from typing import List, Literal, Union
+import json
+from typing import Any, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.base_client import APIClient
 from openai._types import NotGiven, NOT_GIVEN, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+import typing
 
 from portkey_ai.api_resources.types.audio_types import Transcription, Translation
 from portkey_ai.api_resources.utils import GenericResponse
 
 
 class Audio(APIResource):
-    def __init__(self, client: APIClient) -> None:
+    def __init__(self, client: Portkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
         self.transcriptions = Transcriptions(client)
@@ -21,6 +23,7 @@ class Transcriptions(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
+    @typing.no_type_check
     def create(
             self, 
             *, 
@@ -43,7 +46,7 @@ class Transcriptions(APIResource):
             timestamp_granularities=timestamp_granularities,
             **kwargs
         )
-        data = Transcription(**response.json())
+        data = Transcription(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -71,7 +74,7 @@ class Translations(APIResource):
             temperature=temperature,
             **kwargs
         )
-        data = Transcription(**response.json())
+        data = Translation(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -81,6 +84,7 @@ class Speech(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
+    @typing.no_type_check
     def create(
             self, 
             *, 
@@ -89,7 +93,7 @@ class Speech(APIResource):
             voice: str,
             response_format: Union[str, NotGiven] = NOT_GIVEN,
             speed: Union[float, NotGiven] = NOT_GIVEN,
-            **kwargs) -> GenericResponse:
+            **kwargs) -> Any:
         
         response = self.openai_client.with_raw_response.audio.speech.create(
             input=input,
@@ -100,7 +104,7 @@ class Speech(APIResource):
             **kwargs
         )
 
-        data = GenericResponse(**response.json())
+        data = GenericResponse(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -119,6 +123,7 @@ class AsyncTranscriptions(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
+    @typing.no_type_check
     async def create(
             self, 
             *, 
@@ -141,7 +146,7 @@ class AsyncTranscriptions(AsyncAPIResource):
             timestamp_granularities=timestamp_granularities,
             **kwargs
         )
-        data = Transcription(**response.json())
+        data = Transcription(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -169,7 +174,7 @@ class AsyncTranslations(AsyncAPIResource):
             temperature=temperature,
             **kwargs
         )
-        data = Transcription(**response.json())
+        data = Translation(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -179,6 +184,7 @@ class AsyncSpeech(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
+    @typing.no_type_check
     async def create(
             self, 
             *, 
@@ -187,7 +193,7 @@ class AsyncSpeech(AsyncAPIResource):
             voice: str,
             response_format: Union[str, NotGiven] = NOT_GIVEN,
             speed: Union[float, NotGiven] = NOT_GIVEN,
-            **kwargs) -> GenericResponse:
+            **kwargs) -> Any:
         
         response = await self.openai_client.with_raw_response.audio.speech.create(
             input=input,
@@ -198,7 +204,6 @@ class AsyncSpeech(AsyncAPIResource):
             **kwargs
         )
 
-        data = GenericResponse(**response.json())
-        data._headers = response.headers
+        data = response
 
         return data

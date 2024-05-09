@@ -41,7 +41,7 @@ class VectorStores(APIResource):
             metadata=metadata,
             name=name,
         )
-        data = VectorStore(**response.json())
+        data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -55,7 +55,7 @@ class VectorStores(APIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStore(**response.json())
+        data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -78,7 +78,7 @@ class VectorStores(APIResource):
             name=name,
             **kwargs,
         )
-        data = VectorStore(**response.json())
+        data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -97,7 +97,7 @@ class VectorStores(APIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreList(**response.json())
+        data = VectorStoreList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -111,7 +111,7 @@ class VectorStores(APIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreDeleted(**response.json())
+        data = VectorStoreDeleted(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -134,7 +134,7 @@ class VectorFiles(APIResource):
             file_id=file_id,
             **kwargs,
         )
-        data = VectorStoreFile(**response.json())
+        data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -153,7 +153,7 @@ class VectorFiles(APIResource):
                 **kwargs,
             )
         )
-        data = VectorStoreFile(**response.json())
+        data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -178,7 +178,7 @@ class VectorFiles(APIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreFileList(**response.json())
+        data = VectorStoreFileList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -195,7 +195,7 @@ class VectorFiles(APIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreFileDeleted(**response.json())
+        data = VectorStoreFileDeleted(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -286,7 +286,7 @@ class VectorFileBatches(APIResource):
             file_ids=file_ids,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -303,7 +303,7 @@ class VectorFileBatches(APIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data 
@@ -320,7 +320,7 @@ class VectorFileBatches(APIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -364,7 +364,7 @@ class VectorFileBatches(APIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -433,7 +433,7 @@ class AsyncVectorStores(AsyncAPIResource):
             metadata=metadata,
             name=name,
         )
-        data = VectorStore(**response.json())
+        data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -449,7 +449,7 @@ class AsyncVectorStores(AsyncAPIResource):
                 **kwargs,
             )
         )
-        data = VectorStore(**response.json())
+        data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -472,7 +472,7 @@ class AsyncVectorStores(AsyncAPIResource):
             name=name,
             **kwargs,
         )
-        data = VectorStore(**response.json())
+        data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -491,7 +491,7 @@ class AsyncVectorStores(AsyncAPIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreList(**response.json())
+        data = VectorStoreList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -505,7 +505,7 @@ class AsyncVectorStores(AsyncAPIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreDeleted(**response.json())
+        data = VectorStoreDeleted(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -528,7 +528,7 @@ class AsyncVectorFiles(AsyncAPIResource):
             file_id=file_id,
             **kwargs,
         )
-        data = VectorStoreFile(**response.json())
+        data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -547,7 +547,7 @@ class AsyncVectorFiles(AsyncAPIResource):
                 **kwargs,
             )
         )
-        data = VectorStoreFile(**response.json())
+        data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -572,7 +572,7 @@ class AsyncVectorFiles(AsyncAPIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreFileList(**response.json())
+        data = VectorStoreFileList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -589,7 +589,7 @@ class AsyncVectorFiles(AsyncAPIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreFileDeleted(**response.json())
+        data = VectorStoreFileDeleted(**json.loads(response.text))
         data._headers = response
 
     async def create_and_poll(
@@ -678,7 +678,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
             file_ids=file_ids,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -695,7 +695,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data 
@@ -712,7 +712,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
             vector_store_id=vector_store_id,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -756,7 +756,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**response.json())
+        data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data

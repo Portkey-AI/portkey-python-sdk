@@ -110,13 +110,6 @@ class VectorStoreFileDeleted(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
-class FileCounts(BaseModel):
-    cancelled: int
-    completed: int
-    failed: int
-    in_progress: int
-    total: int
 
 class VectorStoreFileBatch(BaseModel):
     id: str

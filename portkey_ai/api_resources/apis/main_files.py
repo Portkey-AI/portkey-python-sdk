@@ -60,13 +60,13 @@ class MainFiles(APIResource):
         self,
         id: str,
         *,
-        polling_interval: float = 5.0,
+        poll_interval: float = 5.0,
         max_wait_seconds: float = 30 * 60,
         **kwargs
     ) -> Any:
         response = self.openai_client.files.wait_for_processing(
             id=id,
-            polling_interval=polling_interval,
+            poll_interval=poll_interval,
             max_wait_seconds=max_wait_seconds,
             **kwargs
         )
@@ -124,13 +124,13 @@ class AsyncMainFiles(AsyncAPIResource):
         self,
         id: str,
         *,
-        polling_interval: float = 5.0,
+        poll_interval: float = 5.0,
         max_wait_seconds: float = 30 * 60,
         **kwargs
     ) -> Any:
         response = await self.openai_client.files.wait_for_processing(
             id=id,
-            polling_interval=polling_interval,
+            poll_interval=poll_interval,
             max_wait_seconds=max_wait_seconds,
             **kwargs
         )
