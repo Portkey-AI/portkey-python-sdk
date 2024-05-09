@@ -220,7 +220,7 @@ class VectorFiles(APIResource):
         )
         data = response
 
-        return data
+        return data #type: ignore[return-value]
 
     def poll(
         self,
@@ -238,7 +238,7 @@ class VectorFiles(APIResource):
         )
         data = response
 
-        return data
+        return data #type: ignore[return-value]
 
     def upload(
         self,
@@ -253,7 +253,7 @@ class VectorFiles(APIResource):
             **kwargs,
         )
         data = response
-        return data
+        return data #type: ignore[return-value]
     
     def upload_and_poll(
         self,
@@ -270,7 +270,7 @@ class VectorFiles(APIResource):
             **kwargs,
         )
         data = response
-        return data
+        return data #type: ignore[return-value]
 
 
 class VectorFileBatches(APIResource):
@@ -344,7 +344,7 @@ class VectorFileBatches(APIResource):
             **kwargs,
         )
         data = response
-        return data
+        return data #type: ignore[return-value]
     
     @typing.no_type_check
     def list_files(
@@ -390,7 +390,7 @@ class VectorFileBatches(APIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
     def upload_and_poll(
         self,
@@ -412,7 +412,7 @@ class VectorFileBatches(APIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
 
 
 class AsyncVectorStores(AsyncAPIResource):
@@ -617,7 +617,7 @@ class AsyncVectorFiles(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
     async def poll(
         self,
@@ -635,7 +635,7 @@ class AsyncVectorFiles(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
     async def upload(
         self,
@@ -650,7 +650,7 @@ class AsyncVectorFiles(AsyncAPIResource):
             **kwargs,
         )
         data = response
-        return data
+        return data # type: ignore[return-value]
     
     async def upload_and_poll(
         self,
@@ -667,7 +667,7 @@ class AsyncVectorFiles(AsyncAPIResource):
             **kwargs,
         )
         data = response
-        return data
+        return data # type: ignore[return-value]
     
 
 class AsyncVectorFileBatches(AsyncAPIResource):
@@ -741,7 +741,8 @@ class AsyncVectorFileBatches(AsyncAPIResource):
             **kwargs,
         )
         data = response
-        return data
+
+        return data # type: ignore[return-value]
     
     @typing.no_type_check
     async def list_files(
@@ -787,7 +788,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
     async def upload_and_poll(
         self,
@@ -809,4 +810,4 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]

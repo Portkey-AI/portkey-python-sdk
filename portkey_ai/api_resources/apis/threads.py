@@ -129,7 +129,7 @@ class Threads(APIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
 
     @typing.no_type_check
     def create_and_run_stream(
@@ -335,7 +335,7 @@ class Runs(APIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
 
     @typing.no_type_check
     def create_and_stream(
@@ -395,7 +395,7 @@ class Runs(APIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
 
     @typing.no_type_check
     def stream(
@@ -458,7 +458,7 @@ class Runs(APIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
 
     def submit_tool_outputs_stream(
         self,
@@ -601,7 +601,7 @@ class AsyncThreads(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
     @typing.no_type_check
     async def create_and_run_stream(
@@ -832,7 +832,7 @@ class AsyncRuns(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
 
     @typing.no_type_check
     async def create_and_stream(
@@ -896,7 +896,7 @@ class AsyncRuns(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
     @typing.no_type_check
     async def stream(
@@ -961,9 +961,9 @@ class AsyncRuns(AsyncAPIResource):
         )
         data = response
 
-        return data
+        return data # type: ignore[return-value]
     
-    async def submit_tool_outputs_stream(
+    def submit_tool_outputs_stream(
         self,
         *,
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
@@ -974,7 +974,7 @@ class AsyncRuns(AsyncAPIResource):
         Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler], 
               AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
     ):
-        response = await self.openai_client.beta.threads.runs.submit_tool_outputs_stream(
+        response = self.openai_client.beta.threads.runs.submit_tool_outputs_stream(
             tool_outputs=tool_outputs,
             run_id=run_id,
             thread_id=thread_id,
