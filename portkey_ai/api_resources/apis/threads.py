@@ -1,5 +1,6 @@
 import json
 from typing import Iterable, Optional, Union
+import typing
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -126,11 +127,11 @@ class Threads(APIResource):
             poll_interval_ms=poll_interval_ms,
             **kwargs
         )
-        data = Run(**json.loads(response.text))
-        data._headers = response.headers
+        data = response
 
         return data
 
+    @typing.no_type_check
     def create_and_run_stream(
         self,
         *,
@@ -150,7 +151,7 @@ class Threads(APIResource):
         truncation_strategy: Union[Optional[thread_create_and_run_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
-        ) -> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
+        ) -> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
 
         response = self.openai_client.beta.threads.create_and_run_stream(
             assistant_id=assistant_id,
@@ -332,11 +333,11 @@ class Runs(APIResource):
             thread_id=thread_id,
             **kwargs
         )
-        data = Run(**json.loads(response.text))
-        data._headers = response.headers
+        data = response
 
         return data
 
+    @typing.no_type_check
     def create_and_stream(
             self,
         *,
@@ -357,7 +358,7 @@ class Runs(APIResource):
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
-    )-> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
+    )-> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
         response = self.openai_client.beta.threads.runs.create_and_stream(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -396,6 +397,7 @@ class Runs(APIResource):
 
         return data
 
+    @typing.no_type_check
     def stream(
         self,
         *,
@@ -416,7 +418,7 @@ class Runs(APIResource):
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
-    )-> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
+    )-> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
         
         response = self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
@@ -465,7 +467,7 @@ class Runs(APIResource):
         run_id: str,
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,  
-    ) -> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
+    ) -> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
         response = self.openai_client.beta.threads.runs.submit_tool_outputs_stream(
             tool_outputs=tool_outputs,
             run_id=run_id,
@@ -562,10 +564,10 @@ class AsyncThreads(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
-        instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
-        max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
-        metadata: Optional[object] | NotGiven = NOT_GIVEN,
+        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
         response_format: Union[Optional[AssistantResponseFormatOptionParam] , NotGiven] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
@@ -597,11 +599,11 @@ class AsyncThreads(AsyncAPIResource):
             poll_interval_ms=poll_interval_ms,
             **kwargs
         )
-        data = Run(**json.loads(response.text))
-        data._headers = response.headers
+        data = response
 
         return data
     
+    @typing.no_type_check
     async def create_and_run_stream(
         self,
         *,
@@ -622,8 +624,8 @@ class AsyncThreads(AsyncAPIResource):
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
     ) -> (
-        AsyncAssistantStreamManager[AsyncAssistantEventHandler]
-        | AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]
+        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
     ):
         
         response = await self.openai_client.beta.threads.create_and_run_stream(
@@ -828,11 +830,11 @@ class AsyncRuns(AsyncAPIResource):
             thread_id=thread_id,
             **kwargs
         )
-        data = Run(**json.loads(response.text))
-        data._headers = response.headers
+        data = response
 
         return data
 
+    @typing.no_type_check
     async def create_and_stream(
         self,
         *,
@@ -854,9 +856,10 @@ class AsyncRuns(AsyncAPIResource):
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
     )-> (
-        AsyncAssistantStreamManager[AsyncAssistantEventHandler] 
-        | AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]
+        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
     ):
+
         response = await self.openai_client.beta.threads.runs.create_and_stream(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -895,6 +898,7 @@ class AsyncRuns(AsyncAPIResource):
 
         return data
     
+    @typing.no_type_check
     async def stream(
         self,
         *,

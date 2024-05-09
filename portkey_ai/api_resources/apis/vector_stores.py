@@ -1,4 +1,6 @@
+import json
 from typing import Iterable, List, Optional, Union
+import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from openai._types import NotGiven, NOT_GIVEN, FileTypes
@@ -83,6 +85,7 @@ class VectorStores(APIResource):
 
         return data
 
+    @typing.no_type_check
     def list(
         self,
         *,
@@ -158,6 +161,7 @@ class VectorFiles(APIResource):
 
         return data
 
+    @typing.no_type_check
     def list(
         self,
         vector_store_id: str,
@@ -205,13 +209,13 @@ class VectorFiles(APIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.beta.vector_stores.files.create_and_poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -223,13 +227,13 @@ class VectorFiles(APIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.beta.vector_stores.files.poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -256,13 +260,13 @@ class VectorFiles(APIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.beta.vector_stores.files.upload_and_poll(
             vector_store_id=vector_store_id,
             file=file,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -330,18 +334,19 @@ class VectorFileBatches(APIResource):
             vector_store_id: str,
             *,
             file_ids: List[str],
-            poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+            poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
             **kwargs,
     )-> VectorStoreFileBatch:
         response = self.openai_client.beta.vector_stores.file_batches.create_and_poll(
             vector_store_id=vector_store_id,
             file_ids=file_ids,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
         return data
     
+    @typing.no_type_check
     def list_files(
         self,
         batch_id: str,
@@ -374,13 +379,13 @@ class VectorFileBatches(APIResource):
         batch_id: str,
         *,
         vector_store_id: str,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = self.openai_client.beta.vector_stores.file_batches.poll(
             batch_id=batch_id,
             vector_store_id=vector_store_id,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -477,6 +482,7 @@ class AsyncVectorStores(AsyncAPIResource):
 
         return data
 
+    @typing.no_type_check
     async def list(
         self,
         *,
@@ -552,6 +558,7 @@ class AsyncVectorFiles(AsyncAPIResource):
 
         return data
 
+    @typing.no_type_check
     async def list(
         self,
         vector_store_id: str,
@@ -590,20 +597,22 @@ class AsyncVectorFiles(AsyncAPIResource):
             **kwargs,
         )
         data = VectorStoreFileDeleted(**json.loads(response.text))
-        data._headers = response
+        data._headers = response.headers
+
+        return data
 
     async def create_and_poll(
         self,
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.beta.vector_stores.files.create_and_poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -615,13 +624,13 @@ class AsyncVectorFiles(AsyncAPIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.beta.vector_stores.files.poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -648,13 +657,13 @@ class AsyncVectorFiles(AsyncAPIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.beta.vector_stores.files.upload_and_poll(
             vector_store_id=vector_store_id,
             file=file,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
@@ -722,18 +731,19 @@ class AsyncVectorFileBatches(AsyncAPIResource):
             vector_store_id: str,
             *,
             file_ids: List[str],
-            poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+            poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
             **kwargs,
     )-> VectorStoreFileBatch:
         response = await self.openai_client.beta.vector_stores.file_batches.create_and_poll(
             vector_store_id=vector_store_id,
             file_ids=file_ids,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
         return data
     
+    @typing.no_type_check
     async def list_files(
         self,
         batch_id: str,
@@ -766,13 +776,13 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         batch_id: str,
         *,
         vector_store_id: str,
-        poll_interval: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.beta.vector_stores.file_batches.poll(
             batch_id=batch_id,
             vector_store_id=vector_store_id,
-            poll_interval=poll_interval,
+            poll_interval_ms=poll_interval_ms,
             **kwargs,
         )
         data = response
