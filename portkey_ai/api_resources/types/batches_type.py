@@ -10,6 +10,7 @@ from openai.types.batch_request_counts import BatchRequestCounts
 
 __all__ = ["Batch", "BatchList", "Errors"]
 
+
 class Errors(BaseModel):
     data: Optional[List[BatchError]] = None
 

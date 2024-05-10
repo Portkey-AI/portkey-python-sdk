@@ -18,8 +18,12 @@ from portkey_ai.api_resources.types.thread_run_type import (
 from portkey_ai.api_resources.types.thread_type import Thread, ThreadDeleted
 from openai._types import NotGiven, NOT_GIVEN
 from openai.types.beta import thread_create_and_run_params
-from openai.types.beta.assistant_response_format_option_param import AssistantResponseFormatOptionParam
-from openai.types.beta.assistant_tool_choice_option_param import AssistantToolChoiceOptionParam
+from openai.types.beta.assistant_response_format_option_param import (
+    AssistantResponseFormatOptionParam,
+)
+from openai.types.beta.assistant_tool_choice_option_param import (
+    AssistantToolChoiceOptionParam,
+)
 from openai.lib.streaming import (
     AssistantEventHandler,
     AssistantEventHandlerT,
@@ -33,6 +37,7 @@ from openai.types.beta.threads import (
     run_submit_tool_outputs_params,
 )
 from openai.types.beta.assistant_tool_param import AssistantToolParam
+
 
 class Threads(APIResource):
     def __init__(self, client: Portkey) -> None:
@@ -97,18 +102,27 @@ class Threads(APIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam] , NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
         thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Optional[thread_create_and_run_params.ToolResources], NotGiven] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
+        tool_resources: Union[
+            Optional[thread_create_and_run_params.ToolResources], NotGiven
+        ] = NOT_GIVEN,
+        tools: Union[
+            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
+        ] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[thread_create_and_run_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
-        ) -> Run:
-
+    ) -> Run:
         response = self.openai_client.beta.threads.create_and_run_poll(
             assistant_id=assistant_id,
             instructions=instructions,
@@ -125,11 +139,11 @@ class Threads(APIResource):
             top_p=top_p,
             truncation_strategy=truncation_strategy,
             poll_interval_ms=poll_interval_ms,
-            **kwargs
+            **kwargs,
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     @typing.no_type_check
     def create_and_run_stream(
@@ -141,18 +155,30 @@ class Threads(APIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
         thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Optional[thread_create_and_run_params.ToolResources], NotGiven] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
+        tool_resources: Union[
+            Optional[thread_create_and_run_params.ToolResources], NotGiven
+        ] = NOT_GIVEN,
+        tools: Union[
+            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
+        ] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[thread_create_and_run_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
-        ) -> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
-
+    ) -> Union[
+        AssistantStreamManager[AssistantEventHandler],
+        AssistantStreamManager[AssistantEventHandlerT],
+    ]:
         response = self.openai_client.beta.threads.create_and_run_stream(
             assistant_id=assistant_id,
             instructions=instructions,
@@ -169,7 +195,7 @@ class Threads(APIResource):
             top_p=top_p,
             truncation_strategy=truncation_strategy,
             event_handler=event_handler,
-            **kwargs
+            **kwargs,
         )
         data = response
         return data
@@ -214,16 +240,10 @@ class Messages(APIResource):
         return data
 
     def delete(
-            self,
-            message_id: str,
-            *,
-            thread_id: str,
-            **kwargs
+        self, message_id: str, *, thread_id: str, **kwargs
     ) -> ThreadMessageDeleted:
         response = self.openai_client.with_raw_response.beta.threads.messages.delete(
-            message_id=message_id,
-            thread_id=thread_id,
-            **kwargs
+            message_id=message_id, thread_id=thread_id, **kwargs
         )
         data = ThreadMessageDeleted(**json.loads(response.text))
         data._headers = response.headers
@@ -298,22 +318,30 @@ class Runs(APIResource):
         *,
         assistant_id: str,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        additional_messages: Union[Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven] = NOT_GIVEN,
+        additional_messages: Union[
+            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
+        ] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
         tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[run_create_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[run_create_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         thread_id: str,
         **kwargs,
-    )-> Run:
+    ) -> Run:
         response = self.openai_client.beta.threads.runs.create_and_poll(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -331,34 +359,45 @@ class Runs(APIResource):
             truncation_strategy=truncation_strategy,
             poll_interval_ms=poll_interval_ms,
             thread_id=thread_id,
-            **kwargs
+            **kwargs,
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     @typing.no_type_check
     def create_and_stream(
-            self,
+        self,
         *,
         assistant_id: str,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        additional_messages: Union[Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven] = NOT_GIVEN,
+        additional_messages: Union[
+            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
+        ] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
         tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[run_create_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[run_create_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
-    )-> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
+    ) -> Union[
+        AssistantStreamManager[AssistantEventHandler],
+        AssistantStreamManager[AssistantEventHandlerT],
+    ]:
         response = self.openai_client.beta.threads.runs.create_and_stream(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -376,26 +415,24 @@ class Runs(APIResource):
             truncation_strategy=truncation_strategy,
             thread_id=thread_id,
             event_handler=event_handler,
-            **kwargs
+            **kwargs,
         )
         data = response
         return data
-    
+
     def poll(
-            self,
-            *,
+        self,
+        *,
         run_id: str,
         thread_id: str,
         **kwargs,
     ) -> Run:
         response = self.openai_client.beta.threads.runs.poll(
-            run_id=run_id,
-            thread_id=thread_id,
-            **kwargs
+            run_id=run_id, thread_id=thread_id, **kwargs
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     @typing.no_type_check
     def stream(
@@ -403,23 +440,33 @@ class Runs(APIResource):
         *,
         assistant_id: str,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        additional_messages: Union[Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven] = NOT_GIVEN,
+        additional_messages: Union[
+            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
+        ] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
         tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[run_create_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[run_create_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
-    )-> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
-        
+    ) -> Union[
+        AssistantStreamManager[AssistantEventHandler],
+        AssistantStreamManager[AssistantEventHandlerT],
+    ]:
         response = self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -437,7 +484,7 @@ class Runs(APIResource):
             truncation_strategy=truncation_strategy,
             thread_id=thread_id,
             event_handler=event_handler,
-            **kwargs
+            **kwargs,
         )
         data = response
         return data
@@ -448,17 +495,17 @@ class Runs(APIResource):
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
         run_id: str,
         thread_id: str,
-        poll_interval_ms: Union[int,  NotGiven] = NOT_GIVEN,  
-    )-> Run:
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+    ) -> Run:
         response = self.openai_client.beta.threads.runs.submit_tool_outputs_and_poll(
             tool_outputs=tool_outputs,
             run_id=run_id,
             thread_id=thread_id,
-            poll_interval_ms=poll_interval_ms
+            poll_interval_ms=poll_interval_ms,
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     def submit_tool_outputs_stream(
         self,
@@ -466,17 +513,21 @@ class Runs(APIResource):
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
         run_id: str,
         thread_id: str,
-        event_handler: Union[AssistantEventHandlerT, None] = None,  
-    ) -> Union[AssistantStreamManager[AssistantEventHandler], AssistantStreamManager[AssistantEventHandlerT]]:
-        response = self.openai_client.beta.threads.runs.submit_tool_outputs_stream(
+        event_handler: Union[AssistantEventHandlerT, None] = None,
+    ) -> Union[
+        AssistantStreamManager[AssistantEventHandler],
+        AssistantStreamManager[AssistantEventHandlerT],
+    ]:
+        response = self.openai_client.beta.threads.runs.submit_tool_outputs_stream(  # type: ignore[type-var]
             tool_outputs=tool_outputs,
             run_id=run_id,
             thread_id=thread_id,
-            event_handler=event_handler
+            event_handler=event_handler,
         )
         data = response
 
-        return data
+        return data  # type: ignore[return-value]
+
 
 class Steps(APIResource):
     def __init__(self, client: Portkey) -> None:
@@ -569,18 +620,27 @@ class AsyncThreads(AsyncAPIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam] , NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
         thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Optional[thread_create_and_run_params.ToolResources], NotGiven] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
+        tool_resources: Union[
+            Optional[thread_create_and_run_params.ToolResources], NotGiven
+        ] = NOT_GIVEN,
+        tools: Union[
+            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
+        ] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[thread_create_and_run_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
-        ) -> Run:
-
+    ) -> Run:
         response = await self.openai_client.beta.threads.create_and_run_poll(
             assistant_id=assistant_id,
             instructions=instructions,
@@ -597,12 +657,12 @@ class AsyncThreads(AsyncAPIResource):
             top_p=top_p,
             truncation_strategy=truncation_strategy,
             poll_interval_ms=poll_interval_ms,
-            **kwargs
+            **kwargs,
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     @typing.no_type_check
     async def create_and_run_stream(
         self,
@@ -613,21 +673,32 @@ class AsyncThreads(AsyncAPIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
         thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Optional[thread_create_and_run_params.ToolResources], NotGiven] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
+        tool_resources: Union[
+            Optional[thread_create_and_run_params.ToolResources], NotGiven
+        ] = NOT_GIVEN,
+        tools: Union[
+            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
+        ] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[thread_create_and_run_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
     ) -> (
-        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler],
-        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
+        Union[
+            AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+            AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+        ]
     ):
-        
         response = await self.openai_client.beta.threads.create_and_run_stream(
             assistant_id=assistant_id,
             instructions=instructions,
@@ -644,7 +715,7 @@ class AsyncThreads(AsyncAPIResource):
             top_p=top_p,
             truncation_strategy=truncation_strategy,
             event_handler=event_handler,
-            **kwargs
+            **kwargs,
         )
         data = response
         return data
@@ -697,17 +768,11 @@ class AsyncMessages(AsyncAPIResource):
         return data
 
     async def delete(
-        self,
-        message_id: str,
-        *,
-        thread_id: str,
-        **kwargs
+        self, message_id: str, *, thread_id: str, **kwargs
     ) -> ThreadMessageDeleted:
         response = (
             await self.openai_client.with_raw_response.beta.threads.messages.delete(
-                message_id=message_id,
-                thread_id=thread_id,
-                **kwargs
+                message_id=message_id, thread_id=thread_id, **kwargs
             )
         )
         data = ThreadMessageDeleted(**json.loads(response.text))
@@ -795,22 +860,30 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        additional_messages: Union[Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven] = NOT_GIVEN,
+        additional_messages: Union[
+            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
+        ] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
         tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[run_create_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[run_create_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         thread_id: str,
         **kwargs,
-    )-> Run:
+    ) -> Run:
         response = await self.openai_client.beta.threads.runs.create_and_poll(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -828,11 +901,11 @@ class AsyncRuns(AsyncAPIResource):
             truncation_strategy=truncation_strategy,
             poll_interval_ms=poll_interval_ms,
             thread_id=thread_id,
-            **kwargs
+            **kwargs,
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     @typing.no_type_check
     async def create_and_stream(
@@ -840,26 +913,35 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        additional_messages: Union[Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven] = NOT_GIVEN,
+        additional_messages: Union[
+            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
+        ] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
         tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[run_create_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[run_create_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
-    )-> (
-        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler],
-        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
+    ) -> (
+        Union[
+            AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+            AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+        ]
     ):
-
         response = await self.openai_client.beta.threads.runs.create_and_stream(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -877,7 +959,7 @@ class AsyncRuns(AsyncAPIResource):
             truncation_strategy=truncation_strategy,
             thread_id=thread_id,
             event_handler=event_handler,
-            **kwargs
+            **kwargs,
         )
         data = response
         return data
@@ -890,38 +972,46 @@ class AsyncRuns(AsyncAPIResource):
         **kwargs,
     ) -> Run:
         response = await self.openai_client.beta.threads.runs.poll(
-            run_id=run_id,
-            thread_id=thread_id,
-            **kwargs
+            run_id=run_id, thread_id=thread_id, **kwargs
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     @typing.no_type_check
     async def stream(
         self,
         *,
         assistant_id: str,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        additional_messages: Union[Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven] = NOT_GIVEN,
+        additional_messages: Union[
+            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
+        ] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
-        response_format: Union[Optional[AssistantResponseFormatOptionParam], NotGiven] = NOT_GIVEN,
+        response_format: Union[
+            Optional[AssistantResponseFormatOptionParam], NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[
+            Optional[AssistantToolChoiceOptionParam], NotGiven
+        ] = NOT_GIVEN,
         tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        truncation_strategy: Union[Optional[run_create_params.TruncationStrategy], NotGiven] = NOT_GIVEN,
+        truncation_strategy: Union[
+            Optional[run_create_params.TruncationStrategy], NotGiven
+        ] = NOT_GIVEN,
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
     ) -> (
-        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler], 
-              AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
+        Union[
+            AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+            AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+        ]
     ):
         response = await self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
@@ -940,49 +1030,51 @@ class AsyncRuns(AsyncAPIResource):
             truncation_strategy=truncation_strategy,
             thread_id=thread_id,
             event_handler=event_handler,
-            **kwargs
+            **kwargs,
         )
         data = response
         return data
-    
+
     async def submit_tool_outputs_and_poll(
         self,
         *,
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
         run_id: str,
         thread_id: str,
-        poll_interval_ms: Union[int,  NotGiven] = NOT_GIVEN,  
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
     ) -> Run:
-        response = await self.openai_client.beta.threads.runs.submit_tool_outputs_and_poll(
-            tool_outputs=tool_outputs,
-            run_id=run_id,
-            thread_id=thread_id,
-            poll_interval_ms=poll_interval_ms
+        response = (
+            await self.openai_client.beta.threads.runs.submit_tool_outputs_and_poll(
+                tool_outputs=tool_outputs,
+                run_id=run_id,
+                thread_id=thread_id,
+                poll_interval_ms=poll_interval_ms,
+            )
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     def submit_tool_outputs_stream(
         self,
         *,
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
         run_id: str,
         thread_id: str,
-        event_handler: Union[AsyncAssistantEventHandlerT, None] = None,  
-    ) -> (
-        Union[AsyncAssistantStreamManager[AsyncAssistantEventHandler], 
-              AsyncAssistantStreamManager[AsyncAssistantEventHandlerT]]
-    ):
-        response = self.openai_client.beta.threads.runs.submit_tool_outputs_stream(
+        event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
+    ) -> Union[
+        AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+    ]:
+        response = self.openai_client.beta.threads.runs.submit_tool_outputs_stream(  # type: ignore[type-var]
             tool_outputs=tool_outputs,
             run_id=run_id,
             thread_id=thread_id,
-            event_handler=event_handler
+            event_handler=event_handler,
         )
         data = response
 
-        return data
+        return data  # type: ignore[return-value]
 
 
 class AsyncSteps(AsyncAPIResource):

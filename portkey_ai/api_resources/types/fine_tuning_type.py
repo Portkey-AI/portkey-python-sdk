@@ -6,15 +6,28 @@ from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
 from openai.types.fine_tuning import FineTuningJobWandbIntegrationObject
 
-__all__ = ["Error", "Hyperparameters", "FineTuningJob", "FineTuningJobList", "FineTuningJobEvent", "FineTuningJobEventList", "Metrics", "FineTuningJobCheckpoint", "FineTuningJobCheckpointList"]
+__all__ = [
+    "Error",
+    "Hyperparameters",
+    "FineTuningJob",
+    "FineTuningJobList",
+    "FineTuningJobEvent",
+    "FineTuningJobEventList",
+    "Metrics",
+    "FineTuningJobCheckpoint",
+    "FineTuningJobCheckpointList",
+]
+
 
 class Error(BaseModel):
     code: str
     message: str
     param: Optional[str] = None
 
+
 class Hyperparameters(BaseModel):
     n_epochs: Union[str, int]
+
 
 class FineTuningJob(BaseModel):
     id: str
@@ -48,7 +61,7 @@ class FineTuningJob(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
 
 class FineTuningJobList(BaseModel):
     object: Optional[str] = None
@@ -67,7 +80,6 @@ class FineTuningJobList(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
 
 
 class FineTuningJobEvent(BaseModel):
@@ -109,7 +121,7 @@ class FineTuningJobEventList(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
 
 class Metrics(BaseModel):
     full_valid_loss: Optional[float] = None
@@ -119,6 +131,7 @@ class Metrics(BaseModel):
     train_mean_token_accuracy: Optional[float] = None
     valid_loss: Optional[float] = None
     valid_mean_token_accuracy: Optional[float] = None
+
 
 class FineTuningJobCheckpoint(BaseModel):
     id: str
@@ -142,7 +155,7 @@ class FineTuningJobCheckpoint(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
 
 class FineTuningJobCheckpointList(BaseModel):
     object: Optional[str] = None

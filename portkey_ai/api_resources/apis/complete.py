@@ -17,7 +17,7 @@ class Completion(APIResource):
         self.openai_client = client.openai_client
         self.client = client
 
-    def stream_create(   # type: ignore[return]
+    def stream_create(  # type: ignore[return]
         self, model, prompt, stream, temperature, max_tokens, top_p, **kwargs
     ) -> Union[TextCompletion, Iterator[TextCompletionChunk]]:
         with self.openai_client.with_streaming_response.completions.create(
@@ -97,7 +97,7 @@ class AsyncCompletion(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def stream_create( 
+    async def stream_create(
         self, model, prompt, stream, temperature, max_tokens, top_p, **kwargs
     ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
         async with self.openai_client.with_streaming_response.completions.create(

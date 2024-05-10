@@ -2,10 +2,11 @@ import json
 from typing import Dict, Optional
 import httpx
 from .utils import parse_headers
-from typing import List, Any
+from typing import Any
 from pydantic import BaseModel, PrivateAttr
 
 __all__ = ["Transcription", "Translation"]
+
 
 class Transcription(BaseModel):
     text: str
@@ -23,7 +24,7 @@ class Transcription(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
 
 class Translation(BaseModel):
     text: str
@@ -41,4 +42,3 @@ class Translation(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    

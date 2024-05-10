@@ -121,6 +121,7 @@ class MessageList(BaseModel, extra="allow"):
 #     def get_headers(self) -> Optional[Dict[str, str]]:
 #         return parse_headers(self._headers)
 
+
 class ThreadMessageDeleted(BaseModel):
     id: str
     deleted: bool

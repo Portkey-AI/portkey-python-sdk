@@ -20,10 +20,33 @@ from .threads import (
 from .main_files import MainFiles, AsyncMainFiles
 from .models import Models, AsyncModels
 from .moderations import Moderations, AsyncModerations
-from .audio import Audio, Transcriptions, Translations, Speech, AsyncAudio, AsyncTranscriptions, AsyncTranslations, AsyncSpeech
+from .audio import (
+    Audio,
+    Transcriptions,
+    Translations,
+    Speech,
+    AsyncAudio,
+    AsyncTranscriptions,
+    AsyncTranslations,
+    AsyncSpeech,
+)
 from .batches import Batches, AsyncBatches
-from .fine_tuning import FineTuning, Jobs, Checkpoints, AsyncFineTuning, AsyncJobs, AsyncCheckpoints
-from .vector_stores import VectorStores, VectorFiles, VectorFileBatches, AsyncVectorStores, AsyncVectorFiles, AsyncVectorFileBatches
+from .fine_tuning import (
+    FineTuning,
+    Jobs,
+    Checkpoints,
+    AsyncFineTuning,
+    AsyncJobs,
+    AsyncCheckpoints,
+)
+from .vector_stores import (
+    VectorStores,
+    VectorFiles,
+    VectorFileBatches,
+    AsyncVectorStores,
+    AsyncVectorFiles,
+    AsyncVectorFileBatches,
+)
 
 
 __all__ = [

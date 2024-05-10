@@ -9,6 +9,7 @@ from openai.types.moderation import Moderation
 
 __all__ = ["ModerationCreateResponse"]
 
+
 class ModerationCreateResponse(BaseModel):
     id: str
     model: str

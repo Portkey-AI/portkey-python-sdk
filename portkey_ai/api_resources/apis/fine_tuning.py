@@ -243,13 +243,11 @@ class AsyncCheckpoints(AsyncAPIResource):
         limit: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> FineTuningJobCheckpointList:
-        response = (
-            await self.openai_client.with_raw_response.fine_tuning.jobs.checkpoints.list(
-                fine_tuning_job_id=fine_tuning_job_id,
-                after=after,
-                limit=limit,
-                **kwargs,
-            )
+        response = await self.openai_client.with_raw_response.fine_tuning.jobs.checkpoints.list(  # noqa: E501
+            fine_tuning_job_id=fine_tuning_job_id,
+            after=after,
+            limit=limit,
+            **kwargs,
         )
 
         data = FineTuningJobCheckpointList(**json.loads(response.text))

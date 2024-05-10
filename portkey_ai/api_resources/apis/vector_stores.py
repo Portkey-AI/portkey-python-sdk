@@ -220,7 +220,7 @@ class VectorFiles(APIResource):
         )
         data = response
 
-        return data #type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     def poll(
         self,
@@ -238,7 +238,7 @@ class VectorFiles(APIResource):
         )
         data = response
 
-        return data #type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
     def upload(
         self,
@@ -253,8 +253,8 @@ class VectorFiles(APIResource):
             **kwargs,
         )
         data = response
-        return data #type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     def upload_and_poll(
         self,
         *,
@@ -270,7 +270,7 @@ class VectorFiles(APIResource):
             **kwargs,
         )
         data = response
-        return data #type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
 
 class VectorFileBatches(APIResource):
@@ -285,41 +285,22 @@ class VectorFileBatches(APIResource):
         file_ids: List[str],
         **kwargs,
     ) -> VectorStoreFileBatch:
-        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.create(
-            vector_store_id=vector_store_id,
-            file_ids=file_ids,
-            **kwargs,
+        response = (
+            self.openai_client.with_raw_response.beta.vector_stores.file_batches.create(
+                vector_store_id=vector_store_id,
+                file_ids=file_ids,
+                **kwargs,
+            )
         )
         data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
         return data
-    
+
     def retrieve(
-        self,
-        batch_id:str,
-        *,
-        vector_store_id: str,
-        **kwargs
+        self, batch_id: str, *, vector_store_id: str, **kwargs
     ) -> VectorStoreFileBatch:
-        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(
-            batch_id=batch_id,
-            vector_store_id=vector_store_id,
-            **kwargs,
-        )
-        data = VectorStoreFileBatch(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data 
-    
-    def cancel(
-        self,
-        batch_id:str,
-        *,
-        vector_store_id: str,
-        **kwargs
-    ) -> VectorStoreFileBatch:
-        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.cancel(
+        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
             batch_id=batch_id,
             vector_store_id=vector_store_id,
             **kwargs,
@@ -328,15 +309,30 @@ class VectorFileBatches(APIResource):
         data._headers = response.headers
 
         return data
-    
+
+    def cancel(
+        self, batch_id: str, *, vector_store_id: str, **kwargs
+    ) -> VectorStoreFileBatch:
+        response = (
+            self.openai_client.with_raw_response.beta.vector_stores.file_batches.cancel(
+                batch_id=batch_id,
+                vector_store_id=vector_store_id,
+                **kwargs,
+            )
+        )
+        data = VectorStoreFileBatch(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
     def create_and_poll(
-            self,
-            vector_store_id: str,
-            *,
-            file_ids: List[str],
-            poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-            **kwargs,
-    )-> VectorStoreFileBatch:
+        self,
+        vector_store_id: str,
+        *,
+        file_ids: List[str],
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> VectorStoreFileBatch:
         response = self.openai_client.beta.vector_stores.file_batches.create_and_poll(
             vector_store_id=vector_store_id,
             file_ids=file_ids,
@@ -344,8 +340,8 @@ class VectorFileBatches(APIResource):
             **kwargs,
         )
         data = response
-        return data #type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     @typing.no_type_check
     def list_files(
         self,
@@ -359,7 +355,7 @@ class VectorFileBatches(APIResource):
         order: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFileList:
-        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.list_files(
+        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.list_files(  # noqa: E501
             batch_id=batch_id,
             vector_store_id=vector_store_id,
             after=after,
@@ -373,7 +369,7 @@ class VectorFileBatches(APIResource):
         data._headers = response.headers
 
         return data
-    
+
     def poll(
         self,
         batch_id: str,
@@ -390,8 +386,8 @@ class VectorFileBatches(APIResource):
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     def upload_and_poll(
         self,
         vector_store_id: str,
@@ -400,7 +396,7 @@ class VectorFileBatches(APIResource):
         max_concurrency: int = 5,
         file_ids: List[str] = [],
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> VectorStoreFileBatch:
         response = self.openai_client.beta.vector_stores.file_batches.upload_and_poll(
             vector_store_id=vector_store_id,
@@ -412,7 +408,7 @@ class VectorFileBatches(APIResource):
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]
 
 
 class AsyncVectorStores(AsyncAPIResource):
@@ -501,7 +497,7 @@ class AsyncVectorStores(AsyncAPIResource):
         data._headers = response.headers
 
         return data
-    
+
     async def delete(
         self,
         vector_store_id: str,
@@ -529,10 +525,12 @@ class AsyncVectorFiles(AsyncAPIResource):
         file_id: str,
         **kwargs,
     ) -> VectorStoreFile:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.files.create(
-            vector_store_id=vector_store_id,
-            file_id=file_id,
-            **kwargs,
+        response = (
+            await self.openai_client.with_raw_response.beta.vector_stores.files.create(
+                vector_store_id=vector_store_id,
+                file_id=file_id,
+                **kwargs,
+            )
         )
         data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
@@ -546,12 +544,10 @@ class AsyncVectorFiles(AsyncAPIResource):
         vector_store_id: str,
         **kwargs,
     ) -> VectorStoreFile:
-        response = (
-            await self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(
-                file_id=file_id,
-                vector_store_id=vector_store_id,
-                **kwargs,
-            )
+        response = await self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(  # noqa: E501
+            file_id=file_id,
+            vector_store_id=vector_store_id,
+            **kwargs,
         )
         data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
@@ -570,14 +566,16 @@ class AsyncVectorFiles(AsyncAPIResource):
         order: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFileList:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.files.list(
-            vector_store_id=vector_store_id,
-            after=after,
-            before=before,
-            filter=filter,
-            limit=limit,
-            order=order,
-            **kwargs,
+        response = (
+            await self.openai_client.with_raw_response.beta.vector_stores.files.list(
+                vector_store_id=vector_store_id,
+                after=after,
+                before=before,
+                filter=filter,
+                limit=limit,
+                order=order,
+                **kwargs,
+            )
         )
         data = VectorStoreFileList(**json.loads(response.text))
         data._headers = response.headers
@@ -591,10 +589,12 @@ class AsyncVectorFiles(AsyncAPIResource):
         vector_store_id: str,
         **kwargs,
     ) -> VectorStoreFileDeleted:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.files.delete(
-            file_id=file_id,
-            vector_store_id=vector_store_id,
-            **kwargs,
+        response = (
+            await self.openai_client.with_raw_response.beta.vector_stores.files.delete(
+                file_id=file_id,
+                vector_store_id=vector_store_id,
+                **kwargs,
+            )
         )
         data = VectorStoreFileDeleted(**json.loads(response.text))
         data._headers = response.headers
@@ -617,8 +617,8 @@ class AsyncVectorFiles(AsyncAPIResource):
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     async def poll(
         self,
         file_id: str,
@@ -635,8 +635,8 @@ class AsyncVectorFiles(AsyncAPIResource):
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     async def upload(
         self,
         *,
@@ -650,8 +650,8 @@ class AsyncVectorFiles(AsyncAPIResource):
             **kwargs,
         )
         data = response
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     async def upload_and_poll(
         self,
         *,
@@ -667,8 +667,8 @@ class AsyncVectorFiles(AsyncAPIResource):
             **kwargs,
         )
         data = response
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
 
 class AsyncVectorFileBatches(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
@@ -682,7 +682,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         file_ids: List[str],
         **kwargs,
     ) -> VectorStoreFileBatch:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.create(
+        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.create(  # noqa: E501
             vector_store_id=vector_store_id,
             file_ids=file_ids,
             **kwargs,
@@ -691,32 +691,11 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         data._headers = response.headers
 
         return data
-    
+
     async def retrieve(
-        self,
-        batch_id:str,
-        *,
-        vector_store_id: str,
-        **kwargs
+        self, batch_id: str, *, vector_store_id: str, **kwargs
     ) -> VectorStoreFileBatch:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(
-            batch_id=batch_id,
-            vector_store_id=vector_store_id,
-            **kwargs,
-        )
-        data = VectorStoreFileBatch(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data 
-    
-    async def cancel(
-        self,
-        batch_id:str,
-        *,
-        vector_store_id: str,
-        **kwargs
-    ) -> VectorStoreFileBatch:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.cancel(
+        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
             batch_id=batch_id,
             vector_store_id=vector_store_id,
             **kwargs,
@@ -725,25 +704,40 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         data._headers = response.headers
 
         return data
-    
-    async def create_and_poll(
-            self,
-            vector_store_id: str,
-            *,
-            file_ids: List[str],
-            poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-            **kwargs,
-    )-> VectorStoreFileBatch:
-        response = await self.openai_client.beta.vector_stores.file_batches.create_and_poll(
+
+    async def cancel(
+        self, batch_id: str, *, vector_store_id: str, **kwargs
+    ) -> VectorStoreFileBatch:
+        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.cancel(  # noqa: E501
+            batch_id=batch_id,
             vector_store_id=vector_store_id,
-            file_ids=file_ids,
-            poll_interval_ms=poll_interval_ms,
             **kwargs,
+        )
+        data = VectorStoreFileBatch(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def create_and_poll(
+        self,
+        vector_store_id: str,
+        *,
+        file_ids: List[str],
+        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> VectorStoreFileBatch:
+        response = (
+            await self.openai_client.beta.vector_stores.file_batches.create_and_poll(
+                vector_store_id=vector_store_id,
+                file_ids=file_ids,
+                poll_interval_ms=poll_interval_ms,
+                **kwargs,
+            )
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     @typing.no_type_check
     async def list_files(
         self,
@@ -757,7 +751,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         order: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreFileList:
-        response = await self.openai_client.beta.with_raw_response.vector_stores.file_batches.list_files(
+        response = await self.openai_client.beta.with_raw_response.vector_stores.file_batches.list_files(  # noqa: E501
             batch_id=batch_id,
             vector_store_id=vector_store_id,
             after=after,
@@ -771,7 +765,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         data._headers = response.headers
 
         return data
-    
+
     async def poll(
         self,
         batch_id: str,
@@ -788,8 +782,8 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         )
         data = response
 
-        return data # type: ignore[return-value]
-    
+        return data  # type: ignore[return-value]
+
     async def upload_and_poll(
         self,
         vector_store_id: str,
@@ -798,16 +792,18 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         max_concurrency: int = 5,
         file_ids: List[str] = [],
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> VectorStoreFileBatch:
-        response = await self.openai_client.beta.vector_stores.file_batches.upload_and_poll(
-            vector_store_id=vector_store_id,
-            files=files,
-            max_concurrency=max_concurrency,
-            file_ids=file_ids,
-            poll_interval_ms=poll_interval_ms,
-            **kwargs,
+        response = (
+            await self.openai_client.beta.vector_stores.file_batches.upload_and_poll(
+                vector_store_id=vector_store_id,
+                files=files,
+                max_concurrency=max_concurrency,
+                file_ids=file_ids,
+                poll_interval_ms=poll_interval_ms,
+                **kwargs,
+            )
         )
         data = response
 
-        return data # type: ignore[return-value]
+        return data  # type: ignore[return-value]

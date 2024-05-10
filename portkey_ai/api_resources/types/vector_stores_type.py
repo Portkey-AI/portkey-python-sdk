@@ -4,7 +4,19 @@ import httpx
 from .utils import parse_headers
 from pydantic import BaseModel, PrivateAttr
 
-__all__=["LastError", "ExpiresAfter" ,"VectorStore", "VectorStoreList", "VectorStoreDeleted", "VectorStoreFile", "VectorStoreFileList", "VectorStoreFileDeleted", "FileCounts", "VectorStoreFileBatch"]
+__all__ = [
+    "LastError",
+    "ExpiresAfter",
+    "VectorStore",
+    "VectorStoreList",
+    "VectorStoreDeleted",
+    "VectorStoreFile",
+    "VectorStoreFileList",
+    "VectorStoreFileDeleted",
+    "FileCounts",
+    "VectorStoreFileBatch",
+]
+
 
 class FileCounts(BaseModel):
     cancelled: int
@@ -13,9 +25,11 @@ class FileCounts(BaseModel):
     in_progress: int
     total: int
 
+
 class ExpiresAfter(BaseModel):
     anchor: str
     days: int
+
 
 class VectorStore(BaseModel):
     id: str
@@ -37,6 +51,7 @@ class VectorStore(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
 
 class VectorStoreList(BaseModel):
     data: List[VectorStore]
@@ -63,10 +78,12 @@ class VectorStoreDeleted(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
+
 class LastError(BaseModel):
     code: str
     message: str
+
 
 class VectorStoreFile(BaseModel):
     id: str
@@ -84,7 +101,8 @@ class VectorStoreFile(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-    
+
+
 class VectorStoreFileList(BaseModel):
     data: List[VectorStoreFile]
     object: str
@@ -101,7 +119,7 @@ class VectorStoreFileList(BaseModel):
 class VectorStoreFileDeleted(BaseModel):
     id: str
     deleted: bool
-    object:str
+    object: str
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -110,6 +128,7 @@ class VectorStoreFileDeleted(BaseModel):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
 
 class VectorStoreFileBatch(BaseModel):
     id: str
