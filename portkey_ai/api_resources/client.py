@@ -37,7 +37,7 @@ class Portkey(APIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[dict[str, str]] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -77,7 +77,7 @@ class Portkey(APIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[dict[str, str]] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -125,7 +125,7 @@ class AsyncPortkey(AsyncAPIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[dict[str, str]] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -165,7 +165,7 @@ class AsyncPortkey(AsyncAPIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[dict[str, str]] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(

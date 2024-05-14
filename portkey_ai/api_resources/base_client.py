@@ -53,7 +53,7 @@ class APIClient:
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -402,7 +402,7 @@ class AsyncAPIClient:
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
