@@ -35,7 +35,7 @@ class Assistant(BaseModel):
     id: Optional[str]
     created_at: Optional[int]
     description: Optional[str] = None
-    file_ids: Optional[List[str]]
+    file_ids: Optional[List[str]] = None
     instructions: Optional[str] = None
     metadata: Optional[object] = None
     model: Optional[str]
