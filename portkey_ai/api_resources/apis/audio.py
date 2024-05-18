@@ -97,19 +97,16 @@ class Speech(APIResource):
         speed: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Any:
-        response = self.openai_client.with_raw_response.audio.speech.create(
+        response = self.openai_client.audio.speech.create(
             input=input,
             model=model,
             voice=voice,
             response_format=response_format,
             speed=speed,
             **kwargs
-        )
+      )
 
-        data = GenericResponse(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
+        return response 
 
 
 class AsyncAudio(AsyncAPIResource):
@@ -202,7 +199,7 @@ class AsyncSpeech(AsyncAPIResource):
         speed: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Any:
-        response = await self.openai_client.with_raw_response.audio.speech.create(
+        response = await self.openai_client.audio.speech.create(
             input=input,
             model=model,
             voice=voice,
