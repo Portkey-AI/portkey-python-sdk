@@ -65,11 +65,13 @@ class TestAudioTranslations:
             metadata=self.get_metadata(),
         )
 
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         translations = portkey.audio.translations.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(translations.text, str) is True
@@ -89,11 +91,13 @@ class TestAudioTranslations:
             metadata=self.get_metadata(),
             config=config,
         )
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         translations = portkey.audio.translations.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(translations.text, str) is True
@@ -121,11 +125,13 @@ class TestAudioTranslations:
             config=config,
         )
 
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         translations = portkey.audio.translations.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(translations.text, str) is True
@@ -142,9 +148,7 @@ class TestAudioTranslations:
         )
 
         cached_translations = portkey_2.audio.translations.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(cached_translations.text, str) is True
-

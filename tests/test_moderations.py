@@ -137,5 +137,4 @@ class TestModerations:
             input="I want to kill them.", model="text-moderation-stable"
         )
 
-
         assert isinstance(cached_moderations.id, str) is True

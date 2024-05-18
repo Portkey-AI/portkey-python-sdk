@@ -69,7 +69,7 @@ class TestAudioSpeech:
         audio = await portkey.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(audio.content, bytes) is True
@@ -82,7 +82,9 @@ class TestAudioSpeech:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t2_params)
-    async def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
+    async def test_method_single_with_basic_config(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
@@ -94,7 +96,7 @@ class TestAudioSpeech:
         audio = await portkey.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(audio.content, bytes) is True
@@ -126,7 +128,7 @@ class TestAudioSpeech:
         audio = await portkey.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(audio.content, bytes) is True
@@ -145,7 +147,7 @@ class TestAudioSpeech:
         cached_audio = await portkey_2.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(cached_audio.content, bytes) is True

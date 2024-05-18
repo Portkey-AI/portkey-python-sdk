@@ -6,7 +6,6 @@ from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
 
 from portkey_ai.api_resources.types.audio_types import Transcription, Translation
-from portkey_ai.api_resources.utils import GenericResponse
 
 
 class Audio(APIResource):
@@ -104,9 +103,9 @@ class Speech(APIResource):
             response_format=response_format,
             speed=speed,
             **kwargs
-      )
+        )
 
-        return response 
+        return response
 
 
 class AsyncAudio(AsyncAPIResource):

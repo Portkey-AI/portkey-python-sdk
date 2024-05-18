@@ -68,7 +68,7 @@ class TestAudioSpeech:
         audio = portkey.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(audio.content, bytes) is True
@@ -92,7 +92,7 @@ class TestAudioSpeech:
         audio = portkey.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(audio.content, bytes) is True
@@ -123,7 +123,7 @@ class TestAudioSpeech:
         audio = portkey.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(audio.content, bytes) is True
@@ -142,7 +142,7 @@ class TestAudioSpeech:
         cached_audio = portkey_2.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input="The quick brown fox jumped over the lazy dog."
+            input="The quick brown fox jumped over the lazy dog.",
         )
 
         assert isinstance(cached_audio.content, bytes) is True

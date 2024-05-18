@@ -80,7 +80,9 @@ class TestModerations:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t2_params)
-    async def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
+    async def test_method_single_with_basic_config(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
@@ -139,6 +141,5 @@ class TestModerations:
         cached_moderations = await portkey_2.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
-
 
         assert isinstance(cached_moderations.id, str) is True

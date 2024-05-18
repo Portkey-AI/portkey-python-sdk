@@ -66,11 +66,13 @@ class TestAudioTranscript:
             metadata=self.get_metadata(),
         )
 
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         transcript = await portkey.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(transcript.text, str) is True
@@ -83,7 +85,9 @@ class TestAudioTranscript:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, config", t5_params)
-    async def test_method_single_with_basic_config(self, client: Any, config: Dict) -> None:
+    async def test_method_single_with_basic_config(
+        self, client: Any, config: Dict
+    ) -> None:
         portkey = client(
             base_url=base_url,
             api_key=api_key,
@@ -91,11 +95,13 @@ class TestAudioTranscript:
             metadata=self.get_metadata(),
             config=config,
         )
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         transcript = await portkey.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(transcript.text, str) is True
@@ -124,11 +130,13 @@ class TestAudioTranscript:
             config=config,
         )
 
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         transcript = await portkey.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(transcript.text, str) is True
@@ -145,9 +153,7 @@ class TestAudioTranscript:
         )
 
         cached_transcript = await portkey_2.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(cached_transcript.text, str) is True
-

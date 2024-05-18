@@ -65,11 +65,13 @@ class TestAudioTranscript:
             metadata=self.get_metadata(),
         )
 
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         transcript = portkey.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(transcript.text, str) is True
@@ -89,11 +91,13 @@ class TestAudioTranscript:
             metadata=self.get_metadata(),
             config=config,
         )
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         transcript = portkey.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(transcript.text, str) is True
@@ -121,11 +125,13 @@ class TestAudioTranscript:
             config=config,
         )
 
-        audio_file = open("/Users/chandeep/Documents/Workspace/Portkey/SDK/python latest version/portkey-python-sdk/tests/configs/audio/speech.mp3", "rb")
+        audio_file = open(
+            "speech.mp3",
+            "rb",
+        )
 
         transcript = portkey.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(transcript.text, str) is True
@@ -142,9 +148,7 @@ class TestAudioTranscript:
         )
 
         cached_transcript = portkey_2.audio.transcriptions.create(
-          model="whisper-1",
-          file=audio_file
+            model="whisper-1", file=audio_file
         )
 
         assert isinstance(cached_transcript.text, str) is True
-
