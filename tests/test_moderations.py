@@ -65,7 +65,7 @@ class TestModerations:
             metadata=self.get_metadata(),
         )
 
-        moderations = portkey.mocerations.create(
+        moderations = portkey.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 
@@ -87,7 +87,7 @@ class TestModerations:
             config=config,
         )
 
-        moderations = portkey.mocerations.create(
+        moderations = portkey.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 
@@ -116,7 +116,7 @@ class TestModerations:
             config=config,
         )
 
-        moderations = portkey.mocerations.create(
+        moderations = portkey.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 
@@ -133,7 +133,7 @@ class TestModerations:
             config=config,
         )
 
-        cached_moderations = portkey_2.mocerations.create(
+        cached_moderations = portkey_2.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 

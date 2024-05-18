@@ -6,7 +6,7 @@ from os import walk
 from typing import Any, Dict, List
 import pytest
 from uuid import uuid4
-from portkey_ai import Portkey
+from portkey_ai import AsyncPortkey
 from time import sleep
 from dotenv import load_dotenv
 from .utils import read_json_file
@@ -31,7 +31,7 @@ def get_configs(folder_path) -> List[Dict[str, Any]]:
 
 
 class TestModerations:
-    client = Portkey
+    client = AsyncPortkey
     parametrize = pytest.mark.parametrize("client", [client], ids=["strict"])
     models = read_json_file("./tests/models.json")
 
@@ -66,7 +66,7 @@ class TestModerations:
             metadata=self.get_metadata(),
         )
 
-        moderations = await portkey.mocerations.create(
+        moderations = await portkey.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 
@@ -89,7 +89,7 @@ class TestModerations:
             config=config,
         )
 
-        moderations = await portkey.mocerations.create(
+        moderations = await portkey.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 
@@ -119,7 +119,7 @@ class TestModerations:
             config=config,
         )
 
-        moderations = await portkey.mocerations.create(
+        moderations = await portkey.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 
@@ -136,7 +136,7 @@ class TestModerations:
             config=config,
         )
 
-        cached_moderations = await portkey_2.mocerations.create(
+        cached_moderations = await portkey_2.moderations.create(
             input="I want to kill them.", model="text-moderation-stable"
         )
 

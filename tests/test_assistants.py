@@ -112,7 +112,6 @@ class TestAssistants:
         assistant = portkey.beta.assistants.create(
             model=model,
             description="string",
-            file_ids=["file-m9QiEaDT9Le28LydiUTsUwDv"],
             instructions="You are a personal math tutor."
             + "Write and run code to answer math questions.",
             metadata=metadata,
