@@ -248,7 +248,7 @@ class Constructs(BaseModel):
     deployment_id: Optional[str] = None
     resource_name: Optional[str] = None
     api_version: Optional[str] = None
-    openai_project: Optional[str] = None,
+    openai_project: Optional[str] = None
     openai_organization: Optional[str] = None
 
 
