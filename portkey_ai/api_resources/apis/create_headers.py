@@ -12,6 +12,8 @@ class CreateHeaders:
     def json(self) -> Mapping:
         headers = {}
         for k, v in self.kwargs.items():
+            if type(v) == bool:
+                v = str(v).lower()
             if k == "mode" and "proxy" not in v:
                 v = f"proxy {v}"
             k = "-".join(k.split("_"))
