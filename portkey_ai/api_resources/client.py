@@ -40,6 +40,8 @@ class Portkey(APIClient):
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
+        openai_project: Optional[str] = None,
+        openai_organization: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -51,6 +53,8 @@ class Portkey(APIClient):
             trace_id=trace_id,
             metadata=metadata,
             cache_namespace=cache_namespace,
+            openai_project=openai_project,
+            openai_organization=openai_organization,
             **kwargs,
         )
 
@@ -82,6 +86,8 @@ class Portkey(APIClient):
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
+        openai_project: Optional[str] = None,
+        openai_organization: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -93,6 +99,8 @@ class Portkey(APIClient):
             trace_id=trace_id or self.trace_id,
             metadata=metadata or self.metadata,
             cache_namespace=cache_namespace or self.cache_namespace,
+            openai_project=openai_project or self.openai_project,
+            openai_organization=openai_organization or self.openai_organization,
             **self.kwargs,
             **kwargs,
         )
@@ -133,6 +141,8 @@ class AsyncPortkey(AsyncAPIClient):
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
+        openai_project: Optional[str] = None,
+        openai_organization: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -144,6 +154,8 @@ class AsyncPortkey(AsyncAPIClient):
             trace_id=trace_id,
             metadata=metadata,
             cache_namespace=cache_namespace,
+            openai_project=openai_project,
+            openai_organization=openai_organization,
             **kwargs,
         )
 
@@ -175,6 +187,8 @@ class AsyncPortkey(AsyncAPIClient):
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
+        openai_project: Optional[str] = None,
+        openai_organization: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -186,6 +200,8 @@ class AsyncPortkey(AsyncAPIClient):
             trace_id=trace_id or self.trace_id,
             metadata=metadata or self.metadata,
             cache_namespace=cache_namespace or self.cache_namespace,
+            openai_project=openai_project or self.openai_project,
+            openai_organization=openai_organization or self.openai_organization,
             **self.kwargs,
             **kwargs,
         )

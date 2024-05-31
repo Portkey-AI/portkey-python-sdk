@@ -250,6 +250,8 @@ class Constructs(BaseModel):
     resource_name: Optional[str] = None
     api_version: Optional[str] = None
     cache_namespace: Optional[str] = None
+    openai_project: Optional[str] = None
+    openai_organization: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):

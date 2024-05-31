@@ -55,6 +55,8 @@ class APIClient:
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
+        openai_project: Optional[str] = None,
+        openai_organization: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -65,6 +67,8 @@ class APIClient:
         self.trace_id = trace_id
         self.metadata = metadata
         self.cache_namespace = cache_namespace
+        self.openai_project = openai_project
+        self.openai_organization = openai_organization
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -75,6 +79,8 @@ class APIClient:
             trace_id=trace_id,
             metadata=metadata,
             cache_namespace=cache_namespace,
+            openai_project=openai_project,
+            openai_organization=openai_organization,
             **kwargs,
         )
 
@@ -477,6 +483,8 @@ class AsyncAPIClient:
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
+        openai_project: Optional[str] = None,
+        openai_organization: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -487,6 +495,8 @@ class AsyncAPIClient:
         self.trace_id = trace_id
         self.metadata = metadata
         self.cache_namespace=cache_namespace
+        self.openai_project = openai_project
+        self.openai_organization = openai_organization
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -497,6 +507,8 @@ class AsyncAPIClient:
             trace_id=trace_id,
             metadata=metadata,
             cache_namespace=cache_namespace,
+            openai_project=openai_project,
+            openai_organization=openai_organization,
             **kwargs,
         )
 
