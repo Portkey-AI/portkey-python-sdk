@@ -18,6 +18,10 @@
         "image":[
             "dall-e-3",
             "dall-e-2"
+        ],
+        "audio":[
+            "tts-1",
+            "whisper-1"
         ]
     },
     "anyscale": {
@@ -36,7 +40,8 @@
             "mistralai/Mistral-7B-Instruct-v0.1",
             "mistralai/Mixtral-8x7B-Instruct-v0.1"
         ],
-        "image":[]
+        "image":[],
+        "audio":[]
     },
     "anthropic": {
         "env_variable": "ANTHROPIC_API_KEY",
@@ -53,7 +58,8 @@
             "claude-2.0",
             "claude-instant-1.2"
         ], 
-        "image":[]
+        "image":[],
+        "audio":[]
     },
     "cohere": {
         "env_variable": "COHERE_API_KEY",
@@ -69,6 +75,7 @@
             "command",
             "command-nightly"
         ],
-        "image":[]
+        "image":[],
+        "audio":[]
     }
 }
