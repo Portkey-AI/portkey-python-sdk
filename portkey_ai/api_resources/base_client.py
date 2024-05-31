@@ -56,6 +56,16 @@ class APIClient:
         metadata: Optional[str] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
+        aws_secret_access_key: Optional[str] = None,
+        aws_access_key_id: Optional[str] = None,
+        aws_session_token: Optional[str] = None,
+        aws_region: Optional[str] = None,
+        vertex_project_id: Optional[str] = None,
+        vertex_region: Optional[str] = None,
+        workers_ai_account_id: Optional[str] = None,
+        azure_resource_name: Optional[str] = None,
+        azure_deployment_id: Optional[str] = None,
+        azure_api_version: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -67,6 +77,16 @@ class APIClient:
         self.metadata = metadata
         self.openai_project = openai_project
         self.openai_organization = openai_organization
+        self.aws_secret_access_key=aws_secret_access_key,
+        self.aws_access_key_id=aws_access_key_id,
+        self.aws_session_token=aws_session_token,
+        self.aws_region=aws_region,
+        self.vertex_project_id=vertex_project_id,
+        self.vertex_region=vertex_region,
+        self.workers_ai_account_id=workers_ai_account_id,
+        self.azure_resource_name=azure_resource_name,
+        self.azure_deployment_id=azure_deployment_id,
+        self.azure_api_version=azure_api_version,
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -78,6 +98,16 @@ class APIClient:
             metadata=metadata,
             openai_project=openai_project,
             openai_organization=openai_organization,
+            aws_secret_access_key=aws_secret_access_key,
+            aws_access_key_id=aws_access_key_id,
+            aws_session_token=aws_session_token,
+            aws_region=aws_region,
+            vertex_project_id=vertex_project_id,
+            vertex_region=vertex_region,
+            workers_ai_account_id=workers_ai_account_id,
+            azure_resource_name=azure_resource_name,
+            azure_deployment_id=azure_deployment_id,
+            azure_api_version=azure_api_version,
             **kwargs,
         )
 
@@ -411,6 +441,17 @@ class AsyncAPIClient:
         metadata: Optional[str] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
+        aws_secret_access_key: Optional[str] = None,
+        aws_access_key_id: Optional[str] = None,
+        aws_session_token: Optional[str] = None,
+        aws_region: Optional[str] = None,
+        vertex_project_id: Optional[str] = None,
+        vertex_region: Optional[str] = None,
+        workers_ai_account_id: Optional[str] = None,
+        azure_resource_name: Optional[str] = None,
+        azure_deployment_id: Optional[str] = None,
+        azure_api_version: Optional[str] = None,
+        
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -422,6 +463,16 @@ class AsyncAPIClient:
         self.metadata = metadata
         self.openai_project = openai_project
         self.openai_organization = openai_organization
+        self.aws_secret_access_key=aws_secret_access_key,
+        self.aws_access_key_id=aws_access_key_id,
+        self.aws_session_token=aws_session_token,
+        self.aws_region=aws_region,
+        self.vertex_project_id=vertex_project_id,
+        self.vertex_region=vertex_region,
+        self.workers_ai_account_id=workers_ai_account_id,
+        self.azure_resource_name=azure_resource_name,
+        self.azure_deployment_id=azure_deployment_id,
+        self.azure_api_version=azure_api_version,
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -433,6 +484,16 @@ class AsyncAPIClient:
             metadata=metadata,
             openai_project=openai_project,
             openai_organization=openai_organization,
+            aws_secret_access_key=aws_secret_access_key,
+            aws_access_key_id=aws_access_key_id,
+            aws_session_token=aws_session_token,
+            aws_region=aws_region,
+            vertex_project_id=vertex_project_id,
+            vertex_region=vertex_region,
+            workers_ai_account_id=workers_ai_account_id,
+            azure_resource_name=azure_resource_name,
+            azure_deployment_id=azure_deployment_id,
+            azure_api_version=azure_api_version,
             **kwargs,
         )
 

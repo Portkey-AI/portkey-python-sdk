@@ -250,6 +250,16 @@ class Constructs(BaseModel):
     api_version: Optional[str] = None
     openai_project: Optional[str] = None
     openai_organization: Optional[str] = None
+    aws_secret_access_key: Optional[str] = None,
+    aws_access_key_id: Optional[str] = None,
+    aws_session_token: Optional[str] = None,
+    aws_region: Optional[str] = None,
+    vertex_project_id: Optional[str] = None,
+    vertex_region: Optional[str] = None,
+    workers_ai_account_id: Optional[str] = None,
+    azure_resource_name: Optional[str] = None,
+    azure_deployment_id: Optional[str] = None,
+    azure_api_version: Optional[str] = None,
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):
