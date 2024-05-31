@@ -47,10 +47,11 @@ class TestAudioTranslations:
     t4_params = []
     t4 = []
     for k, v in models.items():
-        for i in v["chat"]:
-            t4.append((client, k, os.environ.get(v["env_variable"]), i))
+        if k == "openai":
+            for i in v["audio"]:
+                t4.append((client, k, os.environ.get(v["env_variable"]), i))
 
-        t4_params.extend(t4)
+            t4_params.extend(t4)
 
     @pytest.mark.parametrize("client, provider, auth, model", t4_params)
     def test_method_single_with_vk_and_provider(
