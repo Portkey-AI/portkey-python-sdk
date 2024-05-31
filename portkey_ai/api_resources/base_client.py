@@ -53,7 +53,7 @@ class APIClient:
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> None:
@@ -176,6 +176,76 @@ class APIClient:
                 headers=headers,
             )
 
+        res = self._request(
+            options=opts,
+            stream=stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return res
+
+    @overload
+    def _put(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        cast_to: Type[ResponseT],
+        stream: Literal[True],
+        stream_cls: type[StreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> StreamT:
+        ...
+
+    @overload
+    def _put(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        cast_to: Type[ResponseT],
+        stream: Literal[False],
+        stream_cls: type[StreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    def _put(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> Union[ResponseT, StreamT]:
+        ...
+
+    def _put(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> Union[ResponseT, StreamT]:
+        
+        opts = self._construct(
+            method="put",
+            url=path,
+            body=body,
+            stream=stream,
+            params=params,
+            headers=headers,
+        )
         res = self._request(
             options=opts,
             stream=stream,
@@ -405,7 +475,7 @@ class AsyncAPIClient:
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
         cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> None:
@@ -528,6 +598,76 @@ class AsyncAPIClient:
                 headers=headers,
             )
 
+        res = await self._request(
+            options=opts,
+            stream=stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return res
+
+    @overload
+    async def _put(
+        self,
+        path: str,
+        *,
+        cast_to: Type[ResponseT],
+        body: Mapping[str, Any],
+        stream: Literal[False],
+        stream_cls: type[AsyncStreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    async def _put(
+        self,
+        path: str,
+        *,
+        cast_to: Type[ResponseT],
+        body: Mapping[str, Any],
+        stream: Literal[True],
+        stream_cls: type[AsyncStreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> AsyncStreamT:
+        ...
+
+    @overload
+    async def _put(
+        self,
+        path: str,
+        *,
+        cast_to: Type[ResponseT],
+        body: Mapping[str, Any],
+        stream: bool,
+        stream_cls: type[AsyncStreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> Union[ResponseT, AsyncStreamT]:
+        ...
+
+    async def _put(
+        self,
+        path: str,
+        *,
+        cast_to: Type[ResponseT],
+        body: Mapping[str, Any],
+        stream: bool,
+        stream_cls: type[AsyncStreamT],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+    ) -> Union[ResponseT, AsyncStreamT]:
+        
+        opts = await self._construct(
+            method="put",
+            url=path,
+            body=body,
+            stream=stream,
+            params=params,
+            headers=headers,
+        )
         res = await self._request(
             options=opts,
             stream=stream,
