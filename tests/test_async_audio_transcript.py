@@ -46,11 +46,13 @@ class TestAudioTranscript:
     # Test-4
     t4_params = []
     t4 = []
-    for k, v in models.items():
-        for i in v["chat"]:
-            t4.append((client, k, os.environ.get(v["env_variable"]), i))
 
-        t4_params.extend(t4)
+    for k, v in models.items():
+        if k == "openai":
+            for i in v["audio"]:
+                t4.append((client, k, os.environ.get(v["env_variable"]), i))
+
+            t4_params.extend(t4)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client, provider, auth, model", t4_params)
