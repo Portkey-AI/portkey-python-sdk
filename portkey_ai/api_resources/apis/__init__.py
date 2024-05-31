@@ -6,21 +6,48 @@ from .create_headers import createHeaders
 from .post import Post, AsyncPost
 from .embeddings import Embeddings, AsyncEmbeddings
 from .images import Images, AsyncImages
-from .assistants import Assistants, AssistantFiles, AsyncAssistants, AsyncAssistantFiles
+from .assistants import Assistants, AsyncAssistants
 from .threads import (
     Threads,
     Messages,
-    ThreadFiles,
     Runs,
     Steps,
     AsyncThreads,
     AsyncMessages,
-    AsyncThreadFiles,
     AsyncRuns,
     AsyncSteps,
 )
 from .main_files import MainFiles, AsyncMainFiles
 from .models import Models, AsyncModels
+from .moderations import Moderations, AsyncModerations
+from .audio import (
+    Audio,
+    Transcriptions,
+    Translations,
+    Speech,
+    AsyncAudio,
+    AsyncTranscriptions,
+    AsyncTranslations,
+    AsyncSpeech,
+)
+from .batches import Batches, AsyncBatches
+from .fine_tuning import (
+    FineTuning,
+    Jobs,
+    Checkpoints,
+    AsyncFineTuning,
+    AsyncJobs,
+    AsyncCheckpoints,
+)
+from .vector_stores import (
+    VectorStores,
+    VectorFiles,
+    VectorFileBatches,
+    AsyncVectorStores,
+    AsyncVectorFiles,
+    AsyncVectorFileBatches,
+)
+
 
 __all__ = [
     "Completion",
@@ -46,10 +73,6 @@ __all__ = [
     "AsyncMainFiles",
     "Models",
     "AsyncModels",
-    "AssistantFiles",
-    "ThreadFiles",
-    "AsyncAssistantFiles",
-    "AsyncThreadFiles",
     "Threads",
     "AsyncThreads",
     "Messages",
@@ -58,4 +81,28 @@ __all__ = [
     "AsyncRuns",
     "Steps",
     "AsyncSteps",
+    "Moderations",
+    "AsyncModerations",
+    "Audio",
+    "Transcriptions",
+    "Translations",
+    "Speech",
+    "AsyncAudio",
+    "AsyncTranscriptions",
+    "AsyncTranslations",
+    "AsyncSpeech",
+    "Batches",
+    "AsyncBatches",
+    "FineTuning",
+    "Jobs",
+    "Checkpoints",
+    "AsyncFineTuning",
+    "AsyncJobs",
+    "AsyncCheckpoints",
+    "VectorStores",
+    "VectorFiles",
+    "VectorFileBatches",
+    "AsyncVectorStores",
+    "AsyncVectorFiles",
+    "AsyncVectorFileBatches",
 ]

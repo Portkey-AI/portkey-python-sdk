@@ -16,17 +16,24 @@ class Portkey(APIClient):
     generations: apis.Generations
     prompts: apis.Prompts
     embeddings: apis.Embeddings
+    feedback: apis.Feedback
     images: apis.Images
     files: apis.MainFiles
     models: apis.Models
+    moderations: apis.Moderations
+    audio: apis.Audio
+    batches: apis.Batches
+    fine_tuning: apis.FineTuning
 
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
+        vector_stores: apis.VectorStores
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
+            self.vector_stores = apis.VectorStores(client)
 
     def __init__(
         self,
@@ -37,7 +44,8 @@ class Portkey(APIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         debug: Optional[bool] = None,
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
@@ -80,6 +88,7 @@ class Portkey(APIClient):
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            cache_namespace=cache_namespace,
             **kwargs,
         )
 
@@ -98,6 +107,10 @@ class Portkey(APIClient):
         self.images = apis.Images(self)
         self.files = apis.MainFiles(self)
         self.models = apis.Models(self)
+        self.moderations = apis.Moderations(self)
+        self.audio = apis.Audio(self)
+        self.batches = apis.Batches(self)
+        self.fine_tuning = apis.FineTuning(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -109,7 +122,8 @@ class Portkey(APIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         debug: Optional[bool] = None,
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
@@ -152,6 +166,7 @@ class Portkey(APIClient):
             azure_resource_name=azure_resource_name or self.azure_resource_name,
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
+            cache_namespace=cache_namespace or self.cache_namespace,
             **self.kwargs,
             **kwargs,
         )
@@ -168,17 +183,24 @@ class AsyncPortkey(AsyncAPIClient):
     generations: apis.AsyncGenerations
     prompts: apis.AsyncPrompts
     embeddings: apis.AsyncEmbeddings
+    feedback: apis.AsyncFeedback
     images: apis.AsyncImages
     files: apis.AsyncMainFiles
     models: apis.AsyncModels
+    moderations: apis.AsyncModerations
+    audio: apis.AsyncAudio
+    batches: apis.AsyncBatches
+    fine_tuning: apis.AsyncFineTuning
 
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
+        vector_stores: apis.AsyncVectorStores
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
+            self.vector_stores = apis.AsyncVectorStores(client)
 
     def __init__(
         self,
@@ -189,7 +211,8 @@ class AsyncPortkey(AsyncAPIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         debug: Optional[bool] = None,
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
@@ -232,6 +255,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            cache_namespace=cache_namespace,
             **kwargs,
         )
 
@@ -250,6 +274,10 @@ class AsyncPortkey(AsyncAPIClient):
         self.images = apis.AsyncImages(self)
         self.files = apis.AsyncMainFiles(self)
         self.models = apis.AsyncModels(self)
+        self.moderations = apis.AsyncModerations(self)
+        self.audio = apis.AsyncAudio(self)
+        self.batches = apis.AsyncBatches(self)
+        self.fine_tuning = apis.AsyncFineTuning(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -261,7 +289,8 @@ class AsyncPortkey(AsyncAPIClient):
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
-        metadata: Optional[str] = None,
+        metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         debug: Optional[bool] = None,
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
@@ -304,6 +333,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_resource_name=azure_resource_name or self.azure_resource_name,
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
+            cache_namespace=cache_namespace or self.cache_namespace,
             **self.kwargs,
             **kwargs,
         )
