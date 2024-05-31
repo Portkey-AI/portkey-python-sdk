@@ -249,6 +249,7 @@ class Constructs(BaseModel):
     deployment_id: Optional[str] = None
     resource_name: Optional[str] = None
     api_version: Optional[str] = None
+    cache_namespace: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):

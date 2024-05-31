@@ -45,6 +45,7 @@ class Portkey(APIClient):
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -55,6 +56,7 @@ class Portkey(APIClient):
             provider=provider,
             trace_id=trace_id,
             metadata=metadata,
+            cache_namespace=cache_namespace,
             **kwargs,
         )
 
@@ -89,6 +91,7 @@ class Portkey(APIClient):
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -99,6 +102,7 @@ class Portkey(APIClient):
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
             metadata=metadata or self.metadata,
+            cache_namespace=cache_namespace or self.cache_namespace,
             **self.kwargs,
             **kwargs,
         )
@@ -144,6 +148,7 @@ class AsyncPortkey(AsyncAPIClient):
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -154,6 +159,7 @@ class AsyncPortkey(AsyncAPIClient):
             provider=provider,
             trace_id=trace_id,
             metadata=metadata,
+            cache_namespace=cache_namespace,
             **kwargs,
         )
 
@@ -188,6 +194,7 @@ class AsyncPortkey(AsyncAPIClient):
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -198,6 +205,7 @@ class AsyncPortkey(AsyncAPIClient):
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
             metadata=metadata or self.metadata,
+            cache_namespace=cache_namespace or self.cache_namespace,
             **self.kwargs,
             **kwargs,
         )

@@ -54,6 +54,7 @@ class APIClient:
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -63,6 +64,7 @@ class APIClient:
         self.provider = provider
         self.trace_id = trace_id
         self.metadata = metadata
+        self.cache_namespace = cache_namespace
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -72,6 +74,7 @@ class APIClient:
             provider=provider,
             trace_id=trace_id,
             metadata=metadata,
+            cache_namespace=cache_namespace,
             **kwargs,
         )
 
@@ -473,6 +476,7 @@ class AsyncAPIClient:
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Union[Optional[dict[str, str]], str] = None,
+        cache_namespace: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -482,6 +486,7 @@ class AsyncAPIClient:
         self.provider = provider
         self.trace_id = trace_id
         self.metadata = metadata
+        self.cache_namespace=cache_namespace
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -491,6 +496,7 @@ class AsyncAPIClient:
             provider=provider,
             trace_id=trace_id,
             metadata=metadata,
+            cache_namespace=cache_namespace,
             **kwargs,
         )
 
