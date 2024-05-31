@@ -56,6 +56,22 @@ class MainFiles(APIResource):
         response = self.openai_client.files.content(file_id=file_id, **kwargs)
         return response
 
+    def wait_for_processing(
+        self,
+        id: str,
+        *,
+        poll_interval: float = 5.0,
+        max_wait_seconds: float = 30 * 60,
+        **kwargs
+    ) -> Any:
+        response = self.openai_client.files.wait_for_processing(
+            id=id,
+            poll_interval=poll_interval,
+            max_wait_seconds=max_wait_seconds,
+            **kwargs
+        )
+        return response
+
 
 class AsyncMainFiles(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
@@ -102,4 +118,20 @@ class AsyncMainFiles(AsyncAPIResource):
 
     async def retrieve_content(self, file_id, **kwargs) -> Any:
         response = await self.openai_client.files.content(file_id=file_id, **kwargs)
+        return response
+
+    async def wait_for_processing(
+        self,
+        id: str,
+        *,
+        poll_interval: float = 5.0,
+        max_wait_seconds: float = 30 * 60,
+        **kwargs
+    ) -> Any:
+        response = await self.openai_client.files.wait_for_processing(
+            id=id,
+            poll_interval=poll_interval,
+            max_wait_seconds=max_wait_seconds,
+            **kwargs
+        )
         return response
