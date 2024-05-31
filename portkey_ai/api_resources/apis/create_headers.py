@@ -12,7 +12,6 @@ class CreateHeaders:
     def json(self) -> Mapping:
         headers = {}
         for k, v in self.kwargs.items():
-            
             # logic for boolean type headers
             if isinstance(v, bool):
                 v = str(v).lower()

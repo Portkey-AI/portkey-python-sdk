@@ -35,7 +35,7 @@ class AsyncAPIResource:
 
     async def _post(self, *args, **kwargs):
         return await self._client._post(*args, **kwargs)
-    
+
     async def _put(self, *args, **kwargs):
         return await self._client._put(*args, **kwargs)
 
