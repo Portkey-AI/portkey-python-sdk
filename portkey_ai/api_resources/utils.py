@@ -243,6 +243,9 @@ class Constructs(BaseModel):
     cache_force_refresh: Optional[bool] = None
     trace_id: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
+    debug: Optional[bool] = None
+    custom_host: Optional[str] = None
+    forward_headers:Optional[str] = None
     weight: Optional[float] = None
     retry: Optional[RetrySettings] = None
     deployment_id: Optional[str] = None

@@ -54,6 +54,10 @@ class APIClient:
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Optional[str] = None,
+        debug: Optional[bool] = None,
+        cache_force_refresh: Optional[bool] = None,
+        custom_host: Optional[str] = None,
+        forward_headers: Optional[str] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -75,6 +79,10 @@ class APIClient:
         self.provider = provider
         self.trace_id = trace_id
         self.metadata = metadata
+        self.debug = debug
+        self.cache_force_refresh = cache_force_refresh
+        self.custom_host = custom_host
+        self.forward_headers = forward_headers
         self.openai_project = openai_project
         self.openai_organization = openai_organization
         self.aws_secret_access_key=aws_secret_access_key
@@ -96,6 +104,10 @@ class APIClient:
             provider=provider,
             trace_id=trace_id,
             metadata=metadata,
+            debug=debug,
+            cache_force_refresh=cache_force_refresh,
+            custom_host=custom_host,
+            forward_headers=forward_headers,
             openai_project=openai_project,
             openai_organization=openai_organization,
             aws_secret_access_key=aws_secret_access_key,
@@ -439,6 +451,10 @@ class AsyncAPIClient:
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
         metadata: Optional[str] = None,
+        debug: Optional[bool] = None,
+        cache_force_refresh: Optional[bool] = None,
+        custom_host: Optional[str] = None,
+        forward_headers: Optional[str] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -460,6 +476,10 @@ class AsyncAPIClient:
         self.provider = provider
         self.trace_id = trace_id
         self.metadata = metadata
+        self.debug = debug
+        self.cache_force_refresh = cache_force_refresh
+        self.custom_host = custom_host
+        self.forward_headers = forward_headers
         self.openai_project = openai_project
         self.openai_organization = openai_organization
         self.aws_secret_access_key=aws_secret_access_key
@@ -481,6 +501,10 @@ class AsyncAPIClient:
             provider=provider,
             trace_id=trace_id,
             metadata=metadata,
+            debug=debug,
+            cache_force_refresh=cache_force_refresh,
+            custom_host=custom_host,
+            forward_headers=forward_headers,
             openai_project=openai_project,
             openai_organization=openai_organization,
             aws_secret_access_key=aws_secret_access_key,
