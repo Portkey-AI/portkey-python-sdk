@@ -14,7 +14,7 @@ class CreateHeaders:
         for k, v in self.kwargs.items():
             
             # logic for boolean type headers
-            if type(v) == bool:
+            if isinstance(v, bool):
                 v = str(v).lower()
             if k == "mode" and "proxy" not in v:
                 v = f"proxy {v}"
