@@ -12,7 +12,6 @@ class CreateHeaders:
     def json(self) -> Mapping:
         headers = {}
         for k, v in self.kwargs.items():
-            
             # logic for boolean type headers
             if type(v) == bool:
                 v = str(v).lower()
@@ -30,6 +29,7 @@ class CreateHeaders:
                 # logic for List of str to comma separated string
                 if k == "forward-headers":
                     headers[get_portkey_header(k)] = ",".join(v)
+        print(headers)
         return headers
 
 
