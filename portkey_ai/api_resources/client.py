@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Mapping, Optional, Union
+from typing import List, Mapping, Optional, Union
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
@@ -49,7 +49,7 @@ class Portkey(APIClient):
         debug: Optional[bool] = False,
         cache_force_refresh: Optional[bool] = False,
         custom_host: Optional[str] = None,
-        forward_headers: Optional[str] = None,
+        forward_headers: Optional[List[str]] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -127,7 +127,7 @@ class Portkey(APIClient):
         debug: Optional[bool] = False,
         cache_force_refresh: Optional[bool] = False,
         custom_host: Optional[str] = None,
-        forward_headers: Optional[str] = None,
+        forward_headers: Optional[List[str]] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -216,7 +216,7 @@ class AsyncPortkey(AsyncAPIClient):
         debug: Optional[bool] = False,
         cache_force_refresh: Optional[bool] = False,
         custom_host: Optional[str] = None,
-        forward_headers: Optional[str] = None,
+        forward_headers: Optional[List[str]] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -294,7 +294,7 @@ class AsyncPortkey(AsyncAPIClient):
         debug: Optional[bool] = False,
         cache_force_refresh: Optional[bool] = False,
         custom_host: Optional[str] = None,
-        forward_headers: Optional[str] = None,
+        forward_headers: Optional[List[str]] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
