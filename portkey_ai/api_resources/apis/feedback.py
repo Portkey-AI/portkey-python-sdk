@@ -16,7 +16,7 @@ class Feedback(APIResource):
         trace_id: Optional[str] = None,
         value: Optional[int] = None,
         weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> FeedbackResponse:
         body = dict(trace_id=trace_id, value=value, weight=weight, metadata=metadata)
         return self._post(
@@ -40,14 +40,14 @@ class Feedback(APIResource):
             stream=False,
             headers={},
         )
-    
+
     def update(
         self,
         *,
         feedback_id: Optional[str] = None,
         value: Optional[int] = None,
         weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> FeedbackResponse:
         body = dict(value=value, weight=weight, metadata=metadata)
 
@@ -72,7 +72,7 @@ class AsyncFeedback(AsyncAPIResource):
         trace_id: Optional[str] = None,
         value: Optional[int] = None,
         weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> FeedbackResponse:
         body = dict(trace_id=trace_id, value=value, weight=weight, metadata=metadata)
         return await self._post(
@@ -96,14 +96,14 @@ class AsyncFeedback(AsyncAPIResource):
             stream=False,
             headers={},
         )
-    
+
     async def update(
         self,
         *,
         feedback_id: Optional[str] = None,
         value: Optional[int] = None,
         weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> FeedbackResponse:
         body = dict(value=value, weight=weight, metadata=metadata)
         return await self._put(

@@ -243,7 +243,6 @@ class APIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Union[ResponseT, StreamT]:
-        
         opts = self._construct(
             method="put",
             url=path,
@@ -494,7 +493,7 @@ class AsyncAPIClient:
         self.provider = provider
         self.trace_id = trace_id
         self.metadata = metadata
-        self.cache_namespace=cache_namespace
+        self.cache_namespace = cache_namespace
         self.openai_project = openai_project
         self.openai_organization = openai_organization
         self.kwargs = kwargs
@@ -671,7 +670,6 @@ class AsyncAPIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Union[ResponseT, AsyncStreamT]:
-        
         opts = await self._construct(
             method="put",
             url=path,

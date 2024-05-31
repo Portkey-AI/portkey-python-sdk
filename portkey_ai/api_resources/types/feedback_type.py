@@ -1,7 +1,5 @@
-import json
 from typing import Optional
 
-from .utils import parse_headers
 from typing import List
 from pydantic import BaseModel
 
