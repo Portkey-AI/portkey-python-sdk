@@ -240,10 +240,10 @@ class Constructs(BaseModel):
     cache: Optional[bool] = None
     cache_age: Optional[int] = None
     cache_status: Optional[Union[CacheType, CacheLiteral]] = None
-    cache_force_refresh: Optional[bool] = None
+    cache_force_refresh: Optional[bool] = False
     trace_id: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
-    debug: Optional[bool] = None
+    debug: Optional[bool] = False
     custom_host: Optional[str] = None
     forward_headers:Optional[str] = None
     weight: Optional[float] = None
