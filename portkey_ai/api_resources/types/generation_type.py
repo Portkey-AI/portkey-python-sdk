@@ -17,7 +17,7 @@ from pydantic import BaseModel, PrivateAttr
 
 class PromptCompletion(BaseModel):
     id: Optional[str] = None
-    choices: List[Choice] = None
+    choices: Optional[List[Choice]] = None
     created: Optional[int] = None
     model: Optional[str] = None
     object: Optional[str] = None
