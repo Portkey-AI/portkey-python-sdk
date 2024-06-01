@@ -54,7 +54,7 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
         self.request["method"] = "POST"
         self.request["url"] = serialized.get("kwargs", "").get(
             "base_url", "chat/completions"
-        ) 
+        )
         self.request["provider"] = serialized["id"][2]
         self.request["headers"] = serialized.get("kwargs", {}).get(
             "default_headers", {}

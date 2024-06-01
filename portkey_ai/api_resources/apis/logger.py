@@ -12,6 +12,8 @@ class Logger:
         api_key: Optional[str] = None,
     ) -> None:
         api_key = api_key or os.getenv("PORTKEY_API_KEY")
+        if api_key is None:
+            raise ValueError("API key is required to use the Logger API")
 
         self.headers = {
             "Content-Type": "application/json",
@@ -19,9 +21,6 @@ class Logger:
         }
 
         self.url = PORTKEY_BASE_URL + "/logs"
-
-        if api_key is None:
-            raise ValueError("API key is required to use the Logger API")
 
     def log(
         self,
