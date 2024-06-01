@@ -34,7 +34,7 @@ class DeltaToolCallFunction(BaseModel):
 
 
 class DeltaToolCall(BaseModel):
-    index: int
+    index: Optional[int]
     id: Optional[str] = None
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
@@ -62,13 +62,13 @@ class StreamChoice(BaseModel, extra="allow"):
 
 
 class FunctionCall(BaseModel):
-    arguments: str
-    name: str
+    arguments: Optional[str]
+    name: Optional[str]
 
 
 class ChatCompletionMessageToolCall(BaseModel):
     id: Optional[str]
-    function: FunctionCall
+    function: Optional[FunctionCall]
     type: Optional[str]
 
 
@@ -89,7 +89,7 @@ class ChatCompletionTokenLogprob(BaseModel):
     token: Optional[str]
     bytes: Optional[List[int]] = None
     logprob: Optional[float]
-    top_logprobs: List[TopLogprob]
+    top_logprobs: Optional[List[TopLogprob]]
 
 
 class ChoiceLogprobs(BaseModel):
@@ -100,12 +100,12 @@ class Choice(BaseModel):
     finish_reason: Optional[str]
     index: Optional[int]
     logprobs: Optional[ChoiceLogprobs] = None
-    message: ChatCompletionMessage
+    message: Optional[ChatCompletionMessage]
 
 
 class ChatCompletions(BaseModel):
     id: Optional[str]
-    choices: List[Choice]
+    choices: Optional[List[Choice]]
     created: Optional[int]
     model: Optional[str]
     object: Optional[str]
