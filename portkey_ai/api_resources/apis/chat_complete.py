@@ -43,7 +43,7 @@ class Completions(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def stream_create(
+    def stream_create(  # type: ignore[return]
         self, model, messages, stream, temperature, max_tokens, top_p, **kwargs
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
         with self.openai_client.with_streaming_response.chat.completions.create(

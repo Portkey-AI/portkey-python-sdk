@@ -15,6 +15,7 @@ from portkey_ai.api_resources.types.complete_type import (
     TextCompletionChunk,
     TextCompletion,
 )
+from portkey_ai.api_resources.types.feedback_type import FeedbackResponse
 from portkey_ai.api_resources.types.generation_type import (
     PromptCompletion,
     PromptCompletionChunk,
@@ -61,7 +62,7 @@ CacheLiteral = Literal["semantic", "simple"]
 
 ResponseT = TypeVar(
     "ResponseT",
-    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletion, TextCompletionChunk, GenericResponse, PromptCompletion, PromptCompletionChunk, PromptRender,  httpx.Response]",  # noqa: E501
+    bound="Union[ChatCompletionChunk, ChatCompletions, TextCompletion, TextCompletionChunk, GenericResponse, PromptCompletion, PromptCompletionChunk, PromptRender, FeedbackResponse, httpx.Response]",  # noqa: E501
 )
 
 
@@ -243,11 +244,27 @@ class Constructs(BaseModel):
     cache_force_refresh: Optional[bool] = None
     trace_id: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
+    debug: Optional[bool] = None
+    custom_host: Optional[str] = None
+    forward_headers: Optional[str] = None
     weight: Optional[float] = None
     retry: Optional[RetrySettings] = None
     deployment_id: Optional[str] = None
     resource_name: Optional[str] = None
     api_version: Optional[str] = None
+    openai_project: Optional[str] = None
+    openai_organization: Optional[str] = None
+    aws_secret_access_key: Optional[str] = None
+    aws_access_key_id: Optional[str] = None
+    aws_session_token: Optional[str] = None
+    aws_region: Optional[str] = None
+    vertex_project_id: Optional[str] = None
+    vertex_region: Optional[str] = None
+    workers_ai_account_id: Optional[str] = None
+    azure_resource_name: Optional[str] = None
+    azure_deployment_id: Optional[str] = None
+    azure_api_version: Optional[str] = None
+    cache_namespace: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):

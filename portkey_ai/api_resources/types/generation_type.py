@@ -16,11 +16,11 @@ from pydantic import BaseModel, PrivateAttr
 
 
 class PromptCompletion(BaseModel):
-    id: Optional[str]
-    choices: List[Choice]
-    created: Optional[int]
-    model: Optional[str]
-    object: Optional[str]
+    id: Optional[str] = None
+    choices: Optional[List[Choice]] = None
+    created: Optional[int] = None
+    model: Optional[str] = None
+    object: Optional[str] = None
     system_fingerprint: Optional[str] = None
     usage: Optional[Usage] = None
     index: Optional[int] = None
@@ -48,7 +48,7 @@ class PromptCompletionChunk(BaseModel):
     created: Optional[int] = None
     model: Optional[str] = None
     provider: Optional[str] = None
-    choices: Optional[Union[List[TextChoice], List[StreamChoice]]]
+    choices: Optional[Union[List[TextChoice], List[StreamChoice]]] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
