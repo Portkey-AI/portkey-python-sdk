@@ -100,6 +100,34 @@ async def main():
 asyncio.run(main())
 ```
 
+## Compatibility with OpenAI SDK
+
+Portkey SDK currently supports all the OpenAI methods, including legacy ones.
+
+| Methods                    | OpenAI<br>V1.26.0 | Portkey<br>V1.3.1 |
+|:----------------------------|:--------|:---------|
+| Audio                      | ✅     | ✅      |
+| Chat                       | ✅     | ✅      |
+| Embeddings                 | ✅     | ✅      |
+| Fine-tuning                | ✅     | ✅      |
+| Batch                      | ✅     | ✅      |
+| Files                      | ✅     | ✅      |
+| Images                     | ✅     | ✅      |
+| Models                     | ✅     | ✅      |
+| Moderations                | ✅     | ✅      |
+| Assistants                 | ✅     | ✅      |
+| Threads                    | ✅     | ✅      |
+| Thread - Messages          | ✅     | ✅      |
+| Thread - Runs              | ✅     | ✅      |
+| Thread - Run - Steps       | ✅     | ✅      |
+| Vector Store               | ✅     | ✅      |
+| Vector Store - Files       | ✅     | ✅      |
+| Vector Store - Files Batches | ✅     | ✅      |
+| Completions                | ❌     | ✅      |
+| Generation                 | ❌     | ✅      |
+| Feedback                   | ❌     | ✅      |
+| Prompts                    | ❌     | ✅      |
+
 ---
 
 #### [Check out Portkey docs for the full list of supported providers](https://portkey.ai/docs/welcome/what-is-portkey#ai-providers-supported)
