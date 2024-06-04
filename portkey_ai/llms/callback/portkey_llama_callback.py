@@ -10,7 +10,7 @@ from llama_index.core.callbacks.schema import CBEventType, EventPayload
 from llama_index.core.utilities.token_counting import TokenCounter
 
 
-class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
+class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
     startTimestamp: int = 0
     endTimestamp: float = 0
 
@@ -113,8 +113,10 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         data = payload.get(EventPayload.RESPONSE, {})
 
         chunks = payload.get(EventPayload.MESSAGES, {})
-        self.token_llm = self._token_counter.estimate_tokens_in_messages(chunks)
+        print("chunks", chunks)
 
+        self.token_llm = self._token_counter.estimate_tokens_in_messages(chunks)
+        print("token_llm", self.token_llm)
         self.response["status"] = 200
         self.response["body"] = {
             "choices": [
@@ -136,6 +138,8 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         self.response["time"] = int(responseTime * 1000)
         self.response["headers"] = {}
         self.response["streamingMode"] = self.streamingMode
+
+        print("response", self.response)
 
         self.log_object.update(
             {

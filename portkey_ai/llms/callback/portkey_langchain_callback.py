@@ -8,7 +8,7 @@ from langchain_core.agents import AgentFinish, AgentAction
 from portkey_ai.api_resources.apis.logger import Logger
 
 
-class PortkeyCallbackHandler(BaseCallbackHandler):
+class PortkeyLangchain(BaseCallbackHandler):
     def __init__(
         self,
         api_key: str,
