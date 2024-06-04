@@ -74,8 +74,8 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         self.endTimestamp = float(datetime.now().timestamp())
         responseTime = self.endTimestamp - self.startTimestamp
-
-        usage = response.llm_output.get("token_usage", {})  # type: ignore[union-attr]
+        
+        usage = (response.llm_output or {}).get("token_usage", "")  # type: ignore[union-attr]
 
         self.response["status"] = (
             200 if self.responseStatus == 0 else self.responseStatus
@@ -88,16 +88,16 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
                         "role": "assistant",
                         "content": response.generations[0][0].text,
                     },
-                    "logprobs": response.generations[0][0].generation_info["logprobs"],  # type: ignore[index]
-                    "finish_reason": response.generations[0][0].generation_info["finish_reason"],  # type: ignore[index] # noqa: E501
+                    "logprobs": response.generations[0][0].generation_info.get("logprobs", ""),  # type: ignore[index]
+                    "finish_reason": response.generations[0][0].generation_info.get("finish_reason",""),  # type: ignore[index] # noqa: E501
                 }
             ]
         }
         self.response["body"].update({"usage": usage})
         self.response["body"].update({"id": str(kwargs.get("run_id", ""))})
         self.response["body"].update({"created": int(time.time())})
-        self.response["body"].update({"model": response.llm_output.get("model_name", "")})  # type: ignore[union-attr] # noqa: E501
-        self.response["body"].update({"system_fingerprint": response.llm_output.get("system_fingerprint", "")})  # type: ignore[union-attr] # noqa: E501
+        self.response["body"].update({"model": (response.llm_output or {}).get("model_name", "")})  # type: ignore[union-attr] # noqa: E501
+        self.response["body"].update({"system_fingerprint": (response.llm_output or {}).get("system_fingerprint", "")})  # type: ignore[union-attr] # noqa: E501
         self.response["time"] = int(responseTime * 1000)
         self.response["headers"] = {}
         self.response["streamingMode"] = self.streamingMode

@@ -86,9 +86,11 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
             ]
         self.request["method"] = "POST"
         self.request["url"] = payload.get(EventPayload.SERIALIZED, {}).get(
-            "base_url", "https://api.openai.com/v1/chat/completions"
+            "api_base", "chat/completions"
         )
-        self.request["provider"] = "openai"  # placeholder
+        self.request["provider"] =  payload.get(EventPayload.SERIALIZED, {}).get(
+            "class_name", ""
+        )
         self.request["headers"] = {}
         self.request["body"] = {"messages": self.prompt_records}
         self.request["body"].update(
