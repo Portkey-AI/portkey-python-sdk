@@ -88,7 +88,7 @@ class PortkeyCallbackHandler(LlamaIndexBaseCallbackHandler):
         self.request["url"] = payload.get(EventPayload.SERIALIZED, {}).get(
             "api_base", "chat/completions"
         )
-        self.request["provider"] =  payload.get(EventPayload.SERIALIZED, {}).get(
+        self.request["provider"] = payload.get(EventPayload.SERIALIZED, {}).get(
             "class_name", ""
         )
         self.request["headers"] = {}

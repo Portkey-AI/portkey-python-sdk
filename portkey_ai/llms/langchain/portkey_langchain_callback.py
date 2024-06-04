@@ -74,7 +74,7 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
     def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
         self.endTimestamp = float(datetime.now().timestamp())
         responseTime = self.endTimestamp - self.startTimestamp
-        
+
         usage = (response.llm_output or {}).get("token_usage", "")  # type: ignore[union-attr]
 
         self.response["status"] = (
@@ -88,8 +88,8 @@ class PortkeyCallbackHandler(BaseCallbackHandler):
                         "role": "assistant",
                         "content": response.generations[0][0].text,
                     },
-                    "logprobs": response.generations[0][0].generation_info.get("logprobs", ""),  # type: ignore[index]
-                    "finish_reason": response.generations[0][0].generation_info.get("finish_reason",""),  # type: ignore[index] # noqa: E501
+                    "logprobs": response.generations[0][0].generation_info.get("logprobs", ""),  # type: ignore[union-attr] # noqa: E501
+                    "finish_reason": response.generations[0][0].generation_info.get("finish_reason", ""),  # type: ignore[union-attr] # noqa: E501
                 }
             ]
         }
