@@ -128,6 +128,7 @@ Portkey currently supports all the OpenAI methods, including the legacy ones.
 
 ### Portkey-Specific Methods
 | Methods | Portkey<br>V1.3.1 |
+| :-- | :-- |
 | [Feedback](https://portkey.ai/docs/api-reference/feedback) | ✅ |
 | [Prompts](https://portkey.ai/docs/api-reference/prompts) | ✅ |
 
