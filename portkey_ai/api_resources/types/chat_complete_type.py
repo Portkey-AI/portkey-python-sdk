@@ -28,19 +28,19 @@ class Usage(BaseModel, extra="allow"):
     total_tokens: Optional[int] = None
 
 
-class DeltaToolCallFunction(BaseModel,extra="allow"):
+class DeltaToolCallFunction(BaseModel, extra="allow"):
     arguments: Optional[str] = None
     name: Optional[str] = None
 
 
-class DeltaToolCall(BaseModel,extra="allow"):
+class DeltaToolCall(BaseModel, extra="allow"):
     index: Optional[int]
     id: Optional[str] = None
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
 
 
-class Delta(BaseModel,extra="allow"):
+class Delta(BaseModel, extra="allow"):
     role: Optional[str] = None
     content: Optional[str] = ""
     tool_calls: Optional[List[DeltaToolCall]] = None
@@ -61,38 +61,38 @@ class StreamChoice(BaseModel, extra="allow"):
         return getattr(self, key, None)
 
 
-class FunctionCall(BaseModel,extra="allow"):
+class FunctionCall(BaseModel, extra="allow"):
     arguments: Optional[str]
     name: Optional[str]
 
 
-class ChatCompletionMessageToolCall(BaseModel,extra="allow"):
+class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     function: Optional[FunctionCall]
     type: Optional[str]
 
 
-class ChatCompletionMessage(BaseModel,extra="allow"):
+class ChatCompletionMessage(BaseModel, extra="allow"):
     content: Optional[str] = None
     role: Optional[str]
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
 
 
-class TopLogprob(BaseModel,extra="allow"):
+class TopLogprob(BaseModel, extra="allow"):
     token: Optional[str]
     bytes: Optional[List[int]] = None
     logprob: Optional[float]
 
 
-class ChatCompletionTokenLogprob(BaseModel,extra="allow"):
+class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
     token: Optional[str]
     bytes: Optional[List[int]] = None
     logprob: Optional[float]
     top_logprobs: Optional[List[TopLogprob]]
 
 
-class ChoiceLogprobs(BaseModel,extra="allow"):
+class ChoiceLogprobs(BaseModel, extra="allow"):
     content: Optional[List[ChatCompletionTokenLogprob]] = None
 
 

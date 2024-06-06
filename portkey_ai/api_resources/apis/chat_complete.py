@@ -95,7 +95,7 @@ class Completions(APIResource):
         max_tokens: Union[int, NotGiven] = NOT_GIVEN,
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs,
-    ) -> Union[ChatCompletion, Iterator[ChatCompletionChunk]]:
+    ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
         if stream is True:
             return self.stream_create(
                 model=model,
