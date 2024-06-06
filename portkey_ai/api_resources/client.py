@@ -91,6 +91,7 @@ class Portkey(APIClient):
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
             cache_namespace=cache_namespace,
+            http_client=http_client,
             **kwargs,
         )
 
