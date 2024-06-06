@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List, Mapping, Optional, Union
+import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
@@ -62,6 +63,7 @@ class Portkey(APIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        http_client: Optional[httpx.Client] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -96,6 +98,7 @@ class Portkey(APIClient):
             api_key=OPEN_AI_API_KEY,
             base_url=self.base_url,
             default_headers=self.allHeaders,
+            http_client=http_client,
         )
 
         self.completions = apis.Completion(self)
@@ -140,6 +143,7 @@ class Portkey(APIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        http_client: Optional[httpx.Client] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -167,6 +171,7 @@ class Portkey(APIClient):
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
             cache_namespace=cache_namespace or self.cache_namespace,
+            http_client=http_client or self._client,
             **self.kwargs,
             **kwargs,
         )
@@ -229,6 +234,7 @@ class AsyncPortkey(AsyncAPIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        http_client: Optional[httpx.AsyncClient] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -263,6 +269,7 @@ class AsyncPortkey(AsyncAPIClient):
             api_key=OPEN_AI_API_KEY,
             base_url=self.base_url,
             default_headers=self.allHeaders,
+            http_client=http_client,
         )
 
         self.completions = apis.AsyncCompletion(self)
@@ -307,6 +314,7 @@ class AsyncPortkey(AsyncAPIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        http_client: Optional[httpx.AsyncClient] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -334,6 +342,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
             cache_namespace=cache_namespace or self.cache_namespace,
+            http_client=http_client or self._client,
             **self.kwargs,
             **kwargs,
         )
