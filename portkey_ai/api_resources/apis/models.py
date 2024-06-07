@@ -3,7 +3,7 @@ from typing import Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.models_type import Model, ModelDeleted, ModelList
-from openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 
 class Models(APIResource):

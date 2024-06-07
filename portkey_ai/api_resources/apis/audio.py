@@ -1,7 +1,7 @@
 import json
 from typing import Any, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
-from openai._types import NotGiven, NOT_GIVEN, FileTypes
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
 

@@ -16,15 +16,15 @@ from portkey_ai.api_resources.types.thread_run_type import (
     RunStepList,
 )
 from portkey_ai.api_resources.types.thread_type import Thread, ThreadDeleted
-from openai._types import NotGiven, NOT_GIVEN
-from openai.types.beta import thread_create_and_run_params
-from openai.types.beta.assistant_response_format_option_param import (
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai.types.beta import thread_create_and_run_params
+from ..._vendor.openai.types.beta.assistant_response_format_option_param import (
     AssistantResponseFormatOptionParam,
 )
-from openai.types.beta.assistant_tool_choice_option_param import (
+from ..._vendor.openai.types.beta.assistant_tool_choice_option_param import (
     AssistantToolChoiceOptionParam,
 )
-from openai.lib.streaming import (
+from ..._vendor.openai.lib.streaming import (
     AssistantEventHandler,
     AssistantEventHandlerT,
     AssistantStreamManager,
@@ -32,11 +32,11 @@ from openai.lib.streaming import (
     AsyncAssistantEventHandlerT,
     AsyncAssistantStreamManager,
 )
-from openai.types.beta.threads import (
+from ..._vendor.openai.types.beta.threads import (
     run_create_params,
     run_submit_tool_outputs_params,
 )
-from openai.types.beta.assistant_tool_param import AssistantToolParam
+from ..._vendor.openai.types.beta.assistant_tool_param import AssistantToolParam
 
 
 class Threads(APIResource):

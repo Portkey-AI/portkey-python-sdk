@@ -1,7 +1,7 @@
 import json
 from typing import AsyncIterator, Iterator, Optional, Union
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 # from portkey_ai.api_resources.utils import TextCompletionChunk
 from portkey_ai.api_resources.types.complete_type import (
