@@ -60,15 +60,15 @@ def to_httpx_files(files: RequestFiles | None) -> HttpxRequestFiles | None:
         return None
 
     if is_mapping_t(files):
-        files = {key: _transform_file(file) for key, file in files.items()}
+        files = {key: _transform_file(file) for key, file in files.items()}  # type: ignore[attr-defined]
     elif is_sequence_t(files):
-        files = [(key, _transform_file(file)) for key, file in files]
+        files = [(key, _transform_file(file)) for key, file in files]  # type: ignore[attr-defined]
     else:
         raise TypeError(
             f"Unexpected file type input {type(files)}, expected mapping or sequence"
         )
 
-    return files
+    return files  # type: ignore[return-value]
 
 
 def _transform_file(file: FileTypes) -> HttpxFileTypes:
@@ -80,10 +80,10 @@ def _transform_file(file: FileTypes) -> HttpxFileTypes:
         return file
 
     if is_tuple_t(file):
-        return (file[0], _read_file_content(file[1]), *file[2:])
+        return (file[0], _read_file_content(file[1]), *file[2:])  # type: ignore[index]
 
     raise TypeError(
-        f"Expected file types input to be a FileContent type or to be a tuple"
+        "Expected file types input to be a FileContent type or to be a tuple"
     )
 
 
@@ -108,15 +108,15 @@ async def async_to_httpx_files(files: RequestFiles | None) -> HttpxRequestFiles 
         return None
 
     if is_mapping_t(files):
-        files = {key: await _async_transform_file(file) for key, file in files.items()}
+        files = {key: await _async_transform_file(file) for key, file in files.items()}  # type: ignore[attr-defined]
     elif is_sequence_t(files):
-        files = [(key, await _async_transform_file(file)) for key, file in files]
+        files = [(key, await _async_transform_file(file)) for key, file in files]  # type: ignore[attr-defined]
     else:
         raise TypeError(
             "Unexpected file type input {type(files)}, expected mapping or sequence"
         )
 
-    return files
+    return files  # type: ignore[return-value]
 
 
 async def _async_transform_file(file: FileTypes) -> HttpxFileTypes:
@@ -128,10 +128,10 @@ async def _async_transform_file(file: FileTypes) -> HttpxFileTypes:
         return file
 
     if is_tuple_t(file):
-        return (file[0], await _async_read_file_content(file[1]), *file[2:])
+        return (file[0], await _async_read_file_content(file[1]), *file[2:])  # type: ignore[index]
 
     raise TypeError(
-        f"Expected file types input to be a FileContent type or to be a tuple"
+        "Expected file types input to be a FileContent type or to be a tuple"
     )
 
 

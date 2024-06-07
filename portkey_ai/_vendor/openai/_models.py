@@ -243,7 +243,7 @@ class BaseModel(pydantic.BaseModel):
         # pydantic version they are currently using
 
         @override
-        def model_dump(
+        def model_dump(  # type: ignore[override]
             self,
             *,
             mode: Literal["json", "python"] | str = "python",
@@ -278,9 +278,9 @@ class BaseModel(pydantic.BaseModel):
             """
             if mode != "python":
                 raise ValueError("mode is only supported in Pydantic v2")
-            if round_trip != False:
+            if round_trip is not False:
                 raise ValueError("round_trip is only supported in Pydantic v2")
-            if warnings != True:
+            if warnings is not True:
                 raise ValueError("warnings is only supported in Pydantic v2")
             return super().dict(  # pyright: ignore[reportDeprecated]
                 include=include,
@@ -292,7 +292,7 @@ class BaseModel(pydantic.BaseModel):
             )
 
         @override
-        def model_dump_json(
+        def model_dump_json(  # type: ignore[override]
             self,
             *,
             indent: int | None = None,
@@ -323,9 +323,9 @@ class BaseModel(pydantic.BaseModel):
             Returns:
                 A JSON string representation of the model.
             """
-            if round_trip != False:
+            if round_trip is not False:
                 raise ValueError("round_trip is only supported in Pydantic v2")
-            if warnings != True:
+            if warnings is not True:
                 raise ValueError("warnings is only supported in Pydantic v2")
             return super().json(  # type: ignore[reportDeprecated]
                 indent=indent,
