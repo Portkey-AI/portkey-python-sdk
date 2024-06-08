@@ -29,13 +29,11 @@ class TestLLMLangchain:
             t1_params.extend(t1)
 
     @pytest.mark.parametrize("client, model", t1_params)
-    def test_method_langchain_openai(
-        self,  client: Any, model
-    ) -> None:
+    def test_method_langchain_openai(self, client: Any, model) -> None:
         handler = client(
             api_key=api_key,
         )
-        llm = ChatOpenAI(callbacks=[handler], model=model)
+        llm = ChatOpenAI(callbacks=[handler], model=model)  # type: ignore[misc]
         prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", "You are world class technical documentation writer."),
@@ -43,7 +41,12 @@ class TestLLMLangchain:
             ]
         )
         chain = LLMChain(llm=llm, prompt=prompt)
-        
 
-        assert isinstance(chain.invoke({"input": "what is langchain?"}).get('input'), str) is True
-        assert isinstance(chain.invoke({"input": "what is langchain?"}).get('text'), str) is True
+        assert (
+            isinstance(chain.invoke({"input": "what is langchain?"}).get("input"), str)
+            is True
+        )
+        assert (
+            isinstance(chain.invoke({"input": "what is langchain?"}).get("text"), str)
+            is True
+        )

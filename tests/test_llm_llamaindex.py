@@ -32,17 +32,15 @@ class TestLLMLlamaindex:
     t1 = []
     for k, v in models.items():
         if k == "llamaindex":
-            for emdmodel in v['HuggingFaceEmbedding']:
+            for emdmodel in v["HuggingFaceEmbedding"]:
                 t1.append((client, "HuggingFaceEmbedding", emdmodel))
-            for emdmodel in v['OpenAIEmbedding']:
+            for emdmodel in v["OpenAIEmbedding"]:
                 t1.append((client, "OpenAIEmbedding", emdmodel))
 
             t1_params.extend(t1)
 
     @pytest.mark.parametrize("client, provider, model", t1_params)
-    def test_method_llamaindex(
-        self,  client: Any, provider: Any, model: Any
-    ) -> None:
+    def test_method_llamaindex(self, client: Any, provider: Any, model: Any) -> None:
         handler = client(
             api_key=api_key,
         )
@@ -53,7 +51,9 @@ class TestLLMLlamaindex:
         if provider == "OpenAIEmbedding":
             embed_model = OpenAIEmbedding(model=model)
 
-        docs = SimpleDirectoryReader("/Users/chandeep/Documents/Workspace/Portkey/SDK/Notebook/data").load_data()
+        docs = SimpleDirectoryReader(
+            "/Users/chandeep/Documents/Workspace/Portkey/SDK/Notebook/data"
+        ).load_data()
         index = VectorStoreIndex.from_documents(docs)
 
         Settings.callback_manager = CallbackManager([handler])
