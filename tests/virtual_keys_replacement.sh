@@ -64,4 +64,4 @@ fi
 
 
 process_files_in_directory "$directory" virtual_keys virtual_keys_values
-echo "Word replacement completed."
+echo "Virutal Key replacement completed."
