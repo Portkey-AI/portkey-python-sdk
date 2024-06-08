@@ -77,5 +77,31 @@
         ],
         "image":[],
         "audio":[]
+    },
+    "langchain": {
+        "env_variable": "OPENAI_API_KEY",
+        "chat": [
+            "gpt-4o",
+            "gpt-4-0125-preview",
+            "gpt-4-turbo-preview",
+            "gpt-4-1106-preview",
+            "gpt-4-vision-preview",
+            "gpt-4",
+            "gpt-4-0613",
+            "gpt-3.5-turbo",
+            "gpt-3.5-turbo-0125",
+            "gpt-3.5-turbo-1106"
+        ]
+    },
+    "llamaindex":{
+        "env_variable": "LLAMA_INDEX_API_KEY",
+        "HuggingFaceEmbedding": [
+            "sentence-transformers/all-MiniLM-L6-v2",
+            "sentence-transformers/LaBSE"
+        ],
+        "OpenAIEmbedding": [
+            "text-embedding-ada-002",
+            "text-embedding-3-large"
+        ]
     }
 }

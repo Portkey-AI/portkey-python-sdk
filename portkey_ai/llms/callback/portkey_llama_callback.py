@@ -113,10 +113,8 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         data = payload.get(EventPayload.RESPONSE, {})
 
         chunks = payload.get(EventPayload.MESSAGES, {})
-        print("chunks", chunks)
 
         self.token_llm = self._token_counter.estimate_tokens_in_messages(chunks)
-        print("token_llm", self.token_llm)
         self.response["status"] = 200
         self.response["body"] = {
             "choices": [
@@ -138,8 +136,6 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.response["time"] = int(responseTime * 1000)
         self.response["headers"] = {}
         self.response["streamingMode"] = self.streamingMode
-
-        print("response", self.response)
 
         self.log_object.update(
             {
