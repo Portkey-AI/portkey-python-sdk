@@ -91,7 +91,10 @@
             "gpt-3.5-turbo",
             "gpt-3.5-turbo-0125",
             "gpt-3.5-turbo-1106"
-        ]
+        ],
+        "text":[],
+        "image":[],
+        "audio":[]
     },
     "llamaindex":{
         "env_variable": "LLAMA_INDEX_API_KEY",
@@ -102,6 +105,10 @@
         "OpenAIEmbedding": [
             "text-embedding-ada-002",
             "text-embedding-3-large"
-        ]
+        ],
+        "chat":[],
+        "text":[],
+        "image":[],
+        "audio":[]
     }
 }
