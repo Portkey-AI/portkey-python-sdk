@@ -72,6 +72,7 @@ class APIClient:
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        http_client: Optional[httpx.Client] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -128,7 +129,7 @@ class APIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
-        self._client = httpx.Client(
+        self._client = http_client or httpx.Client(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
@@ -374,7 +375,8 @@ class APIClient:
 
         The client will *not* be usable after this.
         """
-        self._client.close()
+        if hasattr(self, "_client"):
+            self._client.close()
 
     def __enter__(self: Any) -> Any:
         return self
@@ -541,6 +543,7 @@ class AsyncAPIClient:
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        http_client: Optional[httpx.AsyncClient] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -597,7 +600,7 @@ class AsyncAPIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
-        self._client = AsyncHttpxClientWrapper(
+        self._client = http_client or AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
@@ -843,7 +846,8 @@ class AsyncAPIClient:
 
         The client will *not* be usable after this.
         """
-        await self._client.aclose()
+        if hasattr(self, "_client"):
+            await self._client.aclose()
 
     async def __aenter__(self: Any) -> Any:
         return self
