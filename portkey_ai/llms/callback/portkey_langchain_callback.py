@@ -1,11 +1,12 @@
 from datetime import datetime
 import time
 from typing import Any, Dict, List, Optional
-from langchain_core.callbacks import BaseCallbackHandler
-from langchain_core.outputs import LLMResult
-from langchain_core.agents import AgentFinish, AgentAction
-
 from portkey_ai.api_resources.apis.logger import Logger
+
+try:
+    from langchain_core.callbacks import BaseCallbackHandler
+except ImportError:
+    raise ImportError("Please pip install langchain-core to use PortkeyLangchain")
 
 
 class PortkeyLangchain(BaseCallbackHandler):
@@ -71,7 +72,7 @@ class PortkeyLangchain(BaseCallbackHandler):
     ) -> None:
         """Run when chain starts running."""
 
-    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
+    def on_llm_end(self, response: Any, **kwargs: Any) -> None:
         self.endTimestamp = float(datetime.now().timestamp())
         responseTime = self.endTimestamp - self.startTimestamp
 
@@ -139,7 +140,7 @@ class PortkeyLangchain(BaseCallbackHandler):
     def on_text(self, text: str, **kwargs: Any) -> None:
         pass
 
-    def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
+    def on_agent_finish(self, finish: Any, **kwargs: Any) -> None:
         pass
 
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
@@ -155,7 +156,7 @@ class PortkeyLangchain(BaseCallbackHandler):
     ) -> None:
         pass
 
-    def on_agent_action(self, action: AgentAction, **kwargs: Any) -> Any:
+    def on_agent_action(self, action: Any, **kwargs: Any) -> Any:
         """Do nothing."""
         pass
 

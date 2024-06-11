@@ -1,13 +1,15 @@
 import time
 from typing import Any, Dict, List, Optional
-from llama_index.core.callbacks.base_handler import (
-    BaseCallbackHandler as LlamaIndexBaseCallbackHandler,
-)
-
 from portkey_ai.api_resources.apis.logger import Logger
 from datetime import datetime
-from llama_index.core.callbacks.schema import CBEventType, EventPayload
-from llama_index.core.utilities.token_counting import TokenCounter
+
+try:
+    from llama_index.core.callbacks.base_handler import (
+        BaseCallbackHandler as LlamaIndexBaseCallbackHandler,
+    )
+    from llama_index.core.utilities.token_counting import TokenCounter
+except ImportError:
+    raise ImportError("Please pip install llama-index to use Portkey Callback Handler")
 
 
 class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
@@ -44,7 +46,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
 
     def on_event_start(  # type: ignore[return]
         self,
-        event_type: CBEventType,
+        event_type: Any,
         payload: Optional[Dict[str, Any]] = None,
         event_id: str = "",
         parent_id: str = "",
@@ -52,19 +54,19 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
     ) -> str:
         """Run when an event starts and return id of event."""
 
-        if event_type == CBEventType.LLM:
+        if event_type == "llm":
             self.llm_event_start(payload)
 
     def on_event_end(
         self,
-        event_type: CBEventType,
+        event_type: Any,
         payload: Optional[Dict[str, Any]] = None,
         event_id: str = "",
         **kwargs: Any,
     ) -> None:
         """Run when an event ends."""
 
-        if event_type == CBEventType.LLM:
+        if event_type == "llm":
             self.llm_event_stop(payload, event_id)
 
     def start_trace(self, trace_id: Optional[str] = None) -> None:
@@ -79,29 +81,23 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         """Run when an overall trace is exited."""
 
     def llm_event_start(self, payload: Any) -> None:
-        if EventPayload.MESSAGES in payload:
-            messages = payload.get(EventPayload.MESSAGES, {})
+        if "messages" in payload:
+            messages = payload.get("messages", {})
             self.prompt_records = [
                 {"role": m.role.value, "content": m.content} for m in messages
             ]
         self.request["method"] = "POST"
-        self.request["url"] = payload.get(EventPayload.SERIALIZED, {}).get(
+        self.request["url"] = payload.get("serialized", {}).get(
             "api_base", "chat/completions"
         )
-        self.request["provider"] = payload.get(EventPayload.SERIALIZED, {}).get(
-            "class_name", ""
-        )
+        self.request["provider"] = payload.get("serialized", {}).get("class_name", "")
         self.request["headers"] = {}
         self.request["body"] = {"messages": self.prompt_records}
         self.request["body"].update(
-            {"model": payload.get(EventPayload.SERIALIZED, {}).get("model", "")}
+            {"model": payload.get("serialized", {}).get("model", "")}
         )
         self.request["body"].update(
-            {
-                "temperature": payload.get(EventPayload.SERIALIZED, {}).get(
-                    "temperature", ""
-                )
-            }
+            {"temperature": payload.get("serialized", {}).get("temperature", "")}
         )
 
         return None
@@ -110,9 +106,9 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.endTimestamp = float(datetime.now().timestamp())
         responseTime = self.endTimestamp - self.startTimestamp
 
-        data = payload.get(EventPayload.RESPONSE, {})
+        data = payload.get("response", {})
 
-        chunks = payload.get(EventPayload.MESSAGES, {})
+        chunks = payload.get("messages", {})
 
         self.token_llm = self._token_counter.estimate_tokens_in_messages(chunks)
         self.response["status"] = 200
