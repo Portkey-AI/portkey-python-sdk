@@ -8,6 +8,10 @@ try:
         BaseCallbackHandler as LlamaIndexBaseCallbackHandler,
     )
     from llama_index.core.utilities.token_counting import TokenCounter
+except ModuleNotFoundError:
+    raise ModuleNotFoundError(
+        "Please install llama-index to use Portkey Callback Handler"
+    )
 except ImportError:
     raise ImportError("Please pip install llama-index to use Portkey Callback Handler")
 
