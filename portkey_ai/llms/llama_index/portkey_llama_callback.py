@@ -129,7 +129,15 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
                 }
             ]
         }
-        self.response["body"].update({"usage": {"total_tokens": self.token_llm}})
+        self.response["body"].update(
+            {
+                "usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": self.token_llm,
+                    "total_tokens": self.token_llm,
+                }
+            }
+        )
         self.response["body"].update({"id": event_id})
         self.response["body"].update({"created": int(time.time())})
         self.response["body"].update({"model": data.raw.get("model", "")})
