@@ -24,6 +24,8 @@ class CreateHeaders:
                 if k.lower() != "authorization":
                     headers[get_portkey_header(k)] = str(v)
                 else:
+                    # Logic to make the first letter of the (a)uthorization capital
+                    k = k.capitalize()
                     headers[k] = str("Bearer " + v)
 
                 # logic for List of str to comma separated string

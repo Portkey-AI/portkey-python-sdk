@@ -265,6 +265,7 @@ class Constructs(BaseModel):
     azure_deployment_id: Optional[str] = None
     azure_api_version: Optional[str] = None
     cache_namespace: Optional[str] = None
+    authorization: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):

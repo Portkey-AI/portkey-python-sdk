@@ -64,6 +64,7 @@ class Portkey(APIClient):
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
+        authorization: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -92,6 +93,7 @@ class Portkey(APIClient):
             azure_api_version=azure_api_version,
             cache_namespace=cache_namespace,
             http_client=http_client,
+            authorization=authorization,
             **kwargs,
         )
 
@@ -145,6 +147,7 @@ class Portkey(APIClient):
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
+        authorization: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -173,6 +176,7 @@ class Portkey(APIClient):
             azure_api_version=azure_api_version or self.azure_api_version,
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
+            authorization=authorization or self.authorization,
             **self.kwargs,
             **kwargs,
         )
@@ -236,6 +240,7 @@ class AsyncPortkey(AsyncAPIClient):
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
+        authorization: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -263,6 +268,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
             cache_namespace=cache_namespace,
+            authorization=authorization,
             **kwargs,
         )
 
@@ -316,6 +322,7 @@ class AsyncPortkey(AsyncAPIClient):
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
+        authorization: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -344,6 +351,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_api_version=azure_api_version or self.azure_api_version,
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
+            authorization=authorization or self.authorization,
             **self.kwargs,
             **kwargs,
         )
