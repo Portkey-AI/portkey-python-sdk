@@ -24,7 +24,12 @@ class CreateHeaders:
                 if k.lower() != "authorization":
                     headers[get_portkey_header(k)] = str(v)
                 else:
-                    headers[k] = str("Bearer " + v)
+                    # Logic to add Bearer only if it is not present.
+                    # Else it would be added everytime a request is made
+                    if v.startswith("Bearer "):
+                        headers[k] = v
+                    else:
+                        headers[k] = str("Bearer " + v)
 
                 # logic for List of str to comma separated string
                 if k == "forward-headers":
