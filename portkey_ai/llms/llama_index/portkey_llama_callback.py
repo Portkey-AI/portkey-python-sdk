@@ -34,6 +34,8 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.portkey_logger = Logger(api_key=api_key)
 
         self._token_counter = TokenCounter()
+        self.completion_tokens = 0
+        self.prompt_tokens = 0
         self.token_llm = 0
 
         self.log_object: Dict[str, Any] = {}
@@ -86,6 +88,8 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
 
     def llm_event_start(self, payload: Any) -> None:
         if "messages" in payload:
+            chunks = payload.get("messages", {})
+            self.prompt_tokens = self._token_counter.estimate_tokens_in_messages(chunks)
             messages = payload.get("messages", {})
             self.prompt_records = [
                 {"role": m.role.value, "content": m.content} for m in messages
@@ -113,8 +117,8 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         data = payload.get("response", {})
 
         chunks = payload.get("messages", {})
-
-        self.token_llm = self._token_counter.estimate_tokens_in_messages(chunks)
+        self.completion_tokens = self._token_counter.estimate_tokens_in_messages(chunks)
+        self.token_llm = self.prompt_tokens + self.completion_tokens
         self.response["status"] = 200
         self.response["body"] = {
             "choices": [
@@ -132,8 +136,8 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.response["body"].update(
             {
                 "usage": {
-                    "prompt_tokens": 0,
-                    "completion_tokens": self.token_llm,
+                    "prompt_tokens": self.prompt_tokens,
+                    "completion_tokens": self.completion_tokens,
                     "total_tokens": self.token_llm,
                 }
             }
