@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from tests.utils import read_json_file
-from portkey_ai.llms.callback import PortkeyLangchain
+from portkey_ai.llms.langchain import PortkeyLangchain
 from langchain.chat_models import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import LLMChain

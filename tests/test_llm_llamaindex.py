@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from tests.utils import read_json_file
-from portkey_ai.llms.callback import PortkeyLlamaindex
+from portkey_ai.llms.llama_index import PortkeyLlamaindex
 
 
 from llama_index.llms.openai import OpenAI
