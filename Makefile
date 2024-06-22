@@ -30,3 +30,9 @@ upload:
 
 dev: 
 	pip install -e ".[dev]"
+
+langchain_callback:
+	pip install -e ".[langchain_callback]"
+
+llama_index_callback:
+	pip install -e ".[llama_index_callback]"
