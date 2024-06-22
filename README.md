@@ -100,6 +100,38 @@ async def main():
 asyncio.run(main())
 ```
 
+## Compatibility with OpenAI SDK
+
+Portkey currently supports all the OpenAI methods, including the legacy ones.
+
+| Methods                    | OpenAI<br>V1.26.0 | Portkey<br>V1.3.1 |
+|:----------------------------|:--------|:---------|
+| [Audio](https://portkey.ai/docs/product/ai-gateway-streamline-llm-integrations/multimodal-capabilities/vision-1) | ✅ | ✅ |
+| [Chat](https://portkey.ai/docs/api-reference/chat-completions) | ✅ | ✅ |
+| [Embeddings](https://portkey.ai/docs/api-reference/embeddings) | ✅ | ✅ |
+| [Images](https://portkey.ai/docs/api-reference/completions-1) | ✅ | ✅ |
+| Fine-tuning                  | ✅     | ✅      |
+| Batch                        | ✅     | ✅      |
+| Files                        | ✅     | ✅      |
+| Models                       | ✅     | ✅      |
+| Moderations                  | ✅     | ✅      |
+| Assistants                   | ✅     | ✅      |
+| Threads                      | ✅     | ✅      |
+| Thread - Messages            | ✅     | ✅      |
+| Thread - Runs                | ✅     | ✅      |
+| Thread - Run - Steps         | ✅     | ✅      |
+| Vector Store                 | ✅     | ✅      |
+| Vector Store - Files         | ✅     | ✅      |
+| Vector Store - Files Batches | ✅     | ✅      |
+| Generations                  | ❌ (Deprecated) | ✅ |
+| Completions                  | ❌ (Deprecated) | ✅ |
+
+### Portkey-Specific Methods
+| Methods | Portkey<br>V1.3.1 |
+| :-- | :-- |
+| [Feedback](https://portkey.ai/docs/api-reference/feedback) | ✅ |
+| [Prompts](https://portkey.ai/docs/api-reference/prompts) | ✅ |
+
 ---
 
 #### [Check out Portkey docs for the full list of supported providers](https://portkey.ai/docs/welcome/what-is-portkey#ai-providers-supported)
