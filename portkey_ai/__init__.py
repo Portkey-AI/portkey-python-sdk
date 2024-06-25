@@ -65,6 +65,9 @@ from portkey_ai.api_resources import (
     Admin,
     Users,
     Invites,
+    AsyncAdmin,
+    AsyncUsers,
+    AsyncInvites,
 )
 
 from portkey_ai.version import VERSION
@@ -149,4 +152,7 @@ __all__ = [
     "Admin",
     "Users",
     "Invites",
+    "AsyncAdmin",
+    "AsyncUsers",
+    "AsyncInvites",
 ]

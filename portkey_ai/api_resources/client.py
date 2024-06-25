@@ -203,6 +203,7 @@ class AsyncPortkey(AsyncAPIClient):
     audio: apis.AsyncAudio
     batches: apis.AsyncBatches
     fine_tuning: apis.AsyncFineTuning
+    admin: apis.AsyncAdmin
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -295,6 +296,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.audio = apis.AsyncAudio(self)
         self.batches = apis.AsyncBatches(self)
         self.fine_tuning = apis.AsyncFineTuning(self)
+        self.admin = apis.AsyncAdmin(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(

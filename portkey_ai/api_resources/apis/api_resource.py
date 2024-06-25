@@ -45,5 +45,11 @@ class AsyncAPIResource:
     async def _put(self, *args, **kwargs):
         return await self._client._put(*args, **kwargs)
 
+    async def _get(self, *args, **kwargs):
+        return await self._client._get(*args, **kwargs)
+
+    async def _delete(self, *args, **kwargs):
+        return await self._client._delete(*args, **kwargs)
+
     async def _sleep(self, seconds: float) -> None:
         await asyncio.sleep(seconds)

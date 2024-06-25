@@ -51,6 +51,9 @@ from .admin import (
     Admin,
     Users,
     Invites,
+    AsyncAdmin,
+    AsyncUsers,
+    AsyncInvites,
 )
 
 
@@ -113,4 +116,7 @@ __all__ = [
     "Admin",
     "Users",
     "Invites",
+    "AsyncAdmin",
+    "AsyncUsers",
+    "AsyncInvites",
 ]
