@@ -62,6 +62,12 @@ from portkey_ai.api_resources import (
     AsyncVectorStores,
     AsyncVectorFiles,
     AsyncVectorFileBatches,
+    Admin,
+    Users,
+    Invites,
+    AsyncAdmin,
+    AsyncUsers,
+    AsyncInvites,
 )
 
 from portkey_ai.version import VERSION
@@ -143,4 +149,10 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "Admin",
+    "Users",
+    "Invites",
+    "AsyncAdmin",
+    "AsyncUsers",
+    "AsyncInvites",
 ]
