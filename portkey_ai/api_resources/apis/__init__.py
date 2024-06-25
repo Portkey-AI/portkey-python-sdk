@@ -47,6 +47,11 @@ from .vector_stores import (
     AsyncVectorFiles,
     AsyncVectorFileBatches,
 )
+from .admin import (
+    Admin,
+    Users,
+    Invites,
+)
 
 
 __all__ = [
@@ -105,4 +110,7 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "Admin",
+    "Users",
+    "Invites",
 ]

@@ -22,6 +22,12 @@ class APIResource:
     def _put(self, *args, **kwargs):
         return self._client._put(*args, **kwargs)
 
+    def _get(self, *args, **kwargs):
+        return self._client._get(*args, **kwargs)
+
+    def _delete(self, *args, **kwargs):
+        return self._client._delete(*args, **kwargs)
+
 
 class AsyncAPIResource:
     _client: AsyncAPIClient
