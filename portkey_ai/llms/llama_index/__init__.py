@@ -1,3 +1,3 @@
-from .completions import PortkeyLLM
+from .portkey_llama_callback import PortkeyLlamaindex
 
-__all__ = ["PortkeyLLM"]
+__all__ = ["PortkeyLlamaindex"]
