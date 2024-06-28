@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Optional
+from typing import Dict, Iterable, Optional, Union
 import httpx
 from .utils import parse_headers
 from typing import List, Any
@@ -73,7 +73,7 @@ class ChatCompletionMessageToolCall(BaseModel):
 
 
 class ChatCompletionMessage(BaseModel):
-    content: Optional[str] = None
+    content: Optional[Union[str, Iterable[Any]]] = None
     role: Optional[str]
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
