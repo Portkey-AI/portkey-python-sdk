@@ -4,7 +4,7 @@ import httpx
 from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
-from openai.types.fine_tuning import FineTuningJobWandbIntegrationObject
+from ..._vendor.openai.types.fine_tuning import FineTuningJobWandbIntegrationObject
 
 __all__ = [
     "Error",

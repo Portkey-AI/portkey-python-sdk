@@ -2,7 +2,7 @@ import json
 from typing import List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 from portkey_ai.api_resources.types.moderations_type import ModerationCreateResponse
 
 

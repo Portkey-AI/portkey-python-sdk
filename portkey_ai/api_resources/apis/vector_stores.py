@@ -3,8 +3,8 @@ from typing import Iterable, List, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from openai._types import NotGiven, NOT_GIVEN, FileTypes
-from openai.types.beta import (
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
+from ..._vendor.openai.types.beta import (
     vector_store_create_params,
     vector_store_update_params,
 )

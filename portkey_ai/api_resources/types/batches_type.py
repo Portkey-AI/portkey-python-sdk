@@ -5,8 +5,8 @@ import httpx
 from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
-from openai.types.batch_error import BatchError
-from openai.types.batch_request_counts import BatchRequestCounts
+from ..._vendor.openai.types.batch_error import BatchError
+from ..._vendor.openai.types.batch_request_counts import BatchRequestCounts
 
 __all__ = ["Batch", "BatchList", "Errors"]
 

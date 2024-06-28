@@ -17,7 +17,7 @@ from portkey_ai.api_resources.types.chat_complete_type import (
 )
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
-from openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 __all__ = ["ChatCompletion", "AsyncChatCompletion"]
 
