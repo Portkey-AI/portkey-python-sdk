@@ -2,8 +2,8 @@ import json
 from typing import Iterable, Optional, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from openai._types import NotGiven, NOT_GIVEN
-from openai.types.fine_tuning import job_create_params
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai.types.fine_tuning import job_create_params
 
 from portkey_ai.api_resources.types.fine_tuning_type import (
     FineTuningJob,

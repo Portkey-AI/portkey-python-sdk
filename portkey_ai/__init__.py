@@ -1,5 +1,6 @@
 import os
 from typing import Mapping, Optional, Union
+from ._vendor import openai
 from portkey_ai.api_resources import (
     LLMOptions,
     Modes,
@@ -143,4 +144,5 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "openai",
 ]

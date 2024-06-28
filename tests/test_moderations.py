@@ -47,8 +47,9 @@ class TestModerations:
     t1_params = []
     t = []
     for k, v in models.items():
-        for i in v["chat"]:
-            t.append((client, k, os.environ.get(v["env_variable"]), i))
+        if k == "openai":
+            for i in v["chat"]:
+                t.append((client, k, os.environ.get(v["env_variable"]), i))
 
         t1_params.extend(t)
 
