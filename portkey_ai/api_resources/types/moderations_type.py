@@ -4,7 +4,7 @@ import httpx
 from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
-from openai.types.moderation import Moderation
+from ..._vendor.openai.types.moderation import Moderation
 
 
 __all__ = ["ModerationCreateResponse"]

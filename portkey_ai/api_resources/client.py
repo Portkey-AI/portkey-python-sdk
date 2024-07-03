@@ -5,7 +5,8 @@ import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
-from openai import AsyncOpenAI, OpenAI
+# from openai import AsyncOpenAI, OpenAI
+from .._vendor.openai import OpenAI, AsyncOpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
 )

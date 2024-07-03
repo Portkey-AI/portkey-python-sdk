@@ -3,7 +3,7 @@ from typing import Dict, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 from portkey_ai.api_resources.types.batches_type import Batch, BatchList
 
