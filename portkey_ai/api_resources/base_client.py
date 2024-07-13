@@ -163,6 +163,7 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
@@ -177,6 +178,7 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
@@ -191,6 +193,7 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
@@ -204,6 +207,7 @@ class APIClient:
         path: str,
         *,
         body: Mapping[str, Any],
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
@@ -215,6 +219,7 @@ class APIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -224,6 +229,7 @@ class APIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -312,6 +318,7 @@ class APIClient:
         method: str,
         url: str,
         body: Any,
+        files: Any,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -320,6 +327,7 @@ class APIClient:
         opts.method = method
         opts.url = url
         json_body = body
+        opts.files = files
         opts.json_body = remove_empty_values(json_body)
         opts.headers = remove_empty_values(headers)
         return opts
@@ -330,6 +338,7 @@ class APIClient:
         method: str,
         url: str,
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -338,6 +347,7 @@ class APIClient:
         opts.method = method
         opts.url = url
         opts.json_body = remove_empty_values(body)
+        opts.files = files
         opts.headers = remove_empty_values(headers)
         return opts
 
@@ -402,6 +412,7 @@ class APIClient:
             headers=headers,
             params=params,
             json=json_body,
+            files=options.files,
             timeout=options.timeout,
         )
         return request
@@ -638,6 +649,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: Literal[False],
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -652,6 +664,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: Literal[True],
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -666,6 +679,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -679,6 +693,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -689,6 +704,7 @@ class AsyncAPIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -698,6 +714,7 @@ class AsyncAPIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -786,6 +803,7 @@ class AsyncAPIClient:
         method: str,
         url: str,
         body: Any,
+        files: Any,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -794,6 +812,7 @@ class AsyncAPIClient:
         opts.method = method
         opts.url = url
         json_body = body
+        opts.files = files
         opts.json_body = remove_empty_values(json_body)
         opts.headers = remove_empty_values(headers)
         return opts
@@ -804,6 +823,7 @@ class AsyncAPIClient:
         method: str,
         url: str,
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -812,6 +832,7 @@ class AsyncAPIClient:
         opts.method = method
         opts.url = url
         opts.json_body = remove_empty_values(body)
+        opts.files = files
         opts.headers = remove_empty_values(headers)
         return opts
 
