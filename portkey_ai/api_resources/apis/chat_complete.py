@@ -53,7 +53,7 @@ class Completions(APIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
-            **kwargs,
+            extra_body=kwargs,
         ) as response:
             for line in response.iter_lines():
                 json_string = line.replace("data: ", "")
@@ -79,7 +79,7 @@ class Completions(APIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
-            **kwargs,
+            extra_body=kwargs,
         )
         data = ChatCompletions(**json.loads(response.text))
         data._headers = response.headers
@@ -133,7 +133,7 @@ class AsyncCompletions(AsyncAPIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
-            **kwargs,
+            extra_body=kwargs,
         ) as response:
             async for line in response.iter_lines():
                 json_string = line.replace("data: ", "")
@@ -159,7 +159,7 @@ class AsyncCompletions(AsyncAPIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
-            **kwargs,
+            extra_body=kwargs,
         )
         data = ChatCompletions(**json.loads(response.text))
         data._headers = response.headers
