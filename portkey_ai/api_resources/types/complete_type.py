@@ -16,9 +16,9 @@ class CompletionUsage(BaseModel):
 
 class Logprobs(BaseModel):
     text_offset: Optional[List[int]] = None
-    token_logprobs: Optional[List[float]] = None
+    token_logprobs: Optional[List[Optional[float]]] = None
     tokens: Optional[List[str]] = None
-    top_logprobs: Optional[List[Dict[str, float]]] = None
+    top_logprobs: Optional[List[Optional[Dict[str, float]]]] = None
 
 
 class CompletionChoice(BaseModel):
