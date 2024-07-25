@@ -43,7 +43,7 @@ class Transcriptions(APIResource):
             response_format=response_format,
             temperature=temperature,
             timestamp_granularities=timestamp_granularities,
-            **kwargs
+            extra_body=kwargs,
         )
         data = Transcription(**json.loads(response.text))
         data._headers = response.headers
@@ -72,7 +72,7 @@ class Translations(APIResource):
             prompt=prompt,
             response_format=response_format,
             temperature=temperature,
-            **kwargs
+            extra_body=kwargs,
         )
         data = Translation(**json.loads(response.text))
         data._headers = response.headers
@@ -102,7 +102,7 @@ class Speech(APIResource):
             voice=voice,
             response_format=response_format,
             speed=speed,
-            **kwargs
+            extra_body=kwargs,
         )
 
         return response
@@ -144,7 +144,7 @@ class AsyncTranscriptions(AsyncAPIResource):
                 response_format=response_format,
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
-                **kwargs
+                extra_body=kwargs,
             )
         )
         data = Transcription(**json.loads(response.text))
@@ -174,7 +174,7 @@ class AsyncTranslations(AsyncAPIResource):
             prompt=prompt,
             response_format=response_format,
             temperature=temperature,
-            **kwargs
+            extra_body=kwargs,
         )
         data = Translation(**json.loads(response.text))
         data._headers = response.headers
@@ -204,7 +204,7 @@ class AsyncSpeech(AsyncAPIResource):
             voice=voice,
             response_format=response_format,
             speed=speed,
-            **kwargs
+            extra_body=kwargs,
         )
 
         data = response
