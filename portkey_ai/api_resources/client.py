@@ -103,6 +103,7 @@ class Portkey(APIClient):
             base_url=self.base_url,
             default_headers=self.allHeaders,
             http_client=http_client,
+            max_retries=0,
         )
 
         self.completions = apis.Completion(self)
@@ -279,6 +280,7 @@ class AsyncPortkey(AsyncAPIClient):
             base_url=self.base_url,
             default_headers=self.allHeaders,
             http_client=http_client,
+            max_retries=0,
         )
 
         self.completions = apis.AsyncCompletion(self)
