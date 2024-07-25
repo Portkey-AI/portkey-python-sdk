@@ -26,7 +26,7 @@ process_files_in_directory() {
 
     # Find all .json files in the directory and its subdirectories
     find "$directory" -type f -name "*.json" | while read -r file; do
-        replace_words_in_file "$file" virtual_keys virtual_keys_values
+        replace_words_in_file "$file" virtual_keys[@] virtual_keys_values[@]
         echo "Processed file: $file"
     done
 }
@@ -46,7 +46,6 @@ directory="tests/configs"
 virtual_keys=("openai-virtual-key" "anyscale-virtual-key" "azure-virtual-key" "cohere-virtual-key" "anthropic-virtual-key" "stability-virtual-key")
 virtual_keys_values=("openai_value" "anyscale_value" "azure_value" "cohere_value" "anthropic_value" "stability_value")
 
-
 # Check if the directory exists
 if [[ ! -d "$directory" ]]; then
     echo "Directory does not exist. Please provide a valid directory path."
@@ -62,6 +61,5 @@ if [[ "$1" == "--undo" ]]; then
     virtual_keys_values=("${temp_words[@]}")
 fi
 
-
-process_files_in_directory "$directory" virtual_keys virtual_keys_values
+process_files_in_directory "$directory" virtual_keys[@] virtual_keys_values[@]
 echo "Virutal Key replacement completed."
