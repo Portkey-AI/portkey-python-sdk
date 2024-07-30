@@ -51,6 +51,12 @@ from .apis import (
     AsyncVectorStores,
     AsyncVectorFiles,
     AsyncVectorFileBatches,
+    Admin,
+    Users,
+    Invites,
+    AsyncAdmin,
+    AsyncUsers,
+    AsyncInvites,
 )
 from .utils import (
     Modes,
@@ -137,4 +143,10 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "Admin",
+    "Users",
+    "Invites",
+    "AsyncAdmin",
+    "AsyncUsers",
+    "AsyncInvites",
 ]

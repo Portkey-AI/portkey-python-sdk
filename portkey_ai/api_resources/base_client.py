@@ -306,6 +306,144 @@ class APIClient:
         )
         return res
 
+    @overload
+    def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[True],
+        stream_cls: type[StreamT],
+    ) -> StreamT:
+        ...
+
+    @overload
+    def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[False],
+        stream_cls: type[StreamT],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+    ) -> Union[ResponseT, StreamT]:
+        ...
+
+    def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+    ) -> Union[ResponseT, StreamT]:
+        opts = self._construct(
+            method="get",
+            url=path,
+            body=body,
+            stream=stream,
+            params=params,
+            headers=headers,
+        )
+        res = self._request(
+            options=opts,
+            stream=stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return res
+
+    @overload
+    def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[True],
+        stream_cls: type[StreamT],
+    ) -> StreamT:
+        ...
+
+    @overload
+    def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[False],
+        stream_cls: type[StreamT],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+    ) -> Union[ResponseT, StreamT]:
+        ...
+
+    def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[StreamT],
+    ) -> Union[ResponseT, StreamT]:
+        opts = self._construct(
+            method="delete",
+            url=path,
+            body=body,
+            stream=stream,
+            params=params,
+            headers=headers,
+        )
+        res = self._request(
+            options=opts,
+            stream=stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return res
+
     def _construct_generate_options(
         self,
         *,
@@ -337,7 +475,8 @@ class APIClient:
         opts = Options.construct()
         opts.method = method
         opts.url = url
-        opts.json_body = remove_empty_values(body)
+        if method != "get" or method != "delete":
+            opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
         return opts
 
@@ -780,6 +919,144 @@ class AsyncAPIClient:
         )
         return res
 
+    @overload
+    async def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[True],
+        stream_cls: type[AsyncStreamT],
+    ) -> AsyncStreamT:
+        ...
+
+    @overload
+    async def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[False],
+        stream_cls: type[AsyncStreamT],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    async def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[AsyncStreamT],
+    ) -> Union[ResponseT, AsyncStreamT]:
+        ...
+
+    async def _get(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[AsyncStreamT],
+    ) -> Union[ResponseT, AsyncStreamT]:
+        opts = await self._construct(
+            method="get",
+            url=path,
+            body=body,
+            stream=stream,
+            params=params,
+            headers=headers,
+        )
+        res = await self._request(
+            options=opts,
+            stream=stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return res
+
+    @overload
+    async def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[True],
+        stream_cls: type[AsyncStreamT],
+    ) -> AsyncStreamT:
+        ...
+
+    @overload
+    async def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: Literal[False],
+        stream_cls: type[AsyncStreamT],
+    ) -> ResponseT:
+        ...
+
+    @overload
+    async def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[AsyncStreamT],
+    ) -> Union[ResponseT, AsyncStreamT]:
+        ...
+
+    async def _delete(
+        self,
+        path: str,
+        *,
+        body: Mapping[str, Any],
+        params: Mapping[str, str],
+        headers: Mapping[str, str],
+        cast_to: Type[ResponseT],
+        stream: bool,
+        stream_cls: type[AsyncStreamT],
+    ) -> Union[ResponseT, AsyncStreamT]:
+        opts = await self._construct(
+            method="delete",
+            url=path,
+            body=body,
+            stream=stream,
+            params=params,
+            headers=headers,
+        )
+        res = await self._request(
+            options=opts,
+            stream=stream,
+            cast_to=cast_to,
+            stream_cls=stream_cls,
+        )
+        return res
+
     async def _construct_generate_options(
         self,
         *,
@@ -811,7 +1088,8 @@ class AsyncAPIClient:
         opts = Options.construct()
         opts.method = method
         opts.url = url
-        opts.json_body = remove_empty_values(body)
+        if method != "get" or method != "delete":
+            opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
         return opts
 
