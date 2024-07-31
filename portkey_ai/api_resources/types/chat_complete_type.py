@@ -28,19 +28,19 @@ class Usage(BaseModel, extra="allow"):
     total_tokens: Optional[int] = None
 
 
-class DeltaToolCallFunction(BaseModel):
+class DeltaToolCallFunction(BaseModel, extra="allow"):
     arguments: Optional[str] = None
     name: Optional[str] = None
 
 
-class DeltaToolCall(BaseModel):
+class DeltaToolCall(BaseModel, extra="allow"):
     index: Optional[int]
     id: Optional[str] = None
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
 
 
-class Delta(BaseModel):
+class Delta(BaseModel, extra="allow"):
     role: Optional[str] = None
     content: Optional[str] = ""
     tool_calls: Optional[List[DeltaToolCall]] = None
@@ -61,49 +61,49 @@ class StreamChoice(BaseModel, extra="allow"):
         return getattr(self, key, None)
 
 
-class FunctionCall(BaseModel):
+class FunctionCall(BaseModel, extra="allow"):
     arguments: Optional[str]
     name: Optional[str]
 
 
-class ChatCompletionMessageToolCall(BaseModel):
+class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     function: Optional[FunctionCall]
     type: Optional[str]
 
 
-class ChatCompletionMessage(BaseModel):
+class ChatCompletionMessage(BaseModel, extra="allow"):
     content: Optional[Union[str, Iterable[Any]]] = None
     role: Optional[str]
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
 
 
-class TopLogprob(BaseModel):
+class TopLogprob(BaseModel, extra="allow"):
     token: Optional[str]
     bytes: Optional[List[int]] = None
     logprob: Optional[float]
 
 
-class ChatCompletionTokenLogprob(BaseModel):
+class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
     token: Optional[str]
     bytes: Optional[List[int]] = None
     logprob: Optional[float]
     top_logprobs: Optional[List[TopLogprob]]
 
 
-class ChoiceLogprobs(BaseModel):
+class ChoiceLogprobs(BaseModel, extra="allow"):
     content: Optional[List[ChatCompletionTokenLogprob]] = None
 
 
-class Choice(BaseModel):
+class Choice(BaseModel, extra = "allow"):
     finish_reason: Optional[str]
     index: Optional[int]
     logprobs: Optional[ChoiceLogprobs] = None
     message: Optional[ChatCompletionMessage]
 
 
-class ChatCompletions(BaseModel):
+class ChatCompletions(BaseModel, extra = "allow"):
     id: Optional[str]
     choices: Optional[List[Choice]]
     created: Optional[int]
@@ -127,7 +127,7 @@ class ChatCompletions(BaseModel):
         return parse_headers(self._headers)
 
 
-class ChatCompletionChunk(BaseModel):
+class ChatCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
