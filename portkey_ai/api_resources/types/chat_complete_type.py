@@ -96,14 +96,14 @@ class ChoiceLogprobs(BaseModel, extra="allow"):
     content: Optional[List[ChatCompletionTokenLogprob]] = None
 
 
-class Choice(BaseModel, extra = "allow"):
+class Choice(BaseModel, extra="allow"):
     finish_reason: Optional[str]
     index: Optional[int]
     logprobs: Optional[ChoiceLogprobs] = None
     message: Optional[ChatCompletionMessage]
 
 
-class ChatCompletions(BaseModel, extra = "allow"):
+class ChatCompletions(BaseModel, extra="allow"):
     id: Optional[str]
     choices: Optional[List[Choice]]
     created: Optional[int]

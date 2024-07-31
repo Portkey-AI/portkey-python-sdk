@@ -182,7 +182,8 @@ class Portkey(APIClient):
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
-            strict_open_ai_compliance=strict_open_ai_compliance or self.strict_open_ai_compliance,
+            strict_open_ai_compliance=strict_open_ai_compliance
+            or self.strict_open_ai_compliance,
             **self.kwargs,
             **kwargs,
         )
@@ -363,7 +364,8 @@ class AsyncPortkey(AsyncAPIClient):
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
-            strict_open_ai_compliance=strict_open_ai_compliance or self.strict_open_ai_compliance,
+            strict_open_ai_compliance=strict_open_ai_compliance
+            or self.strict_open_ai_compliance,
             **self.kwargs,
             **kwargs,
         )
