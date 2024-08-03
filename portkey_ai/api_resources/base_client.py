@@ -217,7 +217,6 @@ class APIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Union[ResponseT, StreamT]:
-        print(f"_POST headers: {headers}")
         if path.endswith("/generate"):
             opts = self._construct_generate_options(
                 method="post",
@@ -353,7 +352,6 @@ class APIClient:
         opts.json_body = remove_empty_values(body)
         opts.files = files
         opts.headers = remove_empty_values(headers)
-        print(f"construct headers: {opts.headers}")
         return opts
 
     @property
@@ -463,7 +461,6 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
     ) -> Union[ResponseT, StreamT]:
-        print(f"request headers: {options.headers}")
         request = self._build_request(options)
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
