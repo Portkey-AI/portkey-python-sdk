@@ -74,6 +74,7 @@ class APIClient:
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -101,6 +102,7 @@ class APIClient:
         self.azure_api_version = azure_api_version
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
+        self.strict_open_ai_compliance = strict_open_ai_compliance
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -128,6 +130,7 @@ class APIClient:
             azure_api_version=azure_api_version,
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
             **kwargs,
         )
 
@@ -562,6 +565,7 @@ class AsyncAPIClient:
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -589,6 +593,7 @@ class AsyncAPIClient:
         self.azure_api_version = azure_api_version
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
+        self.strict_open_ai_compliance = strict_open_ai_compliance
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -616,6 +621,7 @@ class AsyncAPIClient:
             azure_api_version=azure_api_version,
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
             **kwargs,
         )
 

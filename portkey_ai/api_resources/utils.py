@@ -5,7 +5,7 @@ from enum import Enum, EnumMeta
 from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 from portkey_ai.api_resources.types.chat_complete_type import (
     ChatCompletionChunk,
@@ -270,7 +270,7 @@ class Constructs(BaseModel):
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):
-    @validator("api_key", "virtual_key", always=False)
+    @field_validator("api_key", "virtual_key")
     @classmethod
     def parse_api_key(cls, api_key, values):
         if api_key is None and values.get("virtual_key") is None:
@@ -283,7 +283,7 @@ class LLMOptions(Constructs, ConversationInput, ModelParams):
 class ProviderOptions(Constructs):
     override_params: Optional[OverrideParams] = None
 
-    @validator("cache_age", always=True)
+    @field_validator("cache_age")
     @classmethod
     def parse_cache_age(cls, cache_age):
         if cache_age is not None:
@@ -405,7 +405,7 @@ class Config(BaseModel):
     mode: Optional[Union[Modes, ModesLiteral, str]] = None
     llms: Optional[Union[List[LLMOptions], LLMOptions]] = None
 
-    @validator("mode", always=True)
+    @field_validator("mode")
     @classmethod
     def check_mode(cls, mode):
         if mode is None:
@@ -414,7 +414,7 @@ class Config(BaseModel):
 
         return mode
 
-    @validator("llms", always=True)
+    @field_validator("llms")
     @classmethod
     def parse_llms(cls, llms):
         if isinstance(llms, LLMOptions):
