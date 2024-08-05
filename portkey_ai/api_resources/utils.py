@@ -129,6 +129,7 @@ class Options(BaseModel):
     data: Optional[Mapping[str, Any]] = None
     # json structure
     json_body: Optional[Mapping[str, Any]] = None
+    files: Any = None
 
 
 class FunctionCall(BaseModel):
