@@ -357,7 +357,6 @@ class APIClient:
     @property
     def _default_headers(self) -> Mapping[str, str]:
         return {
-            "Content-Type": "application/json",
             f"{PORTKEY_HEADER_PREFIX}api-key": self.api_key,
             f"{PORTKEY_HEADER_PREFIX}package-version": f"portkey-{VERSION}",
             f"{PORTKEY_HEADER_PREFIX}runtime": platform.python_implementation(),
@@ -845,7 +844,6 @@ class AsyncAPIClient:
     @property
     def _default_headers(self) -> Mapping[str, str]:
         return {
-            "Content-Type": "application/json",
             f"{PORTKEY_HEADER_PREFIX}api-key": self.api_key,
             f"{PORTKEY_HEADER_PREFIX}package-version": f"portkey-{VERSION}",
             f"{PORTKEY_HEADER_PREFIX}runtime": platform.python_implementation(),
