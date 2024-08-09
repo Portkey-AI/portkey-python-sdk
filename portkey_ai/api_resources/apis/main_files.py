@@ -25,10 +25,7 @@ class MainFiles(APIResource):
 
         return data
 
-    def list(
-            self, 
-            purpose: Union[str, NotGiven] = NOT_GIVEN, 
-            **kwargs) -> FileList:
+    def list(self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs) -> FileList:
         response = self.openai_client.with_raw_response.files.list(
             purpose=purpose, **kwargs
         )
@@ -93,7 +90,9 @@ class AsyncMainFiles(AsyncAPIResource):
 
         return data
 
-    async def list(self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs) -> FileList:
+    async def list(
+        self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs
+    ) -> FileList:
         response = await self.openai_client.with_raw_response.files.list(
             purpose=purpose, **kwargs
         )

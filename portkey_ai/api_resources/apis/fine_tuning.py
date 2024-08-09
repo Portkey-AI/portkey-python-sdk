@@ -126,7 +126,7 @@ class Checkpoints(APIResource):
                 fine_tuning_job_id=fine_tuning_job_id,
                 after=after,
                 limit=limit,
-                **kwargs
+                **kwargs,
             )
         )
 
