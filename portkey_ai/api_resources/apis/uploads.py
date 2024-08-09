@@ -15,12 +15,14 @@ class Uploads(APIResource):
     def create(
         self, *, bytes: int, filename: str, mime_type: str, purpose: Any, **kwargs
     ) -> Upload:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.uploads.create(
             bytes=bytes,
             filename=filename,
             mime_type=mime_type,
             purpose=purpose,
             extra_body=kwargs,
+            extra_headers=extra_headers,
         )
         data = Upload(**json.loads(response.text))
         data._headers = response.headers
@@ -28,8 +30,9 @@ class Uploads(APIResource):
         return data
 
     def cancel(self, upload_id: str, **kwargs) -> Upload:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.uploads.cancel(
-            upload_id=upload_id, extra_body=kwargs
+            upload_id=upload_id, extra_body=kwargs, extra_headers=extra_headers
         )
         data = Upload(**json.loads(response.text))
         data._headers = response.headers
@@ -44,11 +47,13 @@ class Uploads(APIResource):
         md5: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Upload:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.uploads.complete(
             upload_id=upload_id,
             part_ids=part_ids,
             md5=md5,
             extra_body=kwargs,
+            extra_headers=extra_headers,
         )
         data = Upload(**json.loads(response.text))
         data._headers = response.headers
@@ -62,10 +67,12 @@ class Parts(APIResource):
         self.openai_client = client.openai_client
 
     def create(self, upload_id: str, *, data: FileTypes, **kwargs) -> UploadPart:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.uploads.parts.create(
             upload_id=upload_id,
             data=data,
             extra_body=kwargs,
+            extra_headers=extra_headers,
         )
         result = UploadPart(**json.loads(response.text))
         result._headers = response.headers
@@ -82,12 +89,14 @@ class AsyncUploads(AsyncAPIResource):
     async def create(
         self, *, bytes: int, filename: str, mime_type: str, purpose: Any, **kwargs
     ) -> Upload:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.uploads.create(
             bytes=bytes,
             filename=filename,
             mime_type=mime_type,
             purpose=purpose,
             extra_body=kwargs,
+            extra_headers=extra_headers,
         )
         data = Upload(**json.loads(response.text))
         data._headers = response.headers
@@ -95,8 +104,9 @@ class AsyncUploads(AsyncAPIResource):
         return data
 
     async def cancel(self, upload_id: str, **kwargs) -> Upload:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.uploads.cancel(
-            upload_id=upload_id, extra_body=kwargs
+            upload_id=upload_id, extra_body=kwargs, extra_headers=extra_headers
         )
         data = Upload(**json.loads(response.text))
         data._headers = response.headers
@@ -111,11 +121,13 @@ class AsyncUploads(AsyncAPIResource):
         md5: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Upload:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.uploads.complete(
             upload_id=upload_id,
             part_ids=part_ids,
             md5=md5,
             extra_body=kwargs,
+            extra_headers=extra_headers,
         )
         data = Upload(**json.loads(response.text))
         data._headers = response.headers
@@ -129,10 +141,12 @@ class AsyncParts(AsyncAPIResource):
         self.openai_client = client.openai_client
 
     async def create(self, upload_id: str, *, data: FileTypes, **kwargs) -> UploadPart:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.uploads.parts.create(
             upload_id=upload_id,
             data=data,
             extra_body=kwargs,
+            extra_headers=extra_headers,
         )
         result = UploadPart(**json.loads(response.text))
         result._headers = response.headers

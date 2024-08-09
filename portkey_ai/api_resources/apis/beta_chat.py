@@ -1,9 +1,5 @@
-import json
 from typing import Any, Union
 from portkey_ai._vendor.openai.lib._parsing._completions import ResponseFormatT
-from portkey_ai._vendor.openai.lib.streaming.chat._completions import (
-    ChatCompletionStreamManager,
-)
 from portkey_ai._vendor.openai.types.chat.parsed_chat_completion import (
     ParsedChatCompletion,
 )
@@ -59,7 +55,6 @@ class BetaCompletions(APIResource):
             extra_body=kwargs,
         ) as stream:
             for event in stream:
-                # print("event type: ", event.type, "event data: ", event.model_dump_json())
                 if event.type == "content.delta":
                     continue
                 elif event.type == "content.done":
@@ -69,6 +64,7 @@ class BetaCompletions(APIResource):
                     yield json_data
                 else:
                     return ""
+
 
 class AsyncBetaChat(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
@@ -125,4 +121,4 @@ class AsyncBetaCompletions(AsyncAPIResource):
                     json_data = event.model_dump_json()
                     yield json_data
                 else:
-                    return ""
+                    return ""  # type: ignore[misc]
