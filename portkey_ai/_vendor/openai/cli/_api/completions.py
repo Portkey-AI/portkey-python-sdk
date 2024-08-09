@@ -31,12 +31,8 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
 
     # Optional
     sub.add_argument("-p", "--prompt", help="An optional prompt to complete from")
-    sub.add_argument(
-        "--stream", help="Stream tokens as they're ready.", action="store_true"
-    )
-    sub.add_argument(
-        "-M", "--max-tokens", help="The maximum number of tokens to generate", type=int
-    )
+    sub.add_argument("--stream", help="Stream tokens as they're ready.", action="store_true")
+    sub.add_argument("-M", "--max-tokens", help="The maximum number of tokens to generate", type=int)
     sub.add_argument(
         "-t",
         "--temperature",
@@ -84,12 +80,8 @@ Mutually exclusive with `top_p`.""",
         help="Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.",
         type=float,
     )
-    sub.add_argument(
-        "--suffix", help="The suffix that comes after a completion of inserted text."
-    )
-    sub.add_argument(
-        "--stop", help="A stop sequence at which to stop generating tokens."
-    )
+    sub.add_argument("--suffix", help="The suffix that comes after a completion of inserted text.")
+    sub.add_argument("--stop", help="A stop sequence at which to stop generating tokens.")
     sub.add_argument(
         "--user",
         help="A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.",
@@ -144,9 +136,7 @@ class CLICompletions:
         if args.stream:
             return CLICompletions._stream_create(
                 # mypy doesn't understand the `partial` function but pyright does
-                cast(
-                    Stream[Completion], make_request(stream=True)
-                )  # pyright: ignore[reportUnnecessaryCast]
+                cast(Stream[Completion], make_request(stream=True))  # pyright: ignore[reportUnnecessaryCast]
             )
 
         return CLICompletions._create(make_request())
@@ -171,9 +161,7 @@ class CLICompletions:
             should_print_header = len(completion.choices) > 1
             for choice in sorted(completion.choices, key=lambda c: c.index):
                 if should_print_header:
-                    sys.stdout.write(
-                        "===== Chat Completion {} =====\n".format(choice.index)
-                    )
+                    sys.stdout.write("===== Chat Completion {} =====\n".format(choice.index))
 
                 sys.stdout.write(choice.text)
 

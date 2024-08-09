@@ -8,18 +8,14 @@ from ._utils import Colors, organization_info
 from .._exceptions import APIError, OpenAIError
 
 
-class CLIError(OpenAIError):
-    ...
+class CLIError(OpenAIError): ...
 
 
-class SilentCLIError(CLIError):
-    ...
+class SilentCLIError(CLIError): ...
 
 
 def display_error(err: CLIError | APIError | pydantic.ValidationError) -> None:
     if isinstance(err, SilentCLIError):
         return
 
-    sys.stderr.write(
-        "{}{}Error:{} {}\n".format(organization_info(), Colors.FAIL, Colors.ENDC, err)
-    )
+    sys.stderr.write("{}{}Error:{} {}\n".format(organization_info(), Colors.FAIL, Colors.ENDC, err))

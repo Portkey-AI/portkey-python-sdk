@@ -22,9 +22,8 @@ from ..._response import (
     async_to_custom_streamed_response_wrapper,
 )
 from ...types.audio import speech_create_params
-from ..._base_client import (
-    make_request_options,
-)
+from ..._base_client import make_request_options
+from ...types.audio.speech_model import SpeechModel
 
 __all__ = ["Speech", "AsyncSpeech"]
 
@@ -42,10 +41,9 @@ class Speech(SyncAPIResource):
         self,
         *,
         input: str,
-        model: Union[str, Literal["tts-1", "tts-1-hd"]],
+        model: Union[str, SpeechModel],
         voice: Literal["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
-        response_format: Literal["mp3", "opus", "aac", "flac", "wav", "pcm"]
-        | NotGiven = NOT_GIVEN,
+        response_format: Literal["mp3", "opus", "aac", "flac", "wav", "pcm"] | NotGiven = NOT_GIVEN,
         speed: float | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -97,10 +95,7 @@ class Speech(SyncAPIResource):
                 speech_create_params.SpeechCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=_legacy_response.HttpxBinaryResponseContent,
         )
@@ -119,10 +114,9 @@ class AsyncSpeech(AsyncAPIResource):
         self,
         *,
         input: str,
-        model: Union[str, Literal["tts-1", "tts-1-hd"]],
+        model: Union[str, SpeechModel],
         voice: Literal["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
-        response_format: Literal["mp3", "opus", "aac", "flac", "wav", "pcm"]
-        | NotGiven = NOT_GIVEN,
+        response_format: Literal["mp3", "opus", "aac", "flac", "wav", "pcm"] | NotGiven = NOT_GIVEN,
         speed: float | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -174,10 +168,7 @@ class AsyncSpeech(AsyncAPIResource):
                 speech_create_params.SpeechCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=_legacy_response.HttpxBinaryResponseContent,
         )

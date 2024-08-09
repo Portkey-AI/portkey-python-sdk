@@ -27,12 +27,7 @@ from ._types import NoneType
 from ._utils import is_given, extract_type_arg, is_annotated_type
 from ._models import BaseModel, is_basemodel
 from ._constants import RAW_RESPONSE_HEADER
-from ._streaming import (
-    Stream,
-    AsyncStream,
-    is_stream_class_type,
-    extract_stream_chunk_type,
-)
+from ._streaming import Stream, AsyncStream, is_stream_class_type, extract_stream_chunk_type
 from ._exceptions import APIResponseValidationError
 
 if TYPE_CHECKING:
@@ -69,6 +64,9 @@ class LegacyAPIResponse(Generic[R]):
 
     http_response: httpx.Response
 
+    retries_taken: int
+    """The number of retries made. If no retries happened this will be `0`"""
+
     def __init__(
         self,
         *,
@@ -78,6 +76,7 @@ class LegacyAPIResponse(Generic[R]):
         stream: bool,
         stream_cls: type[Stream[Any]] | type[AsyncStream[Any]] | None,
         options: FinalRequestOptions,
+        retries_taken: int = 0,
     ) -> None:
         self._cast_to = cast_to
         self._client = client
@@ -86,18 +85,17 @@ class LegacyAPIResponse(Generic[R]):
         self._stream_cls = stream_cls
         self._options = options
         self.http_response = raw
+        self.retries_taken = retries_taken
 
     @property
     def request_id(self) -> str | None:
         return self.http_response.headers.get("x-request-id")  # type: ignore[no-any-return]
 
     @overload
-    def parse(self, *, to: type[_T]) -> _T:
-        ...
+    def parse(self, *, to: type[_T]) -> _T: ...
 
     @overload
-    def parse(self) -> R:
-        ...
+    def parse(self) -> R: ...
 
     def parse(self, *, to: type[_T] | None = None) -> R | _T:
         """Returns the rich python representation of this response's data.
@@ -201,9 +199,7 @@ class LegacyAPIResponse(Generic[R]):
         if self._stream:
             if to:
                 if not is_stream_class_type(to):
-                    raise TypeError(
-                        f"Expected custom parse type to be a subclass of {Stream} or {AsyncStream}"
-                    )
+                    raise TypeError(f"Expected custom parse type to be a subclass of {Stream} or {AsyncStream}")
 
                 return cast(
                     _T,
@@ -227,10 +223,7 @@ class LegacyAPIResponse(Generic[R]):
                     ),
                 )
 
-            stream_cls = cast(
-                "type[Stream[Any]] | type[AsyncStream[Any]] | None",
-                self._client._default_stream_cls,
-            )
+            stream_cls = cast("type[Stream[Any]] | type[AsyncStream[Any]] | None", self._client._default_stream_cls)
             if stream_cls is None:
                 raise MissingStreamClassError()
 
@@ -277,25 +270,17 @@ class LegacyAPIResponse(Generic[R]):
             # the response class ourselves but that is something that should be supported directly in httpx
             # as it would be easy to incorrectly construct the Response object due to the multitude of arguments.
             if cast_to != httpx.Response:
-                raise ValueError(
-                    "Subclasses of httpx.Response cannot be passed to `cast_to`"
-                )
+                raise ValueError(f"Subclasses of httpx.Response cannot be passed to `cast_to`")
             return cast(R, response)
 
-        if (
-            inspect.isclass(origin)
-            and not issubclass(origin, BaseModel)
-            and issubclass(origin, pydantic.BaseModel)
-        ):
-            raise TypeError(
-                "Pydantic models must subclass our base model type, e.g. `from openai import BaseModel`"
-            )
+        if inspect.isclass(origin) and not issubclass(origin, BaseModel) and issubclass(origin, pydantic.BaseModel):
+            raise TypeError("Pydantic models must subclass our base model type, e.g. `from openai import BaseModel`")
 
         if (
             cast_to is not object
-            and origin is not list
-            and origin is not dict
-            and origin is not Union
+            and not origin is list
+            and not origin is dict
+            and not origin is Union
             and not issubclass(origin, BaseModel)
         ):
             raise RuntimeError(
@@ -310,11 +295,7 @@ class LegacyAPIResponse(Generic[R]):
                 try:
                     data = response.json()
                 except Exception as exc:
-                    log.debug(
-                        "Could not read JSON from response data due to %s - %s",
-                        type(exc),
-                        exc,
-                    )
+                    log.debug("Could not read JSON from response data due to %s - %s", type(exc), exc)
                 else:
                     return self._client._process_response_data(
                         data=data,
@@ -361,9 +342,7 @@ def to_raw_response_wrapper(func: Callable[P, R]) -> Callable[P, LegacyAPIRespon
 
     @functools.wraps(func)
     def wrapped(*args: P.args, **kwargs: P.kwargs) -> LegacyAPIResponse[R]:
-        extra_headers: dict[str, str] = {
-            **(cast(Any, kwargs.get("extra_headers")) or {})
-        }
+        extra_headers: dict[str, str] = {**(cast(Any, kwargs.get("extra_headers")) or {})}
         extra_headers[RAW_RESPONSE_HEADER] = "true"
 
         kwargs["extra_headers"] = extra_headers
@@ -373,18 +352,14 @@ def to_raw_response_wrapper(func: Callable[P, R]) -> Callable[P, LegacyAPIRespon
     return wrapped
 
 
-def async_to_raw_response_wrapper(
-    func: Callable[P, Awaitable[R]]
-) -> Callable[P, Awaitable[LegacyAPIResponse[R]]]:
+def async_to_raw_response_wrapper(func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[LegacyAPIResponse[R]]]:
     """Higher order function that takes one of our bound API methods and wraps it
     to support returning the raw `APIResponse` object directly.
     """
 
     @functools.wraps(func)
     async def wrapped(*args: P.args, **kwargs: P.kwargs) -> LegacyAPIResponse[R]:
-        extra_headers: dict[str, str] = {
-            **(cast(Any, kwargs.get("extra_headers")) or {})
-        }
+        extra_headers: dict[str, str] = {**(cast(Any, kwargs.get("extra_headers")) or {})}
         extra_headers[RAW_RESPONSE_HEADER] = "true"
 
         kwargs["extra_headers"] = extra_headers

@@ -48,6 +48,20 @@ from .vector_stores import (
     AsyncVectorFileBatches,
 )
 
+from .beta_chat import (
+    BetaChat,
+    BetaCompletion,
+    AsyncBetaChat,
+    AsyncBetaCompletion,
+)
+
+from .uploads import (
+    Uploads,
+    Parts,
+    AsyncUploads,
+    AsyncParts,
+)
+
 
 __all__ = [
     "Completion",
@@ -105,4 +119,12 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "BetaChat",
+    "BetaCompletion",
+    "AsyncBetaChat",
+    "AsyncBetaCompletion",
+    "Uploads",
+    "Parts",
+    "AsyncUploads",
+    "AsyncParts",
 ]

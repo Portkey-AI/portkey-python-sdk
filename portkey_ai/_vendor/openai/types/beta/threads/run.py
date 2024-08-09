@@ -151,6 +151,13 @@ class Run(BaseModel):
     object: Literal["thread.run"]
     """The object type, which is always `thread.run`."""
 
+    parallel_tool_calls: bool
+    """
+    Whether to enable
+    [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+    during tool use.
+    """
+
     required_action: Optional[RequiredAction] = None
     """Details on the action required to continue the run.
 
@@ -160,9 +167,14 @@ class Run(BaseModel):
     response_format: Optional[AssistantResponseFormatOption] = None
     """Specifies the format that the model must output.
 
-    Compatible with
-    [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-    all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+    Compatible with [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+    [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+    and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+    Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+    Outputs which guarantees the model will match your supplied JSON schema. Learn
+    more in the
+    [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
     Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
     message the model generates is valid JSON.
@@ -182,8 +194,8 @@ class Run(BaseModel):
     status: RunStatus
     """
     The status of the run, which can be either `queued`, `in_progress`,
-    `requires_action`, `cancelling`, `cancelled`, `failed`, `completed`, or
-    `expired`.
+    `requires_action`, `cancelling`, `cancelled`, `failed`, `completed`,
+    `incomplete`, or `expired`.
     """
 
     thread_id: str

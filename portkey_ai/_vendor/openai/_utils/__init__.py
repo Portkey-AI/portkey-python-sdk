@@ -41,14 +41,15 @@ from ._typing import (
     strip_annotated_type as strip_annotated_type,
     extract_type_var_from_base as extract_type_var_from_base,
 )
-from ._streams import (
-    consume_sync_iterator as consume_sync_iterator,
-    consume_async_iterator as consume_async_iterator,
-)
+from ._streams import consume_sync_iterator as consume_sync_iterator, consume_async_iterator as consume_async_iterator
 from ._transform import (
     PropertyInfo as PropertyInfo,
     transform as transform,
     async_transform as async_transform,
     maybe_transform as maybe_transform,
     async_maybe_transform as async_maybe_transform,
+)
+from ._reflection import (
+    function_has_argument as function_has_argument,
+    assert_signatures_in_sync as assert_signatures_in_sync,
 )

@@ -19,6 +19,8 @@ __all__ = [
     "UnprocessableEntityError",
     "RateLimitError",
     "InternalServerError",
+    "LengthFinishReasonError",
+    "ContentFilterFinishReasonError",
 ]
 
 
@@ -45,21 +47,15 @@ class APIError(OpenAIError):
     param: Optional[str] = None
     type: Optional[str]
 
-    def __init__(
-        self, message: str, request: httpx.Request, *, body: object | None
-    ) -> None:
+    def __init__(self, message: str, request: httpx.Request, *, body: object | None) -> None:
         super().__init__(message)
         self.request = request
         self.message = message
         self.body = body
 
         if is_dict(body):
-            self.code = cast(
-                Any, construct_type(type_=Optional[str], value=body.get("code"))
-            )
-            self.param = cast(
-                Any, construct_type(type_=Optional[str], value=body.get("param"))
-            )
+            self.code = cast(Any, construct_type(type_=Optional[str], value=body.get("code")))
+            self.param = cast(Any, construct_type(type_=Optional[str], value=body.get("param")))
             self.type = cast(Any, construct_type(type_=str, value=body.get("type")))
         else:
             self.code = None
@@ -71,18 +67,8 @@ class APIResponseValidationError(APIError):
     response: httpx.Response
     status_code: int
 
-    def __init__(
-        self,
-        response: httpx.Response,
-        body: object | None,
-        *,
-        message: str | None = None,
-    ) -> None:
-        super().__init__(
-            message or "Data returned by API invalid for expected schema.",
-            response.request,
-            body=body,
-        )
+    def __init__(self, response: httpx.Response, body: object | None, *, message: str | None = None) -> None:
+        super().__init__(message or "Data returned by API invalid for expected schema.", response.request, body=body)
         self.response = response
         self.status_code = response.status_code
 
@@ -94,9 +80,7 @@ class APIStatusError(APIError):
     status_code: int
     request_id: str | None
 
-    def __init__(
-        self, message: str, *, response: httpx.Response, body: object | None
-    ) -> None:
+    def __init__(self, message: str, *, response: httpx.Response, body: object | None) -> None:
         super().__init__(message, response.request, body=body)
         self.response = response
         self.status_code = response.status_code
@@ -104,9 +88,7 @@ class APIStatusError(APIError):
 
 
 class APIConnectionError(APIError):
-    def __init__(
-        self, *, message: str = "Connection error.", request: httpx.Request
-    ) -> None:
+    def __init__(self, *, message: str = "Connection error.", request: httpx.Request) -> None:
         super().__init__(message, request, body=None)
 
 
@@ -116,46 +98,46 @@ class APITimeoutError(APIConnectionError):
 
 
 class BadRequestError(APIStatusError):
-    status_code: Literal[
-        400
-    ] = 400  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[400] = 400  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class AuthenticationError(APIStatusError):
-    status_code: Literal[
-        401
-    ] = 401  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[401] = 401  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class PermissionDeniedError(APIStatusError):
-    status_code: Literal[
-        403
-    ] = 403  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[403] = 403  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class NotFoundError(APIStatusError):
-    status_code: Literal[
-        404
-    ] = 404  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[404] = 404  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class ConflictError(APIStatusError):
-    status_code: Literal[
-        409
-    ] = 409  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[409] = 409  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class UnprocessableEntityError(APIStatusError):
-    status_code: Literal[
-        422
-    ] = 422  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[422] = 422  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class RateLimitError(APIStatusError):
-    status_code: Literal[
-        429
-    ] = 429  # pyright: ignore[reportIncompatibleVariableOverride]
+    status_code: Literal[429] = 429  # pyright: ignore[reportIncompatibleVariableOverride]
 
 
 class InternalServerError(APIStatusError):
     pass
+
+
+class LengthFinishReasonError(OpenAIError):
+    def __init__(self) -> None:
+        super().__init__(
+            f"Could not parse response content as the length limit was reached",
+        )
+
+
+class ContentFilterFinishReasonError(OpenAIError):
+    def __init__(self) -> None:
+        super().__init__(
+            f"Could not parse response content as the request was rejected by the content filter",
+        )
