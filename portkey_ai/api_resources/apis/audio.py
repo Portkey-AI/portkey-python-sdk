@@ -103,7 +103,6 @@ class Speech(APIResource):
         **kwargs
     ) -> Any:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = self.openai_client.audio.speech.create(
             input=input,
             model=model,
@@ -145,7 +144,6 @@ class AsyncTranscriptions(AsyncAPIResource):
         **kwargs
     ) -> Transcription:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = (
             await self.openai_client.with_raw_response.audio.transcriptions.create(
                 file=file,
