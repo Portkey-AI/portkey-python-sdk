@@ -52,7 +52,7 @@ class Batches(APIResource):
         **kwargs
     ) -> BatchList:
         response = self.openai_client.with_raw_response.batches.list(
-            after=after, limit=limit, extra_body=kwargs
+            after=after, limit=limit
         )
         data = BatchList(**json.loads(response.text))
         data._headers = response.headers
@@ -113,7 +113,7 @@ class AsyncBatches(AsyncAPIResource):
         **kwargs
     ) -> BatchList:
         response = await self.openai_client.with_raw_response.batches.list(
-            after=after, limit=limit, extra_body=kwargs
+            after=after, limit=limit
         )
         data = BatchList(**json.loads(response.text))
         data._headers = response.headers

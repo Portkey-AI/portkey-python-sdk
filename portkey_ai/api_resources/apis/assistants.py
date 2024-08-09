@@ -101,7 +101,7 @@ class Assistants(APIResource):
         **kwargs
     ) -> AssistantList:
         response = self.openai_client.with_raw_response.beta.assistants.list(
-            after=after, before=before, limit=limit, order=order, extra_body=kwargs
+            after=after, before=before, limit=limit, order=order
         )
         data = AssistantList(**json.loads(response.text))
         data._headers = response.headers
@@ -209,7 +209,7 @@ class AsyncAssistants(AsyncAPIResource):
         **kwargs
     ) -> AssistantList:
         response = await self.openai_client.with_raw_response.beta.assistants.list(
-            after=after, before=before, limit=limit, order=order, extra_body=kwargs
+            after=after, before=before, limit=limit, order=order
         )
         data = AssistantList(**json.loads(response.text))
         data._headers = response.headers

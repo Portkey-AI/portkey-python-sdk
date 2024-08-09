@@ -267,7 +267,7 @@ class Messages(APIResource):
             limit=limit,
             order=order,
             run_id=run_id,
-            extra_body=kwargs,
+            **kwargs,
         )
         data = MessageList(**json.loads(response.text))
         data._headers = response.headers
@@ -850,7 +850,7 @@ class AsyncMessages(AsyncAPIResource):
                 limit=limit,
                 order=order,
                 run_id=run_id,
-                extra_body=kwargs,
+                **kwargs,
             )
         )
         data = MessageList(**json.loads(response.text))
