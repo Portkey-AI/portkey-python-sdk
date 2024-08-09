@@ -16,7 +16,6 @@ class MainFiles(APIResource):
 
     def create(self, file, purpose, **kwargs) -> FileObject:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = self.openai_client.with_raw_response.files.create(
             file=file, purpose=purpose, extra_body=kwargs, extra_headers=extra_headers
         )
@@ -82,7 +81,6 @@ class AsyncMainFiles(AsyncAPIResource):
 
     async def create(self, file, purpose, **kwargs) -> FileObject:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = await self.openai_client.with_raw_response.files.create(
             file=file, purpose=purpose, extra_body=kwargs, extra_headers=extra_headers
         )
