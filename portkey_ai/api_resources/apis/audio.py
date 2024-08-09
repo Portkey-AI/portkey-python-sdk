@@ -36,7 +36,6 @@ class Transcriptions(APIResource):
         **kwargs
     ) -> Transcription:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = self.openai_client.with_raw_response.audio.transcriptions.create(
             file=file,
             model=model,
@@ -70,7 +69,6 @@ class Translations(APIResource):
         **kwargs
     ) -> Translation:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
@@ -179,7 +177,6 @@ class AsyncTranslations(AsyncAPIResource):
         **kwargs
     ) -> Translation:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = await self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
@@ -212,7 +209,6 @@ class AsyncSpeech(AsyncAPIResource):
         **kwargs
     ) -> Any:
         extra_headers = kwargs.pop("extra_headers", {})
-        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         response = await self.openai_client.audio.speech.create(
             input=input,
             model=model,
