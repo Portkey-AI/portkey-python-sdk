@@ -121,4 +121,4 @@ class AsyncBetaCompletions(AsyncAPIResource):
                     json_data = event.model_dump_json()
                     yield json_data
                 else:
-                    return ""  # type: ignore[misc]
+                    pass
