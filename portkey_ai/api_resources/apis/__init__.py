@@ -50,9 +50,9 @@ from .vector_stores import (
 
 from .beta_chat import (
     BetaChat,
-    BetaCompletion,
+    BetaCompletions,
     AsyncBetaChat,
-    AsyncBetaCompletion,
+    AsyncBetaCompletions,
 )
 
 from .uploads import (
@@ -120,9 +120,9 @@ __all__ = [
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
     "BetaChat",
-    "BetaCompletion",
+    "BetaCompletions",
     "AsyncBetaChat",
-    "AsyncBetaCompletion",
+    "AsyncBetaCompletions",
     "Uploads",
     "Parts",
     "AsyncUploads",
