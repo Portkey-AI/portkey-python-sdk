@@ -3,6 +3,4 @@
 from __future__ import annotations
 
 from .checkpoint_list_params import CheckpointListParams as CheckpointListParams
-from .fine_tuning_job_checkpoint import (
-    FineTuningJobCheckpoint as FineTuningJobCheckpoint,
-)
+from .fine_tuning_job_checkpoint import FineTuningJobCheckpoint as FineTuningJobCheckpoint

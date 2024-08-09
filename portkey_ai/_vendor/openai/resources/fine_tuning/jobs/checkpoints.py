@@ -9,19 +9,14 @@ from ...._types import NOT_GIVEN, Body, Query, Headers, NotGiven
 from ...._utils import maybe_transform
 from ...._compat import cached_property
 from ...._resource import SyncAPIResource, AsyncAPIResource
-from ...._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ...._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ....pagination import SyncCursorPage, AsyncCursorPage
 from ...._base_client import (
     AsyncPaginator,
     make_request_options,
 )
 from ....types.fine_tuning.jobs import checkpoint_list_params
-from ....types.fine_tuning.jobs.fine_tuning_job_checkpoint import (
-    FineTuningJobCheckpoint,
-)
+from ....types.fine_tuning.jobs.fine_tuning_job_checkpoint import FineTuningJobCheckpoint
 
 __all__ = ["Checkpoints", "AsyncCheckpoints"]
 
@@ -65,9 +60,7 @@ class Checkpoints(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return self._get_api_list(
             f"/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints",
             page=SyncCursorPage[FineTuningJobCheckpoint],
@@ -109,9 +102,7 @@ class AsyncCheckpoints(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    ) -> AsyncPaginator[
-        FineTuningJobCheckpoint, AsyncCursorPage[FineTuningJobCheckpoint]
-    ]:
+    ) -> AsyncPaginator[FineTuningJobCheckpoint, AsyncCursorPage[FineTuningJobCheckpoint]]:
         """
         List checkpoints for a fine-tuning job.
 
@@ -129,9 +120,7 @@ class AsyncCheckpoints(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return self._get_api_list(
             f"/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints",
             page=AsyncCursorPage[FineTuningJobCheckpoint],

@@ -54,16 +54,11 @@ class Models(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not model:
-            raise ValueError(
-                f"Expected a non-empty value for `model` but received {model!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `model` but received {model!r}")
         return self._get(
             f"/models/{model}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Model,
         )
@@ -86,10 +81,7 @@ class Models(SyncAPIResource):
             "/models",
             page=SyncPage[Model],
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             model=Model,
         )
@@ -120,16 +112,11 @@ class Models(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not model:
-            raise ValueError(
-                f"Expected a non-empty value for `model` but received {model!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `model` but received {model!r}")
         return self._delete(
             f"/models/{model}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ModelDeleted,
         )
@@ -169,16 +156,11 @@ class AsyncModels(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not model:
-            raise ValueError(
-                f"Expected a non-empty value for `model` but received {model!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `model` but received {model!r}")
         return await self._get(
             f"/models/{model}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Model,
         )
@@ -201,10 +183,7 @@ class AsyncModels(AsyncAPIResource):
             "/models",
             page=AsyncPage[Model],
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             model=Model,
         )
@@ -235,16 +214,11 @@ class AsyncModels(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not model:
-            raise ValueError(
-                f"Expected a non-empty value for `model` but received {model!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `model` but received {model!r}")
         return await self._delete(
             f"/models/{model}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ModelDeleted,
         )

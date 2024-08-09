@@ -1,16 +1,27 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import List, Union, Optional
-from typing_extensions import Literal
+from typing_extensions import Literal, TypeAlias
 
 from ...._models import BaseModel
 from .message_content import MessageContent
-from ..file_search_tool import FileSearchTool
 from ..code_interpreter_tool import CodeInterpreterTool
 
-__all__ = ["Message", "Attachment", "AttachmentTool", "IncompleteDetails"]
+__all__ = [
+    "Message",
+    "Attachment",
+    "AttachmentTool",
+    "AttachmentToolAssistantToolsFileSearchTypeOnly",
+    "IncompleteDetails",
+]
 
-AttachmentTool = Union[CodeInterpreterTool, FileSearchTool]
+
+class AttachmentToolAssistantToolsFileSearchTypeOnly(BaseModel):
+    type: Literal["file_search"]
+    """The type of tool being defined: `file_search`"""
+
+
+AttachmentTool: TypeAlias = Union[CodeInterpreterTool, AttachmentToolAssistantToolsFileSearchTypeOnly]
 
 
 class Attachment(BaseModel):
@@ -22,9 +33,7 @@ class Attachment(BaseModel):
 
 
 class IncompleteDetails(BaseModel):
-    reason: Literal[
-        "content_filter", "max_tokens", "run_cancelled", "run_expired", "run_failed"
-    ]
+    reason: Literal["content_filter", "max_tokens", "run_cancelled", "run_expired", "run_failed"]
     """The reason the message is incomplete."""
 
 

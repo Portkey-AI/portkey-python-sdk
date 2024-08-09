@@ -8,11 +8,7 @@ from typing_extensions import Literal
 import httpx
 
 from .. import _legacy_response
-from ..types import (
-    image_edit_params,
-    image_generate_params,
-    image_create_variation_params,
-)
+from ..types import image_edit_params, image_generate_params, image_create_variation_params
 from .._types import NOT_GIVEN, Body, Query, Headers, NotGiven, FileTypes
 from .._utils import (
     extract_files,
@@ -23,9 +19,8 @@ from .._utils import (
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
-from .._base_client import (
-    make_request_options,
-)
+from .._base_client import make_request_options
+from ..types.image_model import ImageModel
 from ..types.images_response import ImagesResponse
 
 __all__ = ["Images", "AsyncImages"]
@@ -44,11 +39,10 @@ class Images(SyncAPIResource):
         self,
         *,
         image: FileTypes,
-        model: Union[str, Literal["dall-e-2"], None] | NotGiven = NOT_GIVEN,
+        model: Union[str, ImageModel, None] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
         response_format: Optional[Literal["url", "b64_json"]] | NotGiven = NOT_GIVEN,
-        size: Optional[Literal["256x256", "512x512", "1024x1024"]]
-        | NotGiven = NOT_GIVEN,
+        size: Optional[Literal["256x256", "512x512", "1024x1024"]] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -100,25 +94,16 @@ class Images(SyncAPIResource):
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["image"]])
-        if files:
-            # It should be noted that the actual Content-Type header that will be
-            # sent to the server will contain a `boundary` parameter, e.g.
-            # multipart/form-data; boundary=---abc--
-            extra_headers = {
-                "Content-Type": "multipart/form-data",
-                **(extra_headers or {}),
-            }
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return self._post(
             "/images/variations",
-            body=maybe_transform(
-                body, image_create_variation_params.ImageCreateVariationParams
-            ),
+            body=maybe_transform(body, image_create_variation_params.ImageCreateVariationParams),
             files=files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ImagesResponse,
         )
@@ -129,11 +114,10 @@ class Images(SyncAPIResource):
         image: FileTypes,
         prompt: str,
         mask: FileTypes | NotGiven = NOT_GIVEN,
-        model: Union[str, Literal["dall-e-2"], None] | NotGiven = NOT_GIVEN,
+        model: Union[str, ImageModel, None] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
         response_format: Optional[Literal["url", "b64_json"]] | NotGiven = NOT_GIVEN,
-        size: Optional[Literal["256x256", "512x512", "1024x1024"]]
-        | NotGiven = NOT_GIVEN,
+        size: Optional[Literal["256x256", "512x512", "1024x1024"]] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -192,26 +176,17 @@ class Images(SyncAPIResource):
                 "user": user,
             }
         )
-        files = extract_files(
-            cast(Mapping[str, object], body), paths=[["image"], ["mask"]]
-        )
-        if files:
-            # It should be noted that the actual Content-Type header that will be
-            # sent to the server will contain a `boundary` parameter, e.g.
-            # multipart/form-data; boundary=---abc--
-            extra_headers = {
-                "Content-Type": "multipart/form-data",
-                **(extra_headers or {}),
-            }
+        files = extract_files(cast(Mapping[str, object], body), paths=[["image"], ["mask"]])
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return self._post(
             "/images/edits",
             body=maybe_transform(body, image_edit_params.ImageEditParams),
             files=files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ImagesResponse,
         )
@@ -220,14 +195,11 @@ class Images(SyncAPIResource):
         self,
         *,
         prompt: str,
-        model: Union[str, Literal["dall-e-2", "dall-e-3"], None] | NotGiven = NOT_GIVEN,
+        model: Union[str, ImageModel, None] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
         quality: Literal["standard", "hd"] | NotGiven = NOT_GIVEN,
         response_format: Optional[Literal["url", "b64_json"]] | NotGiven = NOT_GIVEN,
-        size: Optional[
-            Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
-        ]
-        | NotGiven = NOT_GIVEN,
+        size: Optional[Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]] | NotGiven = NOT_GIVEN,
         style: Optional[Literal["vivid", "natural"]] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -294,10 +266,7 @@ class Images(SyncAPIResource):
                 image_generate_params.ImageGenerateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ImagesResponse,
         )
@@ -316,11 +285,10 @@ class AsyncImages(AsyncAPIResource):
         self,
         *,
         image: FileTypes,
-        model: Union[str, Literal["dall-e-2"], None] | NotGiven = NOT_GIVEN,
+        model: Union[str, ImageModel, None] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
         response_format: Optional[Literal["url", "b64_json"]] | NotGiven = NOT_GIVEN,
-        size: Optional[Literal["256x256", "512x512", "1024x1024"]]
-        | NotGiven = NOT_GIVEN,
+        size: Optional[Literal["256x256", "512x512", "1024x1024"]] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -372,25 +340,16 @@ class AsyncImages(AsyncAPIResource):
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["image"]])
-        if files:
-            # It should be noted that the actual Content-Type header that will be
-            # sent to the server will contain a `boundary` parameter, e.g.
-            # multipart/form-data; boundary=---abc--
-            extra_headers = {
-                "Content-Type": "multipart/form-data",
-                **(extra_headers or {}),
-            }
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return await self._post(
             "/images/variations",
-            body=await async_maybe_transform(
-                body, image_create_variation_params.ImageCreateVariationParams
-            ),
+            body=await async_maybe_transform(body, image_create_variation_params.ImageCreateVariationParams),
             files=files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ImagesResponse,
         )
@@ -401,11 +360,10 @@ class AsyncImages(AsyncAPIResource):
         image: FileTypes,
         prompt: str,
         mask: FileTypes | NotGiven = NOT_GIVEN,
-        model: Union[str, Literal["dall-e-2"], None] | NotGiven = NOT_GIVEN,
+        model: Union[str, ImageModel, None] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
         response_format: Optional[Literal["url", "b64_json"]] | NotGiven = NOT_GIVEN,
-        size: Optional[Literal["256x256", "512x512", "1024x1024"]]
-        | NotGiven = NOT_GIVEN,
+        size: Optional[Literal["256x256", "512x512", "1024x1024"]] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -464,26 +422,17 @@ class AsyncImages(AsyncAPIResource):
                 "user": user,
             }
         )
-        files = extract_files(
-            cast(Mapping[str, object], body), paths=[["image"], ["mask"]]
-        )
-        if files:
-            # It should be noted that the actual Content-Type header that will be
-            # sent to the server will contain a `boundary` parameter, e.g.
-            # multipart/form-data; boundary=---abc--
-            extra_headers = {
-                "Content-Type": "multipart/form-data",
-                **(extra_headers or {}),
-            }
+        files = extract_files(cast(Mapping[str, object], body), paths=[["image"], ["mask"]])
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return await self._post(
             "/images/edits",
             body=await async_maybe_transform(body, image_edit_params.ImageEditParams),
             files=files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ImagesResponse,
         )
@@ -492,14 +441,11 @@ class AsyncImages(AsyncAPIResource):
         self,
         *,
         prompt: str,
-        model: Union[str, Literal["dall-e-2", "dall-e-3"], None] | NotGiven = NOT_GIVEN,
+        model: Union[str, ImageModel, None] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
         quality: Literal["standard", "hd"] | NotGiven = NOT_GIVEN,
         response_format: Optional[Literal["url", "b64_json"]] | NotGiven = NOT_GIVEN,
-        size: Optional[
-            Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
-        ]
-        | NotGiven = NOT_GIVEN,
+        size: Optional[Literal["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]] | NotGiven = NOT_GIVEN,
         style: Optional[Literal["vivid", "natural"]] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -566,10 +512,7 @@ class AsyncImages(AsyncAPIResource):
                 image_generate_params.ImageGenerateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ImagesResponse,
         )

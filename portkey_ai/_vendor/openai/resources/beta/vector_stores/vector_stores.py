@@ -23,10 +23,7 @@ from ...._utils import (
 )
 from ...._compat import cached_property
 from ...._resource import SyncAPIResource, AsyncAPIResource
-from ...._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ...._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from .file_batches import (
     FileBatches,
     AsyncFileBatches,
@@ -36,11 +33,7 @@ from .file_batches import (
     AsyncFileBatchesWithStreamingResponse,
 )
 from ....pagination import SyncCursorPage, AsyncCursorPage
-from ....types.beta import (
-    vector_store_list_params,
-    vector_store_create_params,
-    vector_store_update_params,
-)
+from ....types.beta import vector_store_list_params, vector_store_create_params, vector_store_update_params
 from ...._base_client import (
     AsyncPaginator,
     make_request_options,
@@ -71,6 +64,7 @@ class VectorStores(SyncAPIResource):
     def create(
         self,
         *,
+        chunking_strategy: vector_store_create_params.ChunkingStrategy | NotGiven = NOT_GIVEN,
         expires_after: vector_store_create_params.ExpiresAfter | NotGiven = NOT_GIVEN,
         file_ids: List[str] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
@@ -86,6 +80,9 @@ class VectorStores(SyncAPIResource):
         Create a vector store.
 
         Args:
+          chunking_strategy: The chunking strategy used to chunk the file(s). If not set, will use the `auto`
+              strategy. Only applicable if `file_ids` is non-empty.
+
           expires_after: The expiration policy for a vector store.
 
           file_ids: A list of [File](https://platform.openai.com/docs/api-reference/files) IDs that
@@ -112,6 +109,7 @@ class VectorStores(SyncAPIResource):
             "/vector_stores",
             body=maybe_transform(
                 {
+                    "chunking_strategy": chunking_strategy,
                     "expires_after": expires_after,
                     "file_ids": file_ids,
                     "metadata": metadata,
@@ -120,10 +118,7 @@ class VectorStores(SyncAPIResource):
                 vector_store_create_params.VectorStoreCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStore,
         )
@@ -152,17 +147,12 @@ class VectorStores(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not vector_store_id:
-            raise ValueError(
-                f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get(
             f"/vector_stores/{vector_store_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStore,
         )
@@ -171,8 +161,7 @@ class VectorStores(SyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        expires_after: Optional[vector_store_update_params.ExpiresAfter]
-        | NotGiven = NOT_GIVEN,
+        expires_after: Optional[vector_store_update_params.ExpiresAfter] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
         name: Optional[str] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -204,9 +193,7 @@ class VectorStores(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not vector_store_id:
-            raise ValueError(
-                f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
             f"/vector_stores/{vector_store_id}",
@@ -219,10 +206,7 @@ class VectorStores(SyncAPIResource):
                 vector_store_update_params.VectorStoreUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStore,
         )
@@ -316,17 +300,12 @@ class VectorStores(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not vector_store_id:
-            raise ValueError(
-                f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._delete(
             f"/vector_stores/{vector_store_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStoreDeleted,
         )
@@ -352,6 +331,7 @@ class AsyncVectorStores(AsyncAPIResource):
     async def create(
         self,
         *,
+        chunking_strategy: vector_store_create_params.ChunkingStrategy | NotGiven = NOT_GIVEN,
         expires_after: vector_store_create_params.ExpiresAfter | NotGiven = NOT_GIVEN,
         file_ids: List[str] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
@@ -367,6 +347,9 @@ class AsyncVectorStores(AsyncAPIResource):
         Create a vector store.
 
         Args:
+          chunking_strategy: The chunking strategy used to chunk the file(s). If not set, will use the `auto`
+              strategy. Only applicable if `file_ids` is non-empty.
+
           expires_after: The expiration policy for a vector store.
 
           file_ids: A list of [File](https://platform.openai.com/docs/api-reference/files) IDs that
@@ -393,6 +376,7 @@ class AsyncVectorStores(AsyncAPIResource):
             "/vector_stores",
             body=await async_maybe_transform(
                 {
+                    "chunking_strategy": chunking_strategy,
                     "expires_after": expires_after,
                     "file_ids": file_ids,
                     "metadata": metadata,
@@ -401,10 +385,7 @@ class AsyncVectorStores(AsyncAPIResource):
                 vector_store_create_params.VectorStoreCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStore,
         )
@@ -433,17 +414,12 @@ class AsyncVectorStores(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not vector_store_id:
-            raise ValueError(
-                f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._get(
             f"/vector_stores/{vector_store_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStore,
         )
@@ -452,8 +428,7 @@ class AsyncVectorStores(AsyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        expires_after: Optional[vector_store_update_params.ExpiresAfter]
-        | NotGiven = NOT_GIVEN,
+        expires_after: Optional[vector_store_update_params.ExpiresAfter] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
         name: Optional[str] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -485,9 +460,7 @@ class AsyncVectorStores(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not vector_store_id:
-            raise ValueError(
-                f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
             f"/vector_stores/{vector_store_id}",
@@ -500,10 +473,7 @@ class AsyncVectorStores(AsyncAPIResource):
                 vector_store_update_params.VectorStoreUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStore,
         )
@@ -597,17 +567,12 @@ class AsyncVectorStores(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not vector_store_id:
-            raise ValueError(
-                f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._delete(
             f"/vector_stores/{vector_store_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=VectorStoreDeleted,
         )

@@ -58,6 +58,7 @@ class OpenAI(SyncAPIClient):
     fine_tuning: resources.FineTuning
     beta: resources.Beta
     batches: resources.Batches
+    uploads: resources.Uploads # TODO
     with_raw_response: OpenAIWithRawResponse
     with_streaming_response: OpenAIWithStreamedResponse
 
@@ -117,7 +118,7 @@ class OpenAI(SyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("OPENAI_BASE_URL")
         if base_url is None:
-            base_url = "https://api.openai.com/v1"
+            base_url = f"https://api.openai.com/v1"
 
         super().__init__(
             version=__version__,
@@ -143,13 +144,14 @@ class OpenAI(SyncAPIClient):
         self.fine_tuning = resources.FineTuning(self)
         self.beta = resources.Beta(self)
         self.batches = resources.Batches(self)
+        self.uploads = resources.Uploads(self)
         self.with_raw_response = OpenAIWithRawResponse(self)
         self.with_streaming_response = OpenAIWithStreamedResponse(self)
 
     @property
     @override
     def qs(self) -> Querystring:
-        return Querystring(array_format="comma")
+        return Querystring(array_format="brackets")
 
     @property
     @override
@@ -163,9 +165,7 @@ class OpenAI(SyncAPIClient):
         return {
             **super().default_headers,
             "X-Stainless-Async": "false",
-            "OpenAI-Organization": self.organization
-            if self.organization is not None
-            else Omit(),
+            "OpenAI-Organization": self.organization if self.organization is not None else Omit(),
             "OpenAI-Project": self.project if self.project is not None else Omit(),
             **self._custom_headers,
         }
@@ -190,14 +190,10 @@ class OpenAI(SyncAPIClient):
         Create a new client instance re-using the same options given to the current client with optional overriding.
         """
         if default_headers is not None and set_default_headers is not None:
-            raise ValueError(
-                "The `default_headers` and `set_default_headers` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_headers` and `set_default_headers` arguments are mutually exclusive")
 
         if default_query is not None and set_default_query is not None:
-            raise ValueError(
-                "The `default_query` and `set_default_query` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_query` and `set_default_query` arguments are mutually exclusive")
 
         headers = self._custom_headers
         if default_headers is not None:
@@ -242,14 +238,10 @@ class OpenAI(SyncAPIClient):
             return _exceptions.BadRequestError(err_msg, response=response, body=data)
 
         if response.status_code == 401:
-            return _exceptions.AuthenticationError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.AuthenticationError(err_msg, response=response, body=data)
 
         if response.status_code == 403:
-            return _exceptions.PermissionDeniedError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.PermissionDeniedError(err_msg, response=response, body=data)
 
         if response.status_code == 404:
             return _exceptions.NotFoundError(err_msg, response=response, body=data)
@@ -258,17 +250,13 @@ class OpenAI(SyncAPIClient):
             return _exceptions.ConflictError(err_msg, response=response, body=data)
 
         if response.status_code == 422:
-            return _exceptions.UnprocessableEntityError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.UnprocessableEntityError(err_msg, response=response, body=data)
 
         if response.status_code == 429:
             return _exceptions.RateLimitError(err_msg, response=response, body=data)
 
         if response.status_code >= 500:
-            return _exceptions.InternalServerError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.InternalServerError(err_msg, response=response, body=data)
         return APIStatusError(err_msg, response=response, body=data)
 
 
@@ -284,6 +272,7 @@ class AsyncOpenAI(AsyncAPIClient):
     fine_tuning: resources.AsyncFineTuning
     beta: resources.AsyncBeta
     batches: resources.AsyncBatches
+    uploads: resources.AsyncUploads
     with_raw_response: AsyncOpenAIWithRawResponse
     with_streaming_response: AsyncOpenAIWithStreamedResponse
 
@@ -343,7 +332,7 @@ class AsyncOpenAI(AsyncAPIClient):
         if base_url is None:
             base_url = os.environ.get("OPENAI_BASE_URL")
         if base_url is None:
-            base_url = "https://api.openai.com/v1"
+            base_url = f"https://api.openai.com/v1"
 
         super().__init__(
             version=__version__,
@@ -369,13 +358,14 @@ class AsyncOpenAI(AsyncAPIClient):
         self.fine_tuning = resources.AsyncFineTuning(self)
         self.beta = resources.AsyncBeta(self)
         self.batches = resources.AsyncBatches(self)
+        self.uploads = resources.AsyncUploads(self)
         self.with_raw_response = AsyncOpenAIWithRawResponse(self)
         self.with_streaming_response = AsyncOpenAIWithStreamedResponse(self)
 
     @property
     @override
     def qs(self) -> Querystring:
-        return Querystring(array_format="comma")
+        return Querystring(array_format="brackets")
 
     @property
     @override
@@ -389,9 +379,7 @@ class AsyncOpenAI(AsyncAPIClient):
         return {
             **super().default_headers,
             "X-Stainless-Async": f"async:{get_async_library()}",
-            "OpenAI-Organization": self.organization
-            if self.organization is not None
-            else Omit(),
+            "OpenAI-Organization": self.organization if self.organization is not None else Omit(),
             "OpenAI-Project": self.project if self.project is not None else Omit(),
             **self._custom_headers,
         }
@@ -416,14 +404,10 @@ class AsyncOpenAI(AsyncAPIClient):
         Create a new client instance re-using the same options given to the current client with optional overriding.
         """
         if default_headers is not None and set_default_headers is not None:
-            raise ValueError(
-                "The `default_headers` and `set_default_headers` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_headers` and `set_default_headers` arguments are mutually exclusive")
 
         if default_query is not None and set_default_query is not None:
-            raise ValueError(
-                "The `default_query` and `set_default_query` arguments are mutually exclusive"
-            )
+            raise ValueError("The `default_query` and `set_default_query` arguments are mutually exclusive")
 
         headers = self._custom_headers
         if default_headers is not None:
@@ -468,14 +452,10 @@ class AsyncOpenAI(AsyncAPIClient):
             return _exceptions.BadRequestError(err_msg, response=response, body=data)
 
         if response.status_code == 401:
-            return _exceptions.AuthenticationError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.AuthenticationError(err_msg, response=response, body=data)
 
         if response.status_code == 403:
-            return _exceptions.PermissionDeniedError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.PermissionDeniedError(err_msg, response=response, body=data)
 
         if response.status_code == 404:
             return _exceptions.NotFoundError(err_msg, response=response, body=data)
@@ -484,17 +464,13 @@ class AsyncOpenAI(AsyncAPIClient):
             return _exceptions.ConflictError(err_msg, response=response, body=data)
 
         if response.status_code == 422:
-            return _exceptions.UnprocessableEntityError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.UnprocessableEntityError(err_msg, response=response, body=data)
 
         if response.status_code == 429:
             return _exceptions.RateLimitError(err_msg, response=response, body=data)
 
         if response.status_code >= 500:
-            return _exceptions.InternalServerError(
-                err_msg, response=response, body=data
-            )
+            return _exceptions.InternalServerError(err_msg, response=response, body=data)
         return APIStatusError(err_msg, response=response, body=data)
 
 
@@ -511,6 +487,7 @@ class OpenAIWithRawResponse:
         self.fine_tuning = resources.FineTuningWithRawResponse(client.fine_tuning)
         self.beta = resources.BetaWithRawResponse(client.beta)
         self.batches = resources.BatchesWithRawResponse(client.batches)
+        self.uploads = resources.UploadsWithRawResponse(client.uploads)
 
 
 class AsyncOpenAIWithRawResponse:
@@ -526,48 +503,39 @@ class AsyncOpenAIWithRawResponse:
         self.fine_tuning = resources.AsyncFineTuningWithRawResponse(client.fine_tuning)
         self.beta = resources.AsyncBetaWithRawResponse(client.beta)
         self.batches = resources.AsyncBatchesWithRawResponse(client.batches)
+        self.uploads = resources.AsyncUploadsWithRawResponse(client.uploads)
 
 
 class OpenAIWithStreamedResponse:
     def __init__(self, client: OpenAI) -> None:
-        self.completions = resources.CompletionsWithStreamingResponse(
-            client.completions
-        )
+        self.completions = resources.CompletionsWithStreamingResponse(client.completions)
         self.chat = resources.ChatWithStreamingResponse(client.chat)
         self.embeddings = resources.EmbeddingsWithStreamingResponse(client.embeddings)
         self.files = resources.FilesWithStreamingResponse(client.files)
         self.images = resources.ImagesWithStreamingResponse(client.images)
         self.audio = resources.AudioWithStreamingResponse(client.audio)
-        self.moderations = resources.ModerationsWithStreamingResponse(
-            client.moderations
-        )
+        self.moderations = resources.ModerationsWithStreamingResponse(client.moderations)
         self.models = resources.ModelsWithStreamingResponse(client.models)
         self.fine_tuning = resources.FineTuningWithStreamingResponse(client.fine_tuning)
         self.beta = resources.BetaWithStreamingResponse(client.beta)
         self.batches = resources.BatchesWithStreamingResponse(client.batches)
+        self.uploads = resources.UploadsWithStreamingResponse(client.uploads)
 
 
 class AsyncOpenAIWithStreamedResponse:
     def __init__(self, client: AsyncOpenAI) -> None:
-        self.completions = resources.AsyncCompletionsWithStreamingResponse(
-            client.completions
-        )
+        self.completions = resources.AsyncCompletionsWithStreamingResponse(client.completions)
         self.chat = resources.AsyncChatWithStreamingResponse(client.chat)
-        self.embeddings = resources.AsyncEmbeddingsWithStreamingResponse(
-            client.embeddings
-        )
+        self.embeddings = resources.AsyncEmbeddingsWithStreamingResponse(client.embeddings)
         self.files = resources.AsyncFilesWithStreamingResponse(client.files)
         self.images = resources.AsyncImagesWithStreamingResponse(client.images)
         self.audio = resources.AsyncAudioWithStreamingResponse(client.audio)
-        self.moderations = resources.AsyncModerationsWithStreamingResponse(
-            client.moderations
-        )
+        self.moderations = resources.AsyncModerationsWithStreamingResponse(client.moderations)
         self.models = resources.AsyncModelsWithStreamingResponse(client.models)
-        self.fine_tuning = resources.AsyncFineTuningWithStreamingResponse(
-            client.fine_tuning
-        )
+        self.fine_tuning = resources.AsyncFineTuningWithStreamingResponse(client.fine_tuning)
         self.beta = resources.AsyncBetaWithStreamingResponse(client.beta)
         self.batches = resources.AsyncBatchesWithStreamingResponse(client.batches)
+        self.uploads = resources.AsyncUploadsWithStreamingResponse(client.uploads)
 
 
 Client = OpenAI

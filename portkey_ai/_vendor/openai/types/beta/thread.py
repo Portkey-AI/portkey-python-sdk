@@ -5,12 +5,7 @@ from typing_extensions import Literal
 
 from ..._models import BaseModel
 
-__all__ = [
-    "Thread",
-    "ToolResources",
-    "ToolResourcesCodeInterpreter",
-    "ToolResourcesFileSearch",
-]
+__all__ = ["Thread", "ToolResources", "ToolResourcesCodeInterpreter", "ToolResourcesFileSearch"]
 
 
 class ToolResourcesCodeInterpreter(BaseModel):

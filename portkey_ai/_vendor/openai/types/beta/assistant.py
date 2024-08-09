@@ -7,12 +7,7 @@ from ..._models import BaseModel
 from .assistant_tool import AssistantTool
 from .assistant_response_format_option import AssistantResponseFormatOption
 
-__all__ = [
-    "Assistant",
-    "ToolResources",
-    "ToolResourcesCodeInterpreter",
-    "ToolResourcesFileSearch",
-]
+__all__ = ["Assistant", "ToolResources", "ToolResourcesCodeInterpreter", "ToolResourcesFileSearch"]
 
 
 class ToolResourcesCodeInterpreter(BaseModel):
@@ -90,9 +85,14 @@ class Assistant(BaseModel):
     response_format: Optional[AssistantResponseFormatOption] = None
     """Specifies the format that the model must output.
 
-    Compatible with
-    [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-    all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+    Compatible with [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+    [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+    and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+    Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+    Outputs which guarantees the model will match your supplied JSON schema. Learn
+    more in the
+    [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
     Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
     message the model generates is valid JSON.

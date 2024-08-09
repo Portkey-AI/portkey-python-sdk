@@ -15,26 +15,19 @@ from ..._utils import (
 )
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
-from ..._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ..._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ...pagination import SyncCursorPage, AsyncCursorPage
 from ...types.beta import (
     assistant_list_params,
     assistant_create_params,
     assistant_update_params,
 )
-from ..._base_client import (
-    AsyncPaginator,
-    make_request_options,
-)
+from ..._base_client import AsyncPaginator, make_request_options
+from ...types.chat_model import ChatModel
 from ...types.beta.assistant import Assistant
 from ...types.beta.assistant_deleted import AssistantDeleted
 from ...types.beta.assistant_tool_param import AssistantToolParam
-from ...types.beta.assistant_response_format_option_param import (
-    AssistantResponseFormatOptionParam,
-)
+from ...types.beta.assistant_response_format_option_param import AssistantResponseFormatOptionParam
 
 __all__ = ["Assistants", "AsyncAssistants"]
 
@@ -51,38 +44,14 @@ class Assistants(SyncAPIResource):
     def create(
         self,
         *,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-        ],
+        model: Union[str, ChatModel],
         description: Optional[str] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
         name: Optional[str] | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
-        tool_resources: Optional[assistant_create_params.ToolResources]
-        | NotGiven = NOT_GIVEN,
+        tool_resources: Optional[assistant_create_params.ToolResources] | NotGiven = NOT_GIVEN,
         tools: Iterable[AssistantToolParam] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -115,8 +84,14 @@ class Assistants(SyncAPIResource):
           name: The name of the assistant. The maximum length is 256 characters.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -175,10 +150,7 @@ class Assistants(SyncAPIResource):
                 assistant_create_params.AssistantCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Assistant,
         )
@@ -207,17 +179,12 @@ class Assistants(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not assistant_id:
-            raise ValueError(
-                f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get(
             f"/assistants/{assistant_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Assistant,
         )
@@ -231,11 +198,9 @@ class Assistants(SyncAPIResource):
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
         model: str | NotGiven = NOT_GIVEN,
         name: Optional[str] | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
-        tool_resources: Optional[assistant_update_params.ToolResources]
-        | NotGiven = NOT_GIVEN,
+        tool_resources: Optional[assistant_update_params.ToolResources] | NotGiven = NOT_GIVEN,
         tools: Iterable[AssistantToolParam] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -269,8 +234,14 @@ class Assistants(SyncAPIResource):
           name: The name of the assistant. The maximum length is 256 characters.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -311,9 +282,7 @@ class Assistants(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not assistant_id:
-            raise ValueError(
-                f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
             f"/assistants/{assistant_id}",
@@ -333,10 +302,7 @@ class Assistants(SyncAPIResource):
                 assistant_update_params.AssistantUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Assistant,
         )
@@ -430,17 +396,12 @@ class Assistants(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not assistant_id:
-            raise ValueError(
-                f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._delete(
             f"/assistants/{assistant_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=AssistantDeleted,
         )
@@ -458,38 +419,14 @@ class AsyncAssistants(AsyncAPIResource):
     async def create(
         self,
         *,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-        ],
+        model: Union[str, ChatModel],
         description: Optional[str] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
         name: Optional[str] | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
-        tool_resources: Optional[assistant_create_params.ToolResources]
-        | NotGiven = NOT_GIVEN,
+        tool_resources: Optional[assistant_create_params.ToolResources] | NotGiven = NOT_GIVEN,
         tools: Iterable[AssistantToolParam] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -522,8 +459,14 @@ class AsyncAssistants(AsyncAPIResource):
           name: The name of the assistant. The maximum length is 256 characters.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -582,10 +525,7 @@ class AsyncAssistants(AsyncAPIResource):
                 assistant_create_params.AssistantCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Assistant,
         )
@@ -614,17 +554,12 @@ class AsyncAssistants(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not assistant_id:
-            raise ValueError(
-                f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._get(
             f"/assistants/{assistant_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Assistant,
         )
@@ -638,11 +573,9 @@ class AsyncAssistants(AsyncAPIResource):
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
         model: str | NotGiven = NOT_GIVEN,
         name: Optional[str] | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
-        tool_resources: Optional[assistant_update_params.ToolResources]
-        | NotGiven = NOT_GIVEN,
+        tool_resources: Optional[assistant_update_params.ToolResources] | NotGiven = NOT_GIVEN,
         tools: Iterable[AssistantToolParam] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -676,8 +609,14 @@ class AsyncAssistants(AsyncAPIResource):
           name: The name of the assistant. The maximum length is 256 characters.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -718,9 +657,7 @@ class AsyncAssistants(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not assistant_id:
-            raise ValueError(
-                f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
             f"/assistants/{assistant_id}",
@@ -740,10 +677,7 @@ class AsyncAssistants(AsyncAPIResource):
                 assistant_update_params.AssistantUpdateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Assistant,
         )
@@ -837,17 +771,12 @@ class AsyncAssistants(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not assistant_id:
-            raise ValueError(
-                f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `assistant_id` but received {assistant_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._delete(
             f"/assistants/{assistant_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=AssistantDeleted,
         )

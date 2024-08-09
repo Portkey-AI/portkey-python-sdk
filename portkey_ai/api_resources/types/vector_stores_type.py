@@ -1,6 +1,13 @@
 import json
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
+from typing_extensions import Annotated, TypeAlias
 import httpx
+
+from portkey_ai._vendor.openai._utils._transform import PropertyInfo
+from portkey_ai._vendor.openai.types.beta.vector_stores.vector_store_file import (
+    ChunkingStrategyOther,
+    ChunkingStrategyStatic,
+)
 from .utils import parse_headers
 from pydantic import BaseModel, PrivateAttr
 
@@ -85,6 +92,12 @@ class LastError(BaseModel):
     message: str
 
 
+ChunkingStrategy: TypeAlias = Annotated[
+    Union[ChunkingStrategyStatic, ChunkingStrategyOther],
+    PropertyInfo(discriminator="type"),
+]
+
+
 class VectorStoreFile(BaseModel):
     id: str
     created_at: int
@@ -93,6 +106,7 @@ class VectorStoreFile(BaseModel):
     status: str
     usage_bytes: int
     vector_store_id: str
+    chunking_strategy: Optional[ChunkingStrategy] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

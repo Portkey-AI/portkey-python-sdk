@@ -17,9 +17,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
     sub.add_argument("-m", "--model", type=str)
     sub.add_argument("-p", "--prompt", type=str, required=True)
     sub.add_argument("-n", "--num-images", type=int, default=1)
-    sub.add_argument(
-        "-s", "--size", type=str, default="1024x1024", help="Size of the output image"
-    )
+    sub.add_argument("-s", "--size", type=str, default="1024x1024", help="Size of the output image")
     sub.add_argument("--response-format", type=str, default="url")
     sub.set_defaults(func=CLIImage.create, args_model=CLIImageCreateArgs)
 
@@ -34,9 +32,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
         required=True,
         help="Image to modify. Should be a local path and a PNG encoded image.",
     )
-    sub.add_argument(
-        "-s", "--size", type=str, default="1024x1024", help="Size of the output image"
-    )
+    sub.add_argument("-s", "--size", type=str, default="1024x1024", help="Size of the output image")
     sub.add_argument("--response-format", type=str, default="url")
     sub.add_argument(
         "-M",
@@ -57,13 +53,9 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
         required=True,
         help="Image to modify. Should be a local path and a PNG encoded image.",
     )
-    sub.add_argument(
-        "-s", "--size", type=str, default="1024x1024", help="Size of the output image"
-    )
+    sub.add_argument("-s", "--size", type=str, default="1024x1024", help="Size of the output image")
     sub.add_argument("--response-format", type=str, default="url")
-    sub.set_defaults(
-        func=CLIImage.create_variation, args_model=CLIImageCreateVariationArgs
-    )
+    sub.set_defaults(func=CLIImage.create_variation, args_model=CLIImageCreateVariationArgs)
 
 
 class CLIImageCreateArgs(BaseModel):
@@ -125,9 +117,7 @@ class CLIImage:
     @staticmethod
     def edit(args: CLIImageEditArgs) -> None:
         with open(args.image, "rb") as file_reader:
-            buffer_reader = BufferReader(
-                file_reader.read(), desc="Image upload progress"
-            )
+            buffer_reader = BufferReader(file_reader.read(), desc="Image upload progress")
 
         if isinstance(args.mask, NotGiven):
             mask: NotGivenOr[BufferReader] = NOT_GIVEN

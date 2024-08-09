@@ -11,10 +11,7 @@ from ....._types import NOT_GIVEN, Body, Query, Headers, NotGiven
 from ....._utils import maybe_transform
 from ....._compat import cached_property
 from ....._resource import SyncAPIResource, AsyncAPIResource
-from ....._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ....._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from .....pagination import SyncCursorPage, AsyncCursorPage
 from ....._base_client import (
     AsyncPaginator,
@@ -61,25 +58,16 @@ class Steps(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         if not step_id:
-            raise ValueError(
-                f"Expected a non-empty value for `step_id` but received {step_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `step_id` but received {step_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get(
             f"/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=RunStep,
         )
@@ -129,13 +117,9 @@ class Steps(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
             f"/threads/{thread_id}/runs/{run_id}/steps",
@@ -194,25 +178,16 @@ class AsyncSteps(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         if not step_id:
-            raise ValueError(
-                f"Expected a non-empty value for `step_id` but received {step_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `step_id` but received {step_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._get(
             f"/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=RunStep,
         )
@@ -262,13 +237,9 @@ class AsyncSteps(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
             f"/threads/{thread_id}/runs/{run_id}/steps",

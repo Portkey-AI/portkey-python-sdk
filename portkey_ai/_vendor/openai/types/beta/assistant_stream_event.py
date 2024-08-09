@@ -1,7 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Union
-from typing_extensions import Literal, Annotated
+from typing_extensions import Literal, Annotated, TypeAlias
 
 from .thread import Thread
 from ..._utils import PropertyInfo
@@ -21,6 +21,7 @@ __all__ = [
     "ThreadRunInProgress",
     "ThreadRunRequiresAction",
     "ThreadRunCompleted",
+    "ThreadRunIncomplete",
     "ThreadRunFailed",
     "ThreadRunCancelling",
     "ThreadRunCancelled",
@@ -99,6 +100,16 @@ class ThreadRunCompleted(BaseModel):
     """
 
     event: Literal["thread.run.completed"]
+
+
+class ThreadRunIncomplete(BaseModel):
+    data: Run
+    """
+    Represents an execution run on a
+    [thread](https://platform.openai.com/docs/api-reference/threads).
+    """
+
+    event: Literal["thread.run.incomplete"]
 
 
 class ThreadRunFailed(BaseModel):
@@ -249,7 +260,7 @@ class ErrorEvent(BaseModel):
     event: Literal["error"]
 
 
-AssistantStreamEvent = Annotated[
+AssistantStreamEvent: TypeAlias = Annotated[
     Union[
         ThreadCreated,
         ThreadRunCreated,
@@ -257,6 +268,7 @@ AssistantStreamEvent = Annotated[
         ThreadRunInProgress,
         ThreadRunRequiresAction,
         ThreadRunCompleted,
+        ThreadRunIncomplete,
         ThreadRunFailed,
         ThreadRunCancelling,
         ThreadRunCancelled,

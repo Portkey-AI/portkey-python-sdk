@@ -51,9 +51,7 @@ def register(subparser: _SubParsersAction[ArgumentParser]) -> None:
         help="How many completions to generate for the conversation.",
         type=int,
     )
-    opt.add_argument(
-        "-M", "--max-tokens", help="The maximum number of tokens to generate.", type=int
-    )
+    opt.add_argument("-M", "--max-tokens", help="The maximum number of tokens to generate.", type=int)
     opt.add_argument(
         "-t",
         "--temperature",
@@ -74,12 +72,8 @@ Mutually exclusive with `top_p`.""",
         "--stop",
         help="A stop sequence at which to stop generating tokens for the message.",
     )
-    opt.add_argument(
-        "--stream", help="Stream messages as they're ready.", action="store_true"
-    )
-    sub.set_defaults(
-        func=CLIChatCompletion.create, args_model=CLIChatCompletionCreateArgs
-    )
+    opt.add_argument("--stream", help="Stream messages as they're ready.", action="store_true")
+    sub.set_defaults(func=CLIChatCompletion.create, args_model=CLIChatCompletionCreateArgs)
 
 
 class CLIMessage(NamedTuple):
@@ -104,11 +98,7 @@ class CLIChatCompletion:
         params: CompletionCreateParams = {
             "model": args.model,
             "messages": [
-                {
-                    "role": cast(Literal["user"], message.role),
-                    "content": message.content,
-                }
-                for message in args.message
+                {"role": cast(Literal["user"], message.role), "content": message.content} for message in args.message
             ],
             "n": args.n,
             "temperature": args.temperature,
@@ -123,13 +113,9 @@ class CLIChatCompletion:
             params["max_tokens"] = args.max_tokens
 
         if args.stream:
-            return CLIChatCompletion._stream_create(
-                cast(CompletionCreateParamsStreaming, params)
-            )
+            return CLIChatCompletion._stream_create(cast(CompletionCreateParamsStreaming, params))
 
-        return CLIChatCompletion._create(
-            cast(CompletionCreateParamsNonStreaming, params)
-        )
+        return CLIChatCompletion._create(cast(CompletionCreateParamsNonStreaming, params))
 
     @staticmethod
     def _create(params: CompletionCreateParamsNonStreaming) -> None:
@@ -137,13 +123,9 @@ class CLIChatCompletion:
         should_print_header = len(completion.choices) > 1
         for choice in completion.choices:
             if should_print_header:
-                sys.stdout.write(
-                    "===== Chat Completion {} =====\n".format(choice.index)
-                )
+                sys.stdout.write("===== Chat Completion {} =====\n".format(choice.index))
 
-            content = (
-                choice.message.content if choice.message.content is not None else "None"
-            )
+            content = choice.message.content if choice.message.content is not None else "None"
             sys.stdout.write(content)
 
             if should_print_header or not content.endswith("\n"):
@@ -161,9 +143,7 @@ class CLIChatCompletion:
             should_print_header = len(chunk.choices) > 1
             for choice in chunk.choices:
                 if should_print_header:
-                    sys.stdout.write(
-                        "===== Chat Completion {} =====\n".format(choice.index)
-                    )
+                    sys.stdout.write("===== Chat Completion {} =====\n".format(choice.index))
 
                 content = choice.delta.content or ""
                 sys.stdout.write(content)

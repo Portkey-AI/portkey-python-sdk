@@ -64,9 +64,7 @@ class Querystring:
             array_format=array_format,
             nested_format=nested_format,
         )
-        return flatten(
-            [self._stringify_item(key, value, opts) for key, value in params.items()]
-        )
+        return flatten([self._stringify_item(key, value, opts) for key, value in params.items()])
 
     def _stringify_item(
         self,
@@ -81,9 +79,7 @@ class Querystring:
                 items.extend(
                     self._stringify_item(
                         # TODO: error if unknown format
-                        f"{key}.{subkey}"
-                        if nested_format == "dots"
-                        else f"{key}[{subkey}]",
+                        f"{key}.{subkey}" if nested_format == "dots" else f"{key}[{subkey}]",
                         subvalue,
                         opts,
                     )
@@ -96,11 +92,7 @@ class Querystring:
                 return [
                     (
                         key,
-                        ",".join(
-                            self._primitive_value_to_str(item)
-                            for item in value
-                            if item is not None
-                        ),
+                        ",".join(self._primitive_value_to_str(item) for item in value if item is not None),
                     ),
                 ]
             elif array_format == "repeat":
@@ -109,9 +101,7 @@ class Querystring:
                     items.extend(self._stringify_item(key, item, opts))
                 return items
             elif array_format == "indices":
-                raise NotImplementedError(
-                    "The array indices format is not supported yet"
-                )
+                raise NotImplementedError("The array indices format is not supported yet")
             elif array_format == "brackets":
                 items = []
                 key = key + "[]"
@@ -156,9 +146,5 @@ class Options:
         array_format: NotGivenOr[ArrayFormat] = NOT_GIVEN,
         nested_format: NotGivenOr[NestedFormat] = NOT_GIVEN,
     ) -> None:
-        self.array_format = (
-            qs.array_format if isinstance(array_format, NotGiven) else array_format
-        )
-        self.nested_format = (
-            qs.nested_format if isinstance(nested_format, NotGiven) else nested_format
-        )
+        self.array_format = qs.array_format if isinstance(array_format, NotGiven) else array_format
+        self.nested_format = qs.nested_format if isinstance(nested_format, NotGiven) else nested_format

@@ -4,9 +4,7 @@ from typing import List, Union, Optional
 from typing_extensions import Literal
 
 from ..._models import BaseModel
-from .fine_tuning_job_wandb_integration_object import (
-    FineTuningJobWandbIntegrationObject,
-)
+from .fine_tuning_job_wandb_integration_object import FineTuningJobWandbIntegrationObject
 
 __all__ = ["FineTuningJob", "Error", "Hyperparameters"]
 
@@ -86,9 +84,7 @@ class FineTuningJob(BaseModel):
     seed: int
     """The seed used for the fine-tuning job."""
 
-    status: Literal[
-        "validating_files", "queued", "running", "succeeded", "failed", "cancelled"
-    ]
+    status: Literal["validating_files", "queued", "running", "succeeded", "failed", "cancelled"]
     """
     The current status of the fine-tuning job, which can be either
     `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.

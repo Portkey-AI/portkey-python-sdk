@@ -12,7 +12,7 @@ class Models(APIResource):
         self.openai_client = client.openai_client
 
     def list(self, **kwargs) -> ModelList:
-        response = self.openai_client.with_raw_response.models.list(extra_body=kwargs)
+        response = self.openai_client.with_raw_response.models.list(**kwargs)
         data = ModelList(**json.loads(response.text))
         data._headers = response.headers
         return data
@@ -44,9 +44,7 @@ class AsyncModels(AsyncAPIResource):
         self.openai_client = client.openai_client
 
     async def list(self, **kwargs) -> ModelList:
-        response = await self.openai_client.with_raw_response.models.list(
-            extra_body=kwargs
-        )
+        response = await self.openai_client.with_raw_response.models.list(**kwargs)
         data = ModelList(**json.loads(response.text))
         data._headers = response.headers
         return data

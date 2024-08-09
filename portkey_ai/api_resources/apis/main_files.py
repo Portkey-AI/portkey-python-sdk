@@ -1,5 +1,6 @@
 import json
-from typing import Any
+from typing import Any, Union
+from portkey_ai._vendor.openai._types import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.main_file_type import (
@@ -15,17 +16,18 @@ class MainFiles(APIResource):
         self.openai_client = client.openai_client
 
     def create(self, file, purpose, **kwargs) -> FileObject:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.files.create(
-            file=file, purpose=purpose, extra_body=kwargs
+            file=file, purpose=purpose, extra_body=kwargs, extra_headers=extra_headers
         )
         data = FileObject(**json.loads(response.text))
         data._headers = response.headers
 
         return data
 
-    def list(self, purpose, **kwargs) -> FileList:
+    def list(self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs) -> FileList:
         response = self.openai_client.with_raw_response.files.list(
-            purpose=purpose, extra_body=kwargs
+            purpose=purpose, **kwargs
         )
         data = FileList(**json.loads(response.text))
         data._headers = response.headers
@@ -79,17 +81,20 @@ class AsyncMainFiles(AsyncAPIResource):
         self.openai_client = client.openai_client
 
     async def create(self, file, purpose, **kwargs) -> FileObject:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.files.create(
-            file=file, purpose=purpose, extra_body=kwargs
+            file=file, purpose=purpose, extra_body=kwargs, extra_headers=extra_headers
         )
         data = FileObject(**json.loads(response.text))
         data._headers = response.headers
 
         return data
 
-    async def list(self, purpose, **kwargs) -> FileList:
+    async def list(
+        self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs
+    ) -> FileList:
         response = await self.openai_client.with_raw_response.files.list(
-            purpose=purpose, extra_body=kwargs
+            purpose=purpose, **kwargs
         )
         data = FileList(**json.loads(response.text))
         data._headers = response.headers

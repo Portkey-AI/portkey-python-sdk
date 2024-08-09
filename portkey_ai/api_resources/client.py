@@ -26,16 +26,19 @@ class Portkey(APIClient):
     audio: apis.Audio
     batches: apis.Batches
     fine_tuning: apis.FineTuning
+    uploads: apis.Uploads
 
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
         vector_stores: apis.VectorStores
+        chat: apis.BetaChat
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
             self.vector_stores = apis.VectorStores(client)
+            self.chat = apis.BetaChat(client)
 
     def __init__(
         self,
@@ -121,6 +124,7 @@ class Portkey(APIClient):
         self.audio = apis.Audio(self)
         self.batches = apis.Batches(self)
         self.fine_tuning = apis.FineTuning(self)
+        self.uploads = apis.Uploads(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -208,16 +212,19 @@ class AsyncPortkey(AsyncAPIClient):
     audio: apis.AsyncAudio
     batches: apis.AsyncBatches
     fine_tuning: apis.AsyncFineTuning
+    uploads: apis.AsyncUploads
 
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
         vector_stores: apis.AsyncVectorStores
+        chat: apis.AsyncBetaChat
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
             self.vector_stores = apis.AsyncVectorStores(client)
+            self.chat = apis.AsyncBetaChat(client)
 
     def __init__(
         self,
@@ -303,6 +310,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.audio = apis.AsyncAudio(self)
         self.batches = apis.AsyncBatches(self)
         self.fine_tuning = apis.AsyncFineTuning(self)
+        self.uploads = apis.AsyncUploads(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(

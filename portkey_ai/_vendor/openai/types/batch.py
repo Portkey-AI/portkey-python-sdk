@@ -37,14 +37,7 @@ class Batch(BaseModel):
     """The object type, which is always `batch`."""
 
     status: Literal[
-        "validating",
-        "failed",
-        "in_progress",
-        "finalizing",
-        "completed",
-        "expired",
-        "cancelling",
-        "cancelled",
+        "validating", "failed", "in_progress", "finalizing", "completed", "expired", "cancelling", "cancelled"
     ]
     """The current status of the batch."""
 

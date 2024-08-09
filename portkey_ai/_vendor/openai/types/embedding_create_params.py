@@ -20,16 +20,7 @@ class EmbeddingCreateParams(TypedDict, total=False):
     for counting tokens.
     """
 
-    model: Required[
-        Union[
-            str,
-            Literal[
-                "text-embedding-ada-002",
-                "text-embedding-3-small",
-                "text-embedding-3-large",
-            ],
-        ]
-    ]
+    model: Required[Union[str, Literal["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]]]
     """ID of the model to use.
 
     You can use the

@@ -136,9 +136,7 @@ def main() -> int:
     return 0
 
 
-def _parse_args(
-    parser: argparse.ArgumentParser,
-) -> tuple[argparse.Namespace, Arguments, list[str]]:
+def _parse_args(parser: argparse.ArgumentParser) -> tuple[argparse.Namespace, Arguments, list[str]]:
     # argparse by default will strip out the `--` but we want to keep it for unknown arguments
     if "--" in sys.argv:
         idx = sys.argv.index("--")
@@ -174,9 +172,7 @@ def _main() -> None:
         for proxy in args.proxy:
             key = "https://" if proxy.startswith("https") else "http://"
             if key in proxies:
-                raise CLIError(
-                    f"Multiple {key} proxies given - only the last one would be used"
-                )
+                raise CLIError(f"Multiple {key} proxies given - only the last one would be used")
 
             proxies[key] = proxy
 

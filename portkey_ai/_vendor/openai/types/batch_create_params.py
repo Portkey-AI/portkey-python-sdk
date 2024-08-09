@@ -15,10 +15,12 @@ class BatchCreateParams(TypedDict, total=False):
     Currently only `24h` is supported.
     """
 
-    endpoint: Required[Literal["/v1/chat/completions", "/v1/embeddings"]]
+    endpoint: Required[Literal["/v1/chat/completions", "/v1/embeddings", "/v1/completions"]]
     """The endpoint to be used for all requests in the batch.
 
-    Currently `/v1/chat/completions` and `/v1/embeddings` are supported.
+    Currently `/v1/chat/completions`, `/v1/embeddings`, and `/v1/completions` are
+    supported. Note that `/v1/embeddings` batches are also restricted to a maximum
+    of 50,000 embedding inputs across all requests in the batch.
     """
 
     input_file_id: Required[str]
@@ -28,8 +30,9 @@ class BatchCreateParams(TypedDict, total=False):
     for how to upload a file.
 
     Your input file must be formatted as a
-    [JSONL file](https://platform.openai.com/docs/api-reference/batch/requestInput),
-    and must be uploaded with the purpose `batch`.
+    [JSONL file](https://platform.openai.com/docs/api-reference/batch/request-input),
+    and must be uploaded with the purpose `batch`. The file can contain up to 50,000
+    requests, and can be up to 100 MB in size.
     """
 
     metadata: Optional[Dict[str, str]]

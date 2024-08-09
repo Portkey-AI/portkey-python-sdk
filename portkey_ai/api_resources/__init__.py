@@ -51,6 +51,14 @@ from .apis import (
     AsyncVectorStores,
     AsyncVectorFiles,
     AsyncVectorFileBatches,
+    BetaChat,
+    AsyncBetaChat,
+    BetaCompletions,
+    AsyncBetaCompletions,
+    Uploads,
+    AsyncUploads,
+    Parts,
+    AsyncParts,
 )
 from .utils import (
     Modes,
@@ -137,4 +145,12 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "BetaChat",
+    "AsyncBetaChat",
+    "BetaCompletions",
+    "AsyncBetaCompletions",
+    "Uploads",
+    "Parts",
+    "AsyncUploads",
+    "AsyncParts",
 ]
