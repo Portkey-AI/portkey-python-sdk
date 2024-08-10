@@ -24,9 +24,6 @@ except ImportError:
 
 
 class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
-    startTimestamp: int = 0
-    endTimestamp: float = 0
-
     def __init__(
         self,
         api_key: str,
@@ -55,13 +52,12 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.prompt_tokens = 0
         self.token_llm = 0
 
-        self.log_object: Dict[str, Any] = {}
+        self.log_object: Any = []
         self.prompt_records: Any = []
 
         self.request: Any = {}
         self.response: Any = {}
 
-        self.responseTime: int = 0
         self.streamingMode: bool = False
 
         self.event_map: Any = {}
@@ -84,6 +80,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         span_id = str(event_id)
         parent_span_id = parent_id
         span_name = event_type
+        start_time = int(datetime.now().timestamp())
 
         if parent_id == "root":
             parent_span_id = self.main_span_id
@@ -111,6 +108,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
             "span_name": span_name.value,
             "trace_id": self.global_trace_id,
             "request": request_payload,
+            "start_time": start_time,
         }
         self.event_map[span_id] = start_event_information
 
@@ -131,7 +129,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         elif event_type == "agent_step":
             response_payload = self.agent_step_event_end(payload, event_id)
         elif event_type == "function_call":
-            response_payload = self.function_call_event_end(payload)
+            response_payload = self.function_call_event_end(payload, event_id)
         elif event_type == "query":
             response_payload = self.query_event_end(payload, event_id)
         elif event_type == "retrieve":
@@ -150,9 +148,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         if trace_id == "index_construction":
             self.global_trace_id = str(uuid4())
 
-        self.main_span_id = str(uuid4())
-
-        self.startTimestamp = int(datetime.now().timestamp())
+        self.main_span_id = ""
 
     def end_trace(
         self,
@@ -161,7 +157,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
     ) -> None:
         """Run when an overall trace is exited."""
 
-        self.log_object = {"data": self.event_array}
+        self.log_object = self.event_array
 
         self.portkey_logger.log(log_object=self.log_object)
         self.event_array = []
@@ -193,8 +189,10 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         return self.request
 
     def llm_event_end(self, payload: Any, event_id) -> Any:
-        self.endTimestamp = float(datetime.now().timestamp())
-        responseTime = self.endTimestamp - self.startTimestamp
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
+
         self.response = {}
 
         data = payload.get("response", {})
@@ -228,9 +226,13 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.response["body"].update({"id": event_id})
         self.response["body"].update({"created": int(time.time())})
         self.response["body"].update({"model": data.raw.get("model", "")})
-        self.response["time"] = int(responseTime * 1000)
         self.response["headers"] = {}
         self.response["streamingMode"] = self.streamingMode
+
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        self.response["response_time"] = total_time
 
         return self.response
 
@@ -255,13 +257,13 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
     def embedding_event_end(self, payload: Any, event_id) -> Any:
         if event_id in self.event_map:
             event = self.event_map[event_id]
-            event["request"]["body"]["input"] = payload.get("chunks", "")
-            # event["request"]["body"]["input"] = "...INPUT..."
+            # event["request"]["body"]["input"] = payload.get("chunks", "")
+            # Setting as ...INPUT... to avoid logging the entire data input file
+            event["request"]["body"]["input"] = "...INPUT..."
+
+            start_time = event["start_time"]
 
         self.response = {}
-
-        self.endTimestamp = float(datetime.now().timestamp())
-        responseTime = self.endTimestamp - self.startTimestamp
 
         chunk_str = str(payload.get("chunks", ""))
         embd_str = str(payload.get("embeddings", ""))
@@ -286,7 +288,11 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
             }
         )
         self.response["headers"] = {}
-        self.response["time"] = int(responseTime * 1000)
+
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        self.response["response_time"] = total_time
 
         return self.response
 
@@ -296,9 +302,16 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         return data
 
     def agent_step_event_end(self, payload: Any, event_id) -> Any:
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
         data = self.serialize(payload)
         json.dumps(data)
         result = self.transform_agent_step_end(data)
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
@@ -306,10 +319,17 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         result = self.transform_function_call_start(payload)
         return result
 
-    def function_call_event_end(self, payload: Any) -> Any:
+    def function_call_event_end(self, payload: Any, event_id) -> Any:
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
         data = self.serialize(payload)
         json.dumps(data)
         result = self.transform_function_call_end(data)
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
@@ -318,9 +338,16 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         return data
 
     def query_event_end(self, payload: Any, event_id) -> Any:
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
         data = self.serialize(payload)
         json.dumps(data)
         result = self.transform_query_end(data)
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
@@ -329,9 +356,17 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         return data
 
     def retrieve_event_end(self, payload: Any, event_id) -> Any:
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
+
         data = self.serialize(payload)
         json.dumps(data)
         result = self.transform_retrieve_end(data)
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
@@ -342,7 +377,15 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         return result
 
     def templating_event_end(self, payload: Any, event_id) -> Any:
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
         result = self.transform_templating_end(event_id)
+
+        end_time = int(datetime.now().timestamp())
+        total_time = (end_time - start_time) * 1000
+
+        result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
