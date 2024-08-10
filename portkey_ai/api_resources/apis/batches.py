@@ -28,7 +28,7 @@ class Batches(APIResource):
             endpoint=endpoint,
             input_file_id=input_file_id,
             metadata=metadata,
-            **kwargs
+            extra_body=kwargs,
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -37,7 +37,7 @@ class Batches(APIResource):
 
     def retrieve(self, batch_id, **kwargs) -> Batch:
         response = self.openai_client.with_raw_response.batches.retrieve(
-            batch_id=batch_id, **kwargs
+            batch_id=batch_id, extra_body=kwargs
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -52,7 +52,7 @@ class Batches(APIResource):
         **kwargs
     ) -> BatchList:
         response = self.openai_client.with_raw_response.batches.list(
-            after=after, limit=limit, **kwargs
+            after=after, limit=limit, extra_body=kwargs
         )
         data = BatchList(**json.loads(response.text))
         data._headers = response.headers
@@ -61,7 +61,7 @@ class Batches(APIResource):
 
     def cancel(self, batch_id: str, **kwargs) -> Batch:
         response = self.openai_client.with_raw_response.batches.cancel(
-            batch_id=batch_id, **kwargs
+            batch_id=batch_id, extra_body=kwargs
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -89,7 +89,7 @@ class AsyncBatches(AsyncAPIResource):
             endpoint=endpoint,
             input_file_id=input_file_id,
             metadata=metadata,
-            **kwargs
+            extra_body=kwargs,
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -98,7 +98,7 @@ class AsyncBatches(AsyncAPIResource):
 
     async def retrieve(self, batch_id, **kwargs) -> Batch:
         response = await self.openai_client.with_raw_response.batches.retrieve(
-            batch_id=batch_id, **kwargs
+            batch_id=batch_id, extra_body=kwargs
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -113,7 +113,7 @@ class AsyncBatches(AsyncAPIResource):
         **kwargs
     ) -> BatchList:
         response = await self.openai_client.with_raw_response.batches.list(
-            after=after, limit=limit, **kwargs
+            after=after, limit=limit, extra_body=kwargs
         )
         data = BatchList(**json.loads(response.text))
         data._headers = response.headers
@@ -122,7 +122,7 @@ class AsyncBatches(AsyncAPIResource):
 
     async def cancel(self, batch_id: str, **kwargs) -> Batch:
         response = await self.openai_client.with_raw_response.batches.cancel(
-            batch_id=batch_id, **kwargs
+            batch_id=batch_id, extra_body=kwargs
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers

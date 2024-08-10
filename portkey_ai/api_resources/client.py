@@ -66,6 +66,7 @@ class Portkey(APIClient):
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -95,6 +96,7 @@ class Portkey(APIClient):
             cache_namespace=cache_namespace,
             http_client=http_client,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
             **kwargs,
         )
 
@@ -103,6 +105,7 @@ class Portkey(APIClient):
             base_url=self.base_url,
             default_headers=self.allHeaders,
             http_client=http_client,
+            max_retries=0,
         )
 
         self.completions = apis.Completion(self)
@@ -149,6 +152,7 @@ class Portkey(APIClient):
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -178,6 +182,8 @@ class Portkey(APIClient):
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance
+            or self.strict_open_ai_compliance,
             **self.kwargs,
             **kwargs,
         )
@@ -242,6 +248,7 @@ class AsyncPortkey(AsyncAPIClient):
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -271,6 +278,7 @@ class AsyncPortkey(AsyncAPIClient):
             cache_namespace=cache_namespace,
             http_client=http_client,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
             **kwargs,
         )
 
@@ -279,6 +287,7 @@ class AsyncPortkey(AsyncAPIClient):
             base_url=self.base_url,
             default_headers=self.allHeaders,
             http_client=http_client,
+            max_retries=0,
         )
 
         self.completions = apis.AsyncCompletion(self)
@@ -325,6 +334,7 @@ class AsyncPortkey(AsyncAPIClient):
         azure_api_version: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -354,6 +364,8 @@ class AsyncPortkey(AsyncAPIClient):
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance
+            or self.strict_open_ai_compliance,
             **self.kwargs,
             **kwargs,
         )

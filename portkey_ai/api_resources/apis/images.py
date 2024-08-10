@@ -33,9 +33,9 @@ class Images(APIResource):
             quality=quality,
             response_format=response_format,
             size=size,
-            user=user,
             style=style,
-            **kwargs
+            user=user,
+            extra_body=kwargs,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -65,7 +65,7 @@ class Images(APIResource):
             response_format=response_format,
             size=size,
             user=user,
-            **kwargs
+            extra_body=kwargs,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -89,7 +89,7 @@ class Images(APIResource):
             response_format=response_format,
             size=size,
             user=user,
-            **kwargs
+            extra_body=kwargs,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -123,9 +123,9 @@ class AsyncImages(AsyncAPIResource):
             quality=quality,
             response_format=response_format,
             size=size,
-            user=user,
             style=style,
-            **kwargs
+            user=user,
+            extra_body=kwargs,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -155,7 +155,7 @@ class AsyncImages(AsyncAPIResource):
             response_format=response_format,
             size=size,
             user=user,
-            **kwargs
+            extra_body=kwargs,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -179,7 +179,7 @@ class AsyncImages(AsyncAPIResource):
             response_format=response_format,
             size=size,
             user=user,
-            **kwargs
+            extra_body=kwargs,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers

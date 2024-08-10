@@ -19,7 +19,7 @@ class Moderations(APIResource):
         **kwargs
     ) -> ModerationCreateResponse:
         response = self.openai_client.with_raw_response.moderations.create(
-            input=input, model=model, **kwargs
+            input=input, model=model, extra_body=kwargs
         )
         data = ModerationCreateResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -40,7 +40,7 @@ class AsyncModerations(AsyncAPIResource):
         **kwargs
     ) -> ModerationCreateResponse:
         response = await self.openai_client.with_raw_response.moderations.create(
-            input=input, model=model, **kwargs
+            input=input, model=model, extra_body=kwargs
         )
         data = ModerationCreateResponse(**json.loads(response.text))
         data._headers = response.headers

@@ -29,7 +29,7 @@ class Embeddings(APIResource):
             dimensions=dimensions,
             encoding_format=encoding_format,
             user=user,
-            **kwargs
+            extra_body=kwargs,
         )
 
         data = CreateEmbeddingResponse(**json.loads(response.text))
@@ -60,7 +60,7 @@ class AsyncEmbeddings(AsyncAPIResource):
             dimensions=dimensions,
             encoding_format=encoding_format,
             user=user,
-            **kwargs
+            extra_body=kwargs,
         )
         data = CreateEmbeddingResponse(**json.loads(response.text))
         data._headers = response.headers
