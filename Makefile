@@ -7,7 +7,7 @@ format: ## Run code formatter: black
 	black .
 	ruff check . --fix
 lint: ## Run linters: mypy, black, ruff
-	mypy .
+	mypy --config-file setup.cfg .
 	black . --check
 	ruff check .
 test: ## Run tests
@@ -16,7 +16,7 @@ watch-docs: ## Build and watch documentation
 	sphinx-autobuild docs/ docs/_build/html --open-browser --watch $(GIT_ROOT)/llama_index/
 
 build:
-	mypy .
+	mypy --config-file setup.cfg .
 	black . --check
 	ruff check .
 	rm -rf dist/ build/
