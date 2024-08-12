@@ -253,7 +253,7 @@ class PortkeyLangchain(BaseCallbackHandler):
         self.event_array.append(self.event_map["tool_start_" + str(run_id)])
         pass
 
-    def on_text(  # Do we need to log this or not? This is just formatting of the text
+    def on_text(
         self,
         text: str,
         *,
@@ -321,7 +321,6 @@ class PortkeyLangchain(BaseCallbackHandler):
         end_time = int(datetime.now().timestamp())
         total_time = (end_time - start_time) * 1000
 
-        (self.main_span_id if parent_run_id is None else str(parent_run_id))
         response_payload = self.on_agent_finish_transformer(finish)
         self.event_map["agent_action_" + str(run_id)]["response"] = response_payload
         self.event_map["agent_action_" + str(run_id)]["response"][
