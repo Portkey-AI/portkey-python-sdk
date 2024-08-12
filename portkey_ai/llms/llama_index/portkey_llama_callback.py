@@ -58,6 +58,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         self.request: Any = {}
         self.response: Any = {}
 
+        self.global_trace_id: str = ""
         self.streamingMode: bool = False
 
         self.event_map: Any = {}
