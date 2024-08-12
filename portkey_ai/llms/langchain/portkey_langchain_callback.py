@@ -17,10 +17,12 @@ class PortkeyLangchain(BaseCallbackHandler):
     def __init__(
         self,
         api_key: str,
+        metadata: Optional[Dict[str, Any]] = {},
     ) -> None:
         super().__init__()
 
         self.api_key = api_key
+        self.metadata = metadata
 
         self.portkey_logger = Logger(api_key=api_key)
 
@@ -69,6 +71,7 @@ class PortkeyLangchain(BaseCallbackHandler):
             "llm_start",
             self.global_trace_id,
             request_payload,
+            self.metadata,
         )
         self.event_map["llm_start_" + str(run_id)] = info_obj
         pass
@@ -101,6 +104,7 @@ class PortkeyLangchain(BaseCallbackHandler):
             "chat_model_start",
             self.global_trace_id,
             request_payload,
+            self.metadata,
         )
         self.event_map["chat_model_start_" + str(run_id)] = info_obj
         self.event_array.append(self.event_map["chat_model_start_" + str(run_id)])
@@ -147,9 +151,8 @@ class PortkeyLangchain(BaseCallbackHandler):
         """Run when chain starts running."""
 
         if parent_run_id is None:
-            self.global_trace_id = str(uuid4())
+            self.global_trace_id = self.metadata.get("traceId", str(uuid4()))  # type: ignore [union-attr]
             self.main_span_id = ""
-
         parent_span_id = (
             self.main_span_id if parent_run_id is None else str(parent_run_id)
         )
@@ -163,6 +166,7 @@ class PortkeyLangchain(BaseCallbackHandler):
             "chain_start",
             self.global_trace_id,
             request_payload,
+            self.metadata,
         )
 
         self.event_map["chain_start_" + str(run_id)] = info_obj
@@ -221,6 +225,7 @@ class PortkeyLangchain(BaseCallbackHandler):
             "tool_start",
             self.global_trace_id,
             request_payload,
+            self.metadata,
         )
         self.event_map["tool_start_" + str(run_id)] = info_obj
         pass
@@ -264,7 +269,12 @@ class PortkeyLangchain(BaseCallbackHandler):
         )
         request_payload = self.on_text_transformer(text)
         info_obj = self.start_event_information(
-            run_id, parent_span_id, "text", self.global_trace_id, request_payload
+            run_id,
+            parent_span_id,
+            "text",
+            self.global_trace_id,
+            request_payload,
+            self.metadata,
         )
         self.event_map["text_" + str(run_id)] = info_obj
         self.event_array.append(self.event_map["text_" + str(run_id)])
@@ -291,6 +301,7 @@ class PortkeyLangchain(BaseCallbackHandler):
             "agent_action",
             self.global_trace_id,
             request_payload,
+            self.metadata,
         )
         self.event_map["agent_action_" + str(run_id)] = info_obj
         pass
@@ -347,7 +358,13 @@ class PortkeyLangchain(BaseCallbackHandler):
 
     #  -------------- Helpers ------------------------------------------
     def start_event_information(
-        self, span_id, parent_span_id, span_name, trace_id, request_payload
+        self,
+        span_id,
+        parent_span_id,
+        span_name,
+        trace_id,
+        request_payload,
+        metadata=None,
     ):
         start_time = int(datetime.now().timestamp())
         return {
@@ -357,6 +374,7 @@ class PortkeyLangchain(BaseCallbackHandler):
             "trace_id": trace_id,
             "request": request_payload,
             "start_time": start_time,
+            "metadata": metadata,
         }
 
     def serialize(self, obj):

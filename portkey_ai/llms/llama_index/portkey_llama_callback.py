@@ -27,6 +27,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
     def __init__(
         self,
         api_key: str,
+        metadata: Optional[Dict[str, Any]] = {},
     ) -> None:
         super().__init__(
             event_starts_to_ignore=[
@@ -44,6 +45,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         )
 
         self.api_key = api_key
+        self.metadata = metadata
 
         self.portkey_logger = Logger(api_key=api_key)
 
@@ -110,6 +112,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
             "trace_id": self.global_trace_id,
             "request": request_payload,
             "start_time": start_time,
+            "metadata": self.metadata,
         }
         self.event_map[span_id] = start_event_information
 
@@ -141,13 +144,14 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
             response_payload = payload
 
         self.event_map[span_id]["response"] = response_payload
+
         self.event_array.append(self.event_map[span_id])
 
     def start_trace(self, trace_id: Optional[str] = None) -> None:
         """Run when an overall trace is launched."""
 
         if trace_id == "index_construction":
-            self.global_trace_id = str(uuid4())
+            self.global_trace_id = self.metadata.get("traceId", str(uuid4()))  # type: ignore [union-attr]
 
         self.main_span_id = ""
 
