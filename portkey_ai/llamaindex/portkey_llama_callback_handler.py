@@ -23,7 +23,7 @@ except ImportError:
     raise ImportError("Please pip install llama-index to use Portkey Callback Handler")
 
 
-class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
+class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
     def __init__(
         self,
         api_key: str,
@@ -126,22 +126,31 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         """Run when an event ends."""
         span_id = event_id
 
-        if event_type == "llm":
-            response_payload = self.llm_event_end(payload, event_id)
-        elif event_type == "embedding":
-            response_payload = self.embedding_event_end(payload, event_id)
-        elif event_type == "agent_step":
-            response_payload = self.agent_step_event_end(payload, event_id)
-        elif event_type == "function_call":
-            response_payload = self.function_call_event_end(payload, event_id)
-        elif event_type == "query":
-            response_payload = self.query_event_end(payload, event_id)
-        elif event_type == "retrieve":
-            response_payload = self.retrieve_event_end(payload, event_id)
-        elif event_type == "templating":
-            response_payload = self.templating_event_end(payload, event_id)
+        if payload is None:
+            response_payload = {}
+            if span_id in self.event_map:
+                event = self.event_map[event_id]
+                start_time = event["start_time"]
+                end_time = int(datetime.now().timestamp())
+                total_time = (end_time - start_time) * 1000
+                response_payload["response_time"] = total_time
         else:
-            response_payload = payload
+            if event_type == "llm":
+                response_payload = self.llm_event_end(payload, event_id)
+            elif event_type == "embedding":
+                response_payload = self.embedding_event_end(payload, event_id)
+            elif event_type == "agent_step":
+                response_payload = self.agent_step_event_end(payload, event_id)
+            elif event_type == "function_call":
+                response_payload = self.function_call_event_end(payload, event_id)
+            elif event_type == "query":
+                response_payload = self.query_event_end(payload, event_id)
+            elif event_type == "retrieve":
+                response_payload = self.retrieve_event_end(payload, event_id)
+            elif event_type == "templating":
+                response_payload = self.templating_event_end(payload, event_id)
+            else:
+                response_payload = payload
 
         self.event_map[span_id]["response"] = response_payload
 
@@ -149,7 +158,6 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
 
     def start_trace(self, trace_id: Optional[str] = None) -> None:
         """Run when an overall trace is launched."""
-
         if trace_id == "index_construction":
             self.global_trace_id = self.metadata.get("traceId", str(uuid4()))  # type: ignore [union-attr]
 
@@ -230,7 +238,7 @@ class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
         )
         self.response["body"].update({"id": event_id})
         self.response["body"].update({"created": int(time.time())})
-        self.response["body"].update({"model": data.raw.get("model", "")})
+        self.response["body"].update({"model": getattr(data, "model", "")})
         self.response["headers"] = {}
         self.response["streamingMode"] = self.streamingMode
 
