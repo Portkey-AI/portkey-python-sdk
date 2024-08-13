@@ -23,7 +23,7 @@ except ImportError:
     raise ImportError("Please pip install llama-index to use Portkey Callback Handler")
 
 
-class PortkeyLlamaindex(LlamaIndexBaseCallbackHandler):
+class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
     def __init__(
         self,
         api_key: str,

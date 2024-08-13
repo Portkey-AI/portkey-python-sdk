@@ -13,7 +13,7 @@ except ImportError:
     raise ImportError("Please pip install langchain-core to use PortkeyLangchain")
 
 
-class PortkeyLangchain(BaseCallbackHandler):
+class LangchainCallbackHandler(BaseCallbackHandler):
     def __init__(
         self,
         api_key: str,

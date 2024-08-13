@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from tests.utils import read_json_file
-from portkey_ai.llms.langchain import PortkeyLangchain
+from portkey_ai import LangchainCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains import LLMChain
@@ -15,7 +15,7 @@ api_key = os.environ.get("PORTKEY_API_KEY")
 
 
 class TestLLMLangchain:
-    client = PortkeyLangchain
+    client = LangchainCallbackHandler
     parametrize = pytest.mark.parametrize("client", [client], ids=["strict"])
     models = read_json_file("./tests/models.json")
 

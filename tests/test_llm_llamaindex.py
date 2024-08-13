@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from tests.utils import read_json_file
-from portkey_ai.llms.llama_index import PortkeyLlamaindex
+from portkey_ai import LlamaIndexCallbackHandler
 
 
 from llama_index.llms.openai import OpenAI
@@ -24,7 +24,7 @@ api_key = os.environ.get("PORTKEY_API_KEY")
 
 
 class TestLLMLlamaindex:
-    client = PortkeyLlamaindex
+    client = LlamaIndexCallbackHandler
     parametrize = pytest.mark.parametrize("client", [client], ids=["strict"])
     models = read_json_file("./tests/models.json")
 

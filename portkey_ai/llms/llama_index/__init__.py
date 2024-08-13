@@ -1,3 +1,3 @@
-from .portkey_llama_callback import PortkeyLlamaindex
+from .portkey_llama_callback import LlamaIndexCallbackHandler
 
-__all__ = ["PortkeyLlamaindex"]
+__all__ = ["LlamaIndexCallbackHandler"]
