@@ -73,11 +73,6 @@ from portkey_ai.api_resources.global_constants import (
     PORTKEY_GATEWAY_URL,
 )
 
-from portkey_ai.llms.langchain.portkey_langchain_callback import (
-    LangchainCallbackHandler,
-)
-from portkey_ai.llms.llama_index.portkey_llama_callback import LlamaIndexCallbackHandler
-
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
 base_url = os.environ.get(PORTKEY_PROXY_ENV, PORTKEY_BASE_URL)
 config: Optional[Union[Mapping, str]] = None
@@ -149,7 +144,7 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
-    "LangchainCallbackHandler",
-    "LlamaIndexCallbackHandler",
+    # "LangchainCallbackHandler",
+    # "LlamaIndexCallbackHandler",
     "openai",
 ]
