@@ -48,14 +48,17 @@ class Post(APIResource):
         stream: bool = False,
         **kwargs,
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        files = kwargs.pop("files", None)
+        headers = kwargs.pop("headers", {})
         return self._post(
             url,
             body=kwargs,
+            files=files,
             params=None,
             cast_to=GenericResponse,
             stream_cls=Stream[GenericResponse],
             stream=stream,
-            headers={},
+            headers=headers,
         )
 
 
@@ -100,12 +103,15 @@ class AsyncPost(AsyncAPIResource):
         stream: bool = False,
         **kwargs,
     ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
+        files = kwargs.pop("files", None)
+        headers = kwargs.pop("headers", {})
         return await self._post(
             url,
             body=kwargs,
+            files=files,
             params=None,
             cast_to=GenericResponse,
             stream_cls=AsyncStream[GenericResponse],
             stream=stream,
-            headers={},
+            headers=headers,
         )
