@@ -1,3 +1,11 @@
+"""
+TODO: Remove text, agent start, finish
+TODO: Send tags 
+TODO: Time not to be rounded off 
+TODO: snap_name body -> name OR ... body->serialized->name
+TODO: Add type as well in the body
+TODO: 
+"""
 from enum import Enum
 import json
 import time
@@ -75,43 +83,6 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         )
         self.event_map["llm_start_" + str(run_id)] = info_obj
         pass
-
-    def on_chat_model_start(
-        self,
-        serialized: Dict[str, Any],
-        messages: List[List[Any]],
-        *,
-        run_id: UUID,
-        parent_run_id: Optional[UUID] = None,
-        tags: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        **kwargs: Any,
-    ) -> Any:
-        """Run when a chat model starts running.
-
-        **ATTENTION**: This method is called for chat models. If you're implementing
-            a handler for a non-chat model, you should use on_llm_start instead.
-        """
-        # NotImplementedError is thrown intentionally
-        # Callback handler will fall back to on_llm_start if this is exception is thrown
-
-        request_payload = self.on_chat_model_start_transformer(
-            serialized, messages, kwargs=kwargs
-        )
-        info_obj = self.start_event_information(
-            run_id,
-            parent_run_id,
-            "chat_model_start",
-            self.global_trace_id,
-            request_payload,
-            self.metadata,
-        )
-        self.event_map["chat_model_start_" + str(run_id)] = info_obj
-        self.event_array.append(self.event_map["chat_model_start_" + str(run_id)])
-
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not implement `on_chat_model_start`"
-        )
 
     def on_llm_end(
         self,
@@ -251,82 +222,6 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             "response_time"
         ] = total_time
         self.event_array.append(self.event_map["tool_start_" + str(run_id)])
-        pass
-
-    def on_text(
-        self,
-        text: str,
-        *,
-        run_id: UUID,
-        parent_run_id: Optional[UUID] = None,
-        tags: Optional[List[str]] = None,
-        **kwargs: Any,
-    ) -> None:
-        """Run on arbitrary text."""
-
-        parent_span_id = (
-            self.main_span_id if parent_run_id is None else str(parent_run_id)
-        )
-        request_payload = self.on_text_transformer(text)
-        info_obj = self.start_event_information(
-            run_id,
-            parent_span_id,
-            "text",
-            self.global_trace_id,
-            request_payload,
-            self.metadata,
-        )
-        self.event_map["text_" + str(run_id)] = info_obj
-        self.event_array.append(self.event_map["text_" + str(run_id)])
-        pass
-
-    def on_agent_action(
-        self,
-        action: Any,
-        *,
-        run_id: UUID,
-        parent_run_id: Optional[UUID] = None,
-        tags: Optional[List[str]] = None,
-        **kwargs: Any,
-    ) -> None:
-        """Run on agent action."""
-
-        parent_span_id = (
-            self.main_span_id if parent_run_id is None else str(parent_run_id)
-        )
-        request_payload = self.on_agent_action_transformer(action)
-        info_obj = self.start_event_information(
-            run_id,
-            parent_span_id,
-            "agent_action",
-            self.global_trace_id,
-            request_payload,
-            self.metadata,
-        )
-        self.event_map["agent_action_" + str(run_id)] = info_obj
-        pass
-
-    def on_agent_finish(
-        self,
-        finish: Any,
-        *,
-        run_id: UUID,
-        parent_run_id: Optional[UUID] = None,
-        tags: Optional[List[str]] = None,
-        **kwargs: Any,
-    ) -> None:
-        """Run on agent end."""
-
-        start_time = self.event_map["agent_action_" + str(run_id)]["start_time"]
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
-
-        response_payload = self.on_agent_finish_transformer(finish)
-        self.event_map["agent_action_" + str(run_id)]["response"] = response_payload
-        self.event_map["agent_action_" + str(run_id)]["response"][
-            "response_time"
-        ] = total_time
-        self.event_array.append(self.event_map["agent_action_" + str(run_id)])
         pass
 
     def on_retriever_start(
@@ -532,45 +427,6 @@ class LangchainCallbackHandler(BaseCallbackHandler):
 
         except Exception:
             return {"output": output}
-
-    def on_text_transformer(self, text):
-        try:
-            return {"text": text}
-        except Exception:
-            return {"text": text}
-
-    def on_chat_model_start_transformer(self, serialized, messages, kwargs):
-        try:
-            model = serialized["id"][-1]
-            invocation_params = kwargs["invocation_params"]
-            input_data = self.serialize(messages)
-            message_obj = input_data[0][0]
-            return {
-                "model": model,
-                "invocation_params": invocation_params,
-                "messages": message_obj,
-            }
-        except Exception:
-            return {"serialized": serialized, "messages": message_obj, "kwargs": kwargs}
-
-    def on_agent_action_transformer(self, action):
-        try:
-            action = self.serialize(action)
-            tool = action["tool"]
-            tool_input = action["tool_input"]
-            log = action["log"]
-            return {"tool": tool, "tool_input": tool_input, "log": log}
-        except Exception:
-            return {"action": action}
-
-    def on_agent_finish_transformer(self, finish):
-        try:
-            finish = self.serialize(finish)
-            return_values = finish["return_values"]
-            log = finish["log"]
-            return {"return_values": return_values, "log": log}
-        except Exception:
-            return {"finish": finish}
 
     def on_tool_start_transformer(self, serialized, input_str, inputs):
         try:
