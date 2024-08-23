@@ -1,11 +1,3 @@
-"""
-TODO: Remove text, agent start, finish
-TODO: Send tags 
-TODO: Time not to be rounded off 
-TODO: snap_name body -> name OR ... body->serialized->name
-TODO: Add type as well in the body
-TODO: 
-"""
 from enum import Enum
 import json
 import time
