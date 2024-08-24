@@ -16,12 +16,13 @@ class LangchainCallbackHandler(BaseCallbackHandler):
     def __init__(
         self,
         api_key: str,
-        metadata: Optional[Dict[str, Any]] = {},
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
         super().__init__()
 
         self.api_key = api_key
-        self.metadata = metadata
+        self.metadata: Dict[str, Any] = metadata or {}
+        self.metadata.update({"_source": "Langchain", "_source_type": "Agent"})
 
         self.portkey_logger = Logger(api_key=api_key)
 
@@ -260,6 +261,13 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         metadata=None,
     ):
         start_time = time.time()
+        source_metadata = {}
+        if type:
+            source_metadata.update({"type": type})
+        if len(tags):
+            source_metadata.update({"tags": tags})
+        if source_metadata:
+            metadata.update({"source_metadata": json.dumps(source_metadata)})
         return {
             "span_id": str(span_id),
             "parent_span_id": str(parent_span_id),
@@ -267,8 +275,6 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             "trace_id": trace_id,
             "request": request_payload,
             "start_time": start_time,
-            "type": type,
-            "tags": tags,
             "metadata": metadata,
         }
 
