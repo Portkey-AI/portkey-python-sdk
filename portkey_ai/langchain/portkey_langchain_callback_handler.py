@@ -70,6 +70,8 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             serialized.get("name", "llm"),
             self.global_trace_id,
             request_payload,
+            "llm",
+            tags,
             self.metadata,
         )
         self.event_map["llm_start_" + str(run_id)] = info_obj
@@ -128,6 +130,8 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             request_payload.get("name", "chain"),
             self.global_trace_id,
             request_payload,
+            "chain",
+            tags,
             self.metadata,
         )
 
@@ -187,6 +191,8 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             request_payload.get("serialized", {}).get("name", "tool"),
             self.global_trace_id,
             request_payload,
+            "tool",
+            tags,
             self.metadata,
         )
         self.event_map["tool_start_" + str(run_id)] = info_obj
@@ -249,6 +255,8 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         span_name,
         trace_id,
         request_payload,
+        type,
+        tags,
         metadata=None,
     ):
         start_time = time.time()
@@ -259,6 +267,8 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             "trace_id": trace_id,
             "request": request_payload,
             "start_time": start_time,
+            "type": type,
+            "tags": tags,
             "metadata": metadata,
         }
 
