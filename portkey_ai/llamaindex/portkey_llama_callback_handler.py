@@ -36,7 +36,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 CBEventType.EXCEPTION,
                 CBEventType.TREE,
                 CBEventType.RERANKING,
-                CBEventType.SUB_QUESTION
+                CBEventType.SUB_QUESTION,
             ],
             event_ends_to_ignore=[
                 CBEventType.CHUNKING,
@@ -45,7 +45,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 CBEventType.EXCEPTION,
                 CBEventType.TREE,
                 CBEventType.RERANKING,
-                CBEventType.SUB_QUESTION
+                CBEventType.SUB_QUESTION,
             ],
         )
 
@@ -215,10 +215,8 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         return self.request
 
     def llm_event_end(self, payload: Any, event_id) -> Any:
-
-        result = {
-            "body": {},
-        }
+        result: dict[str, Any] = {}
+        result["body"] = {}
 
         try:
             data = self.serialize(payload)
