@@ -3,7 +3,6 @@ import json
 import time
 from typing import Any, Dict, List, Optional
 from portkey_ai.api_resources.apis.logger import Logger
-from datetime import datetime
 from llama_index.core.callbacks.schema import (
     CBEventType,
 )
@@ -27,7 +26,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
     def __init__(
         self,
         api_key: str,
-        metadata: Optional[Dict[str, Any]] = {},
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
         super().__init__(
             event_starts_to_ignore=[
@@ -35,17 +34,24 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 CBEventType.NODE_PARSING,
                 CBEventType.SYNTHESIZE,
                 CBEventType.EXCEPTION,
+                CBEventType.TREE,
+                CBEventType.RERANKING,
+                CBEventType.SUB_QUESTION
             ],
             event_ends_to_ignore=[
                 CBEventType.CHUNKING,
                 CBEventType.NODE_PARSING,
                 CBEventType.SYNTHESIZE,
                 CBEventType.EXCEPTION,
+                CBEventType.TREE,
+                CBEventType.RERANKING,
+                CBEventType.SUB_QUESTION
             ],
         )
 
         self.api_key = api_key
-        self.metadata = metadata
+        self.metadata: Dict[str, Any] = metadata or {}
+        self.metadata.update({"_source": "LlamaIndex", "_source_type": "Agent"})
 
         self.portkey_logger = Logger(api_key=api_key)
 
@@ -83,7 +89,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         span_id = str(event_id)
         parent_span_id = parent_id
         span_name = event_type
-        start_time = int(datetime.now().timestamp())
+        start_time = time.time()
 
         if parent_id == "root":
             parent_span_id = self.main_span_id
@@ -103,7 +109,10 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         elif event_type == "templating":
             request_payload = self.templating_event_start(payload)
         else:
-            request_payload = payload
+            if isinstance(payload, dict):
+                request_payload = payload
+            else:
+                request_payload = json.dumps(payload.__dict__)
 
         start_event_information = {
             "span_id": span_id,
@@ -111,6 +120,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             "span_name": span_name.value,
             "trace_id": self.global_trace_id,
             "request": request_payload,
+            "event_type": event_type,
             "start_time": start_time,
             "metadata": self.metadata,
         }
@@ -131,8 +141,8 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             if span_id in self.event_map:
                 event = self.event_map[event_id]
                 start_time = event["start_time"]
-                end_time = int(datetime.now().timestamp())
-                total_time = (end_time - start_time) * 1000
+                end_time = time.time()
+                total_time = f"{((end_time - start_time) * 1000):04.0f}"
                 response_payload["response_time"] = total_time
         else:
             if event_type == "llm":
@@ -150,7 +160,10 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             elif event_type == "templating":
                 response_payload = self.templating_event_end(payload, event_id)
             else:
-                response_payload = payload
+                if isinstance(payload, dict):
+                    response_payload = payload
+                else:
+                    response_payload = json.dumps(payload.__dict__)
 
         self.event_map[span_id]["response"] = response_payload
 
@@ -202,32 +215,28 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         return self.request
 
     def llm_event_end(self, payload: Any, event_id) -> Any:
+
+        result = {
+            "body": {},
+        }
+
+        try:
+            data = self.serialize(payload)
+        except Exception:
+            data = payload.__dict__
+
         if event_id in self.event_map:
             event = self.event_map[event_id]
             start_time = event["start_time"]
-
-        self.response = {}
-
-        data = payload.get("response", {})
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         chunks = payload.get("messages", {})
         self.completion_tokens = self._token_counter.estimate_tokens_in_messages(chunks)
         self.token_llm = self.prompt_tokens + self.completion_tokens
-        self.response["status"] = 200
-        self.response["body"] = {
-            "choices": [
-                {
-                    "index": 0,
-                    "message": {
-                        "role": data.message.role.value,
-                        "content": data.message.content,
-                    },
-                    "logprobs": data.logprobs,
-                    "finish_reason": "done",
-                }
-            ]
-        }
-        self.response["body"].update(
+
+        result["body"] = data["response"]
+        result["body"].update(
             {
                 "usage": {
                     "prompt_tokens": self.prompt_tokens,
@@ -236,18 +245,16 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 }
             }
         )
-        self.response["body"].update({"id": event_id})
-        self.response["body"].update({"created": int(time.time())})
-        self.response["body"].update({"model": getattr(data, "model", "")})
-        self.response["headers"] = {}
-        self.response["streamingMode"] = self.streamingMode
+        result["body"].update({"id": event_id})
+        result["body"].update({"created": int(time.time())})
+        result["body"].update({"model": getattr(data, "model", "")})
+        result["streamingMode"] = self.streamingMode
 
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        result["status"] = 200
+        result["headers"] = {}
+        result["response_time"] = total_time
 
-        self.response["response_time"] = total_time
-
-        return self.response
+        return result
 
     # ------------------------------------------------------ #
     def embedding_event_start(self, payload: Any) -> Any:
@@ -270,9 +277,9 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
     def embedding_event_end(self, payload: Any, event_id) -> Any:
         if event_id in self.event_map:
             event = self.event_map[event_id]
-            # event["request"]["body"]["input"] = payload.get("chunks", "")
+            event["request"]["body"]["input"] = payload.get("chunks", "")
             # Setting as ...INPUT... to avoid logging the entire data input file
-            event["request"]["body"]["input"] = "...INPUT..."
+            # event["request"]["body"]["input"] = "...INPUT..."
 
             start_time = event["start_time"]
 
@@ -302,8 +309,8 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         )
         self.response["headers"] = {}
 
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         self.response["response_time"] = total_time
 
@@ -311,7 +318,10 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
 
     # ------------------------------------------------------ #
     def agent_step_event_start(self, payload: Any) -> Any:
-        data = json.dumps(self.serialize(payload))
+        try:
+            data = json.dumps(self.serialize(payload))
+        except Exception:
+            data = json.dumps(payload.__dict__)
         return data
 
     def agent_step_event_end(self, payload: Any, event_id) -> Any:
@@ -319,10 +329,9 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             event = self.event_map[event_id]
             start_time = event["start_time"]
         data = self.serialize(payload)
-        json.dumps(data)
         result = self.transform_agent_step_end(data)
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         result["response_time"] = total_time
         return result
@@ -337,17 +346,19 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             event = self.event_map[event_id]
             start_time = event["start_time"]
         data = self.serialize(payload)
-        json.dumps(data)
         result = self.transform_function_call_end(data)
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
     def query_event_start(self, payload: Any) -> Any:
-        data = json.dumps(self.serialize(payload))
+        try:
+            data = json.dumps(self.serialize(payload))
+        except Exception:
+            data = json.dumps(payload.__dict__)
         return data
 
     def query_event_end(self, payload: Any, event_id) -> Any:
@@ -355,17 +366,19 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             event = self.event_map[event_id]
             start_time = event["start_time"]
         data = self.serialize(payload)
-        json.dumps(data)
         result = self.transform_query_end(data)
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         result["response_time"] = total_time
         return result
 
     # ------------------------------------------------------ #
     def retrieve_event_start(self, payload: Any) -> Any:
-        data = json.dumps(self.serialize(payload))
+        try:
+            data = json.dumps(self.serialize(payload))
+        except Exception:
+            data = json.dumps(payload.__dict__)
         return data
 
     def retrieve_event_end(self, payload: Any, event_id) -> Any:
@@ -374,10 +387,9 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             start_time = event["start_time"]
 
         data = self.serialize(payload)
-        json.dumps(data)
         result = self.transform_retrieve_end(data)
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         result["response_time"] = total_time
         return result
@@ -385,7 +397,6 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
     # ------------------------------------------------------ #
     def templating_event_start(self, payload: Any) -> Any:
         data = self.serialize(payload)
-        json.dumps(data)
         result = self.transform_templating_start(data)
         return result
 
@@ -395,8 +406,8 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             start_time = event["start_time"]
         result = self.transform_templating_end(event_id)
 
-        end_time = int(datetime.now().timestamp())
-        total_time = (end_time - start_time) * 1000
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         result["response_time"] = total_time
         return result
