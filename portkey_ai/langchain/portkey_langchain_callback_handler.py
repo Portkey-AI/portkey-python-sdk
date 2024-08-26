@@ -135,7 +135,6 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             tags,
             self.metadata,
         )
-
         self.event_map["chain_start_" + str(run_id)] = info_obj
         pass
 
@@ -256,18 +255,20 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         span_name,
         trace_id,
         request_payload,
-        type,
+        span_type,
         tags,
         metadata=None,
     ):
         start_time = time.time()
         source_metadata = {}
-        if type:
-            source_metadata.update({"type": type})
+        portkey_metadata = {}
+        portkey_metadata.update(metadata)
+        if span_type:
+            source_metadata.update({"type": span_type})
         if len(tags):
             source_metadata.update({"tags": tags})
         if source_metadata:
-            metadata.update({"source_metadata": json.dumps(source_metadata)})
+            portkey_metadata.update({"source_metadata": json.dumps(source_metadata)})
         return {
             "span_id": str(span_id),
             "parent_span_id": str(parent_span_id),
@@ -275,7 +276,7 @@ class LangchainCallbackHandler(BaseCallbackHandler):
             "trace_id": trace_id,
             "request": request_payload,
             "start_time": start_time,
-            "metadata": metadata,
+            "metadata": portkey_metadata,
         }
 
     def serialize(self, obj):
