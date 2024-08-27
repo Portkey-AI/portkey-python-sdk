@@ -36,7 +36,6 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 CBEventType.EXCEPTION,
                 CBEventType.TREE,
                 CBEventType.RERANKING,
-                CBEventType.SUB_QUESTION,
             ],
             event_ends_to_ignore=[
                 CBEventType.CHUNKING,
@@ -45,7 +44,6 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 CBEventType.EXCEPTION,
                 CBEventType.TREE,
                 CBEventType.RERANKING,
-                CBEventType.SUB_QUESTION,
             ],
         )
 
@@ -108,6 +106,8 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             request_payload = self.retrieve_event_start(payload)
         elif event_type == "templating":
             request_payload = self.templating_event_start(payload)
+        elif event_type == "sub_question":
+            request_payload = self.sub_question_event_start(payload)
         else:
             if isinstance(payload, dict):
                 request_payload = payload
@@ -159,6 +159,8 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
                 response_payload = self.retrieve_event_end(payload, event_id)
             elif event_type == "templating":
                 response_payload = self.templating_event_end(payload, event_id)
+            elif event_type == "sub_question":
+                response_payload = self.sub_question_event_end(payload, event_id)
             else:
                 if isinstance(payload, dict):
                     response_payload = payload
@@ -408,6 +410,36 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         total_time = f"{((end_time - start_time) * 1000):04.0f}"
 
         result["response_time"] = total_time
+        return result
+
+    # ------------------------------------------------------ #
+
+    def sub_question_event_start(self, payload: Any) -> Any:
+        try:
+            data = json.dumps(self.serialize(payload))
+        except Exception:
+            data = json.dumps(payload.__dict__)
+
+        return data
+
+    def sub_question_event_end(self, payload: Any, event_id) -> Any:
+        result: dict[str, Any] = {}
+        result["body"] = {}
+        if event_id in self.event_map:
+            event = self.event_map[event_id]
+            start_time = event["start_time"]
+
+        try:
+            data = self.serialize(payload)
+        except Exception:
+            data = payload.__dict__
+
+        end_time = time.time()
+        total_time = f"{((end_time - start_time) * 1000):04.0f}"
+
+        result["body"] = data
+        result["body"]["response_time"] = total_time
+
         return result
 
     # ------------------------------------------------------ #
