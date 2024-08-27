@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 import json
 import time
 from typing import Any, Dict, List, Optional
@@ -7,7 +7,6 @@ from llama_index.core.callbacks.schema import (
     CBEventType,
 )
 from uuid import uuid4
-from llama_index.legacy.schema import NodeRelationship
 
 try:
     from llama_index.core.callbacks.base_handler import (
@@ -109,10 +108,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         elif event_type == "sub_question":
             request_payload = self.sub_question_event_start(payload)
         else:
-            if isinstance(payload, dict):
-                request_payload = payload
-            else:
-                request_payload = json.dumps(payload.__dict__)
+            return
 
         start_event_information = {
             "span_id": span_id,
@@ -162,10 +158,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
             elif event_type == "sub_question":
                 response_payload = self.sub_question_event_end(payload, event_id)
             else:
-                if isinstance(payload, dict):
-                    response_payload = payload
-                else:
-                    response_payload = json.dumps(payload.__dict__)
+                return
 
         self.event_map[span_id]["response"] = response_payload
 
@@ -628,3 +621,10 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         if isinstance(obj, tuple):
             return tuple(self.serialize(item) for item in obj)
         return obj
+
+class NodeRelationship(str, Enum):
+    SOURCE = auto()
+    PREVIOUS = auto()
+    NEXT = auto()
+    PARENT = auto()
+    CHILD = auto()
