@@ -210,7 +210,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         return self.request
 
     def llm_event_end(self, payload: Any, event_id) -> Any:
-        result: dict[str, Any] = {}
+        result: Dict[str, Any] = {}
         result["body"] = {}
 
         try:
@@ -416,7 +416,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         return data
 
     def sub_question_event_end(self, payload: Any, event_id) -> Any:
-        result: dict[str, Any] = {}
+        result: Dict[str, Any] = {}
         result["body"] = {}
         if event_id in self.event_map:
             event = self.event_map[event_id]
