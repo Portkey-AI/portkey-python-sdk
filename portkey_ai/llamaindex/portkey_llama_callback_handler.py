@@ -108,7 +108,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         elif event_type == "sub_question":
             request_payload = self.sub_question_event_start(payload)
         else:
-            return
+            return ""
 
         start_event_information = {
             "span_id": span_id,
@@ -621,6 +621,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         if isinstance(obj, tuple):
             return tuple(self.serialize(item) for item in obj)
         return obj
+
 
 class NodeRelationship(str, Enum):
     SOURCE = auto()
