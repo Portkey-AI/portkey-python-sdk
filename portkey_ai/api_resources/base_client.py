@@ -72,6 +72,7 @@ class APIClient:
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
@@ -100,6 +101,7 @@ class APIClient:
         self.azure_resource_name = azure_resource_name
         self.azure_deployment_id = azure_deployment_id
         self.azure_api_version = azure_api_version
+        self.huggingface_base_url = huggingface_base_url
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
         self.strict_open_ai_compliance = strict_open_ai_compliance
@@ -128,6 +130,7 @@ class APIClient:
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
@@ -559,6 +562,7 @@ class AsyncAPIClient:
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
@@ -587,6 +591,7 @@ class AsyncAPIClient:
         self.azure_resource_name = azure_resource_name
         self.azure_deployment_id = azure_deployment_id
         self.azure_api_version = azure_api_version
+        self.huggingface_base_url = huggingface_base_url
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
         self.strict_open_ai_compliance = strict_open_ai_compliance
@@ -615,6 +620,7 @@ class AsyncAPIClient:
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
