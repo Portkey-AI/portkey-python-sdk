@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.mypy]
 exclude = ["portkey_ai/_vendor"]
-disable_error_code = 'import-untyped'
+disable_error_code = ['import-untyped', 'import-not-found']
 
 [tool.black]
 force-exclude = '''(portkey_ai/_vendor)/'''
