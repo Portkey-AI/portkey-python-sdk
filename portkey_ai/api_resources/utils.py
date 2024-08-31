@@ -129,6 +129,7 @@ class Options(BaseModel):
     data: Optional[Mapping[str, Any]] = None
     # json structure
     json_body: Optional[Mapping[str, Any]] = None
+    files: Any = None
 
 
 class FunctionCall(BaseModel):
@@ -264,6 +265,7 @@ class Constructs(BaseModel):
     azure_resource_name: Optional[str] = None
     azure_deployment_id: Optional[str] = None
     azure_api_version: Optional[str] = None
+    huggingface_base_url: Optional[str] = None
     cache_namespace: Optional[str] = None
     request_timeout: Optional[int] = None
 
