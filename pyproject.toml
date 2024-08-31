@@ -2,6 +2,10 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.mypy]
+exclude = ["portkey_ai/_vendor"]
+disable_error_code = 'import-untyped'
+
 [tool.black]
 force-exclude = '''(portkey_ai/_vendor)/'''
 
