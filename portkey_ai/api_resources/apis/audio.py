@@ -94,8 +94,11 @@ class Speech(APIResource):
         voice: str,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         speed: Union[float, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Any:
+        if stream is True:
+            self.openai_client = self.openai_client.with_streaming_response
         response = self.openai_client.audio.speech.create(
             input=input,
             model=model,
@@ -196,8 +199,11 @@ class AsyncSpeech(AsyncAPIResource):
         voice: str,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         speed: Union[float, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Any:
+        if stream is True:
+            self.openai_client = await self.openai_client.with_streaming_response
         response = await self.openai_client.audio.speech.create(
             input=input,
             model=model,
