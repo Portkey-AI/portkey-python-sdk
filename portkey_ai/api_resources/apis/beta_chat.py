@@ -1,5 +1,4 @@
 from typing import Any, Union
-from portkey_ai._vendor.openai.lib._parsing._completions import ResponseFormatT
 from portkey_ai._vendor.openai.types.chat.parsed_chat_completion import (
     ParsedChatCompletion,
 )
@@ -25,10 +24,10 @@ class BetaCompletions(APIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[type[ResponseFormatT], NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, NotGiven] = NOT_GIVEN,
         tools: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
-    ) -> ParsedChatCompletion[ResponseFormatT]:
+    ) -> ParsedChatCompletion[Any]:
         response = self.openai_client.beta.chat.completions.parse(
             messages=messages,
             model=model,
@@ -43,7 +42,7 @@ class BetaCompletions(APIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[type[ResponseFormatT], NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, NotGiven] = NOT_GIVEN,
         tools: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> Any:
@@ -83,10 +82,10 @@ class AsyncBetaCompletions(AsyncAPIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[type[ResponseFormatT], NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, NotGiven] = NOT_GIVEN,
         tools: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
-    ) -> ParsedChatCompletion[ResponseFormatT]:
+    ) -> ParsedChatCompletion[Any]:
         response = await self.openai_client.beta.chat.completions.parse(
             messages=messages,
             model=model,
@@ -101,7 +100,7 @@ class AsyncBetaCompletions(AsyncAPIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[type[ResponseFormatT], NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, NotGiven] = NOT_GIVEN,
         tools: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> Any:
