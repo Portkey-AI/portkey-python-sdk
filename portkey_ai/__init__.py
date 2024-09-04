@@ -63,6 +63,14 @@ from portkey_ai.api_resources import (
     AsyncVectorStores,
     AsyncVectorFiles,
     AsyncVectorFileBatches,
+    BetaChat,
+    AsyncBetaChat,
+    BetaCompletions,
+    AsyncBetaCompletions,
+    Uploads,
+    Parts,
+    AsyncUploads,
+    AsyncParts,
 )
 
 from portkey_ai.version import VERSION
@@ -144,5 +152,13 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "BetaChat",
+    "AsyncBetaChat",
+    "BetaCompletions",
+    "AsyncBetaCompletions",
+    "Uploads",
+    "Parts",
+    "AsyncUploads",
+    "AsyncParts",
     "openai",
 ]

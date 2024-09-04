@@ -72,7 +72,7 @@ class Jobs(APIResource):
         **kwargs,
     ) -> FineTuningJobList:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list(
-            after=after, limit=limit, extra_body=kwargs
+            after=after, limit=limit, **kwargs
         )
         data = FineTuningJobList(**json.loads(response.text))
         data._headers = response.headers
@@ -126,7 +126,7 @@ class Checkpoints(APIResource):
                 fine_tuning_job_id=fine_tuning_job_id,
                 after=after,
                 limit=limit,
-                extra_body=kwargs,
+                **kwargs,
             )
         )
 
@@ -195,7 +195,7 @@ class AsyncJobs(AsyncAPIResource):
         **kwargs,
     ) -> FineTuningJobList:
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.list(
-            after=after, limit=limit, extra_body=kwargs
+            after=after, limit=limit, **kwargs
         )
         data = FineTuningJobList(**json.loads(response.text))
         data._headers = response.headers
@@ -250,7 +250,7 @@ class AsyncCheckpoints(AsyncAPIResource):
             fine_tuning_job_id=fine_tuning_job_id,
             after=after,
             limit=limit,
-            extra_body=kwargs,
+            **kwargs,
         )
 
         data = FineTuningJobCheckpointList(**json.loads(response.text))

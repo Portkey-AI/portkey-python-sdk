@@ -110,9 +110,7 @@ def install() -> Path:
     _debug(f"Using architecture {arch}")
 
     file_name = f"marzano-{platform}-{arch}"
-    meta_url = (
-        f"https://api.keygen.sh/v1/accounts/{KEYGEN_ACCOUNT}/artifacts/{file_name}"
-    )
+    meta_url = f"https://api.keygen.sh/v1/accounts/{KEYGEN_ACCOUNT}/artifacts/{file_name}"
 
     sys.stdout.write(f"Retrieving Grit CLI metadata from {meta_url}\n")
     with httpx.Client() as client:
@@ -126,9 +124,7 @@ def install() -> Path:
 
             raise CLIError("Could not locate Grit CLI binary - see above errors")
 
-        write_manifest(
-            install_dir, data["data"]["relationships"]["release"]["data"]["id"]
-        )
+        write_manifest(install_dir, data["data"]["relationships"]["release"]["data"]["id"])
 
         link = data["data"]["links"]["redirect"]
         _debug(f"Redirect URL {link}")
@@ -142,7 +138,10 @@ def install() -> Path:
     unpacked_dir.mkdir(parents=True, exist_ok=True)
 
     with tarfile.open(temp_file, "r:gz") as archive:
-        archive.extractall(unpacked_dir, filter="data")
+        if sys.version_info >= (3, 12):
+            archive.extractall(unpacked_dir, filter="data")
+        else:
+            archive.extractall(unpacked_dir)
 
     for item in unpacked_dir.iterdir():
         item.rename(target_dir / item.name)

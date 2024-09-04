@@ -9,9 +9,7 @@ from .._compat import PYDANTIC_V2, ConfigDict
 
 class BaseModel(_models.BaseModel):
     if PYDANTIC_V2:
-        model_config: ClassVar[ConfigDict] = ConfigDict(
-            extra="ignore", arbitrary_types_allowed=True
-        )
+        model_config: ClassVar[ConfigDict] = ConfigDict(extra="ignore", arbitrary_types_allowed=True)
     else:
 
         class Config(pydantic.BaseConfig):  # type: ignore

@@ -23,20 +23,13 @@ from .checkpoints import (
     AsyncCheckpointsWithStreamingResponse,
 )
 from ...._resource import SyncAPIResource, AsyncAPIResource
-from ...._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ...._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ....pagination import SyncCursorPage, AsyncCursorPage
 from ...._base_client import (
     AsyncPaginator,
     make_request_options,
 )
-from ....types.fine_tuning import (
-    job_list_params,
-    job_create_params,
-    job_list_events_params,
-)
+from ....types.fine_tuning import job_list_params, job_create_params, job_list_events_params
 from ....types.fine_tuning.fine_tuning_job import FineTuningJob
 from ....types.fine_tuning.fine_tuning_job_event import FineTuningJobEvent
 
@@ -59,11 +52,10 @@ class Jobs(SyncAPIResource):
     def create(
         self,
         *,
-        model: Union[str, Literal["babbage-002", "davinci-002", "gpt-3.5-turbo"]],
+        model: Union[str, Literal["babbage-002", "davinci-002", "gpt-3.5-turbo", "gpt-4o-mini"]],
         training_file: str,
         hyperparameters: job_create_params.Hyperparameters | NotGiven = NOT_GIVEN,
-        integrations: Optional[Iterable[job_create_params.Integration]]
-        | NotGiven = NOT_GIVEN,
+        integrations: Optional[Iterable[job_create_params.Integration]] | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         suffix: Optional[str] | NotGiven = NOT_GIVEN,
         validation_file: Optional[str] | NotGiven = NOT_GIVEN,
@@ -85,7 +77,7 @@ class Jobs(SyncAPIResource):
 
         Args:
           model: The name of the model to fine-tune. You can select one of the
-              [supported models](https://platform.openai.com/docs/guides/fine-tuning/what-models-can-be-fine-tuned).
+              [supported models](https://platform.openai.com/docs/guides/fine-tuning/which-models-can-be-fine-tuned).
 
           training_file: The ID of an uploaded file that contains training data.
 
@@ -94,6 +86,11 @@ class Jobs(SyncAPIResource):
 
               Your dataset must be formatted as a JSONL file. Additionally, you must upload
               your file with the purpose `fine-tune`.
+
+              The contents of the file should differ depending on if the model uses the
+              [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input) or
+              [completions](https://platform.openai.com/docs/api-reference/fine-tuning/completions-input)
+              format.
 
               See the [fine-tuning guide](https://platform.openai.com/docs/guides/fine-tuning)
               for more details.
@@ -110,7 +107,7 @@ class Jobs(SyncAPIResource):
               name.
 
               For example, a `suffix` of "custom-model-name" would produce a model name like
-              `ft:gpt-3.5-turbo:openai:custom-model-name:7p4lURel`.
+              `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
 
           validation_file: The ID of an uploaded file that contains validation data.
 
@@ -148,10 +145,7 @@ class Jobs(SyncAPIResource):
                 job_create_params.JobCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=FineTuningJob,
         )
@@ -182,16 +176,11 @@ class Jobs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return self._get(
             f"/fine_tuning/jobs/{fine_tuning_job_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=FineTuningJob,
         )
@@ -267,16 +256,11 @@ class Jobs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return self._post(
             f"/fine_tuning/jobs/{fine_tuning_job_id}/cancel",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=FineTuningJob,
         )
@@ -311,9 +295,7 @@ class Jobs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return self._get_api_list(
             f"/fine_tuning/jobs/{fine_tuning_job_id}/events",
             page=SyncCursorPage[FineTuningJobEvent],
@@ -350,11 +332,10 @@ class AsyncJobs(AsyncAPIResource):
     async def create(
         self,
         *,
-        model: Union[str, Literal["babbage-002", "davinci-002", "gpt-3.5-turbo"]],
+        model: Union[str, Literal["babbage-002", "davinci-002", "gpt-3.5-turbo", "gpt-4o-mini"]],
         training_file: str,
         hyperparameters: job_create_params.Hyperparameters | NotGiven = NOT_GIVEN,
-        integrations: Optional[Iterable[job_create_params.Integration]]
-        | NotGiven = NOT_GIVEN,
+        integrations: Optional[Iterable[job_create_params.Integration]] | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         suffix: Optional[str] | NotGiven = NOT_GIVEN,
         validation_file: Optional[str] | NotGiven = NOT_GIVEN,
@@ -376,7 +357,7 @@ class AsyncJobs(AsyncAPIResource):
 
         Args:
           model: The name of the model to fine-tune. You can select one of the
-              [supported models](https://platform.openai.com/docs/guides/fine-tuning/what-models-can-be-fine-tuned).
+              [supported models](https://platform.openai.com/docs/guides/fine-tuning/which-models-can-be-fine-tuned).
 
           training_file: The ID of an uploaded file that contains training data.
 
@@ -385,6 +366,11 @@ class AsyncJobs(AsyncAPIResource):
 
               Your dataset must be formatted as a JSONL file. Additionally, you must upload
               your file with the purpose `fine-tune`.
+
+              The contents of the file should differ depending on if the model uses the
+              [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input) or
+              [completions](https://platform.openai.com/docs/api-reference/fine-tuning/completions-input)
+              format.
 
               See the [fine-tuning guide](https://platform.openai.com/docs/guides/fine-tuning)
               for more details.
@@ -401,7 +387,7 @@ class AsyncJobs(AsyncAPIResource):
               name.
 
               For example, a `suffix` of "custom-model-name" would produce a model name like
-              `ft:gpt-3.5-turbo:openai:custom-model-name:7p4lURel`.
+              `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
 
           validation_file: The ID of an uploaded file that contains validation data.
 
@@ -439,10 +425,7 @@ class AsyncJobs(AsyncAPIResource):
                 job_create_params.JobCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=FineTuningJob,
         )
@@ -473,16 +456,11 @@ class AsyncJobs(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return await self._get(
             f"/fine_tuning/jobs/{fine_tuning_job_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=FineTuningJob,
         )
@@ -558,16 +536,11 @@ class AsyncJobs(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return await self._post(
             f"/fine_tuning/jobs/{fine_tuning_job_id}/cancel",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=FineTuningJob,
         )
@@ -602,9 +575,7 @@ class AsyncJobs(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not fine_tuning_job_id:
-            raise ValueError(
-                f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `fine_tuning_job_id` but received {fine_tuning_job_id!r}")
         return self._get_api_list(
             f"/fine_tuning/jobs/{fine_tuning_job_id}/events",
             page=AsyncCursorPage[FineTuningJobEvent],

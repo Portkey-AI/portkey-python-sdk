@@ -8,17 +8,7 @@ from typing_extensions import override
 from . import types
 from ._types import NOT_GIVEN, NoneType, NotGiven, Transport, ProxiesTypes
 from ._utils import file_from_path
-from ._client import (
-    Client,
-    OpenAI,
-    Stream,
-    Timeout,
-    Transport,
-    AsyncClient,
-    AsyncOpenAI,
-    AsyncStream,
-    RequestOptions,
-)
+from ._client import Client, OpenAI, Stream, Timeout, Transport, AsyncClient, AsyncOpenAI, AsyncStream, RequestOptions
 from ._models import BaseModel
 from ._version import __title__, __version__
 from ._response import APIResponse as APIResponse, AsyncAPIResponse as AsyncAPIResponse
@@ -36,8 +26,10 @@ from ._exceptions import (
     AuthenticationError,
     InternalServerError,
     PermissionDeniedError,
+    LengthFinishReasonError,
     UnprocessableEntityError,
     APIResponseValidationError,
+    ContentFilterFinishReasonError,
 )
 from ._base_client import DefaultHttpxClient, DefaultAsyncHttpxClient
 from ._utils._logs import setup_logging as _setup_logging
@@ -65,6 +57,8 @@ __all__ = [
     "UnprocessableEntityError",
     "RateLimitError",
     "InternalServerError",
+    "LengthFinishReasonError",
+    "ContentFilterFinishReasonError",
     "Timeout",
     "RequestOptions",
     "Client",
@@ -82,7 +76,7 @@ __all__ = [
     "DefaultAsyncHttpxClient",
 ]
 
-from .lib import azure as _azure
+from .lib import azure as _azure, pydantic_function_tool as pydantic_function_tool
 from .version import VERSION as VERSION
 from .lib.azure import AzureOpenAI as AzureOpenAI, AsyncAzureOpenAI as AsyncAzureOpenAI
 from .lib._old_api import *
@@ -266,10 +260,7 @@ def _has_openai_credentials() -> bool:
 
 
 def _has_azure_credentials() -> bool:
-    return (
-        azure_endpoint is not None
-        or _os.environ.get("AZURE_OPENAI_API_KEY") is not None
-    )
+    return azure_endpoint is not None or _os.environ.get("AZURE_OPENAI_API_KEY") is not None
 
 
 def _has_azure_ad_credentials() -> bool:
@@ -306,9 +297,9 @@ def _load_client() -> OpenAI:  # type: ignore[reportUnusedFunction]
             if has_openai and (has_azure or has_azure_ad):
                 raise _AmbiguousModuleClientUsageError()
 
-            if (
-                azure_ad_token is not None or azure_ad_token_provider is not None
-            ) and _os.environ.get("AZURE_OPENAI_API_KEY") is not None:
+            if (azure_ad_token is not None or azure_ad_token_provider is not None) and _os.environ.get(
+                "AZURE_OPENAI_API_KEY"
+            ) is not None:
                 raise _AmbiguousModuleClientUsageError()
 
             if has_azure or has_azure_ad:

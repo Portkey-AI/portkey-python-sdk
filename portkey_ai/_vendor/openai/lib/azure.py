@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import inspect
-from typing import Any, Union, Mapping, TypeVar, Callable, Awaitable, overload
+from typing import Any, Union, Mapping, TypeVar, Callable, Awaitable, cast, overload
 from typing_extensions import Self, override
 
 import httpx
@@ -10,6 +10,7 @@ import httpx
 from .._types import NOT_GIVEN, Omit, Timeout, NotGiven
 from .._utils import is_given, is_mapping
 from .._client import OpenAI, AsyncOpenAI
+from .._compat import model_copy
 from .._models import FinalRequestOptions
 from .._streaming import Stream, AsyncStream
 from .._exceptions import OpenAIError
@@ -55,7 +56,7 @@ class BaseAzureClient(BaseClient[_HttpxClientT, _DefaultStreamT]):
     ) -> httpx.Request:
         if options.url in _deployments_endpoints and is_mapping(options.json_data):
             model = options.json_data.get("model")
-            if model is not None and "/deployments" not in str(self.base_url):
+            if model is not None and not "/deployments" in str(self.base_url):
                 options.url = f"/deployments/{model}{options.url}"
 
         return super()._build_request(options)
@@ -79,8 +80,7 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
         default_query: Mapping[str, object] | None = None,
         http_client: httpx.Client | None = None,
         _strict_response_validation: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def __init__(
@@ -98,8 +98,7 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
         default_query: Mapping[str, object] | None = None,
         http_client: httpx.Client | None = None,
         _strict_response_validation: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def __init__(
@@ -117,8 +116,7 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
         default_query: Mapping[str, object] | None = None,
         http_client: httpx.Client | None = None,
         _strict_response_validation: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def __init__(
         self,
@@ -165,11 +163,7 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
         if azure_ad_token is None:
             azure_ad_token = os.environ.get("AZURE_OPENAI_AD_TOKEN")
 
-        if (
-            api_key is None
-            and azure_ad_token is None
-            and azure_ad_token_provider is None
-        ):
+        if api_key is None and azure_ad_token is None and azure_ad_token_provider is None:
             raise OpenAIError(
                 "Missing credentials. Please pass one of `api_key`, `azure_ad_token`, `azure_ad_token_provider`, or the `AZURE_OPENAI_API_KEY` or `AZURE_OPENAI_AD_TOKEN` environment variables."
             )
@@ -262,8 +256,7 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
             _extra_kwargs={
                 "api_version": api_version or self._api_version,
                 "azure_ad_token": azure_ad_token or self._azure_ad_token,
-                "azure_ad_token_provider": azure_ad_token_provider
-                or self._azure_ad_token_provider,
+                "azure_ad_token_provider": azure_ad_token_provider or self._azure_ad_token_provider,
                 **_extra_kwargs,
             },
         )
@@ -277,9 +270,7 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
         provider = self._azure_ad_token_provider
         if provider is not None:
             token = provider()
-            if not token or not isinstance(
-                token, str
-            ):  # pyright: ignore[reportUnnecessaryIsInstance]
+            if not token or not isinstance(token, str):  # pyright: ignore[reportUnnecessaryIsInstance]
                 raise ValueError(
                     f"Expected `azure_ad_token_provider` argument to return a string but it returned {token}",
                 )
@@ -288,10 +279,10 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
         return None
 
     @override
-    def _prepare_options(self, options: FinalRequestOptions) -> None:
-        headers: dict[str, str | Omit] = (
-            {**options.headers} if is_given(options.headers) else {}
-        )
+    def _prepare_options(self, options: FinalRequestOptions) -> FinalRequestOptions:
+        headers: dict[str, str | Omit] = {**options.headers} if is_given(options.headers) else {}
+
+        options = model_copy(options)
         options.headers = headers
 
         azure_ad_token = self._get_azure_ad_token()
@@ -305,12 +296,10 @@ class AzureOpenAI(BaseAzureClient[httpx.Client, Stream[Any]], OpenAI):
             # should never be hit
             raise ValueError("Unable to handle auth")
 
-        return super()._prepare_options(options)
+        return options
 
 
-class AsyncAzureOpenAI(
-    BaseAzureClient[httpx.AsyncClient, AsyncStream[Any]], AsyncOpenAI
-):
+class AsyncAzureOpenAI(BaseAzureClient[httpx.AsyncClient, AsyncStream[Any]], AsyncOpenAI):
     @overload
     def __init__(
         self,
@@ -329,8 +318,7 @@ class AsyncAzureOpenAI(
         default_query: Mapping[str, object] | None = None,
         http_client: httpx.AsyncClient | None = None,
         _strict_response_validation: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def __init__(
@@ -349,8 +337,7 @@ class AsyncAzureOpenAI(
         default_query: Mapping[str, object] | None = None,
         http_client: httpx.AsyncClient | None = None,
         _strict_response_validation: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def __init__(
@@ -369,8 +356,7 @@ class AsyncAzureOpenAI(
         default_query: Mapping[str, object] | None = None,
         http_client: httpx.AsyncClient | None = None,
         _strict_response_validation: bool = False,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def __init__(
         self,
@@ -417,11 +403,7 @@ class AsyncAzureOpenAI(
         if azure_ad_token is None:
             azure_ad_token = os.environ.get("AZURE_OPENAI_AD_TOKEN")
 
-        if (
-            api_key is None
-            and azure_ad_token is None
-            and azure_ad_token_provider is None
-        ):
+        if api_key is None and azure_ad_token is None and azure_ad_token_provider is None:
             raise OpenAIError(
                 "Missing credentials. Please pass one of `api_key`, `azure_ad_token`, `azure_ad_token_provider`, or the `AZURE_OPENAI_API_KEY` or `AZURE_OPENAI_AD_TOKEN` environment variables."
             )
@@ -514,8 +496,7 @@ class AsyncAzureOpenAI(
             _extra_kwargs={
                 "api_version": api_version or self._api_version,
                 "azure_ad_token": azure_ad_token or self._azure_ad_token,
-                "azure_ad_token_provider": azure_ad_token_provider
-                or self._azure_ad_token_provider,
+                "azure_ad_token_provider": azure_ad_token_provider or self._azure_ad_token_provider,
                 **_extra_kwargs,
             },
         )
@@ -531,19 +512,19 @@ class AsyncAzureOpenAI(
             token = provider()
             if inspect.isawaitable(token):
                 token = await token
-            if not token or not isinstance(token, str):
+            if not token or not isinstance(cast(Any, token), str):
                 raise ValueError(
                     f"Expected `azure_ad_token_provider` argument to return a string but it returned {token}",
                 )
-            return token
+            return str(token)
 
         return None
 
     @override
-    async def _prepare_options(self, options: FinalRequestOptions) -> None:
-        headers: dict[str, str | Omit] = (
-            {**options.headers} if is_given(options.headers) else {}
-        )
+    async def _prepare_options(self, options: FinalRequestOptions) -> FinalRequestOptions:
+        headers: dict[str, str | Omit] = {**options.headers} if is_given(options.headers) else {}
+
+        options = model_copy(options)
         options.headers = headers
 
         azure_ad_token = await self._get_azure_ad_token()
@@ -557,4 +538,4 @@ class AsyncAzureOpenAI(
             # should never be hit
             raise ValueError("Unable to handle auth")
 
-        return await super()._prepare_options(options)
+        return options

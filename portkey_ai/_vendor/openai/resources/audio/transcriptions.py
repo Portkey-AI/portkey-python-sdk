@@ -17,14 +17,10 @@ from ..._utils import (
 )
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
-from ..._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ..._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ...types.audio import transcription_create_params
-from ..._base_client import (
-    make_request_options,
-)
+from ..._base_client import make_request_options
+from ...types.audio_model import AudioModel
 from ...types.audio.transcription import Transcription
 
 __all__ = ["Transcriptions", "AsyncTranscriptions"]
@@ -43,14 +39,12 @@ class Transcriptions(SyncAPIResource):
         self,
         *,
         file: FileTypes,
-        model: Union[str, Literal["whisper-1"]],
+        model: Union[str, AudioModel],
         language: str | NotGiven = NOT_GIVEN,
         prompt: str | NotGiven = NOT_GIVEN,
-        response_format: Literal["json", "text", "srt", "verbose_json", "vtt"]
-        | NotGiven = NOT_GIVEN,
+        response_format: Literal["json", "text", "srt", "verbose_json", "vtt"] | NotGiven = NOT_GIVEN,
         temperature: float | NotGiven = NOT_GIVEN,
-        timestamp_granularities: List[Literal["word", "segment"]]
-        | NotGiven = NOT_GIVEN,
+        timestamp_granularities: List[Literal["word", "segment"]] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -113,25 +107,16 @@ class Transcriptions(SyncAPIResource):
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
-        if files:
-            # It should be noted that the actual Content-Type header that will be
-            # sent to the server will contain a `boundary` parameter, e.g.
-            # multipart/form-data; boundary=---abc--
-            extra_headers = {
-                "Content-Type": "multipart/form-data",
-                **(extra_headers or {}),
-            }
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return self._post(
             "/audio/transcriptions",
-            body=maybe_transform(
-                body, transcription_create_params.TranscriptionCreateParams
-            ),
+            body=maybe_transform(body, transcription_create_params.TranscriptionCreateParams),
             files=files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Transcription,
         )
@@ -150,14 +135,12 @@ class AsyncTranscriptions(AsyncAPIResource):
         self,
         *,
         file: FileTypes,
-        model: Union[str, Literal["whisper-1"]],
+        model: Union[str, AudioModel],
         language: str | NotGiven = NOT_GIVEN,
         prompt: str | NotGiven = NOT_GIVEN,
-        response_format: Literal["json", "text", "srt", "verbose_json", "vtt"]
-        | NotGiven = NOT_GIVEN,
+        response_format: Literal["json", "text", "srt", "verbose_json", "vtt"] | NotGiven = NOT_GIVEN,
         temperature: float | NotGiven = NOT_GIVEN,
-        timestamp_granularities: List[Literal["word", "segment"]]
-        | NotGiven = NOT_GIVEN,
+        timestamp_granularities: List[Literal["word", "segment"]] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -220,25 +203,16 @@ class AsyncTranscriptions(AsyncAPIResource):
             }
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["file"]])
-        if files:
-            # It should be noted that the actual Content-Type header that will be
-            # sent to the server will contain a `boundary` parameter, e.g.
-            # multipart/form-data; boundary=---abc--
-            extra_headers = {
-                "Content-Type": "multipart/form-data",
-                **(extra_headers or {}),
-            }
+        # It should be noted that the actual Content-Type header that will be
+        # sent to the server will contain a `boundary` parameter, e.g.
+        # multipart/form-data; boundary=---abc--
+        extra_headers = {"Content-Type": "multipart/form-data", **(extra_headers or {})}
         return await self._post(
             "/audio/transcriptions",
-            body=await async_maybe_transform(
-                body, transcription_create_params.TranscriptionCreateParams
-            ),
+            body=await async_maybe_transform(body, transcription_create_params.TranscriptionCreateParams),
             files=files,
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Transcription,
         )

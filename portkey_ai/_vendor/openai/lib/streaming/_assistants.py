@@ -2,16 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from types import TracebackType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Generic,
-    TypeVar,
-    Callable,
-    Iterable,
-    Iterator,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, Callable, Iterable, Iterator, cast
 from typing_extensions import Awaitable, AsyncIterable, AsyncIterator, assert_never
 
 import httpx
@@ -143,11 +134,7 @@ class AssistantEventHandler:
                 continue
 
             for content_delta in event.data.delta.content or []:
-                if (
-                    content_delta.type == "text"
-                    and content_delta.text
-                    and content_delta.text.value
-                ):
+                if content_delta.type == "text" and content_delta.text and content_delta.text.value:
                     yield content_delta.text.value
 
     # event handlers
@@ -273,9 +260,7 @@ class AssistantEventHandler:
             current_message_snapshot=self.__current_message_snapshot,
         )
         if self.__current_message_snapshot is not None:
-            self.__message_snapshots[
-                self.__current_message_snapshot.id
-            ] = self.__current_message_snapshot
+            self.__message_snapshots[self.__current_message_snapshot.id] = self.__current_message_snapshot
 
         accumulate_run_step(
             event=event,
@@ -295,6 +280,7 @@ class AssistantEventHandler:
             or event.event == "thread.run.expired"
             or event.event == "thread.run.failed"
             or event.event == "thread.run.requires_action"
+            or event.event == "thread.run.incomplete"
         ):
             self.__current_run = event.data
             if self._current_tool_call:
@@ -328,25 +314,16 @@ class AssistantEventHandler:
                             if self._current_message_content.type == "text":
                                 self.on_text_done(self._current_message_content.text)
                             elif self._current_message_content.type == "image_file":
-                                self.on_image_file_done(
-                                    self._current_message_content.image_file
-                                )
+                                self.on_image_file_done(self._current_message_content.image_file)
 
                         self._current_message_content_index = content_delta.index
-                        self._current_message_content = snapshot.content[
-                            content_delta.index
-                        ]
+                        self._current_message_content = snapshot.content[content_delta.index]
 
                     # Update the current_message_content (delta event is correctly emitted already)
-                    self._current_message_content = snapshot.content[
-                        content_delta.index
-                    ]
+                    self._current_message_content = snapshot.content[content_delta.index]
 
             self.on_message_delta(event.data.delta, snapshot)
-        elif (
-            event.event == "thread.message.completed"
-            or event.event == "thread.message.incomplete"
-        ):
+        elif event.event == "thread.message.completed" or event.event == "thread.message.incomplete":
             self.__current_message_snapshot = event.data
             self.__message_snapshots[event.data.id] = event.data
 
@@ -377,9 +354,7 @@ class AssistantEventHandler:
                     if tool_call_delta.index == self._current_tool_call_index:
                         self.on_tool_call_delta(
                             tool_call_delta,
-                            step_snapshot.step_details.tool_calls[
-                                tool_call_delta.index
-                            ],
+                            step_snapshot.step_details.tool_calls[tool_call_delta.index],
                         )
 
                     # If the delta is for a new tool call:
@@ -390,15 +365,11 @@ class AssistantEventHandler:
                             self.on_tool_call_done(self._current_tool_call)
 
                         self._current_tool_call_index = tool_call_delta.index
-                        self._current_tool_call = step_snapshot.step_details.tool_calls[
-                            tool_call_delta.index
-                        ]
+                        self._current_tool_call = step_snapshot.step_details.tool_calls[tool_call_delta.index]
                         self.on_tool_call_created(self._current_tool_call)
 
                     # Update the current_tool_call (delta event is correctly emitted already)
-                    self._current_tool_call = step_snapshot.step_details.tool_calls[
-                        tool_call_delta.index
-                    ]
+                    self._current_tool_call = step_snapshot.step_details.tool_calls[tool_call_delta.index]
 
             self.on_run_step_delta(
                 event.data.delta,
@@ -415,11 +386,7 @@ class AssistantEventHandler:
 
             self.on_run_step_done(event.data)
             self.__current_run_step_id = None
-        elif (
-            event.event == "thread.created"
-            or event.event == "thread.message.in_progress"
-            or event.event == "error"
-        ):
+        elif event.event == "thread.created" or event.event == "thread.message.in_progress" or event.event == "error":
             # currently no special handling
             ...
         else:
@@ -599,11 +566,7 @@ class AsyncAssistantEventHandler:
                 continue
 
             for content_delta in event.data.delta.content or []:
-                if (
-                    content_delta.type == "text"
-                    and content_delta.text
-                    and content_delta.text.value
-                ):
+                if content_delta.type == "text" and content_delta.text and content_delta.text.value:
                     yield content_delta.text.value
 
     # event handlers
@@ -654,9 +617,7 @@ class AsyncAssistantEventHandler:
     async def on_tool_call_created(self, tool_call: ToolCall) -> None:
         """Callback that is fired when a tool call is created"""
 
-    async def on_tool_call_delta(
-        self, delta: ToolCallDelta, snapshot: ToolCall
-    ) -> None:
+    async def on_tool_call_delta(self, delta: ToolCallDelta, snapshot: ToolCall) -> None:
         """Callback that is fired when a tool call delta is encountered"""
 
     async def on_tool_call_done(self, tool_call: ToolCall) -> None:
@@ -731,9 +692,7 @@ class AsyncAssistantEventHandler:
             current_message_snapshot=self.__current_message_snapshot,
         )
         if self.__current_message_snapshot is not None:
-            self.__message_snapshots[
-                self.__current_message_snapshot.id
-            ] = self.__current_message_snapshot
+            self.__message_snapshots[self.__current_message_snapshot.id] = self.__current_message_snapshot
 
         accumulate_run_step(
             event=event,
@@ -753,6 +712,7 @@ class AsyncAssistantEventHandler:
             or event.event == "thread.run.expired"
             or event.event == "thread.run.failed"
             or event.event == "thread.run.requires_action"
+            or event.event == "thread.run.incomplete"
         ):
             self.__current_run = event.data
             if self._current_tool_call:
@@ -776,9 +736,7 @@ class AsyncAssistantEventHandler:
                     if content_delta.type == "text" and content_delta.text:
                         snapshot_content = snapshot.content[content_delta.index]
                         assert snapshot_content.type == "text"
-                        await self.on_text_delta(
-                            content_delta.text, snapshot_content.text
-                        )
+                        await self.on_text_delta(content_delta.text, snapshot_content.text)
 
                     # If the delta is for a new message content:
                     # - emit on_text_done/on_image_file_done for the previous message content
@@ -786,29 +744,18 @@ class AsyncAssistantEventHandler:
                     if content_delta.index != self._current_message_content_index:
                         if self._current_message_content is not None:
                             if self._current_message_content.type == "text":
-                                await self.on_text_done(
-                                    self._current_message_content.text
-                                )
+                                await self.on_text_done(self._current_message_content.text)
                             elif self._current_message_content.type == "image_file":
-                                await self.on_image_file_done(
-                                    self._current_message_content.image_file
-                                )
+                                await self.on_image_file_done(self._current_message_content.image_file)
 
                         self._current_message_content_index = content_delta.index
-                        self._current_message_content = snapshot.content[
-                            content_delta.index
-                        ]
+                        self._current_message_content = snapshot.content[content_delta.index]
 
                     # Update the current_message_content (delta event is correctly emitted already)
-                    self._current_message_content = snapshot.content[
-                        content_delta.index
-                    ]
+                    self._current_message_content = snapshot.content[content_delta.index]
 
             await self.on_message_delta(event.data.delta, snapshot)
-        elif (
-            event.event == "thread.message.completed"
-            or event.event == "thread.message.incomplete"
-        ):
+        elif event.event == "thread.message.completed" or event.event == "thread.message.incomplete":
             self.__current_message_snapshot = event.data
             self.__message_snapshots[event.data.id] = event.data
 
@@ -839,9 +786,7 @@ class AsyncAssistantEventHandler:
                     if tool_call_delta.index == self._current_tool_call_index:
                         await self.on_tool_call_delta(
                             tool_call_delta,
-                            step_snapshot.step_details.tool_calls[
-                                tool_call_delta.index
-                            ],
+                            step_snapshot.step_details.tool_calls[tool_call_delta.index],
                         )
 
                     # If the delta is for a new tool call:
@@ -852,15 +797,11 @@ class AsyncAssistantEventHandler:
                             await self.on_tool_call_done(self._current_tool_call)
 
                         self._current_tool_call_index = tool_call_delta.index
-                        self._current_tool_call = step_snapshot.step_details.tool_calls[
-                            tool_call_delta.index
-                        ]
+                        self._current_tool_call = step_snapshot.step_details.tool_calls[tool_call_delta.index]
                         await self.on_tool_call_created(self._current_tool_call)
 
                     # Update the current_tool_call (delta event is correctly emitted already)
-                    self._current_tool_call = step_snapshot.step_details.tool_calls[
-                        tool_call_delta.index
-                    ]
+                    self._current_tool_call = step_snapshot.step_details.tool_calls[tool_call_delta.index]
 
             await self.on_run_step_delta(
                 event.data.delta,
@@ -877,11 +818,7 @@ class AsyncAssistantEventHandler:
 
             await self.on_run_step_done(event.data)
             self.__current_run_step_id = None
-        elif (
-            event.event == "thread.created"
-            or event.event == "thread.message.in_progress"
-            or event.event == "error"
-        ):
+        elif event.event == "thread.created" or event.event == "thread.message.in_progress" or event.event == "error":
             # currently no special handling
             ...
         else:
@@ -912,9 +849,7 @@ class AsyncAssistantEventHandler:
             await self.on_end()
 
 
-AsyncAssistantEventHandlerT = TypeVar(
-    "AsyncAssistantEventHandlerT", bound=AsyncAssistantEventHandler
-)
+AsyncAssistantEventHandlerT = TypeVar("AsyncAssistantEventHandlerT", bound=AsyncAssistantEventHandler)
 
 
 class AsyncAssistantStreamManager(Generic[AsyncAssistantEventHandlerT]):
@@ -978,9 +913,7 @@ def accumulate_run_step(
                     data.delta.model_dump(exclude_unset=True),
                 ),
             )
-            run_step_snapshots[snapshot.id] = cast(
-                RunStep, construct_type(type_=RunStep, value=merged)
-            )
+            run_step_snapshots[snapshot.id] = cast(RunStep, construct_type(type_=RunStep, value=merged))
 
     return None
 
@@ -1043,9 +976,7 @@ def accumulate_event(
     return current_message_snapshot, new_content
 
 
-def accumulate_delta(
-    acc: dict[object, object], delta: dict[object, object]
-) -> dict[object, object]:
+def accumulate_delta(acc: dict[object, object], delta: dict[object, object]) -> dict[object, object]:
     for key, delta_value in delta.items():
         if key not in acc:
             acc[key] = delta_value
@@ -1068,9 +999,7 @@ def accumulate_delta(
 
         if isinstance(acc_value, str) and isinstance(delta_value, str):
             acc_value += delta_value
-        elif isinstance(acc_value, (int, float)) and isinstance(
-            delta_value, (int, float)
-        ):
+        elif isinstance(acc_value, (int, float)) and isinstance(delta_value, (int, float)):
             acc_value += delta_value
         elif is_dict(acc_value) and is_dict(delta_value):
             acc_value = accumulate_delta(acc_value, delta_value)
@@ -1083,21 +1012,15 @@ def accumulate_delta(
 
             for delta_entry in delta_value:
                 if not is_dict(delta_entry):
-                    raise TypeError(
-                        f"Unexpected list delta entry is not a dictionary: {delta_entry}"
-                    )
+                    raise TypeError(f"Unexpected list delta entry is not a dictionary: {delta_entry}")
 
                 try:
                     index = delta_entry["index"]
                 except KeyError as exc:
-                    raise RuntimeError(
-                        f"Expected list delta entry to have an `index` key; {delta_entry}"
-                    ) from exc
+                    raise RuntimeError(f"Expected list delta entry to have an `index` key; {delta_entry}") from exc
 
                 if not isinstance(index, int):
-                    raise TypeError(
-                        f"Unexpected, list delta entry `index` value is not an integer; {index}"
-                    )
+                    raise TypeError(f"Unexpected, list delta entry `index` value is not an integer; {index}")
 
                 try:
                     acc_entry = acc_value[index]

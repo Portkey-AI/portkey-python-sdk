@@ -20,7 +20,7 @@ from typing_extensions import TypeGuard
 
 import sniffio
 
-from .._types import Headers, NotGiven, FileTypes, NotGivenOr, HeadersLike
+from .._types import NotGiven, FileTypes, NotGivenOr, HeadersLike
 from .._compat import parse_date as parse_date, parse_datetime as parse_datetime
 
 _T = TypeVar("_T")
@@ -108,9 +108,7 @@ def _extract_items(
                     item,
                     path,
                     index=index,
-                    flattened_key=flattened_key + "[]"
-                    if flattened_key is not None
-                    else "[]",
+                    flattened_key=flattened_key + "[]" if flattened_key is not None else "[]",
                 )
                 for item in obj
             ]
@@ -213,20 +211,17 @@ def required_args(*variants: Sequence[str]) -> Callable[[CallableT], CallableT]:
     Example usage:
     ```py
     @overload
-    def foo(*, a: str) -> str:
-        ...
+    def foo(*, a: str) -> str: ...
 
 
     @overload
-    def foo(*, b: bool) -> str:
-        ...
+    def foo(*, b: bool) -> str: ...
 
 
     # This enforces the same constraints that a static type checker would
     # i.e. that either a or b must be passed to the function
     @required_args(["a"], ["b"])
-    def foo(*, a: str | None = None, b: bool | None = None) -> str:
-        ...
+    def foo(*, a: str | None = None, b: bool | None = None) -> str: ...
     ```
     """
 
@@ -263,12 +258,7 @@ def required_args(*variants: Sequence[str]) -> Callable[[CallableT], CallableT]:
             else:  # no break
                 if len(variants) > 1:
                     variations = human_join(
-                        [
-                            "("
-                            + human_join([quote(arg) for arg in variant], final="and")
-                            + ")"
-                            for variant in variants
-                        ]
+                        ["(" + human_join([quote(arg) for arg in variant], final="and") + ")" for variant in variants]
                     )
                     msg = f"Missing required arguments; Expected either {variations} arguments to be given"
                 else:
@@ -293,18 +283,15 @@ _V = TypeVar("_V")
 
 
 @overload
-def strip_not_given(obj: None) -> None:
-    ...
+def strip_not_given(obj: None) -> None: ...
 
 
 @overload
-def strip_not_given(obj: Mapping[_K, _V | NotGiven]) -> dict[_K, _V]:
-    ...
+def strip_not_given(obj: Mapping[_K, _V | NotGiven]) -> dict[_K, _V]: ...
 
 
 @overload
-def strip_not_given(obj: object) -> object:
-    ...
+def strip_not_given(obj: object) -> object: ...
 
 
 def strip_not_given(obj: object | None) -> object:
@@ -377,17 +364,12 @@ def file_from_path(path: str) -> FileTypes:
 def get_required_header(headers: HeadersLike, header: str) -> str:
     lower_header = header.lower()
     if isinstance(headers, Mapping):
-        headers = cast(Headers, headers)
         for k, v in headers.items():
             if k.lower() == lower_header and isinstance(v, str):
                 return v
 
     """ to deal with the case where the header looks like Stainless-Event-Id """
-    intercaps_header = re.sub(
-        r"([^\w])(\w)",
-        lambda pat: pat.group(1) + pat.group(2).upper(),
-        header.capitalize(),
-    )
+    intercaps_header = re.sub(r"([^\w])(\w)", lambda pat: pat.group(1) + pat.group(2).upper(), header.capitalize())
 
     for normalized_header in [header, lower_header, header.upper(), intercaps_header]:
         value = headers.get(normalized_header)

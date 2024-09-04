@@ -37,14 +37,7 @@ class Embeddings(SyncAPIResource):
         self,
         *,
         input: Union[str, List[str], Iterable[int], Iterable[Iterable[int]]],
-        model: Union[
-            str,
-            Literal[
-                "text-embedding-ada-002",
-                "text-embedding-3-small",
-                "text-embedding-3-large",
-            ],
-        ],
+        model: Union[str, Literal["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]],
         dimensions: int | NotGiven = NOT_GIVEN,
         encoding_format: Literal["float", "base64"] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
@@ -145,14 +138,7 @@ class AsyncEmbeddings(AsyncAPIResource):
         self,
         *,
         input: Union[str, List[str], Iterable[int], Iterable[Iterable[int]]],
-        model: Union[
-            str,
-            Literal[
-                "text-embedding-ada-002",
-                "text-embedding-3-small",
-                "text-embedding-3-large",
-            ],
-        ],
+        model: Union[str, Literal["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]],
         dimensions: int | NotGiven = NOT_GIVEN,
         encoding_format: Literal["float", "base64"] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,

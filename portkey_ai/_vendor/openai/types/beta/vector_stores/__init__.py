@@ -8,6 +8,4 @@ from .file_create_params import FileCreateParams as FileCreateParams
 from .vector_store_file_batch import VectorStoreFileBatch as VectorStoreFileBatch
 from .file_batch_create_params import FileBatchCreateParams as FileBatchCreateParams
 from .vector_store_file_deleted import VectorStoreFileDeleted as VectorStoreFileDeleted
-from .file_batch_list_files_params import (
-    FileBatchListFilesParams as FileBatchListFilesParams,
-)
+from .file_batch_list_files_params import FileBatchListFilesParams as FileBatchListFilesParams

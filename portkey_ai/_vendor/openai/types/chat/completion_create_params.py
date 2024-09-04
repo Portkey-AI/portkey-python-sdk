@@ -3,19 +3,15 @@
 from __future__ import annotations
 
 from typing import Dict, List, Union, Iterable, Optional
-from typing_extensions import Literal, Required, TypedDict
+from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
 from ...types import shared_params
 from ..chat_model import ChatModel
 from .chat_completion_tool_param import ChatCompletionToolParam
 from .chat_completion_message_param import ChatCompletionMessageParam
 from .chat_completion_stream_options_param import ChatCompletionStreamOptionsParam
-from .chat_completion_tool_choice_option_param import (
-    ChatCompletionToolChoiceOptionParam,
-)
-from .chat_completion_function_call_option_param import (
-    ChatCompletionFunctionCallOptionParam,
-)
+from .chat_completion_tool_choice_option_param import ChatCompletionToolChoiceOptionParam
+from .chat_completion_function_call_option_param import ChatCompletionFunctionCallOptionParam
 
 __all__ = [
     "CompletionCreateParamsBase",
@@ -106,6 +102,13 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     of the choices. Keep `n` as `1` to minimize costs.
     """
 
+    parallel_tool_calls: bool
+    """
+    Whether to enable
+    [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+    during tool use.
+    """
+
     presence_penalty: Optional[float]
     """Number between -2.0 and 2.0.
 
@@ -118,7 +121,8 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     response_format: ResponseFormat
     """An object specifying the format that the model must output.
 
-    Compatible with
+    Compatible with [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+    [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
     [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
     all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -141,6 +145,21 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     parameters should return the same result. Determinism is not guaranteed, and you
     should refer to the `system_fingerprint` response parameter to monitor changes
     in the backend.
+    """
+
+    service_tier: Optional[Literal["auto", "default"]]
+    """Specifies the latency tier to use for processing the request.
+
+    This parameter is relevant for customers subscribed to the scale tier service:
+
+    - If set to 'auto', the system will utilize scale tier credits until they are
+      exhausted.
+    - If set to 'default', the request will be processed using the default service
+      tier with a lower uptime SLA and no latency guarentee.
+    - When not set, the default behavior is 'auto'.
+
+    When this parameter is set, the response body will include the `service_tier`
+    utilized.
     """
 
     stop: Union[Optional[str], List[str]]
@@ -203,7 +222,7 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     """
 
 
-FunctionCall = Union[Literal["none", "auto"], ChatCompletionFunctionCallOptionParam]
+FunctionCall: TypeAlias = Union[Literal["none", "auto"], ChatCompletionFunctionCallOptionParam]
 
 
 class Function(TypedDict, total=False):
@@ -223,9 +242,8 @@ class Function(TypedDict, total=False):
     parameters: shared_params.FunctionParameters
     """The parameters the functions accepts, described as a JSON Schema object.
 
-    See the
-    [guide](https://platform.openai.com/docs/guides/text-generation/function-calling)
-    for examples, and the
+    See the [guide](https://platform.openai.com/docs/guides/function-calling) for
+    examples, and the
     [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for
     documentation about the format.
 
@@ -233,9 +251,9 @@ class Function(TypedDict, total=False):
     """
 
 
-class ResponseFormat(TypedDict, total=False):
-    type: Literal["text", "json_object"]
-    """Must be one of `text` or `json_object`."""
+ResponseFormat: TypeAlias = Union[
+    shared_params.ResponseFormatText, shared_params.ResponseFormatJSONObject, shared_params.ResponseFormatJSONSchema
+]
 
 
 class CompletionCreateParamsNonStreaming(CompletionCreateParamsBase):
@@ -262,6 +280,4 @@ class CompletionCreateParamsStreaming(CompletionCreateParamsBase):
     """
 
 
-CompletionCreateParams = Union[
-    CompletionCreateParamsNonStreaming, CompletionCreateParamsStreaming
-]
+CompletionCreateParams = Union[CompletionCreateParamsNonStreaming, CompletionCreateParamsStreaming]

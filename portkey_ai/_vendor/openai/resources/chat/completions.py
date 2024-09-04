@@ -16,26 +16,17 @@ from ..._utils import (
 )
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
-from ..._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ..._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ..._streaming import Stream, AsyncStream
 from ...types.chat import completion_create_params
-from ..._base_client import (
-    make_request_options,
-)
+from ..._base_client import make_request_options
 from ...types.chat_model import ChatModel
 from ...types.chat.chat_completion import ChatCompletion
 from ...types.chat.chat_completion_chunk import ChatCompletionChunk
 from ...types.chat.chat_completion_tool_param import ChatCompletionToolParam
 from ...types.chat.chat_completion_message_param import ChatCompletionMessageParam
-from ...types.chat.chat_completion_stream_options_param import (
-    ChatCompletionStreamOptionsParam,
-)
-from ...types.chat.chat_completion_tool_choice_option_param import (
-    ChatCompletionToolChoiceOptionParam,
-)
+from ...types.chat.chat_completion_stream_options_param import ChatCompletionStreamOptionsParam
+from ...types.chat.chat_completion_tool_choice_option_param import ChatCompletionToolChoiceOptionParam
 
 __all__ = ["Completions", "AsyncCompletions"]
 
@@ -62,13 +53,14 @@ class Completions(SyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -139,6 +131,10 @@ class Completions(SyncAPIResource):
               you will be charged based on the number of generated tokens across all of the
               choices. Keep `n` as `1` to minimize costs.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           presence_penalty: Number between -2.0 and 2.0. Positive values penalize new tokens based on
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
@@ -146,6 +142,8 @@ class Completions(SyncAPIResource):
               [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
 
           response_format: An object specifying the format that the model must output. Compatible with
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
               [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
               all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -165,6 +163,18 @@ class Completions(SyncAPIResource):
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
+
+          service_tier: Specifies the latency tier to use for processing the request. This parameter is
+              relevant for customers subscribed to the scale tier service:
+
+              - If set to 'auto', the system will utilize scale tier credits until they are
+                exhausted.
+              - If set to 'default', the request will be processed using the default service
+                tier with a lower uptime SLA and no latency guarentee.
+              - When not set, the default behavior is 'auto'.
+
+              When this parameter is set, the response body will include the `service_tier`
+              utilized.
 
           stop: Up to 4 sequences where the API will stop generating further tokens.
 
@@ -235,12 +245,13 @@ class Completions(SyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -318,6 +329,10 @@ class Completions(SyncAPIResource):
               you will be charged based on the number of generated tokens across all of the
               choices. Keep `n` as `1` to minimize costs.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           presence_penalty: Number between -2.0 and 2.0. Positive values penalize new tokens based on
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
@@ -325,6 +340,8 @@ class Completions(SyncAPIResource):
               [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
 
           response_format: An object specifying the format that the model must output. Compatible with
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
               [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
               all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -344,6 +361,18 @@ class Completions(SyncAPIResource):
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
+
+          service_tier: Specifies the latency tier to use for processing the request. This parameter is
+              relevant for customers subscribed to the scale tier service:
+
+              - If set to 'auto', the system will utilize scale tier credits until they are
+                exhausted.
+              - If set to 'default', the request will be processed using the default service
+                tier with a lower uptime SLA and no latency guarentee.
+              - When not set, the default behavior is 'auto'.
+
+              When this parameter is set, the response body will include the `service_tier`
+              utilized.
 
           stop: Up to 4 sequences where the API will stop generating further tokens.
 
@@ -407,12 +436,13 @@ class Completions(SyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -490,6 +520,10 @@ class Completions(SyncAPIResource):
               you will be charged based on the number of generated tokens across all of the
               choices. Keep `n` as `1` to minimize costs.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           presence_penalty: Number between -2.0 and 2.0. Positive values penalize new tokens based on
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
@@ -497,6 +531,8 @@ class Completions(SyncAPIResource):
               [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
 
           response_format: An object specifying the format that the model must output. Compatible with
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
               [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
               all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -516,6 +552,18 @@ class Completions(SyncAPIResource):
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
+
+          service_tier: Specifies the latency tier to use for processing the request. This parameter is
+              relevant for customers subscribed to the scale tier service:
+
+              - If set to 'auto', the system will utilize scale tier credits until they are
+                exhausted.
+              - If set to 'default', the request will be processed using the default service
+                tier with a lower uptime SLA and no latency guarentee.
+              - When not set, the default behavior is 'auto'.
+
+              When this parameter is set, the response body will include the `service_tier`
+              utilized.
 
           stop: Up to 4 sequences where the API will stop generating further tokens.
 
@@ -578,13 +626,14 @@ class Completions(SyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -611,9 +660,11 @@ class Completions(SyncAPIResource):
                     "logprobs": logprobs,
                     "max_tokens": max_tokens,
                     "n": n,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "presence_penalty": presence_penalty,
                     "response_format": response_format,
                     "seed": seed,
+                    "service_tier": service_tier,
                     "stop": stop,
                     "stream": stream,
                     "stream_options": stream_options,
@@ -627,10 +678,7 @@ class Completions(SyncAPIResource):
                 completion_create_params.CompletionCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ChatCompletion,
             stream=stream or False,
@@ -660,13 +708,14 @@ class AsyncCompletions(AsyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -737,6 +786,10 @@ class AsyncCompletions(AsyncAPIResource):
               you will be charged based on the number of generated tokens across all of the
               choices. Keep `n` as `1` to minimize costs.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           presence_penalty: Number between -2.0 and 2.0. Positive values penalize new tokens based on
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
@@ -744,6 +797,8 @@ class AsyncCompletions(AsyncAPIResource):
               [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
 
           response_format: An object specifying the format that the model must output. Compatible with
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
               [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
               all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -763,6 +818,18 @@ class AsyncCompletions(AsyncAPIResource):
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
+
+          service_tier: Specifies the latency tier to use for processing the request. This parameter is
+              relevant for customers subscribed to the scale tier service:
+
+              - If set to 'auto', the system will utilize scale tier credits until they are
+                exhausted.
+              - If set to 'default', the request will be processed using the default service
+                tier with a lower uptime SLA and no latency guarentee.
+              - When not set, the default behavior is 'auto'.
+
+              When this parameter is set, the response body will include the `service_tier`
+              utilized.
 
           stop: Up to 4 sequences where the API will stop generating further tokens.
 
@@ -833,12 +900,13 @@ class AsyncCompletions(AsyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -916,6 +984,10 @@ class AsyncCompletions(AsyncAPIResource):
               you will be charged based on the number of generated tokens across all of the
               choices. Keep `n` as `1` to minimize costs.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           presence_penalty: Number between -2.0 and 2.0. Positive values penalize new tokens based on
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
@@ -923,6 +995,8 @@ class AsyncCompletions(AsyncAPIResource):
               [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
 
           response_format: An object specifying the format that the model must output. Compatible with
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
               [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
               all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -942,6 +1016,18 @@ class AsyncCompletions(AsyncAPIResource):
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
+
+          service_tier: Specifies the latency tier to use for processing the request. This parameter is
+              relevant for customers subscribed to the scale tier service:
+
+              - If set to 'auto', the system will utilize scale tier credits until they are
+                exhausted.
+              - If set to 'default', the request will be processed using the default service
+                tier with a lower uptime SLA and no latency guarentee.
+              - When not set, the default behavior is 'auto'.
+
+              When this parameter is set, the response body will include the `service_tier`
+              utilized.
 
           stop: Up to 4 sequences where the API will stop generating further tokens.
 
@@ -1005,12 +1091,13 @@ class AsyncCompletions(AsyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -1088,6 +1175,10 @@ class AsyncCompletions(AsyncAPIResource):
               you will be charged based on the number of generated tokens across all of the
               choices. Keep `n` as `1` to minimize costs.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           presence_penalty: Number between -2.0 and 2.0. Positive values penalize new tokens based on
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
@@ -1095,6 +1186,8 @@ class AsyncCompletions(AsyncAPIResource):
               [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
 
           response_format: An object specifying the format that the model must output. Compatible with
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4o mini](https://platform.openai.com/docs/models/gpt-4o-mini),
               [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
               all GPT-3.5 Turbo models newer than `gpt-3.5-turbo-1106`.
 
@@ -1114,6 +1207,18 @@ class AsyncCompletions(AsyncAPIResource):
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
+
+          service_tier: Specifies the latency tier to use for processing the request. This parameter is
+              relevant for customers subscribed to the scale tier service:
+
+              - If set to 'auto', the system will utilize scale tier credits until they are
+                exhausted.
+              - If set to 'default', the request will be processed using the default service
+                tier with a lower uptime SLA and no latency guarentee.
+              - When not set, the default behavior is 'auto'.
+
+              When this parameter is set, the response body will include the `service_tier`
+              utilized.
 
           stop: Up to 4 sequences where the API will stop generating further tokens.
 
@@ -1176,13 +1281,14 @@ class AsyncCompletions(AsyncAPIResource):
         logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
         max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str]] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
-        stream_options: Optional[ChatCompletionStreamOptionsParam]
-        | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
         tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
@@ -1209,9 +1315,11 @@ class AsyncCompletions(AsyncAPIResource):
                     "logprobs": logprobs,
                     "max_tokens": max_tokens,
                     "n": n,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "presence_penalty": presence_penalty,
                     "response_format": response_format,
                     "seed": seed,
+                    "service_tier": service_tier,
                     "stop": stop,
                     "stream": stream,
                     "stream_options": stream_options,
@@ -1225,10 +1333,7 @@ class AsyncCompletions(AsyncAPIResource):
                 completion_create_params.CompletionCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=ChatCompletion,
             stream=stream or False,
