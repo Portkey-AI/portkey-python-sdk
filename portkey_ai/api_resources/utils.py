@@ -268,6 +268,7 @@ class Constructs(BaseModel):
     huggingface_base_url: Optional[str] = None
     cache_namespace: Optional[str] = None
     request_timeout: Optional[int] = None
+    anthropic_beta: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):
