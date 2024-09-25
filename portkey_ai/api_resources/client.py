@@ -71,6 +71,7 @@ class Portkey(APIClient):
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -102,6 +103,7 @@ class Portkey(APIClient):
             http_client=http_client,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -160,6 +162,7 @@ class Portkey(APIClient):
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -192,6 +195,7 @@ class Portkey(APIClient):
             request_timeout=request_timeout or self.request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance
             or self.strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta or self.anthropic_beta,
             **self.kwargs,
             **kwargs,
         )
@@ -261,6 +265,7 @@ class AsyncPortkey(AsyncAPIClient):
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -292,6 +297,7 @@ class AsyncPortkey(AsyncAPIClient):
             http_client=http_client,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -350,6 +356,7 @@ class AsyncPortkey(AsyncAPIClient):
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -382,6 +389,7 @@ class AsyncPortkey(AsyncAPIClient):
             request_timeout=request_timeout or self.request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance
             or self.strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta or self.anthropic_beta,
             **self.kwargs,
             **kwargs,
         )

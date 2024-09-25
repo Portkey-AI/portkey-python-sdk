@@ -76,6 +76,7 @@ class APIClient:
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -105,6 +106,7 @@ class APIClient:
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
         self.strict_open_ai_compliance = strict_open_ai_compliance
+        self.anthropic_beta = anthropic_beta
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -134,6 +136,7 @@ class APIClient:
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -566,6 +569,7 @@ class AsyncAPIClient:
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -595,6 +599,7 @@ class AsyncAPIClient:
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
         self.strict_open_ai_compliance = strict_open_ai_compliance
+        self.anthropic_beta = anthropic_beta
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -624,6 +629,7 @@ class AsyncAPIClient:
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
