@@ -255,6 +255,7 @@ class Constructs(BaseModel):
     api_version: Optional[str] = None
     openai_project: Optional[str] = None
     openai_organization: Optional[str] = None
+    input_audio_length: Optional[int] = None
     aws_secret_access_key: Optional[str] = None
     aws_access_key_id: Optional[str] = None
     aws_session_token: Optional[str] = None
