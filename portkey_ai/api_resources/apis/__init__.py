@@ -51,9 +51,13 @@ from .admin import (
     Admin,
     Users,
     Invites,
+    Workspaces,
+    WorkspacesUsers,
     AsyncAdmin,
     AsyncUsers,
     AsyncInvites,
+    AsyncWorkspaces,
+    AsyncWorkspacesUsers,
 )
 
 from .beta_chat import (
@@ -130,9 +134,13 @@ __all__ = [
     "Admin",
     "Users",
     "Invites",
+    "Workspaces",
+    "WorkspacesUsers",
     "AsyncAdmin",
     "AsyncUsers",
     "AsyncInvites",
+    "AsyncWorkspaces",
+    "AsyncWorkspacesUsers",
     "BetaChat",
     "BetaCompletions",
     "AsyncBetaChat",
