@@ -76,6 +76,8 @@ from .uploads import (
 
 from .configs import Configs, AsyncConfigs
 
+from .api_keys import ApiKeys, AsyncApiKeys
+
 
 __all__ = [
     "Completion",
@@ -153,4 +155,6 @@ __all__ = [
     "AsyncParts",
     "Configs",
     "AsyncConfigs",
+    "ApiKeys",
+    "AsyncApiKeys",
 ]

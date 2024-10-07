@@ -29,6 +29,7 @@ class Portkey(APIClient):
     admin: apis.Admin
     uploads: apis.Uploads
     configs: apis.Configs
+    apiKey: apis.ApiKeys
 
     class beta:
         assistants: apis.Assistants
@@ -226,6 +227,7 @@ class AsyncPortkey(AsyncAPIClient):
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
     configs: apis.AsyncConfigs
+    apiKey: apis.AsyncApiKeys
 
     class beta:
         assistants: apis.AsyncAssistants
