@@ -29,7 +29,7 @@ class Portkey(APIClient):
     admin: apis.Admin
     uploads: apis.Uploads
     configs: apis.Configs
-    apiKey: apis.ApiKeys
+    api_keys: apis.ApiKeys
 
     class beta:
         assistants: apis.Assistants
@@ -133,6 +133,8 @@ class Portkey(APIClient):
         self.fine_tuning = apis.FineTuning(self)
         self.admin = apis.Admin(self)
         self.uploads = apis.Uploads(self)
+        self.configs = apis.Configs(self)
+        self.api_keys = apis.ApiKeys(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -227,7 +229,7 @@ class AsyncPortkey(AsyncAPIClient):
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
     configs: apis.AsyncConfigs
-    apiKey: apis.AsyncApiKeys
+    api_keys: apis.AsyncApiKeys
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -331,6 +333,8 @@ class AsyncPortkey(AsyncAPIClient):
         self.fine_tuning = apis.AsyncFineTuning(self)
         self.admin = apis.AsyncAdmin(self)
         self.uploads = apis.AsyncUploads(self)
+        self.configs = apis.AsyncConfigs(self)
+        self.api_keys = apis.AsyncApiKeys(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
