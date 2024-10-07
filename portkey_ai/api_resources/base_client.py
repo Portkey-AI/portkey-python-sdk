@@ -494,7 +494,7 @@ class APIClient:
         opts.method = method
         opts.url = url
         opts.files = files
-        if method != "get" or method != "delete":
+        if method != "get":
             opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
         return opts
