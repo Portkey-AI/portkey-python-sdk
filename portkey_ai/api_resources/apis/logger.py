@@ -24,7 +24,7 @@ class Logger:
 
     def log(
         self,
-        log_object: dict,
+        log_object,
     ):
         response = requests.post(
             url=self.url, data=json.dumps(log_object), headers=self.headers

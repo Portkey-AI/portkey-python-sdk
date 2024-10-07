@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 import typing_extensions
 from typing import Union, Iterable, Optional, overload
 from functools import partial
@@ -28,16 +27,10 @@ from ....._utils import (
 )
 from ....._compat import cached_property
 from ....._resource import SyncAPIResource, AsyncAPIResource
-from ....._response import (
-    to_streamed_response_wrapper,
-    async_to_streamed_response_wrapper,
-)
+from ....._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ....._streaming import Stream, AsyncStream
 from .....pagination import SyncCursorPage, AsyncCursorPage
-from ....._base_client import (
-    AsyncPaginator,
-    make_request_options,
-)
+from ....._base_client import AsyncPaginator, make_request_options
 from .....lib.streaming import (
     AssistantEventHandler,
     AssistantEventHandlerT,
@@ -46,6 +39,7 @@ from .....lib.streaming import (
     AsyncAssistantEventHandlerT,
     AsyncAssistantStreamManager,
 )
+from .....types.chat_model import ChatModel
 from .....types.beta.threads import (
     run_list_params,
     run_create_params,
@@ -55,12 +49,8 @@ from .....types.beta.threads import (
 from .....types.beta.threads.run import Run
 from .....types.beta.assistant_tool_param import AssistantToolParam
 from .....types.beta.assistant_stream_event import AssistantStreamEvent
-from .....types.beta.assistant_tool_choice_option_param import (
-    AssistantToolChoiceOptionParam,
-)
-from .....types.beta.assistant_response_format_option_param import (
-    AssistantResponseFormatOptionParam,
-)
+from .....types.beta.assistant_tool_choice_option_param import AssistantToolChoiceOptionParam
+from .....types.beta.assistant_response_format_option_param import AssistantResponseFormatOptionParam
 
 __all__ = ["Runs", "AsyncRuns"]
 
@@ -85,46 +75,20 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -172,9 +136,19 @@ class Runs(SyncAPIResource):
               model associated with the assistant. If not, the model associated with the
               assistant will be used.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -233,45 +207,19 @@ class Runs(SyncAPIResource):
         assistant_id: str,
         stream: Literal[True],
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -323,9 +271,19 @@ class Runs(SyncAPIResource):
               model associated with the assistant. If not, the model associated with the
               assistant will be used.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -380,45 +338,19 @@ class Runs(SyncAPIResource):
         assistant_id: str,
         stream: bool,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -470,9 +402,19 @@ class Runs(SyncAPIResource):
               model associated with the assistant. If not, the model associated with the
               assistant will be used.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -526,46 +468,20 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -574,9 +490,7 @@ class Runs(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> Run | Stream[AssistantStreamEvent]:
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
             f"/threads/{thread_id}/runs",
@@ -590,6 +504,7 @@ class Runs(SyncAPIResource):
                     "max_prompt_tokens": max_prompt_tokens,
                     "metadata": metadata,
                     "model": model,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "response_format": response_format,
                     "stream": stream,
                     "temperature": temperature,
@@ -601,10 +516,7 @@ class Runs(SyncAPIResource):
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=stream or False,
@@ -636,21 +548,14 @@ class Runs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get(
             f"/threads/{thread_id}/runs/{run_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
         )
@@ -686,24 +591,15 @@ class Runs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
             f"/threads/{thread_id}/runs/{run_id}",
-            body=maybe_transform(
-                {"metadata": metadata}, run_update_params.RunUpdateParams
-            ),
+            body=maybe_transform({"metadata": metadata}, run_update_params.RunUpdateParams),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
         )
@@ -752,9 +648,7 @@ class Runs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
             f"/threads/{thread_id}/runs",
@@ -802,21 +696,14 @@ class Runs(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
             f"/threads/{thread_id}/runs/{run_id}/cancel",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
         )
@@ -826,45 +713,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         poll_interval_ms: int | NotGiven = NOT_GIVEN,
         thread_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -892,6 +753,7 @@ class Runs(SyncAPIResource):
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
+            parallel_tool_calls=parallel_tool_calls,
             # We assume we are not streaming when polling
             stream=False,
             tools=tools,
@@ -919,45 +781,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -976,45 +812,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AssistantEventHandlerT,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1033,45 +843,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AssistantEventHandlerT | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1080,15 +864,10 @@ class Runs(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    ) -> (
-        AssistantStreamManager[AssistantEventHandler]
-        | AssistantStreamManager[AssistantEventHandlerT]
-    ):
+    ) -> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
         """Create a Run stream"""
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
 
         extra_headers = {
             "OpenAI-Beta": "assistants=v2",
@@ -1115,23 +894,19 @@ class Runs(SyncAPIResource):
                     "stream": True,
                     "tools": tools,
                     "truncation_strategy": truncation_strategy,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "top_p": top_p,
                 },
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=True,
             stream_cls=Stream[AssistantStreamEvent],
         )
-        return AssistantStreamManager(
-            make_request, event_handler=event_handler or AssistantEventHandler()
-        )
+        return AssistantStreamManager(make_request, event_handler=event_handler or AssistantEventHandler())
 
     def poll(
         self,
@@ -1153,13 +928,7 @@ class Runs(SyncAPIResource):
         if is_given(poll_interval_ms):
             extra_headers["X-Stainless-Custom-Poll-Interval"] = str(poll_interval_ms)
 
-        terminal_states = {
-            "requires_action",
-            "cancelled",
-            "completed",
-            "failed",
-            "expired",
-        }
+        terminal_states = {"requires_action", "cancelled", "completed", "failed", "expired", "incomplete"}
         while True:
             response = self.with_raw_response.retrieve(
                 thread_id=thread_id,
@@ -1182,7 +951,7 @@ class Runs(SyncAPIResource):
                 else:
                     poll_interval_ms = 1000
 
-            time.sleep(poll_interval_ms / 1000)
+            self._sleep(poll_interval_ms / 1000)
 
     @overload
     def stream(
@@ -1190,45 +959,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1246,45 +989,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AssistantEventHandlerT,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1302,45 +1019,19 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AssistantEventHandlerT | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -1349,15 +1040,10 @@ class Runs(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    ) -> (
-        AssistantStreamManager[AssistantEventHandler]
-        | AssistantStreamManager[AssistantEventHandlerT]
-    ):
+    ) -> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
         """Create a Run stream"""
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
 
         extra_headers = {
             "OpenAI-Beta": "assistants=v2",
@@ -1383,24 +1069,20 @@ class Runs(SyncAPIResource):
                     "tool_choice": tool_choice,
                     "stream": True,
                     "tools": tools,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "truncation_strategy": truncation_strategy,
                     "top_p": top_p,
                 },
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=True,
             stream_cls=Stream[AssistantStreamEvent],
         )
-        return AssistantStreamManager(
-            make_request, event_handler=event_handler or AssistantEventHandler()
-        )
+        return AssistantStreamManager(make_request, event_handler=event_handler or AssistantEventHandler())
 
     @overload
     def submit_tool_outputs(
@@ -1516,9 +1198,7 @@ class Runs(SyncAPIResource):
         """
         ...
 
-    @required_args(
-        ["thread_id", "tool_outputs"], ["thread_id", "stream", "tool_outputs"]
-    )
+    @required_args(["thread_id", "tool_outputs"], ["thread_id", "stream", "tool_outputs"])
     def submit_tool_outputs(
         self,
         run_id: str,
@@ -1534,13 +1214,9 @@ class Runs(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> Run | Stream[AssistantStreamEvent]:
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
             f"/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
@@ -1552,10 +1228,7 @@ class Runs(SyncAPIResource):
                 run_submit_tool_outputs_params.RunSubmitToolOutputsParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=stream or False,
@@ -1657,24 +1330,17 @@ class Runs(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    ) -> (
-        AssistantStreamManager[AssistantEventHandler]
-        | AssistantStreamManager[AssistantEventHandlerT]
-    ):
+    ) -> AssistantStreamManager[AssistantEventHandler] | AssistantStreamManager[AssistantEventHandlerT]:
         """
         Submit the tool outputs from a previous run and stream the run to a terminal
         state. More information on Run lifecycles can be found here:
         https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
         """
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
 
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
 
         extra_headers = {
             "OpenAI-Beta": "assistants=v2",
@@ -1693,18 +1359,13 @@ class Runs(SyncAPIResource):
                 run_submit_tool_outputs_params.RunSubmitToolOutputsParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=True,
             stream_cls=Stream[AssistantStreamEvent],
         )
-        return AssistantStreamManager(
-            request, event_handler=event_handler or AssistantEventHandler()
-        )
+        return AssistantStreamManager(request, event_handler=event_handler or AssistantEventHandler())
 
 
 class AsyncRuns(AsyncAPIResource):
@@ -1727,46 +1388,20 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1814,9 +1449,19 @@ class AsyncRuns(AsyncAPIResource):
               model associated with the assistant. If not, the model associated with the
               assistant will be used.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -1875,45 +1520,19 @@ class AsyncRuns(AsyncAPIResource):
         assistant_id: str,
         stream: Literal[True],
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1965,9 +1584,19 @@ class AsyncRuns(AsyncAPIResource):
               model associated with the assistant. If not, the model associated with the
               assistant will be used.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -2022,45 +1651,19 @@ class AsyncRuns(AsyncAPIResource):
         assistant_id: str,
         stream: bool,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -2112,9 +1715,19 @@ class AsyncRuns(AsyncAPIResource):
               model associated with the assistant. If not, the model associated with the
               assistant will be used.
 
+          parallel_tool_calls: Whether to enable
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              during tool use.
+
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo) and
-              all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+              Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+              Outputs which guarantees the model will match your supplied JSON schema. Learn
+              more in the
+              [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
               Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
               message the model generates is valid JSON.
@@ -2168,46 +1781,20 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -2216,9 +1803,7 @@ class AsyncRuns(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> Run | AsyncStream[AssistantStreamEvent]:
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
             f"/threads/{thread_id}/runs",
@@ -2232,6 +1817,7 @@ class AsyncRuns(AsyncAPIResource):
                     "max_prompt_tokens": max_prompt_tokens,
                     "metadata": metadata,
                     "model": model,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "response_format": response_format,
                     "stream": stream,
                     "temperature": temperature,
@@ -2243,10 +1829,7 @@ class AsyncRuns(AsyncAPIResource):
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=stream or False,
@@ -2278,21 +1861,14 @@ class AsyncRuns(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._get(
             f"/threads/{thread_id}/runs/{run_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
         )
@@ -2328,24 +1904,15 @@ class AsyncRuns(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
             f"/threads/{thread_id}/runs/{run_id}",
-            body=await async_maybe_transform(
-                {"metadata": metadata}, run_update_params.RunUpdateParams
-            ),
+            body=await async_maybe_transform({"metadata": metadata}, run_update_params.RunUpdateParams),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
         )
@@ -2394,9 +1961,7 @@ class AsyncRuns(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
             f"/threads/{thread_id}/runs",
@@ -2444,21 +2009,14 @@ class AsyncRuns(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
             f"/threads/{thread_id}/runs/{run_id}/cancel",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
         )
@@ -2468,45 +2026,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         poll_interval_ms: int | NotGiven = NOT_GIVEN,
         thread_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -2534,6 +2066,7 @@ class AsyncRuns(AsyncAPIResource):
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
+            parallel_tool_calls=parallel_tool_calls,
             # We assume we are not streaming when polling
             stream=False,
             tools=tools,
@@ -2561,45 +2094,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -2618,45 +2125,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AsyncAssistantEventHandlerT,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -2675,45 +2156,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AsyncAssistantEventHandlerT | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -2728,9 +2183,7 @@ class AsyncRuns(AsyncAPIResource):
     ):
         """Create a Run stream"""
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
 
         extra_headers = {
             "OpenAI-Beta": "assistants=v2",
@@ -2757,22 +2210,18 @@ class AsyncRuns(AsyncAPIResource):
                     "tools": tools,
                     "truncation_strategy": truncation_strategy,
                     "top_p": top_p,
+                    "parallel_tool_calls": parallel_tool_calls,
                 },
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=True,
             stream_cls=AsyncStream[AssistantStreamEvent],
         )
-        return AsyncAssistantStreamManager(
-            request, event_handler=event_handler or AsyncAssistantEventHandler()
-        )
+        return AsyncAssistantStreamManager(request, event_handler=event_handler or AsyncAssistantEventHandler())
 
     async def poll(
         self,
@@ -2794,13 +2243,7 @@ class AsyncRuns(AsyncAPIResource):
         if is_given(poll_interval_ms):
             extra_headers["X-Stainless-Custom-Poll-Interval"] = str(poll_interval_ms)
 
-        terminal_states = {
-            "requires_action",
-            "cancelled",
-            "completed",
-            "failed",
-            "expired",
-        }
+        terminal_states = {"requires_action", "cancelled", "completed", "failed", "expired", "incomplete"}
         while True:
             response = await self.with_raw_response.retrieve(
                 thread_id=thread_id,
@@ -2823,7 +2266,7 @@ class AsyncRuns(AsyncAPIResource):
                 else:
                     poll_interval_ms = 1000
 
-            time.sleep(poll_interval_ms / 1000)
+            await self._sleep(poll_interval_ms / 1000)
 
     @overload
     def stream(
@@ -2831,45 +2274,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -2887,45 +2304,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AsyncAssistantEventHandlerT,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -2943,45 +2334,19 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
-        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]]
-        | NotGiven = NOT_GIVEN,
+        additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
         max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         max_prompt_tokens: Optional[int] | NotGiven = NOT_GIVEN,
         metadata: Optional[object] | NotGiven = NOT_GIVEN,
-        model: Union[
-            str,
-            Literal[
-                "gpt-4-turbo",
-                "gpt-4-turbo-2024-04-09",
-                "gpt-4-0125-preview",
-                "gpt-4-turbo-preview",
-                "gpt-4-1106-preview",
-                "gpt-4-vision-preview",
-                "gpt-4",
-                "gpt-4-0314",
-                "gpt-4-0613",
-                "gpt-4-32k",
-                "gpt-4-32k-0314",
-                "gpt-4-32k-0613",
-                "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo-0125",
-                "gpt-3.5-turbo-16k-0613",
-            ],
-            None,
-        ]
-        | NotGiven = NOT_GIVEN,
-        response_format: Optional[AssistantResponseFormatOptionParam]
-        | NotGiven = NOT_GIVEN,
+        model: Union[str, ChatModel, None] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        response_format: Optional[AssistantResponseFormatOptionParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: Optional[AssistantToolChoiceOptionParam] | NotGiven = NOT_GIVEN,
         tools: Optional[Iterable[AssistantToolParam]] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
-        truncation_strategy: Optional[run_create_params.TruncationStrategy]
-        | NotGiven = NOT_GIVEN,
+        truncation_strategy: Optional[run_create_params.TruncationStrategy] | NotGiven = NOT_GIVEN,
         thread_id: str,
         event_handler: AsyncAssistantEventHandlerT | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -2996,9 +2361,7 @@ class AsyncRuns(AsyncAPIResource):
     ):
         """Create a Run stream"""
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
 
         extra_headers = {
             "OpenAI-Beta": "assistants=v2",
@@ -3023,24 +2386,20 @@ class AsyncRuns(AsyncAPIResource):
                     "tool_choice": tool_choice,
                     "stream": True,
                     "tools": tools,
+                    "parallel_tool_calls": parallel_tool_calls,
                     "truncation_strategy": truncation_strategy,
                     "top_p": top_p,
                 },
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=True,
             stream_cls=AsyncStream[AssistantStreamEvent],
         )
-        return AsyncAssistantStreamManager(
-            request, event_handler=event_handler or AsyncAssistantEventHandler()
-        )
+        return AsyncAssistantStreamManager(request, event_handler=event_handler or AsyncAssistantEventHandler())
 
     @overload
     async def submit_tool_outputs(
@@ -3156,9 +2515,7 @@ class AsyncRuns(AsyncAPIResource):
         """
         ...
 
-    @required_args(
-        ["thread_id", "tool_outputs"], ["thread_id", "stream", "tool_outputs"]
-    )
+    @required_args(["thread_id", "tool_outputs"], ["thread_id", "stream", "tool_outputs"])
     async def submit_tool_outputs(
         self,
         run_id: str,
@@ -3174,13 +2531,9 @@ class AsyncRuns(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> Run | AsyncStream[AssistantStreamEvent]:
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
             f"/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
@@ -3192,10 +2545,7 @@ class AsyncRuns(AsyncAPIResource):
                 run_submit_tool_outputs_params.RunSubmitToolOutputsParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=stream or False,
@@ -3307,14 +2657,10 @@ class AsyncRuns(AsyncAPIResource):
         https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
         """
         if not run_id:
-            raise ValueError(
-                f"Expected a non-empty value for `run_id` but received {run_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `run_id` but received {run_id!r}")
 
         if not thread_id:
-            raise ValueError(
-                f"Expected a non-empty value for `thread_id` but received {thread_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `thread_id` but received {thread_id!r}")
 
         extra_headers = {
             "OpenAI-Beta": "assistants=v2",
@@ -3332,18 +2678,13 @@ class AsyncRuns(AsyncAPIResource):
                 run_submit_tool_outputs_params.RunSubmitToolOutputsParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Run,
             stream=True,
             stream_cls=AsyncStream[AssistantStreamEvent],
         )
-        return AsyncAssistantStreamManager(
-            request, event_handler=event_handler or AsyncAssistantEventHandler()
-        )
+        return AsyncAssistantStreamManager(request, event_handler=event_handler or AsyncAssistantEventHandler())
 
 
 class RunsWithRawResponse:

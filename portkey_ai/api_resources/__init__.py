@@ -57,6 +57,14 @@ from .apis import (
     AsyncAdmin,
     AsyncUsers,
     AsyncInvites,
+    BetaChat,
+    AsyncBetaChat,
+    BetaCompletions,
+    AsyncBetaCompletions,
+    Uploads,
+    AsyncUploads,
+    Parts,
+    AsyncParts,
 )
 from .utils import (
     Modes,
@@ -149,4 +157,12 @@ __all__ = [
     "AsyncAdmin",
     "AsyncUsers",
     "AsyncInvites",
+    "BetaChat",
+    "AsyncBetaChat",
+    "BetaCompletions",
+    "AsyncBetaCompletions",
+    "Uploads",
+    "Parts",
+    "AsyncUploads",
+    "AsyncParts",
 ]

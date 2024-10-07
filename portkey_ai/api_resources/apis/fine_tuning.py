@@ -48,7 +48,7 @@ class Jobs(APIResource):
             seed=seed,
             suffix=suffix,
             validation_file=validation_file,
-            **kwargs,
+            extra_body=kwargs,
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -57,7 +57,7 @@ class Jobs(APIResource):
 
     def retrieve(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-            fine_tuning_job_id=fine_tuning_job_id, **kwargs
+            fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -81,7 +81,7 @@ class Jobs(APIResource):
 
     def cancel(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.cancel(
-            fine_tuning_job_id=fine_tuning_job_id, **kwargs
+            fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -97,7 +97,10 @@ class Jobs(APIResource):
         **kwargs,
     ) -> FineTuningJobEventList:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list_events(
-            fine_tuning_job_id=fine_tuning_job_id, after=after, limit=limit, **kwargs
+            fine_tuning_job_id=fine_tuning_job_id,
+            after=after,
+            limit=limit,
+            extra_body=kwargs,
         )
         data = FineTuningJobEventList(**json.loads(response.text))
         data._headers = response.headers
@@ -168,7 +171,7 @@ class AsyncJobs(AsyncAPIResource):
             seed=seed,
             suffix=suffix,
             validation_file=validation_file,
-            **kwargs,
+            extra_body=kwargs,
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -177,7 +180,7 @@ class AsyncJobs(AsyncAPIResource):
 
     async def retrieve(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-            fine_tuning_job_id=fine_tuning_job_id, **kwargs
+            fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -201,7 +204,7 @@ class AsyncJobs(AsyncAPIResource):
 
     async def cancel(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.cancel(
-            fine_tuning_job_id, **kwargs
+            fine_tuning_job_id, extra_body=kwargs
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -221,7 +224,7 @@ class AsyncJobs(AsyncAPIResource):
                 fine_tuning_job_id=fine_tuning_job_id,
                 after=after,
                 limit=limit,
-                **kwargs,
+                extra_body=kwargs,
             )
         )
         data = FineTuningJobEventList(**json.loads(response.text))

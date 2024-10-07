@@ -27,16 +27,19 @@ class Portkey(APIClient):
     batches: apis.Batches
     fine_tuning: apis.FineTuning
     admin: apis.Admin
+    uploads: apis.Uploads
 
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
         vector_stores: apis.VectorStores
+        chat: apis.BetaChat
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
             self.vector_stores = apis.VectorStores(client)
+            self.chat = apis.BetaChat(client)
 
     def __init__(
         self,
@@ -65,8 +68,11 @@ class Portkey(APIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -93,9 +99,12 @@ class Portkey(APIClient):
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             http_client=http_client,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -104,6 +113,7 @@ class Portkey(APIClient):
             base_url=self.base_url,
             default_headers=self.allHeaders,
             http_client=http_client,
+            max_retries=0,
         )
 
         self.completions = apis.Completion(self)
@@ -120,6 +130,7 @@ class Portkey(APIClient):
         self.batches = apis.Batches(self)
         self.fine_tuning = apis.FineTuning(self)
         self.admin = apis.Admin(self)
+        self.uploads = apis.Uploads(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -149,8 +160,11 @@ class Portkey(APIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -177,9 +191,13 @@ class Portkey(APIClient):
             azure_resource_name=azure_resource_name or self.azure_resource_name,
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
+            huggingface_base_url=huggingface_base_url or self.huggingface_base_url,
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance
+            or self.strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta or self.anthropic_beta,
             **self.kwargs,
             **kwargs,
         )
@@ -205,16 +223,19 @@ class AsyncPortkey(AsyncAPIClient):
     batches: apis.AsyncBatches
     fine_tuning: apis.AsyncFineTuning
     admin: apis.AsyncAdmin
+    uploads: apis.AsyncUploads
 
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
         vector_stores: apis.AsyncVectorStores
+        chat: apis.AsyncBetaChat
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
             self.vector_stores = apis.AsyncVectorStores(client)
+            self.chat = apis.AsyncBetaChat(client)
 
     def __init__(
         self,
@@ -243,8 +264,11 @@ class AsyncPortkey(AsyncAPIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -271,9 +295,12 @@ class AsyncPortkey(AsyncAPIClient):
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             http_client=http_client,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -282,6 +309,7 @@ class AsyncPortkey(AsyncAPIClient):
             base_url=self.base_url,
             default_headers=self.allHeaders,
             http_client=http_client,
+            max_retries=0,
         )
 
         self.completions = apis.AsyncCompletion(self)
@@ -298,6 +326,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.batches = apis.AsyncBatches(self)
         self.fine_tuning = apis.AsyncFineTuning(self)
         self.admin = apis.AsyncAdmin(self)
+        self.uploads = apis.AsyncUploads(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -327,8 +356,11 @@ class AsyncPortkey(AsyncAPIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -355,9 +387,13 @@ class AsyncPortkey(AsyncAPIClient):
             azure_resource_name=azure_resource_name or self.azure_resource_name,
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
+            huggingface_base_url=huggingface_base_url or self.huggingface_base_url,
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance
+            or self.strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta or self.anthropic_beta,
             **self.kwargs,
             **kwargs,
         )

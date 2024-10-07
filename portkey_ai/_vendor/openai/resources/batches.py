@@ -40,7 +40,7 @@ class Batches(SyncAPIResource):
         self,
         *,
         completion_window: Literal["24h"],
-        endpoint: Literal["/v1/chat/completions", "/v1/embeddings"],
+        endpoint: Literal["/v1/chat/completions", "/v1/embeddings", "/v1/completions"],
         input_file_id: str,
         metadata: Optional[Dict[str, str]] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -58,7 +58,9 @@ class Batches(SyncAPIResource):
               is supported.
 
           endpoint: The endpoint to be used for all requests in the batch. Currently
-              `/v1/chat/completions` and `/v1/embeddings` are supported.
+              `/v1/chat/completions`, `/v1/embeddings`, and `/v1/completions` are supported.
+              Note that `/v1/embeddings` batches are also restricted to a maximum of 50,000
+              embedding inputs across all requests in the batch.
 
           input_file_id: The ID of an uploaded file that contains requests for the new batch.
 
@@ -66,8 +68,9 @@ class Batches(SyncAPIResource):
               for how to upload a file.
 
               Your input file must be formatted as a
-              [JSONL file](https://platform.openai.com/docs/api-reference/batch/requestInput),
-              and must be uploaded with the purpose `batch`.
+              [JSONL file](https://platform.openai.com/docs/api-reference/batch/request-input),
+              and must be uploaded with the purpose `batch`. The file can contain up to 50,000
+              requests, and can be up to 100 MB in size.
 
           metadata: Optional custom metadata for the batch.
 
@@ -91,10 +94,7 @@ class Batches(SyncAPIResource):
                 batch_create_params.BatchCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Batch,
         )
@@ -123,16 +123,11 @@ class Batches(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not batch_id:
-            raise ValueError(
-                f"Expected a non-empty value for `batch_id` but received {batch_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `batch_id` but received {batch_id!r}")
         return self._get(
             f"/batches/{batch_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Batch,
         )
@@ -200,8 +195,11 @@ class Batches(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> Batch:
-        """
-        Cancels an in-progress batch.
+        """Cancels an in-progress batch.
+
+        The batch will be in status `cancelling` for up to
+        10 minutes, before changing to `cancelled`, where it will have partial results
+        (if any) available in the output file.
 
         Args:
           extra_headers: Send extra headers
@@ -213,16 +211,11 @@ class Batches(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not batch_id:
-            raise ValueError(
-                f"Expected a non-empty value for `batch_id` but received {batch_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `batch_id` but received {batch_id!r}")
         return self._post(
             f"/batches/{batch_id}/cancel",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Batch,
         )
@@ -241,7 +234,7 @@ class AsyncBatches(AsyncAPIResource):
         self,
         *,
         completion_window: Literal["24h"],
-        endpoint: Literal["/v1/chat/completions", "/v1/embeddings"],
+        endpoint: Literal["/v1/chat/completions", "/v1/embeddings", "/v1/completions"],
         input_file_id: str,
         metadata: Optional[Dict[str, str]] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -259,7 +252,9 @@ class AsyncBatches(AsyncAPIResource):
               is supported.
 
           endpoint: The endpoint to be used for all requests in the batch. Currently
-              `/v1/chat/completions` and `/v1/embeddings` are supported.
+              `/v1/chat/completions`, `/v1/embeddings`, and `/v1/completions` are supported.
+              Note that `/v1/embeddings` batches are also restricted to a maximum of 50,000
+              embedding inputs across all requests in the batch.
 
           input_file_id: The ID of an uploaded file that contains requests for the new batch.
 
@@ -267,8 +262,9 @@ class AsyncBatches(AsyncAPIResource):
               for how to upload a file.
 
               Your input file must be formatted as a
-              [JSONL file](https://platform.openai.com/docs/api-reference/batch/requestInput),
-              and must be uploaded with the purpose `batch`.
+              [JSONL file](https://platform.openai.com/docs/api-reference/batch/request-input),
+              and must be uploaded with the purpose `batch`. The file can contain up to 50,000
+              requests, and can be up to 100 MB in size.
 
           metadata: Optional custom metadata for the batch.
 
@@ -292,10 +288,7 @@ class AsyncBatches(AsyncAPIResource):
                 batch_create_params.BatchCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Batch,
         )
@@ -324,16 +317,11 @@ class AsyncBatches(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not batch_id:
-            raise ValueError(
-                f"Expected a non-empty value for `batch_id` but received {batch_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `batch_id` but received {batch_id!r}")
         return await self._get(
             f"/batches/{batch_id}",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Batch,
         )
@@ -401,8 +389,11 @@ class AsyncBatches(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
     ) -> Batch:
-        """
-        Cancels an in-progress batch.
+        """Cancels an in-progress batch.
+
+        The batch will be in status `cancelling` for up to
+        10 minutes, before changing to `cancelled`, where it will have partial results
+        (if any) available in the output file.
 
         Args:
           extra_headers: Send extra headers
@@ -414,16 +405,11 @@ class AsyncBatches(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         if not batch_id:
-            raise ValueError(
-                f"Expected a non-empty value for `batch_id` but received {batch_id!r}"
-            )
+            raise ValueError(f"Expected a non-empty value for `batch_id` but received {batch_id!r}")
         return await self._post(
             f"/batches/{batch_id}/cancel",
             options=make_request_options(
-                extra_headers=extra_headers,
-                extra_query=extra_query,
-                extra_body=extra_body,
-                timeout=timeout,
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Batch,
         )

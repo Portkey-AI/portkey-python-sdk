@@ -14,21 +14,9 @@ from .file_search_tool_call import FileSearchToolCall as FileSearchToolCall
 from .tool_call_delta_object import ToolCallDeltaObject as ToolCallDeltaObject
 from .tool_calls_step_details import ToolCallsStepDetails as ToolCallsStepDetails
 from .function_tool_call_delta import FunctionToolCallDelta as FunctionToolCallDelta
-from .code_interpreter_tool_call import (
-    CodeInterpreterToolCall as CodeInterpreterToolCall,
-)
-from .file_search_tool_call_delta import (
-    FileSearchToolCallDelta as FileSearchToolCallDelta,
-)
-from .run_step_delta_message_delta import (
-    RunStepDeltaMessageDelta as RunStepDeltaMessageDelta,
-)
-from .code_interpreter_output_image import (
-    CodeInterpreterOutputImage as CodeInterpreterOutputImage,
-)
-from .message_creation_step_details import (
-    MessageCreationStepDetails as MessageCreationStepDetails,
-)
-from .code_interpreter_tool_call_delta import (
-    CodeInterpreterToolCallDelta as CodeInterpreterToolCallDelta,
-)
+from .code_interpreter_tool_call import CodeInterpreterToolCall as CodeInterpreterToolCall
+from .file_search_tool_call_delta import FileSearchToolCallDelta as FileSearchToolCallDelta
+from .run_step_delta_message_delta import RunStepDeltaMessageDelta as RunStepDeltaMessageDelta
+from .code_interpreter_output_image import CodeInterpreterOutputImage as CodeInterpreterOutputImage
+from .message_creation_step_details import MessageCreationStepDetails as MessageCreationStepDetails
+from .code_interpreter_tool_call_delta import CodeInterpreterToolCallDelta as CodeInterpreterToolCallDelta

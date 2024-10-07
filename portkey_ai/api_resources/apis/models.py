@@ -21,7 +21,7 @@ class Models(APIResource):
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> Model:
         response = self.openai_client.with_raw_response.models.retrieve(
-            model=model, timeout=timeout, **kwargs
+            model=model, timeout=timeout, extra_body=kwargs
         )
         data = Model(**json.loads(response.text))
         data._headers = response.headers
@@ -31,7 +31,7 @@ class Models(APIResource):
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> ModelDeleted:
         response = self.openai_client.with_raw_response.models.delete(
-            model=model, timeout=timeout, **kwargs
+            model=model, timeout=timeout, extra_body=kwargs
         )
         data = ModelDeleted(**json.loads(response.text))
         data._headers = response.headers
@@ -53,7 +53,7 @@ class AsyncModels(AsyncAPIResource):
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> Model:
         response = await self.openai_client.with_raw_response.models.retrieve(
-            model=model, timeout=timeout, **kwargs
+            model=model, timeout=timeout, extra_body=kwargs
         )
         data = Model(**json.loads(response.text))
         data._headers = response.headers
@@ -63,7 +63,7 @@ class AsyncModels(AsyncAPIResource):
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> ModelDeleted:
         response = await self.openai_client.with_raw_response.models.delete(
-            model=model, timeout=timeout, **kwargs
+            model=model, timeout=timeout, extra_body=kwargs
         )
         data = ModelDeleted(**json.loads(response.text))
         data._headers = response.headers

@@ -72,8 +72,11 @@ class APIClient:
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -99,8 +102,11 @@ class APIClient:
         self.azure_resource_name = azure_resource_name
         self.azure_deployment_id = azure_deployment_id
         self.azure_api_version = azure_api_version
+        self.huggingface_base_url = huggingface_base_url
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
+        self.strict_open_ai_compliance = strict_open_ai_compliance
+        self.anthropic_beta = anthropic_beta
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -126,8 +132,11 @@ class APIClient:
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -162,7 +171,8 @@ class APIClient:
         self,
         path: str,
         *,
-        body: Mapping[str, Any],
+        body: Mapping[str, Any] = {},
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
@@ -176,7 +186,8 @@ class APIClient:
         self,
         path: str,
         *,
-        body: Mapping[str, Any],
+        body: Mapping[str, Any] = {},
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
@@ -190,7 +201,8 @@ class APIClient:
         self,
         path: str,
         *,
-        body: Mapping[str, Any],
+        body: Mapping[str, Any] = {},
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
@@ -203,7 +215,8 @@ class APIClient:
         self,
         path: str,
         *,
-        body: Mapping[str, Any],
+        body: Mapping[str, Any] = {},
+        files: Any = None,
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
@@ -215,6 +228,7 @@ class APIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -224,6 +238,7 @@ class APIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -450,6 +465,7 @@ class APIClient:
         method: str,
         url: str,
         body: Any,
+        files: Any,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -458,6 +474,7 @@ class APIClient:
         opts.method = method
         opts.url = url
         json_body = body
+        opts.files = files
         opts.json_body = remove_empty_values(json_body)
         opts.headers = remove_empty_values(headers)
         return opts
@@ -468,6 +485,7 @@ class APIClient:
         method: str,
         url: str,
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -475,6 +493,7 @@ class APIClient:
         opts = Options.construct()
         opts.method = method
         opts.url = url
+        opts.files = files
         if method != "get" or method != "delete":
             opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
@@ -483,7 +502,6 @@ class APIClient:
     @property
     def _default_headers(self) -> Mapping[str, str]:
         return {
-            "Content-Type": "application/json",
             f"{PORTKEY_HEADER_PREFIX}api-key": self.api_key,
             f"{PORTKEY_HEADER_PREFIX}package-version": f"portkey-{VERSION}",
             f"{PORTKEY_HEADER_PREFIX}runtime": platform.python_implementation(),
@@ -541,6 +559,7 @@ class APIClient:
             headers=headers,
             params=params,
             json=json_body,
+            files=options.files,
             timeout=options.timeout,
         )
         return request
@@ -685,8 +704,11 @@ class AsyncAPIClient:
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
+        strict_open_ai_compliance: Optional[bool] = None,
+        anthropic_beta: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.api_key = api_key or default_api_key()
@@ -712,8 +734,11 @@ class AsyncAPIClient:
         self.azure_resource_name = azure_resource_name
         self.azure_deployment_id = azure_deployment_id
         self.azure_api_version = azure_api_version
+        self.huggingface_base_url = huggingface_base_url
         self.cache_namespace = cache_namespace
         self.request_timeout = request_timeout
+        self.strict_open_ai_compliance = strict_open_ai_compliance
+        self.anthropic_beta = anthropic_beta
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -739,8 +764,11 @@ class AsyncAPIClient:
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             request_timeout=request_timeout,
+            strict_open_ai_compliance=strict_open_ai_compliance,
+            anthropic_beta=anthropic_beta,
             **kwargs,
         )
 
@@ -777,6 +805,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: Literal[False],
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -791,6 +820,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: Literal[True],
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -805,6 +835,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -818,6 +849,7 @@ class AsyncAPIClient:
         *,
         cast_to: Type[ResponseT],
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
@@ -828,6 +860,7 @@ class AsyncAPIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -837,6 +870,7 @@ class AsyncAPIClient:
                 method="post",
                 url=path,
                 body=body,
+                files=files,
                 stream=stream,
                 params=params,
                 headers=headers,
@@ -1063,6 +1097,7 @@ class AsyncAPIClient:
         method: str,
         url: str,
         body: Any,
+        files: Any,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -1071,6 +1106,7 @@ class AsyncAPIClient:
         opts.method = method
         opts.url = url
         json_body = body
+        opts.files = files
         opts.json_body = remove_empty_values(json_body)
         opts.headers = remove_empty_values(headers)
         return opts
@@ -1081,6 +1117,7 @@ class AsyncAPIClient:
         method: str,
         url: str,
         body: Mapping[str, Any],
+        files: Any = None,
         stream: bool,
         params: Mapping[str, str],
         headers: Mapping[str, str],
@@ -1088,6 +1125,7 @@ class AsyncAPIClient:
         opts = Options.construct()
         opts.method = method
         opts.url = url
+        opts.files = files
         if method != "get" or method != "delete":
             opts.json_body = remove_empty_values(body)
         opts.headers = remove_empty_values(headers)
@@ -1096,7 +1134,6 @@ class AsyncAPIClient:
     @property
     def _default_headers(self) -> Mapping[str, str]:
         return {
-            "Content-Type": "application/json",
             f"{PORTKEY_HEADER_PREFIX}api-key": self.api_key,
             f"{PORTKEY_HEADER_PREFIX}package-version": f"portkey-{VERSION}",
             f"{PORTKEY_HEADER_PREFIX}runtime": platform.python_implementation(),

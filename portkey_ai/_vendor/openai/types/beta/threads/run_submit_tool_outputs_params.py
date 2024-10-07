@@ -49,6 +49,4 @@ class RunSubmitToolOutputsParamsStreaming(RunSubmitToolOutputsParamsBase):
     """
 
 
-RunSubmitToolOutputsParams = Union[
-    RunSubmitToolOutputsParamsNonStreaming, RunSubmitToolOutputsParamsStreaming
-]
+RunSubmitToolOutputsParams = Union[RunSubmitToolOutputsParamsNonStreaming, RunSubmitToolOutputsParamsStreaming]

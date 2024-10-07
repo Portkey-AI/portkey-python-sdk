@@ -56,6 +56,20 @@ from .admin import (
     AsyncInvites,
 )
 
+from .beta_chat import (
+    BetaChat,
+    BetaCompletions,
+    AsyncBetaChat,
+    AsyncBetaCompletions,
+)
+
+from .uploads import (
+    Uploads,
+    Parts,
+    AsyncUploads,
+    AsyncParts,
+)
+
 
 __all__ = [
     "Completion",
@@ -119,4 +133,12 @@ __all__ = [
     "AsyncAdmin",
     "AsyncUsers",
     "AsyncInvites",
+    "BetaChat",
+    "BetaCompletions",
+    "AsyncBetaChat",
+    "AsyncBetaCompletions",
+    "Uploads",
+    "Parts",
+    "AsyncUploads",
+    "AsyncParts",
 ]

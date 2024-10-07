@@ -19,7 +19,26 @@ __all__ = [
     "Delta",
     "StreamChoice",
     "ChatCompletionChunk",
+    "ChoiceLogprobs",
 ]
+
+
+class TopLogprob(BaseModel, extra="allow"):
+    token: Optional[str]
+    bytes: Optional[List[int]] = None
+    logprob: Optional[float]
+
+
+class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
+    token: Optional[str]
+    bytes: Optional[List[int]] = None
+    logprob: Optional[float]
+    top_logprobs: Optional[List[TopLogprob]]
+
+
+class ChoiceLogprobs(BaseModel, extra="allow"):
+    content: Optional[List[ChatCompletionTokenLogprob]] = None
+    refusal: Optional[List[ChatCompletionTokenLogprob]] = None
 
 
 class Usage(BaseModel, extra="allow"):
@@ -28,28 +47,30 @@ class Usage(BaseModel, extra="allow"):
     total_tokens: Optional[int] = None
 
 
-class DeltaToolCallFunction(BaseModel):
+class DeltaToolCallFunction(BaseModel, extra="allow"):
     arguments: Optional[str] = None
     name: Optional[str] = None
 
 
-class DeltaToolCall(BaseModel):
+class DeltaToolCall(BaseModel, extra="allow"):
     index: Optional[int]
     id: Optional[str] = None
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
 
 
-class Delta(BaseModel):
+class Delta(BaseModel, extra="allow"):
     role: Optional[str] = None
     content: Optional[str] = ""
     tool_calls: Optional[List[DeltaToolCall]] = None
+    refusal: Optional[str] = None
 
 
 class StreamChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
     delta: Optional[Delta]
     finish_reason: Optional[str] = None
+    logprobs: Optional[ChoiceLogprobs] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -61,49 +82,32 @@ class StreamChoice(BaseModel, extra="allow"):
         return getattr(self, key, None)
 
 
-class FunctionCall(BaseModel):
+class FunctionCall(BaseModel, extra="allow"):
     arguments: Optional[str]
     name: Optional[str]
 
 
-class ChatCompletionMessageToolCall(BaseModel):
+class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     function: Optional[FunctionCall]
     type: Optional[str]
 
 
-class ChatCompletionMessage(BaseModel):
+class ChatCompletionMessage(BaseModel, extra="allow"):
     content: Optional[Union[str, Iterable[Any]]] = None
     role: Optional[str]
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
 
 
-class TopLogprob(BaseModel):
-    token: Optional[str]
-    bytes: Optional[List[int]] = None
-    logprob: Optional[float]
-
-
-class ChatCompletionTokenLogprob(BaseModel):
-    token: Optional[str]
-    bytes: Optional[List[int]] = None
-    logprob: Optional[float]
-    top_logprobs: Optional[List[TopLogprob]]
-
-
-class ChoiceLogprobs(BaseModel):
-    content: Optional[List[ChatCompletionTokenLogprob]] = None
-
-
-class Choice(BaseModel):
+class Choice(BaseModel, extra="allow"):
     finish_reason: Optional[str]
     index: Optional[int]
     logprobs: Optional[ChoiceLogprobs] = None
     message: Optional[ChatCompletionMessage]
 
 
-class ChatCompletions(BaseModel):
+class ChatCompletions(BaseModel, extra="allow"):
     id: Optional[str]
     choices: Optional[List[Choice]]
     created: Optional[int]
@@ -111,6 +115,7 @@ class ChatCompletions(BaseModel):
     object: Optional[str]
     system_fingerprint: Optional[str] = None
     usage: Optional[Usage] = None
+    service_tier: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -127,12 +132,13 @@ class ChatCompletions(BaseModel):
         return parse_headers(self._headers)
 
 
-class ChatCompletionChunk(BaseModel):
+class ChatCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
     model: Optional[str] = None
     choices: Optional[List[StreamChoice]]
+    service_tier: Optional[str] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)

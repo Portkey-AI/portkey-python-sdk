@@ -35,6 +35,7 @@ class Transcriptions(APIResource):
         timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Transcription:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.audio.transcriptions.create(
             file=file,
             model=model,
@@ -43,7 +44,8 @@ class Transcriptions(APIResource):
             response_format=response_format,
             temperature=temperature,
             timestamp_granularities=timestamp_granularities,
-            **kwargs
+            extra_headers=extra_headers,
+            extra_body=kwargs,
         )
         data = Transcription(**json.loads(response.text))
         data._headers = response.headers
@@ -66,13 +68,15 @@ class Translations(APIResource):
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Translation:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
             prompt=prompt,
             response_format=response_format,
             temperature=temperature,
-            **kwargs
+            extra_headers=extra_headers,
+            extra_body=kwargs,
         )
         data = Translation(**json.loads(response.text))
         data._headers = response.headers
@@ -94,15 +98,20 @@ class Speech(APIResource):
         voice: str,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         speed: Union[float, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Any:
+        if stream is True:
+            self.openai_client = self.openai_client.with_streaming_response
+        extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.audio.speech.create(
             input=input,
             model=model,
             voice=voice,
             response_format=response_format,
             speed=speed,
-            **kwargs
+            extra_headers=extra_headers,
+            extra_body=kwargs,
         )
 
         return response
@@ -135,6 +144,7 @@ class AsyncTranscriptions(AsyncAPIResource):
         timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Transcription:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = (
             await self.openai_client.with_raw_response.audio.transcriptions.create(
                 file=file,
@@ -144,7 +154,8 @@ class AsyncTranscriptions(AsyncAPIResource):
                 response_format=response_format,
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
-                **kwargs
+                extra_headers=extra_headers,
+                extra_body=kwargs,
             )
         )
         data = Transcription(**json.loads(response.text))
@@ -168,13 +179,15 @@ class AsyncTranslations(AsyncAPIResource):
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Translation:
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
             prompt=prompt,
             response_format=response_format,
             temperature=temperature,
-            **kwargs
+            extra_headers=extra_headers,
+            extra_body=kwargs,
         )
         data = Translation(**json.loads(response.text))
         data._headers = response.headers
@@ -196,15 +209,20 @@ class AsyncSpeech(AsyncAPIResource):
         voice: str,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         speed: Union[float, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> Any:
+        if stream is True:
+            self.openai_client = await self.openai_client.with_streaming_response
+        extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.audio.speech.create(
             input=input,
             model=model,
             voice=voice,
             response_format=response_format,
             speed=speed,
-            **kwargs
+            extra_headers=extra_headers,
+            extra_body=kwargs,
         )
 
         data = response

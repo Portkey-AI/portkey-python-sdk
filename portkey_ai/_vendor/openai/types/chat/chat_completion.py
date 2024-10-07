@@ -15,11 +15,12 @@ class ChoiceLogprobs(BaseModel):
     content: Optional[List[ChatCompletionTokenLogprob]] = None
     """A list of message content tokens with log probability information."""
 
+    refusal: Optional[List[ChatCompletionTokenLogprob]] = None
+    """A list of message refusal tokens with log probability information."""
+
 
 class Choice(BaseModel):
-    finish_reason: Literal[
-        "stop", "length", "tool_calls", "content_filter", "function_call"
-    ]
+    finish_reason: Literal["stop", "length", "tool_calls", "content_filter", "function_call"]
     """The reason the model stopped generating tokens.
 
     This will be `stop` if the model hit a natural stop point or a provided stop
@@ -57,6 +58,13 @@ class ChatCompletion(BaseModel):
 
     object: Literal["chat.completion"]
     """The object type, which is always `chat.completion`."""
+
+    service_tier: Optional[Literal["scale", "default"]] = None
+    """The service tier used for processing the request.
+
+    This field is only included if the `service_tier` parameter is specified in the
+    request.
+    """
 
     system_fingerprint: Optional[str] = None
     """This fingerprint represents the backend configuration that the model runs with.
