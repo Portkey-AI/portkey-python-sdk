@@ -28,6 +28,7 @@ class Portkey(APIClient):
     fine_tuning: apis.FineTuning
     admin: apis.Admin
     uploads: apis.Uploads
+    configs: apis.Configs
 
     class beta:
         assistants: apis.Assistants
@@ -224,6 +225,7 @@ class AsyncPortkey(AsyncAPIClient):
     fine_tuning: apis.AsyncFineTuning
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
+    configs: apis.AsyncConfigs
 
     class beta:
         assistants: apis.AsyncAssistants
