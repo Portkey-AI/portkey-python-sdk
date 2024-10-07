@@ -81,6 +81,8 @@ from portkey_ai.api_resources import (
     Parts,
     AsyncUploads,
     AsyncParts,
+    Configs,
+    AsyncConfigs,
 )
 
 from portkey_ai.version import VERSION
@@ -181,4 +183,6 @@ __all__ = [
     "AsyncInvites",
     "AsyncWorkspaces",
     "AsyncWorkspacesUsers",
+    "Configs",
+    "AsyncConfigs",
 ]

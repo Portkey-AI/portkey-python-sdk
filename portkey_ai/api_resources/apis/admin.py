@@ -644,7 +644,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
-    def add(
+    async def add(
         self,
         *,
         workspace_id: Optional[str] = None,
@@ -654,7 +654,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             "workspace_id": workspace_id,
             "users": users,
         }
-        return self._post(
+        return await self._post(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users",
             body=body,
             params=None,
@@ -664,13 +664,13 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             headers={},
         )
 
-    def get(
+    async def get(
         self,
         *,
         workspace_id: Optional[str] = None,
         user_id: Optional[str] = None,
     ) -> WorkspaceMemberGetResponse:
-        return self._get(
+        return await self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
             params=None,
             body=None,
@@ -680,7 +680,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             headers={},
         )
 
-    def list(
+    async def list(
         self,
         *,
         workspace_id: Optional[str] = None,
@@ -697,7 +697,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
         }
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
-        return self._get(
+        return await self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/user?{query_string}",
             params=None,
             body=None,
@@ -707,7 +707,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             headers={},
         )
 
-    def update(
+    async def update(
         self,
         *,
         workspace_id: Optional[str] = None,
@@ -718,7 +718,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             "user_id": user_id,
             "role": role,
         }
-        return self._put(
+        return await self._put(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
             body=body,
             params=None,
@@ -728,13 +728,13 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             headers={},
         )
 
-    def delete(
+    async def delete(
         self,
         *,
         workspace_id: Optional[str],
         user_id: Optional[str] = None,
     ) -> Any:
-        return self._delete(
+        return await self._delete(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
             params=None,
             body=None,

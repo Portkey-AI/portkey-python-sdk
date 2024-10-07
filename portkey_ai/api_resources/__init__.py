@@ -69,6 +69,8 @@ from .apis import (
     AsyncUploads,
     Parts,
     AsyncParts,
+    Configs,
+    AsyncConfigs,
 )
 from .utils import (
     Modes,
@@ -173,4 +175,6 @@ __all__ = [
     "Parts",
     "AsyncUploads",
     "AsyncParts",
+    "Configs",
+    "AsyncConfigs",
 ]

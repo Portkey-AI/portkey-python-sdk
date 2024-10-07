@@ -74,6 +74,8 @@ from .uploads import (
     AsyncParts,
 )
 
+from .configs import Configs, AsyncConfigs
+
 
 __all__ = [
     "Completion",
@@ -149,4 +151,6 @@ __all__ = [
     "Parts",
     "AsyncUploads",
     "AsyncParts",
+    "Configs",
+    "AsyncConfigs",
 ]

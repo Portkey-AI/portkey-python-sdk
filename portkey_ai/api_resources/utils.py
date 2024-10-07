@@ -119,6 +119,7 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     USER_API = "/admin/users"
     INVITE_API = "/admin/users/invites"
     WORKSPACE_API = "/admin/workspaces"
+    CONFIG_API = "/configs"
 
 
 class Options(BaseModel):
