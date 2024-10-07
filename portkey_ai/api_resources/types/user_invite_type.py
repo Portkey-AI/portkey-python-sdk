@@ -1,6 +1,8 @@
 import json
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel
+import httpx
+from pydantic import BaseModel, PrivateAttr
+from portkey_ai.api_resources.types.utils import parse_headers
 
 
 class UserRetrieveResponse(BaseModel):
@@ -13,6 +15,10 @@ class UserRetrieveResponse(BaseModel):
     created_at: Optional[str]
     last_updated_at: Optional[str]
     workspace_ids: Optional[List[str]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -28,6 +34,10 @@ class UserRetrieveAllResponse(BaseModel):
     total: Optional[int]
     object: Optional[str]
     data: Optional[List[UserRetrieveResponse]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -42,6 +52,10 @@ class UserRetrieveAllResponse(BaseModel):
 class UserInviteResponse(BaseModel):
     id: Optional[str]
     invite_link: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -63,6 +77,10 @@ class UserInviteRetrieveResponse(BaseModel):
     accepted_at: Optional[str]
     status: Optional[str]
     invited_by: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -78,6 +96,10 @@ class UserInviteRetrieveAllResponse(BaseModel):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[UserInviteRetrieveResponse]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -99,6 +121,10 @@ class WorkspacesAddResponse(BaseModel):
     defaults: Optional[Dict[str, Any]]
     users: Optional[List[Dict[str, str]]]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -119,6 +145,10 @@ class WorkspacesGetResponse(BaseModel):
     last_updated_at: Optional[str]
     defaults: Optional[Dict[str, Any]]
     users: Optional[List[Dict[str, Any]]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -134,6 +164,10 @@ class WorkspacesListResponse(BaseModel):
     total: Optional[int]
     object: Optional[str]
     data: Optional[List[WorkspacesGetResponse]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -155,6 +189,10 @@ class WorkspacesUpdateResponse(BaseModel):
     last_updated_at: Optional[str]
     defaults: Optional[Dict[str, Any]]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -178,6 +216,10 @@ class WorkspaceMemberGetResponse(BaseModel):
     scopes: Optional[List[str]]
     settings: Optional[Dict[str, Any]]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -193,6 +235,10 @@ class WorkspaceMemberListResponse(BaseModel):
     total: Optional[int]
     object: Optional[str]
     data: Optional[List[WorkspaceMemberGetResponse]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4, default=str)

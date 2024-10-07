@@ -1,12 +1,18 @@
 import json
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel
+import httpx
+from pydantic import BaseModel, PrivateAttr
+from portkey_ai.api_resources.types.utils import parse_headers
 
 
 class ApiKeyAddResponse(BaseModel):
     id: Optional[str]
     key: Optional[str]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -37,6 +43,10 @@ class ApiKeyGetResponse(BaseModel):
     scopes: Optional[List[str]]
     defaults: Optional[Dict[str, Any]]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -52,6 +62,10 @@ class ApiKeyListResponse(BaseModel):
     object: Optional[bool]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -67,6 +81,10 @@ class ApiKeyUpdateResponse(BaseModel):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)

@@ -1,6 +1,8 @@
 import json
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel
+import httpx
+from pydantic import BaseModel, PrivateAttr
+from portkey_ai.api_resources.types.utils import parse_headers
 
 
 class ConfigAddResponse(BaseModel):
@@ -8,6 +10,10 @@ class ConfigAddResponse(BaseModel):
     version_id: Optional[str]
     slug: Optional[str]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -36,6 +42,10 @@ class ConfigGetResponse(BaseModel):
     type: Optional[str]
     version_id: Optional[str]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -51,6 +61,10 @@ class ConfigListResponse(BaseModel):
     object: Optional[bool]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
@@ -65,6 +79,10 @@ class ConfigListResponse(BaseModel):
 class ConfigUpdateResponse(BaseModel):
     version_id: Optional[str]
     object: Optional[str]
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)
