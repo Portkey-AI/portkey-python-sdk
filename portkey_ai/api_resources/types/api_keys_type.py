@@ -59,7 +59,7 @@ class ApiKeyGetResponse(BaseModel):
 
 
 class ApiKeyListResponse(BaseModel):
-    object: Optional[bool]
+    object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
     _headers: Optional[httpx.Headers] = PrivateAttr()

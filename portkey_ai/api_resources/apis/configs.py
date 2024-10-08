@@ -98,10 +98,10 @@ class Configs(APIResource):
     def delete(
         self,
         *,
-        config_id: Optional[str],
+        id: Optional[str],
     ) -> Any:
         return self._delete(
-            f"{PortkeyApiPaths.CONFIG_API}/{config_id}",
+            f"{PortkeyApiPaths.CONFIG_API}/{id}",
             params=None,
             body=None,
             cast_to=GenericResponse,
@@ -197,10 +197,10 @@ class AsyncConfigs(AsyncAPIResource):
     async def delete(
         self,
         *,
-        config_id: Optional[str],
+        id: Optional[str],
     ) -> Any:
         return await self._delete(
-            f"{PortkeyApiPaths.CONFIG_API}/{config_id}",
+            f"{PortkeyApiPaths.CONFIG_API}/{id}",
             params=None,
             body=None,
             cast_to=GenericResponse,

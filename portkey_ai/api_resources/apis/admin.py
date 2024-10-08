@@ -45,8 +45,8 @@ class Users(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         email: Optional[str] = None,
         role: Optional[str] = None,
     ) -> UserRetrieveAllResponse:
@@ -134,8 +134,8 @@ class Invites(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         email: Optional[str] = None,
         role: Optional[str] = None,
         status: Optional[str] = None,
@@ -214,8 +214,8 @@ class Workspaces(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
     ) -> WorkspacesListResponse:
         query = {
             "pageSize": page_size,
@@ -321,11 +321,11 @@ class WorkspacesUsers(APIResource):
         self,
         *,
         workspace_id: Optional[str] = None,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         email: Optional[str] = None,
         role: Optional[Union[Literal["admin", "manager", "member"], str]] = None,
-    ) -> WorkspaceMemberListResponse:
+    ) -> Any:
         query = {
             "page_size": page_size,
             "current_page": current_page,
@@ -335,10 +335,10 @@ class WorkspacesUsers(APIResource):
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
         return self._get(
-            f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/user?{query_string}",
+            f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users?{query_string}",
             params=None,
             body=None,
-            cast_to=WorkspaceMemberListResponse,
+            cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -408,8 +408,8 @@ class AsyncUsers(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         email: Optional[str] = None,
         role: Optional[str] = None,
     ) -> UserRetrieveAllResponse:
@@ -497,8 +497,8 @@ class AsyncInvites(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         email: Optional[str] = None,
         role: Optional[str] = None,
         status: Optional[str] = None,
@@ -577,8 +577,8 @@ class AsyncWorkspaces(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
     ) -> WorkspacesListResponse:
         query = {
             "pageSize": page_size,
@@ -684,8 +684,8 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
         self,
         *,
         workspace_id: Optional[str] = None,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         email: Optional[str] = None,
         role: Optional[Union[Literal["admin", "manager", "member"], str]] = None,
     ) -> WorkspaceMemberListResponse:
@@ -698,7 +698,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
         return await self._get(
-            f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/user?{query_string}",
+            f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users?{query_string}",
             params=None,
             body=None,
             cast_to=WorkspaceMemberListResponse,

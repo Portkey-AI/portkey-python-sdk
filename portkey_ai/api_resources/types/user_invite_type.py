@@ -14,7 +14,7 @@ class UserRetrieveResponse(BaseModel):
     email: Optional[str]
     created_at: Optional[str]
     last_updated_at: Optional[str]
-    workspace_ids: Optional[List[str]]
+    workspace_ids: Optional[List[str]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -137,6 +137,7 @@ class WorkspacesAddResponse(BaseModel):
 
 
 class WorkspacesGetResponse(BaseModel):
+    object: Optional[str]
     id: Optional[str]
     slug: Optional[str]
     name: Optional[str]
@@ -144,7 +145,8 @@ class WorkspacesGetResponse(BaseModel):
     created_at: Optional[str]
     last_updated_at: Optional[str]
     defaults: Optional[Dict[str, Any]]
-    users: Optional[List[Dict[str, Any]]]
+    is_default: Optional[int] = None
+    users: Optional[List[Dict[str, Any]]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -213,8 +215,8 @@ class WorkspaceMemberGetResponse(BaseModel):
     last_updated_at: Optional[str]
     status: Optional[str]
     workspace_id: Optional[str]
-    scopes: Optional[List[str]]
-    settings: Optional[Dict[str, Any]]
+    scopes: Optional[List[str]] = None
+    settings: Optional[Any] = None
     object: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 

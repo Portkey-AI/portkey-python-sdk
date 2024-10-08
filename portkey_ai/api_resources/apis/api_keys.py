@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -65,8 +65,8 @@ class ApiKeys(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         workspace_id: Optional[str] = None,
     ) -> ApiKeyListResponse:
         query = {
@@ -186,8 +186,8 @@ class AsyncApiKeys(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[int] = None,
-        current_page: Optional[int] = None,
+        page_size: Optional[Union[int, str]] = None,
+        current_page: Optional[int] = 0,
         workspace_id: Optional[str] = None,
     ) -> ApiKeyListResponse:
         query = {
