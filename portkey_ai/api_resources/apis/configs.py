@@ -16,7 +16,7 @@ class Configs(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
-    def add(
+    def create(
         self,
         *,
         name: Optional[str] = None,
@@ -40,7 +40,7 @@ class Configs(APIResource):
             headers={},
         )
 
-    def get(self, *, slug: Optional[str]) -> ConfigGetResponse:
+    def retrieve(self, *, slug: Optional[str]) -> ConfigGetResponse:
         return self._get(
             f"{PortkeyApiPaths.CONFIG_API}/{slug}",
             params=None,
@@ -115,7 +115,7 @@ class AsyncConfigs(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
-    async def add(
+    async def create(
         self,
         *,
         name: Optional[str] = None,
@@ -139,7 +139,7 @@ class AsyncConfigs(AsyncAPIResource):
             headers={},
         )
 
-    async def get(self, *, slug: Optional[str]) -> ConfigGetResponse:
+    async def retrieve(self, *, slug: Optional[str]) -> ConfigGetResponse:
         return await self._get(
             f"{PortkeyApiPaths.CONFIG_API}/{slug}",
             params=None,

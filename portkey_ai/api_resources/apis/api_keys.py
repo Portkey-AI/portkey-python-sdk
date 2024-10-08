@@ -15,7 +15,7 @@ class ApiKeys(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
-    def add(
+    def create(
         self,
         *,
         type: Optional[str] = None,
@@ -51,7 +51,7 @@ class ApiKeys(APIResource):
             headers={},
         )
 
-    def get(self, *, id: Optional[str]) -> ApiKeyGetResponse:
+    def retrieve(self, *, id: Optional[str]) -> ApiKeyGetResponse:
         return self._get(
             f"{PortkeyApiPaths.API_KEYS_API}/{id}",
             params=None,
@@ -136,7 +136,7 @@ class AsyncApiKeys(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
-    async def add(
+    async def create(
         self,
         *,
         type: Optional[str] = None,
@@ -172,7 +172,7 @@ class AsyncApiKeys(AsyncAPIResource):
             headers={},
         )
 
-    async def get(self, *, id: Optional[str]) -> ApiKeyGetResponse:
+    async def retrieve(self, *, id: Optional[str]) -> ApiKeyGetResponse:
         return await self._get(
             f"{PortkeyApiPaths.API_KEYS_API}/{id}",
             params=None,

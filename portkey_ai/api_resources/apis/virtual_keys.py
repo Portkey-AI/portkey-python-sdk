@@ -15,7 +15,7 @@ class VirtualKeys(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
-    def add(
+    def create(
         self,
         *,
         name: Optional[str] = None,
@@ -69,7 +69,7 @@ class VirtualKeys(APIResource):
             headers={},
         )
 
-    def get(self, *, slug: Optional[str]) -> Any:
+    def retrieve(self, *, slug: Optional[str]) -> Any:
         return self._get(
             f"{PortkeyApiPaths.VIRTUAL_KEYS_API}/{slug}",
             params=None,
@@ -129,7 +129,7 @@ class AsyncVirtualKeys(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
-    async def add(
+    async def create(
         self,
         *,
         name: Optional[str] = None,
@@ -183,7 +183,7 @@ class AsyncVirtualKeys(AsyncAPIResource):
             headers={},
         )
 
-    async def get(self, *, slug: Optional[str]) -> Any:
+    async def retrieve(self, *, slug: Optional[str]) -> Any:
         return await self._get(
             f"{PortkeyApiPaths.VIRTUAL_KEYS_API}/{slug}",
             params=None,

@@ -31,7 +31,7 @@ class Users(APIResource):
         super().__init__(client)
         self.invites = Invites(client)
 
-    def get(self, *, user_id: str) -> UserRetrieveResponse:
+    def retrieve(self, *, user_id: str) -> UserRetrieveResponse:
         return self._get(
             f"{PortkeyApiPaths.USER_API}/{user_id}",
             params=None,
@@ -96,7 +96,7 @@ class Invites(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
-    def add(
+    def create(
         self,
         *,
         email: Optional[str] = None,
@@ -120,7 +120,7 @@ class Invites(APIResource):
             headers={},
         )
 
-    def get(self, *, invite_id: str) -> UserInviteRetrieveResponse:
+    def retrieve(self, *, invite_id: str) -> UserInviteRetrieveResponse:
         return self._get(
             f"{PortkeyApiPaths.INVITE_API}/{invite_id}",
             params=None,
@@ -176,7 +176,7 @@ class Workspaces(APIResource):
         super().__init__(client)
         self.users = WorkspacesUsers(client)
 
-    def add(
+    def create(
         self,
         *,
         name: Optional[str] = None,
@@ -200,7 +200,7 @@ class Workspaces(APIResource):
             headers={},
         )
 
-    def get(self, *, workspace_id: str) -> WorkspacesGetResponse:
+    def retrieve(self, *, workspace_id: str) -> WorkspacesGetResponse:
         return self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}",
             params=None,
@@ -281,7 +281,7 @@ class WorkspacesUsers(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
-    def add(
+    def create(
         self,
         *,
         workspace_id: Optional[str] = None,
@@ -301,7 +301,7 @@ class WorkspacesUsers(APIResource):
             headers={},
         )
 
-    def get(
+    def retrieve(
         self,
         *,
         workspace_id: Optional[str] = None,
@@ -394,7 +394,7 @@ class AsyncUsers(AsyncAPIResource):
         super().__init__(client)
         self.invites = AsyncInvites(client)
 
-    async def get(self, *, user_id: str) -> UserRetrieveResponse:
+    async def retrieve(self, *, user_id: str) -> UserRetrieveResponse:
         return await self._get(
             f"{PortkeyApiPaths.USER_API}/{user_id}",
             params=None,
@@ -459,7 +459,7 @@ class AsyncInvites(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
-    async def add(
+    async def create(
         self,
         *,
         email: Optional[str] = None,
@@ -483,7 +483,7 @@ class AsyncInvites(AsyncAPIResource):
             headers={},
         )
 
-    async def get(self, *, invite_id: str) -> UserInviteRetrieveResponse:
+    async def retrieve(self, *, invite_id: str) -> UserInviteRetrieveResponse:
         return await self._get(
             f"{PortkeyApiPaths.INVITE_API}/{invite_id}",
             params=None,
@@ -539,7 +539,7 @@ class AsyncWorkspaces(AsyncAPIResource):
         super().__init__(client)
         self.users = AsyncWorkspacesUsers(client)
 
-    async def add(
+    async def create(
         self,
         *,
         name: Optional[str] = None,
@@ -563,7 +563,7 @@ class AsyncWorkspaces(AsyncAPIResource):
             headers={},
         )
 
-    async def get(self, *, workspace_id: str) -> WorkspacesGetResponse:
+    async def retrieve(self, *, workspace_id: str) -> WorkspacesGetResponse:
         return await self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}",
             params=None,
@@ -644,7 +644,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
-    async def add(
+    async def create(
         self,
         *,
         workspace_id: Optional[str] = None,
@@ -664,7 +664,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             headers={},
         )
 
-    async def get(
+    async def retrieve(
         self,
         *,
         workspace_id: Optional[str] = None,
