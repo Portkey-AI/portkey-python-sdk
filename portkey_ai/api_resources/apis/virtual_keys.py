@@ -5,7 +5,7 @@ from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIReso
 from portkey_ai.api_resources.types.virtual_keys_type import (
     VirtualKeysListReponse,
     VirtualKeysUpdateResponse,
-    VirtualKeysAddResponse
+    VirtualKeysAddResponse,
 )
 from portkey_ai.api_resources.utils import GenericResponse
 from portkey_ai.api_resources.utils import PortkeyApiPaths

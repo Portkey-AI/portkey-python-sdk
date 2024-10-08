@@ -4,12 +4,13 @@ import httpx
 from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
+
 class VirtualKeysAddResponse(BaseModel):
     id: Optional[str]
     slug: Optional[str]
     object: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
-    
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
@@ -21,14 +22,14 @@ class VirtualKeysAddResponse(BaseModel):
 
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
-    
+
 
 class VirtualKeysListReponse(BaseModel):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
-    
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
@@ -41,12 +42,13 @@ class VirtualKeysListReponse(BaseModel):
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
 
+
 class VirtualKeysUpdateResponse(BaseModel):
     id: Optional[str]
     slug: Optional[str]
     object: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
-    
+
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
 
