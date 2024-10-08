@@ -75,7 +75,7 @@ from .uploads import (
 )
 
 from .configs import Configs, AsyncConfigs
-
+from .virtual_keys import VirtualKeys, AsyncVirtualKeys
 
 __all__ = [
     "Completion",
@@ -153,4 +153,6 @@ __all__ = [
     "AsyncParts",
     "Configs",
     "AsyncConfigs",
+    "VirtualKeys",
+    "AsyncVirtualKeys"
 ]
