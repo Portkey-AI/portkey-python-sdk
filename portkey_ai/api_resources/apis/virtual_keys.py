@@ -3,10 +3,9 @@ from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.types.virtual_keys_type import (
-    VirtualKeysAddResponse,
-    VirtualKeysGetResponse,
     VirtualKeysListReponse,
     VirtualKeysUpdateResponse,
+    VirtualKeysAddResponse
 )
 from portkey_ai.api_resources.utils import GenericResponse
 from portkey_ai.api_resources.utils import PortkeyApiPaths
@@ -70,12 +69,12 @@ class VirtualKeys(APIResource):
             headers={},
         )
 
-    def get(self, *, slug: Optional[str]) -> VirtualKeysGetResponse:
+    def get(self, *, slug: Optional[str]) -> Any:
         return self._get(
             f"{PortkeyApiPaths.VIRTUAL_KEYS_API}/{slug}",
             params=None,
             body=None,
-            cast_to=VirtualKeysGetResponse,
+            cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -184,12 +183,12 @@ class AsyncVirtualKeys(AsyncAPIResource):
             headers={},
         )
 
-    async def get(self, *, slug: Optional[str]) -> VirtualKeysGetResponse:
+    async def get(self, *, slug: Optional[str]) -> Any:
         return await self._get(
             f"{PortkeyApiPaths.VIRTUAL_KEYS_API}/{slug}",
             params=None,
             body=None,
-            cast_to=VirtualKeysGetResponse,
+            cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
             headers={},
