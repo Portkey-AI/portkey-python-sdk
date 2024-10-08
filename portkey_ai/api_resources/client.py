@@ -29,6 +29,7 @@ class Portkey(APIClient):
     admin: apis.Admin
     uploads: apis.Uploads
     configs: apis.Configs
+    api_keys: apis.ApiKeys
     virtual_keys:apis.VirtualKeys
     class beta:
         assistants: apis.Assistants
@@ -132,6 +133,8 @@ class Portkey(APIClient):
         self.fine_tuning = apis.FineTuning(self)
         self.admin = apis.Admin(self)
         self.uploads = apis.Uploads(self)
+        self.configs = apis.Configs(self)
+        self.api_keys = apis.ApiKeys(self)
         self.virtual_keys=apis.VirtualKeys(self)
         self.beta = self.beta(self)  # type: ignore
 
@@ -227,6 +230,7 @@ class AsyncPortkey(AsyncAPIClient):
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
     configs: apis.AsyncConfigs
+    api_keys: apis.AsyncApiKeys
     virtual_keys:apis.AsyncVirtualKeys
     class beta:
         assistants: apis.AsyncAssistants
@@ -330,6 +334,8 @@ class AsyncPortkey(AsyncAPIClient):
         self.fine_tuning = apis.AsyncFineTuning(self)
         self.admin = apis.AsyncAdmin(self)
         self.uploads = apis.AsyncUploads(self)
+        self.configs = apis.AsyncConfigs(self)
+        self.api_keys = apis.AsyncApiKeys(self)
         self.virtual_keys=apis.AsyncVirtualKeys(self)
         self.beta = self.beta(self)  # type: ignore
 

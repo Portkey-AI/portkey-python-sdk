@@ -71,6 +71,8 @@ from .apis import (
     AsyncParts,
     Configs,
     AsyncConfigs,
+    ApiKeys,
+    AsyncApiKeys,
     VirtualKeys,
     AsyncVirtualKeys,
 )
@@ -179,6 +181,8 @@ __all__ = [
     "AsyncParts",
     "Configs",
     "AsyncConfigs",
+    "ApiKeys",
+    "AsyncApiKeys",
     "VirtualKeys",
     "AsyncVirtualKeys"
 ]

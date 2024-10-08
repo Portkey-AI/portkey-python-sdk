@@ -83,6 +83,8 @@ from portkey_ai.api_resources import (
     AsyncParts,
     Configs,
     AsyncConfigs,
+    ApiKeys,
+    AsyncApiKeys,
     VirtualKeys,
     AsyncVirtualKeys,
 )
@@ -187,6 +189,8 @@ __all__ = [
     "AsyncWorkspacesUsers",
     "Configs",
     "AsyncConfigs",
+    "ApiKeys",
+    "AsyncApiKeys",
     "VirtualKeys",
     "AsyncVirtualKeys"
 ]

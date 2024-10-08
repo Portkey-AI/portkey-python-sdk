@@ -75,6 +75,8 @@ from .uploads import (
 )
 
 from .configs import Configs, AsyncConfigs
+
+from .api_keys import ApiKeys, AsyncApiKeys
 from .virtual_keys import VirtualKeys, AsyncVirtualKeys
 
 __all__ = [
@@ -153,6 +155,8 @@ __all__ = [
     "AsyncParts",
     "Configs",
     "AsyncConfigs",
+    "ApiKeys",
+    "AsyncApiKeys",
     "VirtualKeys",
     "AsyncVirtualKeys"
 ]
