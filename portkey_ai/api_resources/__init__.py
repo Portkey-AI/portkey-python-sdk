@@ -73,6 +73,8 @@ from .apis import (
     AsyncConfigs,
     ApiKeys,
     AsyncApiKeys,
+    VirtualKeys,
+    AsyncVirtualKeys,
 )
 from .utils import (
     Modes,
@@ -181,4 +183,6 @@ __all__ = [
     "AsyncConfigs",
     "ApiKeys",
     "AsyncApiKeys",
+    "VirtualKeys",
+    "AsyncVirtualKeys"
 ]
