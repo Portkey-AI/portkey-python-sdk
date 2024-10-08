@@ -71,11 +71,14 @@ class Portkey(APIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        azure_endpoint_name: Optional[str] = None,
         huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
         anthropic_beta: Optional[str] = None,
+        anthropic_version: Optional[str] = None,
+        mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -102,12 +105,15 @@ class Portkey(APIClient):
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            azure_endpoint_name=azure_endpoint_name,
             huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             http_client=http_client,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
             anthropic_beta=anthropic_beta,
+            anthropic_version=anthropic_version,
+            mistral_fim_completion=mistral_fim_completion,
             **kwargs,
         )
 
@@ -166,11 +172,14 @@ class Portkey(APIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        azure_endpoint_name: Optional[str] = None,
         huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.Client] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
         anthropic_beta: Optional[str] = None,
+        anthropic_version: Optional[str] = None,
+        mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -197,6 +206,7 @@ class Portkey(APIClient):
             azure_resource_name=azure_resource_name or self.azure_resource_name,
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
+            azure_endpoint_name=azure_endpoint_name or self.azure_endpoint_name,
             huggingface_base_url=huggingface_base_url or self.huggingface_base_url,
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
@@ -204,6 +214,9 @@ class Portkey(APIClient):
             strict_open_ai_compliance=strict_open_ai_compliance
             or self.strict_open_ai_compliance,
             anthropic_beta=anthropic_beta or self.anthropic_beta,
+            anthropic_version=anthropic_version or self.anthropic_version,
+            mistral_fim_completion=mistral_fim_completion
+            or self.mistral_fim_completion,
             **self.kwargs,
             **kwargs,
         )
@@ -273,11 +286,14 @@ class AsyncPortkey(AsyncAPIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        azure_endpoint_name: Optional[str] = None,
         huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
         anthropic_beta: Optional[str] = None,
+        anthropic_version: Optional[str] = None,
+        mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -304,12 +320,15 @@ class AsyncPortkey(AsyncAPIClient):
             azure_resource_name=azure_resource_name,
             azure_deployment_id=azure_deployment_id,
             azure_api_version=azure_api_version,
+            azure_endpoint_name=azure_endpoint_name,
             huggingface_base_url=huggingface_base_url,
             cache_namespace=cache_namespace,
             http_client=http_client,
             request_timeout=request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance,
             anthropic_beta=anthropic_beta,
+            anthropic_version=anthropic_version,
+            mistral_fim_completion=mistral_fim_completion,
             **kwargs,
         )
 
@@ -368,11 +387,14 @@ class AsyncPortkey(AsyncAPIClient):
         azure_resource_name: Optional[str] = None,
         azure_deployment_id: Optional[str] = None,
         azure_api_version: Optional[str] = None,
+        azure_endpoint_name: Optional[str] = None,
         huggingface_base_url: Optional[str] = None,
         http_client: Optional[httpx.AsyncClient] = None,
         request_timeout: Optional[int] = None,
         strict_open_ai_compliance: Optional[bool] = None,
         anthropic_beta: Optional[str] = None,
+        anthropic_version: Optional[str] = None,
+        mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -399,6 +421,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_resource_name=azure_resource_name or self.azure_resource_name,
             azure_deployment_id=azure_deployment_id or self.azure_deployment_id,
             azure_api_version=azure_api_version or self.azure_api_version,
+            azure_endpoint_name=azure_endpoint_name or self.azure_endpoint_name,
             huggingface_base_url=huggingface_base_url or self.huggingface_base_url,
             cache_namespace=cache_namespace or self.cache_namespace,
             http_client=http_client or self._client,
@@ -406,6 +429,9 @@ class AsyncPortkey(AsyncAPIClient):
             strict_open_ai_compliance=strict_open_ai_compliance
             or self.strict_open_ai_compliance,
             anthropic_beta=anthropic_beta or self.anthropic_beta,
+            anthropic_version=anthropic_version or self.anthropic_version,
+            mistral_fim_completion=mistral_fim_completion
+            or self.mistral_fim_completion,
             **self.kwargs,
             **kwargs,
         )
