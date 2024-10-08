@@ -121,7 +121,7 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     WORKSPACE_API = "/admin/workspaces"
     CONFIG_API = "/configs"
     API_KEYS_API = "/api-keys"
-    VIRUTAL_API ="/virtual-keys"
+    VIRTUAL_KEYS_API ="/virtual-keys"
 
 class Options(BaseModel):
     method: str
