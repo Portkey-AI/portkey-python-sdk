@@ -47,6 +47,18 @@ from .vector_stores import (
     AsyncVectorFiles,
     AsyncVectorFileBatches,
 )
+from .admin import (
+    Admin,
+    Users,
+    Invites,
+    Workspaces,
+    WorkspacesUsers,
+    AsyncAdmin,
+    AsyncUsers,
+    AsyncInvites,
+    AsyncWorkspaces,
+    AsyncWorkspacesUsers,
+)
 
 from .beta_chat import (
     BetaChat,
@@ -62,6 +74,10 @@ from .uploads import (
     AsyncParts,
 )
 
+from .configs import Configs, AsyncConfigs
+
+from .api_keys import ApiKeys, AsyncApiKeys
+from .virtual_keys import VirtualKeys, AsyncVirtualKeys
 
 __all__ = [
     "Completion",
@@ -119,6 +135,16 @@ __all__ = [
     "AsyncVectorStores",
     "AsyncVectorFiles",
     "AsyncVectorFileBatches",
+    "Admin",
+    "Users",
+    "Invites",
+    "Workspaces",
+    "WorkspacesUsers",
+    "AsyncAdmin",
+    "AsyncUsers",
+    "AsyncInvites",
+    "AsyncWorkspaces",
+    "AsyncWorkspacesUsers",
     "BetaChat",
     "BetaCompletions",
     "AsyncBetaChat",
@@ -127,4 +153,10 @@ __all__ = [
     "Parts",
     "AsyncUploads",
     "AsyncParts",
+    "Configs",
+    "AsyncConfigs",
+    "ApiKeys",
+    "AsyncApiKeys",
+    "VirtualKeys",
+    "AsyncVirtualKeys",
 ]

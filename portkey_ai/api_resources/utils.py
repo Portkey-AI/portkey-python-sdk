@@ -116,6 +116,12 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     PROMPT_API = "/prompt/complete"
     FEEDBACK_API = "/feedback"
     EMBEDDING_API = "/embeddings"
+    USER_API = "/admin/users"
+    INVITE_API = "/admin/users/invites"
+    WORKSPACE_API = "/admin/workspaces"
+    CONFIG_API = "/configs"
+    API_KEYS_API = "/api-keys"
+    VIRTUAL_KEYS_API = "/virtual-keys"
 
 
 class Options(BaseModel):
