@@ -171,7 +171,7 @@ class Run(BaseModel):
     created_at: Optional[int]
     expires_at: Optional[int]
     failed_at: Optional[int] = None
-    file_ids: Optional[List[str]]
+    file_ids: Optional[List[str]] = None
     instructions: Optional[str]
     last_error: Optional[LastError] = None
     metadata: Optional[object] = None
