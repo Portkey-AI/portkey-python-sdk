@@ -75,7 +75,7 @@ class ThreadMessage(BaseModel, extra="allow"):
     assistant_id: Optional[str] = None
     content: Optional[List[Content]]
     created_at: Optional[int]
-    file_ids: Optional[List[str]]
+    file_ids: Optional[List[str]] = None
     metadata: Optional[object] = None
     object: Optional[str]
     role: Optional[str]
@@ -105,21 +105,6 @@ class MessageList(BaseModel, extra="allow"):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-
-
-# class MessageFile(BaseModel, extra="allow"):
-#     id: Optional[str]
-#     object: Optional[str]
-#     created_at: Optional[int]
-#     message_id: Optional[str]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)
 
 
 class ThreadMessageDeleted(BaseModel):
