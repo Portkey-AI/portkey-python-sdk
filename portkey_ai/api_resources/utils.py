@@ -433,13 +433,15 @@ class Config(BaseModel):
         return llms
 
 
-def default_api_key() -> str:
+def default_api_key(base_url) -> str:
     if portkey_ai.api_key:
         return portkey_ai.api_key
     env_api_key = os.environ.get(PORTKEY_API_KEY_ENV, "")
-    if env_api_key:
-        return env_api_key
-    raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+    if base_url == PORTKEY_BASE_URL:
+        if env_api_key:
+            return env_api_key
+        raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+    return env_api_key
 
 
 def default_base_url() -> str:
