@@ -1,14 +1,21 @@
 from __future__ import annotations
 
+import sys
 from typing import List, Mapping, Optional, Union
 import httpx
+import sentry_sdk
+import sentry_sdk.integrations
+import sentry_sdk.integrations.excepthook
+from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
-
-# from openai import AsyncOpenAI, OpenAI
+from portkey_ai.api_resources.utils import enable_logging
+from portkey_ai.version import VERSION
 from .._vendor.openai import OpenAI, AsyncOpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
+    SENTRY_DSN,
+    SENTRY_ENVIRONMENT,
 )
 
 
@@ -117,6 +124,19 @@ class Portkey(APIClient):
             **kwargs,
         )
 
+        if enable_logging():
+            sentry_sdk.init(
+                dsn=SENTRY_DSN,
+                environment=SENTRY_ENVIRONMENT,
+                release=VERSION,
+                integrations=[
+                    sentry_sdk.integrations.excepthook.ExcepthookIntegration(
+                        always_run=True
+                    ),
+                ],
+            )
+            self._set_global_exception_handler()
+
         self.openai_client = OpenAI(
             api_key=OPEN_AI_API_KEY,
             base_url=self.base_url,
@@ -220,6 +240,13 @@ class Portkey(APIClient):
             **self.kwargs,
             **kwargs,
         )
+
+    def _set_global_exception_handler(self):
+        def global_exception_handler(exctype, value, traceback):
+            sentry_sdk.capture_exception(value)
+            sys.__excepthook__(exctype, value, traceback)
+
+        sys.excepthook = global_exception_handler
 
     def post(self, url: str, **kwargs):
         return apis.Post(self).create(url=url, **kwargs)
@@ -332,6 +359,17 @@ class AsyncPortkey(AsyncAPIClient):
             **kwargs,
         )
 
+        if enable_logging():
+            sentry_sdk.init(
+                dsn=SENTRY_DSN,
+                environment=SENTRY_ENVIRONMENT,
+                release=VERSION,
+                integrations=[
+                    AsyncioIntegration(),
+                ],
+            )
+            self._set_global_exception_handler()
+
         self.openai_client = AsyncOpenAI(
             api_key=OPEN_AI_API_KEY,
             base_url=self.base_url,
@@ -435,6 +473,17 @@ class AsyncPortkey(AsyncAPIClient):
             **self.kwargs,
             **kwargs,
         )
+
+    def _set_global_exception_handler(self):
+        import asyncio
+
+        def global_exception_handler(loop, context):
+            exception = context.get("exception")
+            if exception:
+                sentry_sdk.capture_exception(exception)
+            loop.default_exception_handler(context)
+
+        asyncio.get_event_loop().set_exception_handler(global_exception_handler)
 
     async def post(self, url: str, **kwargs):
         return await apis.AsyncPost(self).create(url=url, **kwargs)

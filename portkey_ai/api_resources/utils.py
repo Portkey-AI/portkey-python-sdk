@@ -33,6 +33,7 @@ from .exceptions import (
     InternalServerError,
 )
 from .global_constants import (
+    ENABLE_LOGGING,
     MISSING_API_KEY_ERROR_MESSAGE,
     MISSING_BASE_URL,
     MISSING_MODE_MESSAGE,
@@ -480,3 +481,7 @@ def parse_headers_generic(headers: Optional[httpx.Headers]) -> dict:
             _headers[k] = v
 
     return _headers
+
+
+def enable_logging() -> bool:
+    return os.environ.get(ENABLE_LOGGING, "true").lower() == "true"
