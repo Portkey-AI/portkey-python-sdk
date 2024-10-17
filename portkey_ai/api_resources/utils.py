@@ -34,6 +34,7 @@ from .exceptions import (
     InternalServerError,
 )
 from .global_constants import (
+    CUSTOM_HOST_CONNECTION_ERROR,
     LOCAL_BASE_URL,
     LOCALHOST_CONNECTION_ERROR,
     MISSING_API_KEY_ERROR_MESSAGE,
@@ -486,6 +487,7 @@ def parse_headers_generic(headers: Optional[httpx.Headers]) -> dict:
 
     return _headers
 
+
 def get_base_url_from_setup(base_url, api_key):
     if not base_url and not api_key:
         try:
@@ -493,6 +495,12 @@ def get_base_url_from_setup(base_url, api_key):
                 if response.getcode() == 200:
                     return LOCAL_BASE_URL + "/v1"
         except urllib.error.URLError:
-            raise ValueError(LOCALHOST_CONNECTION_ERROR)
+            raise ConnectionError(LOCALHOST_CONNECTION_ERROR)
     if base_url:
-        return base_url
+        base = base_url.rsplit("/v1", 1)[0]
+        try:
+            with urllib.request.urlopen(base) as response:
+                if response.getcode() == 200:
+                    return base_url
+        except urllib.error.URLError:
+            raise ConnectionError(CUSTOM_HOST_CONNECTION_ERROR)

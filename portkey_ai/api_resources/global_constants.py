@@ -23,8 +23,13 @@ Argument of type '{}' cannot be assigned to parameter "mode" of \
     type "ModesLiteral | Modes | None"
 """
 
-LOCALHOST_CONNECTION_ERROR = """Could not make the API request.\
-Either enter an API Key, or your base url if self-hosting.
+LOCALHOST_CONNECTION_ERROR = """Could not instantiate the Portkey client. \
+You can either add a valid `api_key` parameter (from https://app.portkey.ai/api-keys)\
+or set the `base_url` parameter to your AI Gateway's instance's URL.
+"""
+
+CUSTOM_HOST_CONNECTION_ERROR = """We could not connect to the AI Gateway's instance. \
+Please check the `base_url` parameter in the Portkey client.
 """
 
 DEFAULT_MAX_RETRIES = 2
