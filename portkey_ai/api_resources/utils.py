@@ -6,6 +6,7 @@ from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
 from pydantic import BaseModel, field_validator
+import urllib.request
 
 from portkey_ai.api_resources.types.chat_complete_type import (
     ChatCompletionChunk,
@@ -33,6 +34,8 @@ from .exceptions import (
     InternalServerError,
 )
 from .global_constants import (
+    LOCAL_BASE_URL,
+    LOCALHOST_CONNECTION_ERROR,
     MISSING_API_KEY_ERROR_MESSAGE,
     MISSING_BASE_URL,
     MISSING_MODE_MESSAGE,
@@ -482,3 +485,14 @@ def parse_headers_generic(headers: Optional[httpx.Headers]) -> dict:
             _headers[k] = v
 
     return _headers
+
+def get_base_url_from_setup(base_url, api_key):
+    if not base_url and not api_key:
+        try:
+            with urllib.request.urlopen(LOCAL_BASE_URL) as response:
+                if response.getcode() == 200:
+                    return LOCAL_BASE_URL + "/v1"
+        except urllib.error.URLError:
+            raise ValueError(LOCALHOST_CONNECTION_ERROR)
+    if base_url:
+        return base_url

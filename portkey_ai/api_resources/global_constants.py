@@ -23,12 +23,17 @@ Argument of type '{}' cannot be assigned to parameter "mode" of \
     type "ModesLiteral | Modes | None"
 """
 
+LOCALHOST_CONNECTION_ERROR = """Could not make the API request.\
+Either enter an API Key, or your base url if self-hosting.
+"""
+
 DEFAULT_MAX_RETRIES = 2
 VERSION = "0.1.0"
 DEFAULT_TIMEOUT = 60
 PORTKEY_HEADER_PREFIX = "x-portkey-"
 PORTKEY_BASE_URL = "https://api.portkey.ai/v1"
 PORTKEY_GATEWAY_URL = PORTKEY_BASE_URL
+LOCAL_BASE_URL = "http://localhost:8787"
 PORTKEY_API_KEY_ENV = "PORTKEY_API_KEY"
 PORTKEY_PROXY_ENV = "PORTKEY_PROXY"
 OPEN_AI_API_KEY = "DUMMY-KEY"
