@@ -6,6 +6,7 @@ from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
 from pydantic import BaseModel, field_validator
+import urllib.request
 
 from portkey_ai.api_resources.types.chat_complete_type import (
     ChatCompletionChunk,
@@ -33,6 +34,9 @@ from .exceptions import (
     InternalServerError,
 )
 from .global_constants import (
+    CUSTOM_HOST_CONNECTION_ERROR,
+    LOCAL_BASE_URL,
+    LOCALHOST_CONNECTION_ERROR,
     MISSING_API_KEY_ERROR_MESSAGE,
     MISSING_BASE_URL,
     MISSING_MODE_MESSAGE,
@@ -433,13 +437,15 @@ class Config(BaseModel):
         return llms
 
 
-def default_api_key() -> str:
+def default_api_key(base_url) -> str:
     if portkey_ai.api_key:
         return portkey_ai.api_key
     env_api_key = os.environ.get(PORTKEY_API_KEY_ENV, "")
-    if env_api_key:
-        return env_api_key
-    raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+    if base_url == PORTKEY_BASE_URL:
+        if env_api_key:
+            return env_api_key
+        raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
+    return env_api_key
 
 
 def default_base_url() -> str:
@@ -480,3 +486,21 @@ def parse_headers_generic(headers: Optional[httpx.Headers]) -> dict:
             _headers[k] = v
 
     return _headers
+
+
+def get_base_url_from_setup(base_url, api_key):
+    if not base_url and not api_key:
+        try:
+            with urllib.request.urlopen(LOCAL_BASE_URL) as response:
+                if response.getcode() == 200:
+                    return LOCAL_BASE_URL + "/v1"
+        except urllib.error.URLError:
+            raise ConnectionError(LOCALHOST_CONNECTION_ERROR)
+    if base_url:
+        base = base_url.rsplit("/v1", 1)[0]
+        try:
+            with urllib.request.urlopen(base) as response:
+                if response.getcode() == 200:
+                    return base_url
+        except urllib.error.URLError:
+            raise ConnectionError(CUSTOM_HOST_CONNECTION_ERROR)
