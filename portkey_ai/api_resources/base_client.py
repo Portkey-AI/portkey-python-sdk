@@ -82,8 +82,8 @@ class APIClient:
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.api_key = api_key or default_api_key()
         self.base_url = base_url or default_base_url()
+        self.api_key = api_key or default_api_key(self.base_url)
         self.virtual_key = virtual_key
         self.config = config
         self.provider = provider
@@ -723,8 +723,8 @@ class AsyncAPIClient:
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.api_key = api_key or default_api_key()
         self.base_url = base_url or default_base_url()
+        self.api_key = api_key or default_api_key(self.base_url)
         self.virtual_key = virtual_key
         self.config = config
         self.provider = provider
