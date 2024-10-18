@@ -1,12 +1,10 @@
-MISSING_API_KEY_ERROR_MESSAGE = """No API key found for Portkey.
-Please set either the PORTKEY_API_KEY environment variable or \
-pass the api_key prior to initialization of Portkey.
-API keys can be found or created at Portkey Dashboard \
+MISSING_API_KEY_ERROR_MESSAGE = """Portkey API Key Not Found \
 
-Here's how you get it:
-1. Visit https://app.portkey.ai/
-1. Click on your profile icon on the top left
-2. From the dropdown menu, click on "Copy API Key"
+Resolution: \
+
+1. Get your Portkey API key from https://app.portkey.ai/api-keys
+2. Pass it while instantiating the Portkey client with api_key param,\
+ or set it as an environment variable with export PORTKEY_API_KEY=YOUR_API_KEY
 """
 
 MISSING_BASE_URL = """No Base url provided. Please provide a valid base url.
