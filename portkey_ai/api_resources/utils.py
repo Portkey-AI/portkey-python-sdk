@@ -122,7 +122,7 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     CONFIG_API = "/configs"
     API_KEYS_API = "/api-keys"
     VIRTUAL_KEYS_API = "/virtual-keys"
-
+    LOGS_EXPORT_API =  "/logs-export"
 
 class Options(BaseModel):
     method: str
