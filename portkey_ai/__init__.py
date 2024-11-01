@@ -196,5 +196,5 @@ __all__ = [
     "VirtualKeys",
     "AsyncVirtualKeys",
     "LogsExport",
-    "AsyncLogsExport"
+    "AsyncLogsExport",
 ]
