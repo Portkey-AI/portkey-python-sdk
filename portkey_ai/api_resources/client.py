@@ -359,7 +359,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.configs = apis.AsyncConfigs(self)
         self.api_keys = apis.AsyncApiKeys(self)
         self.virtual_keys = apis.AsyncVirtualKeys(self)
-        self.logs_export=apis.AsyncLogsExport(self)
+        self.logs=apis.AsyncLogs(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(

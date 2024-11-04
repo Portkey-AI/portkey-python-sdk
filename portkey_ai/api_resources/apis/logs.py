@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
-from portkey_ai.api_resources.types.logs_export_type import (
+from portkey_ai.api_resources.types.logs_type import (
     LogsExportCreateResponse,
     LogsExportListResponse,
     LogsExportUpdateResponse,
@@ -15,7 +15,12 @@ from portkey_ai.api_resources.utils import GenericResponse
 from portkey_ai.api_resources.utils import PortkeyApiPaths
 
 
-class LogsExport(APIResource):
+class Logs(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+        self.exports=Exports(client)
+
+class Exports(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
@@ -43,9 +48,9 @@ class LogsExport(APIResource):
             headers={},
         )
 
-    def retrieve(self, *, exportId: str) -> LogsExportRetrieveResponse:
+    def retrieve(self, *, export_id: str) -> LogsExportRetrieveResponse:
         return self._get(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}",
             params=None,
             body=None,
             cast_to=LogsExportRetrieveResponse,
@@ -77,7 +82,7 @@ class LogsExport(APIResource):
     def update(
         self,
         *,
-        exportId: Optional[str] = None,
+        export_id: Optional[str] = None,
         workspace_id: Optional[str] = None,
         filters: Optional[Dict[str, Any]] = None,
         requested_data: Optional[List[str]] = None,
@@ -88,7 +93,7 @@ class LogsExport(APIResource):
             "requested_data": requested_data,
         }
         return self._put(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}",
             body=body,
             params=None,
             cast_to=LogsExportUpdateResponse,
@@ -100,10 +105,10 @@ class LogsExport(APIResource):
     def start(
         self,
         *,
-        exportId: Optional[str],
+        export_id: Optional[str],
     ) -> LogsExportStartResponse:
         return self._post(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}/start",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}/start",
             body=None,
             params=None,
             cast_to=LogsExportStartResponse,
@@ -115,10 +120,10 @@ class LogsExport(APIResource):
     def cancel(
         self,
         *,
-        exportId: Optional[str],
+        export_id: Optional[str],
     ) -> LogsExportCancelResponse:
         return self._post(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}/cancel",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}/cancel",
             body=None,
             params=None,
             cast_to=LogsExportCancelResponse,
@@ -130,10 +135,10 @@ class LogsExport(APIResource):
     def download(
         self,
         *,
-        exportId: Optional[str],
+        export_id: Optional[str],
     ) -> LogsExportDownloadResponse:
         return self._get(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}/download",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}/download",
             params=None,
             body=None,
             cast_to=LogsExportDownloadResponse,
@@ -143,7 +148,12 @@ class LogsExport(APIResource):
         )
 
 
-class AsyncLogsExport(AsyncAPIResource):
+class AsyncLogs(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+        self.exports=AsyncExports(client)
+
+class AsyncExports(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
@@ -171,9 +181,9 @@ class AsyncLogsExport(AsyncAPIResource):
             headers={},
         )
 
-    async def retrieve(self, *, exportId: str) -> LogsExportRetrieveResponse:
+    async def retrieve(self, *, export_id: str) -> LogsExportRetrieveResponse:
         return await self._get(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}",
             params=None,
             body=None,
             cast_to=LogsExportRetrieveResponse,
@@ -205,7 +215,7 @@ class AsyncLogsExport(AsyncAPIResource):
     async def update(
         self,
         *,
-        exportId: Optional[str] = None,
+        export_id: Optional[str] = None,
         workspace_id: Optional[str] = None,
         filters: Optional[Dict[str, Any]] = None,
         requested_data: Optional[List[str]] = None,
@@ -216,7 +226,7 @@ class AsyncLogsExport(AsyncAPIResource):
             "requested_data": requested_data,
         }
         return await self._put(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}",
             body=body,
             params=None,
             cast_to=LogsExportUpdateResponse,
@@ -228,10 +238,10 @@ class AsyncLogsExport(AsyncAPIResource):
     async def start(
         self,
         *,
-        exportId: Optional[str],
+        export_id: Optional[str],
     ) -> LogsExportStartResponse:
         return await self._post(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}/start",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}/start",
             body=None,
             params=None,
             cast_to=LogsExportStartResponse,
@@ -243,10 +253,10 @@ class AsyncLogsExport(AsyncAPIResource):
     async def cancel(
         self,
         *,
-        exportId: Optional[str],
+        export_id: Optional[str],
     ) -> LogsExportCancelResponse:
         return await self._post(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}/cancel",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}/cancel",
             body=None,
             params=None,
             cast_to=LogsExportCancelResponse,
@@ -258,10 +268,10 @@ class AsyncLogsExport(AsyncAPIResource):
     async def download(
         self,
         *,
-        exportId: Optional[str],
+        export_id: Optional[str],
     ) -> LogsExportDownloadResponse:
         return await self._get(
-            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{exportId}/download",
+            f"{PortkeyApiPaths.LOGS_EXPORT_API}/{export_id}/download",
             params=None,
             body=None,
             cast_to=LogsExportDownloadResponse,
