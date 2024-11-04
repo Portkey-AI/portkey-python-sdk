@@ -100,6 +100,14 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         ] = total_time
 
         self.event_array.append(self.event_map["llm_start_" + str(run_id)])
+
+        if parent_run_id is None:
+            self.log_object = self.event_array
+            self.portkey_logger.log(log_object=self.log_object)
+
+            self.event_array = []
+            self.event_map = {}
+
         pass
 
     def on_chain_start(
