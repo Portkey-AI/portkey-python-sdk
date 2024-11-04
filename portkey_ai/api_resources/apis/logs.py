@@ -11,7 +11,6 @@ from portkey_ai.api_resources.types.logs_type import (
     LogsExportStartResponse,
     LogsExportDownloadResponse,
 )
-from portkey_ai.api_resources.utils import GenericResponse
 from portkey_ai.api_resources.utils import PortkeyApiPaths
 
 
