@@ -31,7 +31,7 @@ class Portkey(APIClient):
     configs: apis.Configs
     api_keys: apis.ApiKeys
     virtual_keys: apis.VirtualKeys
-    logs_export: apis.LogsExport
+    logs: apis.Logs
 
     class beta:
         assistants: apis.Assistants
@@ -144,7 +144,7 @@ class Portkey(APIClient):
         self.configs = apis.Configs(self)
         self.api_keys = apis.ApiKeys(self)
         self.virtual_keys = apis.VirtualKeys(self)
-        self.logs_export = apis.LogsExport(self)
+        self.logs = apis.Logs(self)
         self.beta = self.beta(self)  # type: ignore
 
     def copy(
@@ -248,7 +248,7 @@ class AsyncPortkey(AsyncAPIClient):
     configs: apis.AsyncConfigs
     api_keys: apis.AsyncApiKeys
     virtual_keys: apis.AsyncVirtualKeys
-    logs_export: apis.AsyncLogsExport
+    logs: apis.AsyncLogs
 
     class beta:
         assistants: apis.AsyncAssistants
