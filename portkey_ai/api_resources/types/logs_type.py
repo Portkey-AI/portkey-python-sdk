@@ -1,6 +1,5 @@
 import json
 from typing import Any, Dict, List, Optional
-from datetime import datetime
 import httpx
 from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
@@ -88,8 +87,8 @@ class LogsExportRetrieveResponse(BaseModel):
     requested_data: Optional[List[str]]
     status: Optional[str]
     description: Optional[str]
-    created_at: Optional[datetime]
-    last_updated_at: Optional[datetime]
+    created_at: Optional[str]
+    last_updated_at: Optional[str]
     created_by: Optional[str]
     workspace_id: Optional[str]
     total_records: Optional[int]
