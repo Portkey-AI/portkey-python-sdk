@@ -17,7 +17,8 @@ from portkey_ai.api_resources.utils import PortkeyApiPaths
 class Logs(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
-        self.exports=Exports(client)
+        self.exports = Exports(client)
+
 
 class Exports(APIResource):
     def __init__(self, client: APIClient) -> None:
@@ -150,7 +151,8 @@ class Exports(APIResource):
 class AsyncLogs(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
-        self.exports=AsyncExports(client)
+        self.exports = AsyncExports(client)
+
 
 class AsyncExports(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
