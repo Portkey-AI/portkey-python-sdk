@@ -78,6 +78,7 @@ from .configs import Configs, AsyncConfigs
 
 from .api_keys import ApiKeys, AsyncApiKeys
 from .virtual_keys import VirtualKeys, AsyncVirtualKeys
+from .logs import Logs, AsyncLogs
 
 __all__ = [
     "Completion",
@@ -159,4 +160,6 @@ __all__ = [
     "AsyncApiKeys",
     "VirtualKeys",
     "AsyncVirtualKeys",
+    "Logs",
+    "AsyncLogs",
 ]
