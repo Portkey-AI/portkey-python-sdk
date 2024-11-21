@@ -20,15 +20,17 @@ import httpx
 import platform
 
 from portkey_ai.api_resources.apis.create_headers import createHeaders
-from .global_constants import PORTKEY_HEADER_PREFIX
-from .utils import remove_empty_values, Options
+from .global_constants import (
+    PORTKEY_HEADER_PREFIX,
+)
+from .utils import remove_empty_values, Options, set_base_url
 from .exceptions import (
     APIStatusError,
     APITimeoutError,
     APIConnectionError,
 )
 from portkey_ai.version import VERSION
-from .utils import ResponseT, make_status_error, default_api_key, default_base_url
+from .utils import ResponseT, make_status_error, default_api_key
 from .common_types import StreamT, AsyncStreamT
 from .streaming import Stream, AsyncStream
 
@@ -82,8 +84,8 @@ class APIClient:
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.base_url = base_url or default_base_url()
-        self.api_key = api_key or default_api_key(self.base_url)
+        self.base_url = set_base_url(base_url, api_key)
+        self.api_key = default_api_key(self.base_url, api_key)
         self.virtual_key = virtual_key
         self.config = config
         self.provider = provider
@@ -723,8 +725,8 @@ class AsyncAPIClient:
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
-        self.base_url = base_url or default_base_url()
-        self.api_key = api_key or default_api_key(self.base_url)
+        self.base_url = set_base_url(base_url, api_key)
+        self.api_key = default_api_key(self.base_url, api_key)
         self.virtual_key = virtual_key
         self.config = config
         self.provider = provider

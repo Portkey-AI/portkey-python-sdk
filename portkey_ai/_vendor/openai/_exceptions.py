@@ -88,7 +88,11 @@ class APIStatusError(APIError):
 
 
 class APIConnectionError(APIError):
-    def __init__(self, *, message: str = "Connection error.", request: httpx.Request) -> None:
+    LOCALHOST_CONNECTION_ERROR = """Could not instantiate the Portkey client. \
+You can either add a valid `api_key` parameter (from https://app.portkey.ai/api-keys) \
+or check the `base_url` parameter in the Portkey client, for your AI Gateway's instance's URL.
+"""
+    def __init__(self, *, message: str = LOCALHOST_CONNECTION_ERROR, request: httpx.Request) -> None:
         super().__init__(message, request, body=None)
 
 
