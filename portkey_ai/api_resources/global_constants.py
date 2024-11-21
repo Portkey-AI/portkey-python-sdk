@@ -7,6 +7,7 @@ Resolution: \
  or set it as an environment variable with export PORTKEY_API_KEY=YOUR_API_KEY
 """
 
+# Not being used right now, but can be used in the future if we stop using vendoring
 MISSING_BASE_URL = """No Base url provided. Please provide a valid base url.
 For example: https://api.portkey.ai
 """
@@ -25,7 +26,8 @@ Argument of type '{}' cannot be assigned to parameter "mode" of \
 
 LOCALHOST_CONNECTION_ERROR = """Could not instantiate the Portkey client. \
 You can either add a valid `api_key` parameter (from https://app.portkey.ai/api-keys)\
-or set the `base_url` parameter to your AI Gateway's instance's URL.
+or check the `base_url` parameter in the Portkey client, \
+for your AI Gateway's instance's URL.
 """
 
 CUSTOM_HOST_CONNECTION_ERROR = """We could not connect to the AI Gateway's instance. \
@@ -38,7 +40,7 @@ DEFAULT_TIMEOUT = 60
 PORTKEY_HEADER_PREFIX = "x-portkey-"
 PORTKEY_BASE_URL = "https://api.portkey.ai/v1"
 PORTKEY_GATEWAY_URL = PORTKEY_BASE_URL
-LOCAL_BASE_URL = "http://localhost:8787"
+LOCAL_BASE_URL = "http://localhost:8787/v1"
 PORTKEY_API_KEY_ENV = "PORTKEY_API_KEY"
 PORTKEY_PROXY_ENV = "PORTKEY_PROXY"
-OPEN_AI_API_KEY = "DUMMY-KEY"
+OPEN_AI_API_KEY = "OPENAI_API_KEY"
