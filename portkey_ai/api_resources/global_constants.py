@@ -7,7 +7,6 @@ Resolution: \
  or set it as an environment variable with export PORTKEY_API_KEY=YOUR_API_KEY
 """
 
-# Not being used right now, but can be used in the future if we stop using vendoring
 MISSING_BASE_URL = """No Base url provided. Please provide a valid base url.
 For example: https://api.portkey.ai
 """

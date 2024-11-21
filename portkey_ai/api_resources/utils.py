@@ -447,7 +447,6 @@ def default_api_key(base_url, api_key) -> str:
         return env_api_key
 
 
-# Not being used right now, but can be used in the future if we stop using vendoring
 def default_base_url() -> str:
     if portkey_ai.base_url:
         return portkey_ai.base_url
