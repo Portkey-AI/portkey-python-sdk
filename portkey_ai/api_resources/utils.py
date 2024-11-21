@@ -33,6 +33,7 @@ from .exceptions import (
     InternalServerError,
 )
 from .global_constants import (
+    LOCAL_BASE_URL,
     MISSING_API_KEY_ERROR_MESSAGE,
     MISSING_BASE_URL,
     MISSING_MODE_MESSAGE,
@@ -434,15 +435,16 @@ class Config(BaseModel):
         return llms
 
 
-def default_api_key(base_url) -> str:
-    if portkey_ai.api_key:
-        return portkey_ai.api_key
+def default_api_key(base_url, api_key) -> str:
+    if api_key:
+        return api_key
     env_api_key = os.environ.get(PORTKEY_API_KEY_ENV, "")
     if base_url == PORTKEY_BASE_URL:
         if env_api_key:
             return env_api_key
         raise ValueError(MISSING_API_KEY_ERROR_MESSAGE)
-    return env_api_key
+    else:
+        return env_api_key
 
 
 def default_base_url() -> str:
@@ -483,3 +485,15 @@ def parse_headers_generic(headers: Optional[httpx.Headers]) -> dict:
             _headers[k] = v
 
     return _headers
+
+
+def set_base_url(base_url, api_key):
+    if base_url:
+        return base_url
+
+    env_base_url = os.environ.get(PORTKEY_BASE_URL) or os.environ.get(PORTKEY_PROXY_ENV)
+
+    if env_base_url:
+        return env_base_url
+    api_key = api_key or os.environ.get(PORTKEY_API_KEY_ENV)
+    return PORTKEY_BASE_URL if api_key else LOCAL_BASE_URL
