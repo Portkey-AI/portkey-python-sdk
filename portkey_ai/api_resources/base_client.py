@@ -62,6 +62,7 @@ class APIClient:
         forward_headers: Optional[List[str]] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
+        input_audio_length: Optional[int] = None,
         aws_secret_access_key: Optional[str] = None,
         aws_access_key_id: Optional[str] = None,
         aws_session_token: Optional[str] = None,
@@ -95,6 +96,7 @@ class APIClient:
         self.forward_headers = forward_headers
         self.openai_project = openai_project
         self.openai_organization = openai_organization
+        self.input_audio_length = input_audio_length
         self.aws_secret_access_key = aws_secret_access_key
         self.aws_access_key_id = aws_access_key_id
         self.aws_session_token = aws_session_token
@@ -128,6 +130,7 @@ class APIClient:
             forward_headers=forward_headers,
             openai_project=openai_project,
             openai_organization=openai_organization,
+            input_audio_length=input_audio_length,
             aws_secret_access_key=aws_secret_access_key,
             aws_access_key_id=aws_access_key_id,
             aws_session_token=aws_session_token,
@@ -703,6 +706,7 @@ class AsyncAPIClient:
         forward_headers: Optional[List[str]] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
+        input_audio_length: Optional[int] = None,
         aws_secret_access_key: Optional[str] = None,
         aws_access_key_id: Optional[str] = None,
         aws_session_token: Optional[str] = None,
@@ -736,6 +740,7 @@ class AsyncAPIClient:
         self.forward_headers = forward_headers
         self.openai_project = openai_project
         self.openai_organization = openai_organization
+        self.input_audio_length = input_audio_length
         self.aws_secret_access_key = aws_secret_access_key
         self.aws_access_key_id = aws_access_key_id
         self.aws_session_token = aws_session_token
@@ -769,6 +774,7 @@ class AsyncAPIClient:
             forward_headers=forward_headers,
             openai_project=openai_project,
             openai_organization=openai_organization,
+            input_audio_length=input_audio_length,
             aws_secret_access_key=aws_secret_access_key,
             aws_access_key_id=aws_access_key_id,
             aws_session_token=aws_session_token,
