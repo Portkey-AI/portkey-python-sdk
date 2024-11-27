@@ -98,6 +98,7 @@ class ChatCompletionMessage(BaseModel, extra="allow"):
     role: Optional[str]
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
+    refusal: Optional[str] = None
 
 
 class Choice(BaseModel, extra="allow"):

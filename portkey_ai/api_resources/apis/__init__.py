@@ -1,3 +1,10 @@
+"""
+The following change is brought to handle the cases for pydantic v1 and v2
+Including (import sys) and
+sys.modules["openai"] = vendored_openai
+"""
+import sys
+from ..._vendor import openai as vendored_openai
 from .chat_complete import ChatCompletion, AsyncChatCompletion
 from .complete import Completion, AsyncCompletion
 from .generation import Generations, AsyncGenerations, Prompts, AsyncPrompts
@@ -79,6 +86,8 @@ from .configs import Configs, AsyncConfigs
 from .api_keys import ApiKeys, AsyncApiKeys
 from .virtual_keys import VirtualKeys, AsyncVirtualKeys
 from .logs import Logs, AsyncLogs
+
+sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
 
 __all__ = [
     "Completion",
