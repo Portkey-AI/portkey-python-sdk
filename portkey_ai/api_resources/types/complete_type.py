@@ -9,9 +9,9 @@ __all__ = ["CompletionUsage", "Logprobs", "CompletionChoice", "TextCompletion"]
 
 
 class CompletionUsage(BaseModel, extra="allow"):
-    completion_tokens: Optional[int]
-    prompt_tokens: Optional[int]
-    total_tokens: Optional[int]
+    completion_tokens: Optional[int] = None
+    prompt_tokens: Optional[int] = None
+    total_tokens: Optional[int] = None
 
 
 class Logprobs(BaseModel, extra="allow"):
@@ -22,18 +22,18 @@ class Logprobs(BaseModel, extra="allow"):
 
 
 class CompletionChoice(BaseModel, extra="allow"):
-    finish_reason: Optional[str]
-    index: Optional[int]
+    finish_reason: Optional[str] = None
+    index: Optional[int] = None
     logprobs: Optional[Logprobs] = None
-    text: Optional[str]
+    text: Optional[str] = None
 
 
 class TextCompletion(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     choices: List[CompletionChoice]
-    created: Optional[int]
-    model: Optional[str]
-    object: Optional[str]
+    created: Optional[int] = None
+    model: Optional[str] = None
+    object: Optional[str] = None
     system_fingerprint: Optional[str] = None
     usage: Optional[CompletionUsage] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()

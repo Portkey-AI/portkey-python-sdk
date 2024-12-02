@@ -17,30 +17,30 @@ __all__ = [
 
 
 class ToolCodeInterpreter(BaseModel, extra="allow"):
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class ToolRetrieval(BaseModel, extra="allow"):
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class ToolFunction(BaseModel, extra="allow"):
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 Tool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction]
 
 
 class Assistant(BaseModel, extra="allow"):
-    id: Optional[str]
-    created_at: Optional[int]
+    id: Optional[str] = None
+    created_at: Optional[int] = None
     description: Optional[str] = None
     file_ids: Optional[List[str]] = None
     instructions: Optional[str] = None
     metadata: Optional[object] = None
-    model: Optional[str]
+    model: Optional[str] = None
     name: Optional[str] = None
-    object: Optional[str]
+    object: Optional[str] = None
     tools: Optional[List[Tool]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -59,7 +59,7 @@ class Assistant(BaseModel, extra="allow"):
 
 
 class AssistantList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: Optional[List[Assistant]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -78,9 +78,9 @@ class AssistantList(BaseModel, extra="allow"):
 
 
 class AssistantDeleted(BaseModel, extra="allow"):
-    id: Optional[str]
-    object: Optional[str]
-    deleted: Optional[bool]
+    id: Optional[str] = None
+    object: Optional[str] = None
+    deleted: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

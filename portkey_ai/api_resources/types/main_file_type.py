@@ -9,13 +9,13 @@ __all__ = ["FileObject", "FileList", "FileDeleted"]
 
 
 class FileObject(BaseModel, extra="allow"):
-    id: Optional[str]
-    bytes: Optional[int]
-    created_at: Optional[int]
-    filename: Optional[str]
-    object: Optional[str]
-    purpose: Optional[str]
-    status: Optional[str]
+    id: Optional[str] = None
+    bytes: Optional[int] = None
+    created_at: Optional[int] = None
+    filename: Optional[str] = None
+    object: Optional[str] = None
+    purpose: Optional[str] = None
+    status: Optional[str] = None
     status_details: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -34,7 +34,7 @@ class FileObject(BaseModel, extra="allow"):
 
 
 class FileList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: List[FileObject]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -53,9 +53,9 @@ class FileList(BaseModel, extra="allow"):
 
 
 class FileDeleted(BaseModel, extra="allow"):
-    id: Optional[str]
-    deleted: Optional[bool]
-    object: Optional[str]
+    id: Optional[str] = None
+    deleted: Optional[bool] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

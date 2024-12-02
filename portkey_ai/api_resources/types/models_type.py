@@ -9,10 +9,10 @@ __all__ = ["Model", "ModelDeleted", "ModelList"]
 
 
 class Model(BaseModel, extra="allow"):
-    id: Optional[str]
-    created: Optional[int]
-    object: Optional[str]
-    owned_by: Optional[str]
+    id: Optional[str] = None
+    created: Optional[int] = None
+    object: Optional[str] = None
+    owned_by: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Model(BaseModel, extra="allow"):
 
 
 class ModelList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: List[Model]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -43,9 +43,9 @@ class ModelList(BaseModel, extra="allow"):
 
 
 class ModelDeleted(BaseModel, extra="allow"):
-    id: Optional[str]
-    deleted: Optional[bool]
-    object: Optional[str]
+    id: Optional[str] = None
+    deleted: Optional[bool] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

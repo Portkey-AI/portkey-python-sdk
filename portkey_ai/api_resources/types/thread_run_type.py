@@ -39,49 +39,49 @@ __all__ = [
 
 
 class Function(BaseModel, extra="allow"):
-    arguments: Optional[str]
-    name: Optional[str]
+    arguments: Optional[str] = None
+    name: Optional[str] = None
     output: Optional[str] = None
 
 
 class FunctionToolCall(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     function: Function
     type: Literal["function"]
 
 
 class RetrievalToolCall(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     retrieval: Optional[object]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class CodeInterpreterOutputLogs(BaseModel, extra="allow"):
-    logs: Optional[str]
-    type: Optional[str]
+    logs: Optional[str] = None
+    type: Optional[str] = None
 
 
 class CodeInterpreterOutputImageImage(BaseModel, extra="allow"):
-    file_id: Optional[str]
+    file_id: Optional[str] = None
 
 
 class CodeInterpreterOutputImage(BaseModel, extra="allow"):
     image: CodeInterpreterOutputImageImage
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 CodeInterpreterOutput = Union[CodeInterpreterOutputLogs, CodeInterpreterOutputImage]
 
 
 class CodeInterpreter(BaseModel, extra="allow"):
-    input: Optional[str]
+    input: Optional[str] = None
     outputs: List[CodeInterpreterOutput]
 
 
 class CodeToolCall(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     code_interpreter: CodeInterpreter
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall]
@@ -89,42 +89,42 @@ ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall]
 
 class ToolCallsStepDetails(BaseModel, extra="allow"):
     tool_calls: Optional[List[ToolCall]]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class MessageCreation(BaseModel, extra="allow"):
-    message_id: Optional[str]
+    message_id: Optional[str] = None
 
 
 class MessageCreationStepDetails(BaseModel, extra="allow"):
     message_creation: Optional[MessageCreation]
 
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 StepDetails = Union[MessageCreationStepDetails, ToolCallsStepDetails]
 
 
 class Usage(BaseModel, extra="allow"):
-    completion_tokens: Optional[int]
-    prompt_tokens: Optional[int]
-    total_tokens: Optional[int]
+    completion_tokens: Optional[int] = None
+    prompt_tokens: Optional[int] = None
+    total_tokens: Optional[int] = None
 
 
 class LastError(BaseModel, extra="allow"):
-    code: Optional[str]
-    message: Optional[str]
+    code: Optional[str] = None
+    message: Optional[str] = None
 
 
 class FunctionRA(BaseModel, extra="allow"):
-    arguments: Optional[str]
-    name: Optional[str]
+    arguments: Optional[str] = None
+    name: Optional[str] = None
 
 
 class RequiredActionFunctionToolCall(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     function: Optional[FunctionRA]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class RequiredActionSubmitToolOutputs(BaseModel, extra="allow"):
@@ -133,29 +133,29 @@ class RequiredActionSubmitToolOutputs(BaseModel, extra="allow"):
 
 class RequiredAction(BaseModel, extra="allow"):
     submit_tool_outputs: Optional[RequiredActionSubmitToolOutputs]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 FunctionParameters = Dict[str, object]
 
 
 class FunctionDefinition(BaseModel, extra="allow"):
-    name: Optional[str]
+    name: Optional[str] = None
     description: Optional[str] = None
     parameters: Optional[FunctionParameters] = None
 
 
 class ToolAssistantToolsCode(BaseModel, extra="allow"):
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class ToolAssistantToolsRetrieval(BaseModel, extra="allow"):
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class ToolAssistantToolsFunction(BaseModel, extra="allow"):
     function: Optional[FunctionDefinition]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 Tool = Union[
@@ -164,23 +164,23 @@ Tool = Union[
 
 
 class Run(BaseModel, extra="allow"):
-    id: Optional[str]
-    assistant_id: Optional[str]
+    id: Optional[str] = None
+    assistant_id: Optional[str] = None
     cancelled_at: Optional[int] = None
     completed_at: Optional[int] = None
-    created_at: Optional[int]
-    expires_at: Optional[int]
+    created_at: Optional[int] = None
+    expires_at: Optional[int] = None
     failed_at: Optional[int] = None
     file_ids: Optional[List[str]] = None
-    instructions: Optional[str]
+    instructions: Optional[str] = None
     last_error: Optional[LastError] = None
     metadata: Optional[object] = None
-    model: Optional[str]
-    object: Optional[str]
+    model: Optional[str] = None
+    object: Optional[str] = None
     required_action: Optional[RequiredAction] = None
     started_at: Optional[int] = None
-    status: Optional[str]
-    thread_id: Optional[str]
+    status: Optional[str] = None
+    thread_id: Optional[str] = None
     tools: Optional[List[Tool]]
     usage: Optional[Usage] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -194,11 +194,11 @@ class Run(BaseModel, extra="allow"):
 
 
 class RunList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: Optional[List[Run]]
-    first_id: Optional[str]
-    last_id: Optional[str]
-    has_more: Optional[bool]
+    first_id: Optional[str] = None
+    last_id: Optional[str] = None
+    has_more: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -210,21 +210,21 @@ class RunList(BaseModel, extra="allow"):
 
 
 class RunStep(BaseModel, extra="allow"):
-    id: Optional[str]
-    assistant_id: Optional[str]
+    id: Optional[str] = None
+    assistant_id: Optional[str] = None
     cancelled_at: Optional[int] = None
     completed_at: Optional[int] = None
-    created_at: Optional[int]
+    created_at: Optional[int] = None
     expired_at: Optional[int] = None
     failed_at: Optional[int] = None
     last_error: Optional[LastError] = None
     metadata: Optional[object] = None
-    object: Optional[str]
-    run_id: Optional[str]
-    status: Optional[str]
+    object: Optional[str] = None
+    run_id: Optional[str] = None
+    status: Optional[str] = None
     step_details: Optional[StepDetails]
-    thread_id: Optional[str]
-    type: Optional[str]
+    thread_id: Optional[str] = None
+    type: Optional[str] = None
     usage: Optional[Usage] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -237,11 +237,11 @@ class RunStep(BaseModel, extra="allow"):
 
 
 class RunStepList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: Optional[List[RunStep]]
-    first_id: Optional[str]
-    last_id: Optional[str]
-    has_more: Optional[bool]
+    first_id: Optional[str] = None
+    last_id: Optional[str] = None
+    has_more: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

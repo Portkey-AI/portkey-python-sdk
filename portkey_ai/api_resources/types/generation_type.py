@@ -64,14 +64,14 @@ FunctionParameters = Dict[str, object]
 
 
 class Function(BaseModel, extra="allow"):
-    name: Optional[str]
+    name: Optional[str] = None
     description: Optional[str] = None
     parameters: Optional[FunctionParameters] = None
 
 
 class Tool(BaseModel, extra="allow"):
     function: Function
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class PromptRenderData(BaseModel, extra="allow"):

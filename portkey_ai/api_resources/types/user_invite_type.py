@@ -6,14 +6,14 @@ from portkey_ai.api_resources.types.utils import parse_headers
 
 
 class UserRetrieveResponse(BaseModel, extra="allow"):
-    object: Optional[str]
-    id: Optional[str]
-    first_name: Optional[str]
-    last_name: Optional[str]
-    role: Optional[str]
-    email: Optional[str]
-    created_at: Optional[str]
-    last_updated_at: Optional[str]
+    object: Optional[str] = None
+    id: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    role: Optional[str] = None
+    email: Optional[str] = None
+    created_at: Optional[str] = None
+    last_updated_at: Optional[str] = None
     workspace_ids: Optional[List[str]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -31,8 +31,8 @@ class UserRetrieveResponse(BaseModel, extra="allow"):
 
 
 class UserRetrieveAllResponse(BaseModel, extra="allow"):
-    total: Optional[int]
-    object: Optional[str]
+    total: Optional[int] = None
+    object: Optional[str] = None
     data: Optional[List[UserRetrieveResponse]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -50,8 +50,8 @@ class UserRetrieveAllResponse(BaseModel, extra="allow"):
 
 
 class UserInviteResponse(BaseModel, extra="allow"):
-    id: Optional[str]
-    invite_link: Optional[str]
+    id: Optional[str] = None
+    invite_link: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -68,15 +68,15 @@ class UserInviteResponse(BaseModel, extra="allow"):
 
 
 class UserInviteRetrieveResponse(BaseModel, extra="allow"):
-    object: Optional[str]
-    id: Optional[str]
-    email: Optional[str]
-    role: Optional[str]
-    created_at: Optional[str]
-    expires_at: Optional[str]
-    accepted_at: Optional[str]
-    status: Optional[str]
-    invited_by: Optional[str]
+    object: Optional[str] = None
+    id: Optional[str] = None
+    email: Optional[str] = None
+    role: Optional[str] = None
+    created_at: Optional[str] = None
+    expires_at: Optional[str] = None
+    accepted_at: Optional[str] = None
+    status: Optional[str] = None
+    invited_by: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -93,8 +93,8 @@ class UserInviteRetrieveResponse(BaseModel, extra="allow"):
 
 
 class UserInviteRetrieveAllResponse(BaseModel, extra="allow"):
-    object: Optional[str]
-    total: Optional[int]
+    object: Optional[str] = None
+    total: Optional[int] = None
     data: Optional[List[UserInviteRetrieveResponse]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -112,15 +112,15 @@ class UserInviteRetrieveAllResponse(BaseModel, extra="allow"):
 
 
 class WorkspacesAddResponse(BaseModel, extra="allow"):
-    id: Optional[str]
-    slug: Optional[str]
-    name: Optional[str]
-    description: Optional[str]
-    created_at: Optional[str]
-    last_updated_at: Optional[str]
-    defaults: Optional[Dict[str, Any]]
-    users: Optional[List[Dict[str, str]]]
-    object: Optional[str]
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    created_at: Optional[str] = None
+    last_updated_at: Optional[str] = None
+    defaults: Optional[Dict[str, Any]] = None
+    users: Optional[List[Dict[str, str]]] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -137,14 +137,14 @@ class WorkspacesAddResponse(BaseModel, extra="allow"):
 
 
 class WorkspacesGetResponse(BaseModel, extra="allow"):
-    object: Optional[str]
-    id: Optional[str]
-    slug: Optional[str]
-    name: Optional[str]
-    description: Optional[str]
-    created_at: Optional[str]
-    last_updated_at: Optional[str]
-    defaults: Optional[Dict[str, Any]]
+    object: Optional[str] = None
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    created_at: Optional[str] = None
+    last_updated_at: Optional[str] = None
+    defaults: Optional[Dict[str, Any]] = None
     is_default: Optional[int] = None
     users: Optional[List[Dict[str, Any]]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -163,8 +163,8 @@ class WorkspacesGetResponse(BaseModel, extra="allow"):
 
 
 class WorkspacesListResponse(BaseModel, extra="allow"):
-    total: Optional[int]
-    object: Optional[str]
+    total: Optional[int] = None
+    object: Optional[str] = None
     data: Optional[List[WorkspacesGetResponse]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -182,15 +182,15 @@ class WorkspacesListResponse(BaseModel, extra="allow"):
 
 
 class WorkspacesUpdateResponse(BaseModel, extra="allow"):
-    id: Optional[str]
-    slug: Optional[str]
-    name: Optional[str]
-    description: Optional[str]
-    created_at: Optional[str]
-    is_default: Optional[int]
-    last_updated_at: Optional[str]
-    defaults: Optional[Dict[str, Any]]
-    object: Optional[str]
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    created_at: Optional[str] = None
+    is_default: Optional[int] = None
+    last_updated_at: Optional[str] = None
+    defaults: Optional[Dict[str, Any]] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -207,17 +207,17 @@ class WorkspacesUpdateResponse(BaseModel, extra="allow"):
 
 
 class WorkspaceMemberGetResponse(BaseModel, extra="allow"):
-    first_name: Optional[str]
-    last_name: Optional[str]
-    org_role: Optional[str]
-    role: Optional[str]
-    created_at: Optional[str]
-    last_updated_at: Optional[str]
-    status: Optional[str]
-    workspace_id: Optional[str]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    org_role: Optional[str] = None
+    role: Optional[str] = None
+    created_at: Optional[str] = None
+    last_updated_at: Optional[str] = None
+    status: Optional[str] = None
+    workspace_id: Optional[str] = None
     scopes: Optional[List[str]] = None
     settings: Optional[Any] = None
-    object: Optional[str]
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -234,8 +234,8 @@ class WorkspaceMemberGetResponse(BaseModel, extra="allow"):
 
 
 class WorkspaceMemberListResponse(BaseModel, extra="allow"):
-    total: Optional[int]
-    object: Optional[str]
+    total: Optional[int] = None
+    object: Optional[str] = None
     data: Optional[List[WorkspaceMemberGetResponse]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 

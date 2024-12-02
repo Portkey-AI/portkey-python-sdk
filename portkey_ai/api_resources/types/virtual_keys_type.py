@@ -6,9 +6,9 @@ from portkey_ai.api_resources.types.utils import parse_headers
 
 
 class VirtualKeysAddResponse(BaseModel, extra="allow"):
-    id: Optional[str]
-    slug: Optional[str]
-    object: Optional[str]
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -25,9 +25,9 @@ class VirtualKeysAddResponse(BaseModel, extra="allow"):
 
 
 class VirtualKeysListReponse(BaseModel, extra="allow"):
-    object: Optional[str]
-    total: Optional[int]
-    data: Optional[List[Dict[str, Any]]]
+    object: Optional[str] = None
+    total: Optional[int] = None
+    data: Optional[List[Dict[str, Any]]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -44,9 +44,9 @@ class VirtualKeysListReponse(BaseModel, extra="allow"):
 
 
 class VirtualKeysUpdateResponse(BaseModel, extra="allow"):
-    id: Optional[str]
-    slug: Optional[str]
-    object: Optional[str]
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:

@@ -9,10 +9,10 @@ __all__ = ["Thread", "ThreadDeleted"]
 
 
 class Thread(BaseModel, extra="allow"):
-    id: Optional[str]
-    created_at: Optional[int]
+    id: Optional[str] = None
+    created_at: Optional[int] = None
     metadata: Optional[object] = None
-    object: Optional[str]
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -24,9 +24,9 @@ class Thread(BaseModel, extra="allow"):
 
 
 class ThreadDeleted(BaseModel, extra="allow"):
-    id: Optional[str]
-    object: Optional[str]
-    deleted: Optional[bool]
+    id: Optional[str] = None
+    object: Optional[str] = None
+    deleted: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
