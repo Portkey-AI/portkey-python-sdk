@@ -8,13 +8,13 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["ImagesResponse", "Image"]
 
 
-class Image(BaseModel):
+class Image(BaseModel, extra="allow"):
     b64_json: Optional[str] = None
     revised_prompt: Optional[str] = None
     url: Optional[str] = None
 
 
-class ImagesResponse(BaseModel):
+class ImagesResponse(BaseModel, extra="allow"):
     created: Optional[int]
     data: List[Image]
     _headers: Optional[httpx.Headers] = PrivateAttr()

@@ -5,7 +5,7 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class ConfigAddResponse(BaseModel):
+class ConfigAddResponse(BaseModel, extra="allow"):
     id: Optional[str]
     version_id: Optional[str]
     slug: Optional[str]
@@ -25,7 +25,7 @@ class ConfigAddResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ConfigGetResponse(BaseModel):
+class ConfigGetResponse(BaseModel, extra="allow"):
     id: Optional[str]
     organisation_id: Optional[str] = None
     config: Optional[Union[str, dict]]
@@ -57,7 +57,7 @@ class ConfigGetResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ConfigListResponse(BaseModel):
+class ConfigListResponse(BaseModel, extra="allow"):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
@@ -77,7 +77,7 @@ class ConfigListResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ConfigUpdateResponse(BaseModel):
+class ConfigUpdateResponse(BaseModel, extra="allow"):
     version_id: Optional[str]
     object: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()

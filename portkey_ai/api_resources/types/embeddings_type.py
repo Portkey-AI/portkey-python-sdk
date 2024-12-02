@@ -15,13 +15,13 @@ class Usage(BaseModel, extra="allow"):
     total_tokens: Optional[int] = None
 
 
-class Embedding(BaseModel):
+class Embedding(BaseModel, extra="allow"):
     embedding: Union[List[float], str]
     index: Optional[int]
     object: Optional[str]
 
 
-class CreateEmbeddingResponse(BaseModel):
+class CreateEmbeddingResponse(BaseModel, extra="allow"):
     success: Optional[bool] = None
     warning: Optional[str] = None
     data: List[Embedding]

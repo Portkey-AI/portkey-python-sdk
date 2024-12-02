@@ -5,7 +5,7 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class LogsExportCreateResponse(BaseModel):
+class LogsExportCreateResponse(BaseModel, extra="allow"):
     id: Optional[str]
     total: Optional[int]
     object: Optional[str]
@@ -24,7 +24,7 @@ class LogsExportCreateResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportListResponse(BaseModel):
+class LogsExportListResponse(BaseModel, extra="allow"):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
@@ -43,7 +43,7 @@ class LogsExportListResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportUpdateResponse(BaseModel):
+class LogsExportUpdateResponse(BaseModel, extra="allow"):
     id: Optional[str]
     total: Optional[int]
     object: Optional[str]
@@ -62,7 +62,7 @@ class LogsExportUpdateResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportCancelResponse(BaseModel):
+class LogsExportCancelResponse(BaseModel, extra="allow"):
     message: Optional[str]
     object: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -80,7 +80,7 @@ class LogsExportCancelResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportRetrieveResponse(BaseModel):
+class LogsExportRetrieveResponse(BaseModel, extra="allow"):
     id: Optional[str]
     organisation_id: Optional[str]
     filters: Optional[Dict[str, Any]]
@@ -108,7 +108,7 @@ class LogsExportRetrieveResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportStartResponse(BaseModel):
+class LogsExportStartResponse(BaseModel, extra="allow"):
     message: Optional[str]
     object: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -126,7 +126,7 @@ class LogsExportStartResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportDownloadResponse(BaseModel):
+class LogsExportDownloadResponse(BaseModel, extra="allow"):
     signed_url: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 

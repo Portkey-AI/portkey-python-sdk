@@ -20,16 +20,16 @@ __all__ = [
 ]
 
 
-class TextAnnotationFilePathFilePath(BaseModel):
+class TextAnnotationFilePathFilePath(BaseModel, extra="allow"):
     file_id: Optional[str]
 
 
-class TextAnnotationFileCitationFileCitation(BaseModel):
+class TextAnnotationFileCitationFileCitation(BaseModel, extra="allow"):
     file_id: Optional[str]
     quote: Optional[str]
 
 
-class TextAnnotationFilePath(BaseModel):
+class TextAnnotationFilePath(BaseModel, extra="allow"):
     end_index: Optional[int]
     file_path: Optional[TextAnnotationFilePathFilePath]
     start_index: Optional[int]
@@ -37,7 +37,7 @@ class TextAnnotationFilePath(BaseModel):
     type: Optional[str]
 
 
-class TextAnnotationFileCitation(BaseModel):
+class TextAnnotationFileCitation(BaseModel, extra="allow"):
     end_index: Optional[int]
     file_citation: Optional[TextAnnotationFileCitationFileCitation]
     start_index: Optional[int]
@@ -48,21 +48,21 @@ class TextAnnotationFileCitation(BaseModel):
 TextAnnotation = Union[TextAnnotationFileCitation, TextAnnotationFilePath]
 
 
-class Text(BaseModel):
+class Text(BaseModel, extra="allow"):
     annotations: Optional[List[TextAnnotation]]
     value: Optional[str]
 
 
-class MessageContentText(BaseModel):
+class MessageContentText(BaseModel, extra="allow"):
     text: Optional[Text]
     type: Optional[str]
 
 
-class ImageFile(BaseModel):
+class ImageFile(BaseModel, extra="allow"):
     file_id: Optional[str]
 
 
-class MessageContentImageFile(BaseModel):
+class MessageContentImageFile(BaseModel, extra="allow"):
     image_file: Optional[ImageFile]
     type: Optional[str]
 
@@ -107,7 +107,7 @@ class MessageList(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class ThreadMessageDeleted(BaseModel):
+class ThreadMessageDeleted(BaseModel, extra="allow"):
     id: str
     deleted: bool
     object: str

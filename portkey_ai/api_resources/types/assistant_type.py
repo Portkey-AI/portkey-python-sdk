@@ -16,22 +16,22 @@ __all__ = [
 ]
 
 
-class ToolCodeInterpreter(BaseModel):
+class ToolCodeInterpreter(BaseModel, extra="allow"):
     type: Optional[str]
 
 
-class ToolRetrieval(BaseModel):
+class ToolRetrieval(BaseModel, extra="allow"):
     type: Optional[str]
 
 
-class ToolFunction(BaseModel):
+class ToolFunction(BaseModel, extra="allow"):
     type: Optional[str]
 
 
 Tool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction]
 
 
-class Assistant(BaseModel):
+class Assistant(BaseModel, extra="allow"):
     id: Optional[str]
     created_at: Optional[int]
     description: Optional[str] = None
@@ -89,48 +89,3 @@ class AssistantDeleted(BaseModel, extra="allow"):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-
-
-# class AssistantFile(BaseModel, extra="allow"):
-#     id: Optional[str]
-#     assistant_id: Optional[str]
-#     created_at: Optional[int]
-#     object: Optional[str]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)
-
-
-# class AssistantFileList(BaseModel, extra="allow"):
-#     object: Optional[str]
-#     data: Optional[List[AssistantFile]]
-#     first_id: Optional[str]
-#     last_id: Optional[str]
-#     has_more: Optional[bool]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)
-
-
-# class AssistantFileDeleted(BaseModel, extra="allow"):
-#     id: Optional[str]
-#     deleted: Optional[bool]
-#     object: Optional[str]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)

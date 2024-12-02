@@ -11,14 +11,14 @@ from ..._vendor.openai.types.batch_request_counts import BatchRequestCounts
 __all__ = ["Batch", "BatchList", "Errors"]
 
 
-class Errors(BaseModel):
+class Errors(BaseModel, extra="allow"):
     data: Optional[List[BatchError]] = None
 
     object: Optional[str] = None
     """The object type, which is always `list`."""
 
 
-class Batch(BaseModel):
+class Batch(BaseModel, extra="allow"):
     id: str
     completion_window: str
     created_at: int
@@ -55,7 +55,7 @@ class Batch(BaseModel):
         return parse_headers(self._headers)
 
 
-class BatchList(BaseModel):
+class BatchList(BaseModel, extra="allow"):
     object: Optional[str] = None
     data: Optional[List[Batch]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()

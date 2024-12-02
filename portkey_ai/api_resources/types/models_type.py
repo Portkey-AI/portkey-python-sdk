@@ -8,7 +8,7 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["Model", "ModelDeleted", "ModelList"]
 
 
-class Model(BaseModel):
+class Model(BaseModel, extra="allow"):
     id: Optional[str]
     created: Optional[int]
     object: Optional[str]
@@ -42,7 +42,7 @@ class ModelList(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class ModelDeleted(BaseModel):
+class ModelDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[str]

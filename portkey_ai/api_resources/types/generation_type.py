@@ -15,7 +15,7 @@ from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
 
 
-class PromptCompletion(BaseModel):
+class PromptCompletion(BaseModel, extra="allow"):
     id: Optional[str] = None
     choices: Optional[List[Choice]] = None
     created: Optional[int] = None
@@ -42,7 +42,7 @@ class PromptCompletion(BaseModel):
         return parse_headers(self._headers)
 
 
-class PromptCompletionChunk(BaseModel):
+class PromptCompletionChunk(BaseModel, extra="allow"):
     id: Optional[str] = None
     object: Optional[str] = None
     created: Optional[int] = None
@@ -63,18 +63,18 @@ class PromptCompletionChunk(BaseModel):
 FunctionParameters = Dict[str, object]
 
 
-class Function(BaseModel):
+class Function(BaseModel, extra="allow"):
     name: Optional[str]
     description: Optional[str] = None
     parameters: Optional[FunctionParameters] = None
 
 
-class Tool(BaseModel):
+class Tool(BaseModel, extra="allow"):
     function: Function
     type: Optional[str]
 
 
-class PromptRenderData(BaseModel):
+class PromptRenderData(BaseModel, extra="allow"):
     messages: Optional[List[ChatCompletionMessage]] = None
     prompt: Optional[str] = None
     model: Optional[str] = None
@@ -102,7 +102,7 @@ class PromptRenderData(BaseModel):
     tools: Optional[List[Tool]] = None
 
 
-class PromptRender(BaseModel):
+class PromptRender(BaseModel, extra="allow"):
     success: Optional[bool] = True
     data: PromptRenderData
 

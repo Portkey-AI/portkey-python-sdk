@@ -5,7 +5,7 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class VirtualKeysAddResponse(BaseModel):
+class VirtualKeysAddResponse(BaseModel, extra="allow"):
     id: Optional[str]
     slug: Optional[str]
     object: Optional[str]
@@ -24,7 +24,7 @@ class VirtualKeysAddResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class VirtualKeysListReponse(BaseModel):
+class VirtualKeysListReponse(BaseModel, extra="allow"):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
@@ -43,7 +43,7 @@ class VirtualKeysListReponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class VirtualKeysUpdateResponse(BaseModel):
+class VirtualKeysUpdateResponse(BaseModel, extra="allow"):
     id: Optional[str]
     slug: Optional[str]
     object: Optional[str]

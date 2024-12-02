@@ -38,34 +38,34 @@ __all__ = [
 ]
 
 
-class Function(BaseModel):
+class Function(BaseModel, extra="allow"):
     arguments: Optional[str]
     name: Optional[str]
     output: Optional[str] = None
 
 
-class FunctionToolCall(BaseModel):
+class FunctionToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     function: Function
     type: Literal["function"]
 
 
-class RetrievalToolCall(BaseModel):
+class RetrievalToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     retrieval: Optional[object]
     type: Optional[str]
 
 
-class CodeInterpreterOutputLogs(BaseModel):
+class CodeInterpreterOutputLogs(BaseModel, extra="allow"):
     logs: Optional[str]
     type: Optional[str]
 
 
-class CodeInterpreterOutputImageImage(BaseModel):
+class CodeInterpreterOutputImageImage(BaseModel, extra="allow"):
     file_id: Optional[str]
 
 
-class CodeInterpreterOutputImage(BaseModel):
+class CodeInterpreterOutputImage(BaseModel, extra="allow"):
     image: CodeInterpreterOutputImageImage
     type: Optional[str]
 
@@ -73,12 +73,12 @@ class CodeInterpreterOutputImage(BaseModel):
 CodeInterpreterOutput = Union[CodeInterpreterOutputLogs, CodeInterpreterOutputImage]
 
 
-class CodeInterpreter(BaseModel):
+class CodeInterpreter(BaseModel, extra="allow"):
     input: Optional[str]
     outputs: List[CodeInterpreterOutput]
 
 
-class CodeToolCall(BaseModel):
+class CodeToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     code_interpreter: CodeInterpreter
     type: Optional[str]
@@ -87,16 +87,16 @@ class CodeToolCall(BaseModel):
 ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall]
 
 
-class ToolCallsStepDetails(BaseModel):
+class ToolCallsStepDetails(BaseModel, extra="allow"):
     tool_calls: Optional[List[ToolCall]]
     type: Optional[str]
 
 
-class MessageCreation(BaseModel):
+class MessageCreation(BaseModel, extra="allow"):
     message_id: Optional[str]
 
 
-class MessageCreationStepDetails(BaseModel):
+class MessageCreationStepDetails(BaseModel, extra="allow"):
     message_creation: Optional[MessageCreation]
 
     type: Optional[str]
@@ -105,33 +105,33 @@ class MessageCreationStepDetails(BaseModel):
 StepDetails = Union[MessageCreationStepDetails, ToolCallsStepDetails]
 
 
-class Usage(BaseModel):
+class Usage(BaseModel, extra="allow"):
     completion_tokens: Optional[int]
     prompt_tokens: Optional[int]
     total_tokens: Optional[int]
 
 
-class LastError(BaseModel):
+class LastError(BaseModel, extra="allow"):
     code: Optional[str]
     message: Optional[str]
 
 
-class FunctionRA(BaseModel):
+class FunctionRA(BaseModel, extra="allow"):
     arguments: Optional[str]
     name: Optional[str]
 
 
-class RequiredActionFunctionToolCall(BaseModel):
+class RequiredActionFunctionToolCall(BaseModel, extra="allow"):
     id: Optional[str]
     function: Optional[FunctionRA]
     type: Optional[str]
 
 
-class RequiredActionSubmitToolOutputs(BaseModel):
+class RequiredActionSubmitToolOutputs(BaseModel, extra="allow"):
     tool_calls: Optional[List[RequiredActionFunctionToolCall]]
 
 
-class RequiredAction(BaseModel):
+class RequiredAction(BaseModel, extra="allow"):
     submit_tool_outputs: Optional[RequiredActionSubmitToolOutputs]
     type: Optional[str]
 
@@ -139,21 +139,21 @@ class RequiredAction(BaseModel):
 FunctionParameters = Dict[str, object]
 
 
-class FunctionDefinition(BaseModel):
+class FunctionDefinition(BaseModel, extra="allow"):
     name: Optional[str]
     description: Optional[str] = None
     parameters: Optional[FunctionParameters] = None
 
 
-class ToolAssistantToolsCode(BaseModel):
+class ToolAssistantToolsCode(BaseModel, extra="allow"):
     type: Optional[str]
 
 
-class ToolAssistantToolsRetrieval(BaseModel):
+class ToolAssistantToolsRetrieval(BaseModel, extra="allow"):
     type: Optional[str]
 
 
-class ToolAssistantToolsFunction(BaseModel):
+class ToolAssistantToolsFunction(BaseModel, extra="allow"):
     function: Optional[FunctionDefinition]
     type: Optional[str]
 
@@ -163,7 +163,7 @@ Tool = Union[
 ]
 
 
-class Run(BaseModel):
+class Run(BaseModel, extra="allow"):
     id: Optional[str]
     assistant_id: Optional[str]
     cancelled_at: Optional[int] = None

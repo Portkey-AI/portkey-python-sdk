@@ -5,7 +5,7 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class ApiKeyAddResponse(BaseModel):
+class ApiKeyAddResponse(BaseModel, extra="allow"):
     id: Optional[str]
     key: Optional[str]
     object: Optional[str]
@@ -24,7 +24,7 @@ class ApiKeyAddResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ApiKeyGetResponse(BaseModel):
+class ApiKeyGetResponse(BaseModel, extra="allow"):
     id: Optional[str]
     key: Optional[str]
     name: Optional[str]
@@ -58,7 +58,7 @@ class ApiKeyGetResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ApiKeyListResponse(BaseModel):
+class ApiKeyListResponse(BaseModel, extra="allow"):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]
@@ -77,7 +77,7 @@ class ApiKeyListResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ApiKeyUpdateResponse(BaseModel):
+class ApiKeyUpdateResponse(BaseModel, extra="allow"):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[Dict[str, Any]]]

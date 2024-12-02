@@ -19,17 +19,17 @@ __all__ = [
 ]
 
 
-class Error(BaseModel):
+class Error(BaseModel, extra="allow"):
     code: str
     message: str
     param: Optional[str] = None
 
 
-class Hyperparameters(BaseModel):
+class Hyperparameters(BaseModel, extra="allow"):
     n_epochs: Union[str, int]
 
 
-class FineTuningJob(BaseModel):
+class FineTuningJob(BaseModel, extra="allow"):
     id: str
     created_at: int
     error: Optional[Error] = None
@@ -63,7 +63,7 @@ class FineTuningJob(BaseModel):
         return parse_headers(self._headers)
 
 
-class FineTuningJobList(BaseModel):
+class FineTuningJobList(BaseModel, extra="allow"):
     object: Optional[str] = None
     data: Optional[List[FineTuningJob]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -82,7 +82,7 @@ class FineTuningJobList(BaseModel):
         return parse_headers(self._headers)
 
 
-class FineTuningJobEvent(BaseModel):
+class FineTuningJobEvent(BaseModel, extra="allow"):
     id: str
     created_at: int
     level: str
@@ -104,7 +104,7 @@ class FineTuningJobEvent(BaseModel):
         return parse_headers(self._headers)
 
 
-class FineTuningJobEventList(BaseModel):
+class FineTuningJobEventList(BaseModel, extra="allow"):
     object: Optional[str] = None
     data: Optional[List[FineTuningJobEvent]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -123,7 +123,7 @@ class FineTuningJobEventList(BaseModel):
         return parse_headers(self._headers)
 
 
-class Metrics(BaseModel):
+class Metrics(BaseModel, extra="allow"):
     full_valid_loss: Optional[float] = None
     full_valid_mean_token_accuracy: Optional[float] = None
     step: Optional[float] = None
@@ -133,7 +133,7 @@ class Metrics(BaseModel):
     valid_mean_token_accuracy: Optional[float] = None
 
 
-class FineTuningJobCheckpoint(BaseModel):
+class FineTuningJobCheckpoint(BaseModel, extra="allow"):
     id: str
     created_at: int
     fine_tuned_model_checkpoint: str
@@ -157,7 +157,7 @@ class FineTuningJobCheckpoint(BaseModel):
         return parse_headers(self._headers)
 
 
-class FineTuningJobCheckpointList(BaseModel):
+class FineTuningJobCheckpointList(BaseModel, extra="allow"):
     object: Optional[str] = None
     data: Optional[List[FineTuningJobCheckpoint]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()

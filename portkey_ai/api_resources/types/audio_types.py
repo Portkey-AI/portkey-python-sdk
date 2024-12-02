@@ -8,7 +8,7 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["Transcription", "Translation"]
 
 
-class Transcription(BaseModel):
+class Transcription(BaseModel, extra="allow"):
     text: str
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -26,7 +26,7 @@ class Transcription(BaseModel):
         return parse_headers(self._headers)
 
 
-class Translation(BaseModel):
+class Translation(BaseModel, extra="allow"):
     text: str
     _headers: Optional[httpx.Headers] = PrivateAttr()
 

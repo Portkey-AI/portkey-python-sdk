@@ -25,7 +25,7 @@ __all__ = [
 ]
 
 
-class FileCounts(BaseModel):
+class FileCounts(BaseModel, extra="allow"):
     cancelled: int
     completed: int
     failed: int
@@ -33,12 +33,12 @@ class FileCounts(BaseModel):
     total: int
 
 
-class ExpiresAfter(BaseModel):
+class ExpiresAfter(BaseModel, extra="allow"):
     anchor: str
     days: int
 
 
-class VectorStore(BaseModel):
+class VectorStore(BaseModel, extra="allow"):
     id: str
     created_at: int
     file_counts: FileCounts
@@ -60,7 +60,7 @@ class VectorStore(BaseModel):
         return parse_headers(self._headers)
 
 
-class VectorStoreList(BaseModel):
+class VectorStoreList(BaseModel, extra="allow"):
     data: List[VectorStore]
     object: str
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -73,7 +73,7 @@ class VectorStoreList(BaseModel):
         return parse_headers(self._headers)
 
 
-class VectorStoreDeleted(BaseModel):
+class VectorStoreDeleted(BaseModel, extra="allow"):
     id: str
     deleted: bool
     object: str
@@ -87,7 +87,7 @@ class VectorStoreDeleted(BaseModel):
         return parse_headers(self._headers)
 
 
-class LastError(BaseModel):
+class LastError(BaseModel, extra="allow"):
     code: str
     message: str
 
@@ -98,7 +98,7 @@ ChunkingStrategy: TypeAlias = Annotated[
 ]
 
 
-class VectorStoreFile(BaseModel):
+class VectorStoreFile(BaseModel, extra="allow"):
     id: str
     created_at: int
     last_error: Optional[LastError] = None
@@ -117,7 +117,7 @@ class VectorStoreFile(BaseModel):
         return parse_headers(self._headers)
 
 
-class VectorStoreFileList(BaseModel):
+class VectorStoreFileList(BaseModel, extra="allow"):
     data: List[VectorStoreFile]
     object: str
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -130,7 +130,7 @@ class VectorStoreFileList(BaseModel):
         return parse_headers(self._headers)
 
 
-class VectorStoreFileDeleted(BaseModel):
+class VectorStoreFileDeleted(BaseModel, extra="allow"):
     id: str
     deleted: bool
     object: str
@@ -144,7 +144,7 @@ class VectorStoreFileDeleted(BaseModel):
         return parse_headers(self._headers)
 
 
-class VectorStoreFileBatch(BaseModel):
+class VectorStoreFileBatch(BaseModel, extra="allow"):
     id: str
     created_at: int
     file_counts: FileCounts

@@ -8,27 +8,27 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["CompletionUsage", "Logprobs", "CompletionChoice", "TextCompletion"]
 
 
-class CompletionUsage(BaseModel):
+class CompletionUsage(BaseModel, extra="allow"):
     completion_tokens: Optional[int]
     prompt_tokens: Optional[int]
     total_tokens: Optional[int]
 
 
-class Logprobs(BaseModel):
+class Logprobs(BaseModel, extra="allow"):
     text_offset: Optional[List[int]] = None
     token_logprobs: Optional[List[Optional[float]]] = None
     tokens: Optional[List[str]] = None
     top_logprobs: Optional[List[Optional[Dict[str, float]]]] = None
 
 
-class CompletionChoice(BaseModel):
+class CompletionChoice(BaseModel, extra="allow"):
     finish_reason: Optional[str]
     index: Optional[int]
     logprobs: Optional[Logprobs] = None
     text: Optional[str]
 
 
-class TextCompletion(BaseModel):
+class TextCompletion(BaseModel, extra="allow"):
     id: Optional[str]
     choices: List[CompletionChoice]
     created: Optional[int]

@@ -5,7 +5,7 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class UserRetrieveResponse(BaseModel):
+class UserRetrieveResponse(BaseModel, extra="allow"):
     object: Optional[str]
     id: Optional[str]
     first_name: Optional[str]
@@ -30,7 +30,7 @@ class UserRetrieveResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class UserRetrieveAllResponse(BaseModel):
+class UserRetrieveAllResponse(BaseModel, extra="allow"):
     total: Optional[int]
     object: Optional[str]
     data: Optional[List[UserRetrieveResponse]]
@@ -49,7 +49,7 @@ class UserRetrieveAllResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class UserInviteResponse(BaseModel):
+class UserInviteResponse(BaseModel, extra="allow"):
     id: Optional[str]
     invite_link: Optional[str]
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -67,7 +67,7 @@ class UserInviteResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class UserInviteRetrieveResponse(BaseModel):
+class UserInviteRetrieveResponse(BaseModel, extra="allow"):
     object: Optional[str]
     id: Optional[str]
     email: Optional[str]
@@ -92,7 +92,7 @@ class UserInviteRetrieveResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class UserInviteRetrieveAllResponse(BaseModel):
+class UserInviteRetrieveAllResponse(BaseModel, extra="allow"):
     object: Optional[str]
     total: Optional[int]
     data: Optional[List[UserInviteRetrieveResponse]]
@@ -111,7 +111,7 @@ class UserInviteRetrieveAllResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class WorkspacesAddResponse(BaseModel):
+class WorkspacesAddResponse(BaseModel, extra="allow"):
     id: Optional[str]
     slug: Optional[str]
     name: Optional[str]
@@ -136,7 +136,7 @@ class WorkspacesAddResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class WorkspacesGetResponse(BaseModel):
+class WorkspacesGetResponse(BaseModel, extra="allow"):
     object: Optional[str]
     id: Optional[str]
     slug: Optional[str]
@@ -162,7 +162,7 @@ class WorkspacesGetResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class WorkspacesListResponse(BaseModel):
+class WorkspacesListResponse(BaseModel, extra="allow"):
     total: Optional[int]
     object: Optional[str]
     data: Optional[List[WorkspacesGetResponse]]
@@ -181,7 +181,7 @@ class WorkspacesListResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class WorkspacesUpdateResponse(BaseModel):
+class WorkspacesUpdateResponse(BaseModel, extra="allow"):
     id: Optional[str]
     slug: Optional[str]
     name: Optional[str]
@@ -206,7 +206,7 @@ class WorkspacesUpdateResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class WorkspaceMemberGetResponse(BaseModel):
+class WorkspaceMemberGetResponse(BaseModel, extra="allow"):
     first_name: Optional[str]
     last_name: Optional[str]
     org_role: Optional[str]
@@ -233,7 +233,7 @@ class WorkspaceMemberGetResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class WorkspaceMemberListResponse(BaseModel):
+class WorkspaceMemberListResponse(BaseModel, extra="allow"):
     total: Optional[int]
     object: Optional[str]
     data: Optional[List[WorkspaceMemberGetResponse]]

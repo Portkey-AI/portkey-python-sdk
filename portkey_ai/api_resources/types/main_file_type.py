@@ -8,7 +8,7 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["FileObject", "FileList", "FileDeleted"]
 
 
-class FileObject(BaseModel):
+class FileObject(BaseModel, extra="allow"):
     id: Optional[str]
     bytes: Optional[int]
     created_at: Optional[int]
@@ -33,7 +33,7 @@ class FileObject(BaseModel):
         return parse_headers(self._headers)
 
 
-class FileList(BaseModel):
+class FileList(BaseModel, extra="allow"):
     object: Optional[str]
     data: List[FileObject]
     _headers: Optional[httpx.Headers] = PrivateAttr()
@@ -52,7 +52,7 @@ class FileList(BaseModel):
         return parse_headers(self._headers)
 
 
-class FileDeleted(BaseModel):
+class FileDeleted(BaseModel, extra="allow"):
     id: Optional[str]
     deleted: Optional[bool]
     object: Optional[str]
