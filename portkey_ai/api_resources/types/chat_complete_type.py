@@ -24,15 +24,15 @@ __all__ = [
 
 
 class TopLogprob(BaseModel, extra="allow"):
-    token: Optional[str]
+    token: Optional[str] = None
     bytes: Optional[List[int]] = None
-    logprob: Optional[float]
+    logprob: Optional[float] = None
 
 
 class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
-    token: Optional[str]
+    token: Optional[str] = None
     bytes: Optional[List[int]] = None
-    logprob: Optional[float]
+    logprob: Optional[float] = None
     top_logprobs: Optional[List[TopLogprob]]
 
 
@@ -53,7 +53,7 @@ class DeltaToolCallFunction(BaseModel, extra="allow"):
 
 
 class DeltaToolCall(BaseModel, extra="allow"):
-    index: Optional[int]
+    index: Optional[int] = None
     id: Optional[str] = None
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
@@ -83,36 +83,37 @@ class StreamChoice(BaseModel, extra="allow"):
 
 
 class FunctionCall(BaseModel, extra="allow"):
-    arguments: Optional[str]
-    name: Optional[str]
+    arguments: Optional[str] = None
+    name: Optional[str] = None
 
 
 class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     function: Optional[FunctionCall]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 class ChatCompletionMessage(BaseModel, extra="allow"):
     content: Optional[Union[str, Iterable[Any]]] = None
-    role: Optional[str]
+    role: Optional[str] = None
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
+    refusal: Optional[str] = None
 
 
 class Choice(BaseModel, extra="allow"):
-    finish_reason: Optional[str]
-    index: Optional[int]
+    finish_reason: Optional[str] = None
+    index: Optional[int] = None
     logprobs: Optional[ChoiceLogprobs] = None
     message: Optional[ChatCompletionMessage]
 
 
 class ChatCompletions(BaseModel, extra="allow"):
-    id: Optional[str]
+    id: Optional[str] = None
     choices: Optional[List[Choice]]
-    created: Optional[int]
-    model: Optional[str]
-    object: Optional[str]
+    created: Optional[int] = None
+    model: Optional[str] = None
+    object: Optional[str] = None
     system_fingerprint: Optional[str] = None
     usage: Optional[Usage] = None
     service_tier: Optional[str] = None

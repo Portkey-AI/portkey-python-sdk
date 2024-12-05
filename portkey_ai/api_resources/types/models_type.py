@@ -8,11 +8,11 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["Model", "ModelDeleted", "ModelList"]
 
 
-class Model(BaseModel):
-    id: Optional[str]
-    created: Optional[int]
-    object: Optional[str]
-    owned_by: Optional[str]
+class Model(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    created: Optional[int] = None
+    object: Optional[str] = None
+    owned_by: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Model(BaseModel):
 
 
 class ModelList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: List[Model]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -42,10 +42,10 @@ class ModelList(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class ModelDeleted(BaseModel):
-    id: Optional[str]
-    deleted: Optional[bool]
-    object: Optional[str]
+class ModelDeleted(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    deleted: Optional[bool] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

@@ -5,11 +5,11 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class ConfigAddResponse(BaseModel):
-    id: Optional[str]
-    version_id: Optional[str]
-    slug: Optional[str]
-    object: Optional[str]
+class ConfigAddResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    version_id: Optional[str] = None
+    slug: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -25,23 +25,23 @@ class ConfigAddResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ConfigGetResponse(BaseModel):
-    id: Optional[str]
+class ConfigGetResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
     organisation_id: Optional[str] = None
-    config: Optional[Union[str, dict]]
-    name: Optional[str]
-    workspace_id: Optional[str]
-    slug: Optional[str]
-    is_default: Optional[int]
-    status: Optional[str]
-    owner_id: Optional[str]
-    created_at: Optional[str]
-    updated_by: Optional[str]
-    last_updated_at: Optional[str]
-    format: Optional[str]
-    type: Optional[str]
-    version_id: Optional[str]
-    object: Optional[str]
+    config: Optional[Union[str, dict]] = None
+    name: Optional[str] = None
+    workspace_id: Optional[str] = None
+    slug: Optional[str] = None
+    is_default: Optional[int] = None
+    status: Optional[str] = None
+    owner_id: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_by: Optional[str] = None
+    last_updated_at: Optional[str] = None
+    format: Optional[str] = None
+    type: Optional[str] = None
+    version_id: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -57,10 +57,10 @@ class ConfigGetResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ConfigListResponse(BaseModel):
-    object: Optional[str]
-    total: Optional[int]
-    data: Optional[List[Dict[str, Any]]]
+class ConfigListResponse(BaseModel, extra="allow"):
+    object: Optional[str] = None
+    total: Optional[int] = None
+    data: Optional[List[Dict[str, Any]]] = None
 
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -77,9 +77,9 @@ class ConfigListResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class ConfigUpdateResponse(BaseModel):
-    version_id: Optional[str]
-    object: Optional[str]
+class ConfigUpdateResponse(BaseModel, extra="allow"):
+    version_id: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:

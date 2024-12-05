@@ -8,32 +8,32 @@ from pydantic import BaseModel, PrivateAttr
 __all__ = ["CompletionUsage", "Logprobs", "CompletionChoice", "TextCompletion"]
 
 
-class CompletionUsage(BaseModel):
-    completion_tokens: Optional[int]
-    prompt_tokens: Optional[int]
-    total_tokens: Optional[int]
+class CompletionUsage(BaseModel, extra="allow"):
+    completion_tokens: Optional[int] = None
+    prompt_tokens: Optional[int] = None
+    total_tokens: Optional[int] = None
 
 
-class Logprobs(BaseModel):
+class Logprobs(BaseModel, extra="allow"):
     text_offset: Optional[List[int]] = None
     token_logprobs: Optional[List[Optional[float]]] = None
     tokens: Optional[List[str]] = None
     top_logprobs: Optional[List[Optional[Dict[str, float]]]] = None
 
 
-class CompletionChoice(BaseModel):
-    finish_reason: Optional[str]
-    index: Optional[int]
+class CompletionChoice(BaseModel, extra="allow"):
+    finish_reason: Optional[str] = None
+    index: Optional[int] = None
     logprobs: Optional[Logprobs] = None
-    text: Optional[str]
+    text: Optional[str] = None
 
 
-class TextCompletion(BaseModel):
-    id: Optional[str]
+class TextCompletion(BaseModel, extra="allow"):
+    id: Optional[str] = None
     choices: List[CompletionChoice]
-    created: Optional[int]
-    model: Optional[str]
-    object: Optional[str]
+    created: Optional[int] = None
+    model: Optional[str] = None
+    object: Optional[str] = None
     system_fingerprint: Optional[str] = None
     usage: Optional[CompletionUsage] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()

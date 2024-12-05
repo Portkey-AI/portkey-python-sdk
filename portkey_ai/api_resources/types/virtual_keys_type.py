@@ -5,10 +5,10 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class VirtualKeysAddResponse(BaseModel):
-    id: Optional[str]
-    slug: Optional[str]
-    object: Optional[str]
+class VirtualKeysAddResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -24,10 +24,10 @@ class VirtualKeysAddResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class VirtualKeysListReponse(BaseModel):
-    object: Optional[str]
-    total: Optional[int]
-    data: Optional[List[Dict[str, Any]]]
+class VirtualKeysListReponse(BaseModel, extra="allow"):
+    object: Optional[str] = None
+    total: Optional[int] = None
+    data: Optional[List[Dict[str, Any]]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -43,10 +43,10 @@ class VirtualKeysListReponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class VirtualKeysUpdateResponse(BaseModel):
-    id: Optional[str]
-    slug: Optional[str]
-    object: Optional[str]
+class VirtualKeysUpdateResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    slug: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:

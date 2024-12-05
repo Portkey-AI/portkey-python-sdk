@@ -12,36 +12,61 @@ __all__ = [
     "ToolCodeInterpreter",
     "ToolRetrieval",
     "ToolFunction",
-    "Tool",
+    "AssistantTool",
+    "FunctionDefinition",
+    "FunctionParameters",
+    "FileSearch",
+    "FileSearchTool",
 ]
 
 
-class ToolCodeInterpreter(BaseModel):
-    type: Optional[str]
+class FileSearch(BaseModel, extra="allow"):
+    max_num_results: Optional[int] = None
 
 
-class ToolRetrieval(BaseModel):
-    type: Optional[str]
+class FileSearchTool(BaseModel, extra="allow"):
+    type: Optional[str] = None
+    file_search: Optional[FileSearch] = None
 
 
-class ToolFunction(BaseModel):
-    type: Optional[str]
+FunctionParameters = Dict[str, object]
 
 
-Tool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction]
+class FunctionDefinition(BaseModel, extra="allow"):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    parameters: Optional[FunctionParameters] = None
+    strict: Optional[bool] = None
 
 
-class Assistant(BaseModel):
-    id: Optional[str]
-    created_at: Optional[int]
+class ToolCodeInterpreter(BaseModel, extra="allow"):
+    type: Optional[str] = None
+
+
+class ToolRetrieval(BaseModel, extra="allow"):
+    type: Optional[str] = None
+
+
+class ToolFunction(BaseModel, extra="allow"):
+    type: Optional[str] = None
+    function: Optional[FunctionDefinition] = None
+
+
+AssistantTool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction, FileSearchTool]
+
+
+class Assistant(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    created_at: Optional[int] = None
     description: Optional[str] = None
     file_ids: Optional[List[str]] = None
     instructions: Optional[str] = None
     metadata: Optional[object] = None
-    model: Optional[str]
+    model: Optional[str] = None
     name: Optional[str] = None
-    object: Optional[str]
-    tools: Optional[List[Tool]]
+    object: Optional[str] = None
+    tools: Optional[List[AssistantTool]] = None
+    response_format: Optional[Any] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -59,7 +84,7 @@ class Assistant(BaseModel):
 
 
 class AssistantList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: Optional[List[Assistant]]
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -78,9 +103,9 @@ class AssistantList(BaseModel, extra="allow"):
 
 
 class AssistantDeleted(BaseModel, extra="allow"):
-    id: Optional[str]
-    object: Optional[str]
-    deleted: Optional[bool]
+    id: Optional[str] = None
+    object: Optional[str] = None
+    deleted: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -89,48 +114,3 @@ class AssistantDeleted(BaseModel, extra="allow"):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
-
-
-# class AssistantFile(BaseModel, extra="allow"):
-#     id: Optional[str]
-#     assistant_id: Optional[str]
-#     created_at: Optional[int]
-#     object: Optional[str]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)
-
-
-# class AssistantFileList(BaseModel, extra="allow"):
-#     object: Optional[str]
-#     data: Optional[List[AssistantFile]]
-#     first_id: Optional[str]
-#     last_id: Optional[str]
-#     has_more: Optional[bool]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)
-
-
-# class AssistantFileDeleted(BaseModel, extra="allow"):
-#     id: Optional[str]
-#     deleted: Optional[bool]
-#     object: Optional[str]
-#     _headers: Optional[httpx.Headers] = PrivateAttr()
-
-#     def __str__(self):
-#         del self._headers
-#         return json.dumps(self.dict(), indent=4)
-
-#     def get_headers(self) -> Optional[Dict[str, str]]:
-#         return parse_headers(self._headers)

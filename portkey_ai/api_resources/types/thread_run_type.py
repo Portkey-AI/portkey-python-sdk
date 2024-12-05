@@ -1,6 +1,8 @@
 import json
 from typing import Dict, Literal, Optional, Union
 import httpx
+
+from portkey_ai.api_resources.types.assistant_type import AssistantTool
 from .utils import parse_headers
 from typing import List
 from pydantic import BaseModel, PrivateAttr
@@ -35,127 +37,132 @@ __all__ = [
     "FunctionToolCall",
     "FunctionParameters",
     "RunStepList",
+    "IncompleteDetails",
+    "AssistantToolChoice",
+    "AssistantToolChoiceFunction",
+    "AssistantToolChoiceOption",
+    "TruncationStrategy",
 ]
 
 
-class Function(BaseModel):
-    arguments: Optional[str]
-    name: Optional[str]
+class Function(BaseModel, extra="allow"):
+    arguments: Optional[str] = None
+    name: Optional[str] = None
     output: Optional[str] = None
 
 
-class FunctionToolCall(BaseModel):
-    id: Optional[str]
+class FunctionToolCall(BaseModel, extra="allow"):
+    id: Optional[str] = None
     function: Function
     type: Literal["function"]
 
 
-class RetrievalToolCall(BaseModel):
-    id: Optional[str]
+class RetrievalToolCall(BaseModel, extra="allow"):
+    id: Optional[str] = None
     retrieval: Optional[object]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
-class CodeInterpreterOutputLogs(BaseModel):
-    logs: Optional[str]
-    type: Optional[str]
+class CodeInterpreterOutputLogs(BaseModel, extra="allow"):
+    logs: Optional[str] = None
+    type: Optional[str] = None
 
 
-class CodeInterpreterOutputImageImage(BaseModel):
-    file_id: Optional[str]
+class CodeInterpreterOutputImageImage(BaseModel, extra="allow"):
+    file_id: Optional[str] = None
 
 
-class CodeInterpreterOutputImage(BaseModel):
+class CodeInterpreterOutputImage(BaseModel, extra="allow"):
     image: CodeInterpreterOutputImageImage
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 CodeInterpreterOutput = Union[CodeInterpreterOutputLogs, CodeInterpreterOutputImage]
 
 
-class CodeInterpreter(BaseModel):
-    input: Optional[str]
+class CodeInterpreter(BaseModel, extra="allow"):
+    input: Optional[str] = None
     outputs: List[CodeInterpreterOutput]
 
 
-class CodeToolCall(BaseModel):
-    id: Optional[str]
+class CodeToolCall(BaseModel, extra="allow"):
+    id: Optional[str] = None
     code_interpreter: CodeInterpreter
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall]
 
 
-class ToolCallsStepDetails(BaseModel):
+class ToolCallsStepDetails(BaseModel, extra="allow"):
     tool_calls: Optional[List[ToolCall]]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
-class MessageCreation(BaseModel):
-    message_id: Optional[str]
+class MessageCreation(BaseModel, extra="allow"):
+    message_id: Optional[str] = None
 
 
-class MessageCreationStepDetails(BaseModel):
+class MessageCreationStepDetails(BaseModel, extra="allow"):
     message_creation: Optional[MessageCreation]
 
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 StepDetails = Union[MessageCreationStepDetails, ToolCallsStepDetails]
 
 
-class Usage(BaseModel):
-    completion_tokens: Optional[int]
-    prompt_tokens: Optional[int]
-    total_tokens: Optional[int]
+class Usage(BaseModel, extra="allow"):
+    completion_tokens: Optional[int] = None
+    prompt_tokens: Optional[int] = None
+    total_tokens: Optional[int] = None
 
 
-class LastError(BaseModel):
-    code: Optional[str]
-    message: Optional[str]
+class LastError(BaseModel, extra="allow"):
+    code: Optional[str] = None
+    message: Optional[str] = None
 
 
-class FunctionRA(BaseModel):
-    arguments: Optional[str]
-    name: Optional[str]
+class FunctionRA(BaseModel, extra="allow"):
+    arguments: Optional[str] = None
+    name: Optional[str] = None
 
 
-class RequiredActionFunctionToolCall(BaseModel):
-    id: Optional[str]
+class RequiredActionFunctionToolCall(BaseModel, extra="allow"):
+    id: Optional[str] = None
     function: Optional[FunctionRA]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
-class RequiredActionSubmitToolOutputs(BaseModel):
+class RequiredActionSubmitToolOutputs(BaseModel, extra="allow"):
     tool_calls: Optional[List[RequiredActionFunctionToolCall]]
 
 
-class RequiredAction(BaseModel):
+class RequiredAction(BaseModel, extra="allow"):
     submit_tool_outputs: Optional[RequiredActionSubmitToolOutputs]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 FunctionParameters = Dict[str, object]
 
 
-class FunctionDefinition(BaseModel):
-    name: Optional[str]
+class FunctionDefinition(BaseModel, extra="allow"):
+    name: Optional[str] = None
     description: Optional[str] = None
     parameters: Optional[FunctionParameters] = None
 
 
-class ToolAssistantToolsCode(BaseModel):
-    type: Optional[str]
+class ToolAssistantToolsCode(BaseModel, extra="allow"):
+    type: Optional[str] = None
 
 
-class ToolAssistantToolsRetrieval(BaseModel):
-    type: Optional[str]
+class ToolAssistantToolsRetrieval(BaseModel, extra="allow"):
+    type: Optional[str] = None
 
 
-class ToolAssistantToolsFunction(BaseModel):
+class ToolAssistantToolsFunction(BaseModel, extra="allow"):
     function: Optional[FunctionDefinition]
-    type: Optional[str]
+    type: Optional[str] = None
 
 
 Tool = Union[
@@ -163,26 +170,56 @@ Tool = Union[
 ]
 
 
-class Run(BaseModel):
-    id: Optional[str]
-    assistant_id: Optional[str]
+class IncompleteDetails(BaseModel, extra="allow"):
+    reason: Optional[str] = None
+
+
+class AssistantToolChoiceFunction(BaseModel, extra="allow"):
+    name: Optional[str] = None
+
+
+class AssistantToolChoice(BaseModel, extra="allow"):
+    type: Optional[str] = None
+
+    function: Optional[AssistantToolChoiceFunction] = None
+
+
+AssistantToolChoiceOption = Union[Optional[str], AssistantToolChoice]
+
+
+class TruncationStrategy(BaseModel, extra="allow"):
+    type: Optional[str] = None
+    last_messages: Optional[int] = None
+
+
+class Run(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    assistant_id: Optional[str] = None
     cancelled_at: Optional[int] = None
     completed_at: Optional[int] = None
-    created_at: Optional[int]
-    expires_at: Optional[int]
+    created_at: Optional[int] = None
+    expires_at: Optional[int] = None
     failed_at: Optional[int] = None
     file_ids: Optional[List[str]] = None
-    instructions: Optional[str]
+    instructions: Optional[str] = None
     last_error: Optional[LastError] = None
     metadata: Optional[object] = None
-    model: Optional[str]
-    object: Optional[str]
+    model: Optional[str] = None
+    object: Optional[str] = None
     required_action: Optional[RequiredAction] = None
     started_at: Optional[int] = None
-    status: Optional[str]
-    thread_id: Optional[str]
-    tools: Optional[List[Tool]]
+    status: Optional[str] = None
+    thread_id: Optional[str] = None
+    tools: Optional[List[AssistantTool]]
     usage: Optional[Usage] = None
+    incomplete_details: Optional[IncompleteDetails] = None
+    max_completion_tokens: Optional[int] = None
+    max_prompt_tokens: Optional[int] = None
+    parallel_tool_calls: Optional[bool] = None
+    tool_choice: Optional[AssistantToolChoiceOption] = None
+    truncation_strategy: Optional[TruncationStrategy] = None
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -194,11 +231,11 @@ class Run(BaseModel):
 
 
 class RunList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: Optional[List[Run]]
-    first_id: Optional[str]
-    last_id: Optional[str]
-    has_more: Optional[bool]
+    first_id: Optional[str] = None
+    last_id: Optional[str] = None
+    has_more: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -210,21 +247,21 @@ class RunList(BaseModel, extra="allow"):
 
 
 class RunStep(BaseModel, extra="allow"):
-    id: Optional[str]
-    assistant_id: Optional[str]
+    id: Optional[str] = None
+    assistant_id: Optional[str] = None
     cancelled_at: Optional[int] = None
     completed_at: Optional[int] = None
-    created_at: Optional[int]
+    created_at: Optional[int] = None
     expired_at: Optional[int] = None
     failed_at: Optional[int] = None
     last_error: Optional[LastError] = None
     metadata: Optional[object] = None
-    object: Optional[str]
-    run_id: Optional[str]
-    status: Optional[str]
+    object: Optional[str] = None
+    run_id: Optional[str] = None
+    status: Optional[str] = None
     step_details: Optional[StepDetails]
-    thread_id: Optional[str]
-    type: Optional[str]
+    thread_id: Optional[str] = None
+    type: Optional[str] = None
     usage: Optional[Usage] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -237,11 +274,11 @@ class RunStep(BaseModel, extra="allow"):
 
 
 class RunStepList(BaseModel, extra="allow"):
-    object: Optional[str]
+    object: Optional[str] = None
     data: Optional[List[RunStep]]
-    first_id: Optional[str]
-    last_id: Optional[str]
-    has_more: Optional[bool]
+    first_id: Optional[str] = None
+    last_id: Optional[str] = None
+    has_more: Optional[bool] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

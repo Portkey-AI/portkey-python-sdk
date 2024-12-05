@@ -5,10 +5,10 @@ from pydantic import BaseModel, PrivateAttr
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
-class LogsExportCreateResponse(BaseModel):
-    id: Optional[str]
-    total: Optional[int]
-    object: Optional[str]
+class LogsExportCreateResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    total: Optional[int] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -24,10 +24,10 @@ class LogsExportCreateResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportListResponse(BaseModel):
-    object: Optional[str]
-    total: Optional[int]
-    data: Optional[List[Dict[str, Any]]]
+class LogsExportListResponse(BaseModel, extra="allow"):
+    object: Optional[str] = None
+    total: Optional[int] = None
+    data: Optional[List[Dict[str, Any]]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -43,10 +43,10 @@ class LogsExportListResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportUpdateResponse(BaseModel):
-    id: Optional[str]
-    total: Optional[int]
-    object: Optional[str]
+class LogsExportUpdateResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    total: Optional[int] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -62,9 +62,9 @@ class LogsExportUpdateResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportCancelResponse(BaseModel):
-    message: Optional[str]
-    object: Optional[str]
+class LogsExportCancelResponse(BaseModel, extra="allow"):
+    message: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -80,19 +80,19 @@ class LogsExportCancelResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportRetrieveResponse(BaseModel):
-    id: Optional[str]
-    organisation_id: Optional[str]
-    filters: Optional[Dict[str, Any]]
-    requested_data: Optional[List[str]]
-    status: Optional[str]
-    description: Optional[str]
-    created_at: Optional[str]
-    last_updated_at: Optional[str]
-    created_by: Optional[str]
-    workspace_id: Optional[str]
-    total_records: Optional[int]
-    object: Optional[str]
+class LogsExportRetrieveResponse(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    organisation_id: Optional[str] = None
+    filters: Optional[Dict[str, Any]] = None
+    requested_data: Optional[List[str]] = None
+    status: Optional[str] = None
+    description: Optional[str] = None
+    created_at: Optional[str] = None
+    last_updated_at: Optional[str] = None
+    created_by: Optional[str] = None
+    workspace_id: Optional[str] = None
+    total_records: Optional[int] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -108,9 +108,9 @@ class LogsExportRetrieveResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportStartResponse(BaseModel):
-    message: Optional[str]
-    object: Optional[str]
+class LogsExportStartResponse(BaseModel, extra="allow"):
+    message: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -126,8 +126,8 @@ class LogsExportStartResponse(BaseModel):
         return getattr(self, key, None) or default
 
 
-class LogsExportDownloadResponse(BaseModel):
-    signed_url: Optional[str]
+class LogsExportDownloadResponse(BaseModel, extra="allow"):
+    signed_url: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:

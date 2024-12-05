@@ -1,9 +1,7 @@
 from typing import Any, Union
-from portkey_ai._vendor.openai.types.chat.parsed_chat_completion import (
-    ParsedChatCompletion,
-)
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.types.beta_chat_type import ParsedChatCompletion
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 
@@ -27,7 +25,7 @@ class BetaCompletions(APIResource):
         response_format: Union[Any, NotGiven] = NOT_GIVEN,
         tools: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
-    ) -> ParsedChatCompletion[Any]:
+    ) -> ParsedChatCompletion:
         response = self.openai_client.beta.chat.completions.parse(
             messages=messages,
             model=model,
@@ -35,7 +33,7 @@ class BetaCompletions(APIResource):
             tools=tools,
             extra_body=kwargs,
         )
-        return response
+        return response  # type: ignore [return-value]
 
     def stream(
         self,
@@ -85,7 +83,7 @@ class AsyncBetaCompletions(AsyncAPIResource):
         response_format: Union[Any, NotGiven] = NOT_GIVEN,
         tools: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
-    ) -> ParsedChatCompletion[Any]:
+    ) -> ParsedChatCompletion:
         response = await self.openai_client.beta.chat.completions.parse(
             messages=messages,
             model=model,
@@ -93,7 +91,7 @@ class AsyncBetaCompletions(AsyncAPIResource):
             tools=tools,
             extra_body=kwargs,
         )
-        return response
+        return response  # type: ignore [return-value]
 
     async def stream(
         self,

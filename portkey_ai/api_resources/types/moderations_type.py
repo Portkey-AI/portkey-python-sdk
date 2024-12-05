@@ -10,7 +10,7 @@ from ..._vendor.openai.types.moderation import Moderation
 __all__ = ["ModerationCreateResponse"]
 
 
-class ModerationCreateResponse(BaseModel):
+class ModerationCreateResponse(BaseModel, extra="allow"):
     id: str
     model: str
     results: List[Moderation]
