@@ -1,6 +1,8 @@
 import json
 from typing import Dict, Literal, Optional, Union
 import httpx
+
+from portkey_ai.api_resources.types.assistant_type import AssistantTool
 from .utils import parse_headers
 from typing import List
 from pydantic import BaseModel, PrivateAttr
@@ -35,6 +37,11 @@ __all__ = [
     "FunctionToolCall",
     "FunctionParameters",
     "RunStepList",
+    "IncompleteDetails",
+    "AssistantToolChoice",
+    "AssistantToolChoiceFunction",
+    "AssistantToolChoiceOption",
+    "TruncationStrategy",
 ]
 
 
@@ -163,6 +170,28 @@ Tool = Union[
 ]
 
 
+class IncompleteDetails(BaseModel, extra="allow"):
+    reason: Optional[str] = None
+
+
+class AssistantToolChoiceFunction(BaseModel, extra="allow"):
+    name: Optional[str] = None
+
+
+class AssistantToolChoice(BaseModel, extra="allow"):
+    type: Optional[str] = None
+
+    function: Optional[AssistantToolChoiceFunction] = None
+
+
+AssistantToolChoiceOption = Union[Optional[str], AssistantToolChoice]
+
+
+class TruncationStrategy(BaseModel, extra="allow"):
+    type: Optional[str] = None
+    last_messages: Optional[int] = None
+
+
 class Run(BaseModel, extra="allow"):
     id: Optional[str] = None
     assistant_id: Optional[str] = None
@@ -181,8 +210,16 @@ class Run(BaseModel, extra="allow"):
     started_at: Optional[int] = None
     status: Optional[str] = None
     thread_id: Optional[str] = None
-    tools: Optional[List[Tool]]
+    tools: Optional[List[AssistantTool]]
     usage: Optional[Usage] = None
+    incomplete_details: Optional[IncompleteDetails] = None
+    max_completion_tokens: Optional[int] = None
+    max_prompt_tokens: Optional[int] = None
+    parallel_tool_calls: Optional[bool] = None
+    tool_choice: Optional[AssistantToolChoiceOption] = None
+    truncation_strategy: Optional[TruncationStrategy] = None
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

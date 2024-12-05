@@ -4,7 +4,6 @@ import httpx
 from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
-from ..._vendor.openai.types.fine_tuning import FineTuningJobWandbIntegrationObject
 
 __all__ = [
     "Error",
@@ -16,6 +15,8 @@ __all__ = [
     "Metrics",
     "FineTuningJobCheckpoint",
     "FineTuningJobCheckpointList",
+    "FineTuningJobWandbIntegration",
+    "FineTuningJobWandbIntegrationObject",
 ]
 
 
@@ -27,6 +28,18 @@ class Error(BaseModel, extra="allow"):
 
 class Hyperparameters(BaseModel, extra="allow"):
     n_epochs: Union[str, int]
+
+
+class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
+    project: str
+    entity: Optional[str] = None
+    name: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+
+class FineTuningJobWandbIntegrationObject(BaseModel, extra="allow"):
+    type: Optional[str] = None
+    wandb: FineTuningJobWandbIntegration
 
 
 class FineTuningJob(BaseModel, extra="allow"):

@@ -2,9 +2,19 @@ import json
 from typing import Dict, Literal, Optional
 import httpx
 
-from portkey_ai._vendor.openai.types.file_object import FileObject
 from .utils import parse_headers
 from pydantic import BaseModel, PrivateAttr
+
+
+class FileObject(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    bytes: Optional[int] = None
+    created_at: Optional[int] = None
+    filename: Optional[str] = None
+    object: Optional[str] = None
+    purpose: Optional[str] = None
+    status: Optional[str] = None
+    status_details: Optional[str] = None
 
 
 class Upload(BaseModel, extra="allow"):

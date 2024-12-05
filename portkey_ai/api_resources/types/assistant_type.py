@@ -12,8 +12,31 @@ __all__ = [
     "ToolCodeInterpreter",
     "ToolRetrieval",
     "ToolFunction",
-    "Tool",
+    "AssistantTool",
+    "FunctionDefinition",
+    "FunctionParameters",
+    "FileSearch",
+    "FileSearchTool",
 ]
+
+
+class FileSearch(BaseModel, extra="allow"):
+    max_num_results: Optional[int] = None
+
+
+class FileSearchTool(BaseModel, extra="allow"):
+    type: Optional[str] = None
+    file_search: Optional[FileSearch] = None
+
+
+FunctionParameters = Dict[str, object]
+
+
+class FunctionDefinition(BaseModel, extra="allow"):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    parameters: Optional[FunctionParameters] = None
+    strict: Optional[bool] = None
 
 
 class ToolCodeInterpreter(BaseModel, extra="allow"):
@@ -26,9 +49,10 @@ class ToolRetrieval(BaseModel, extra="allow"):
 
 class ToolFunction(BaseModel, extra="allow"):
     type: Optional[str] = None
+    function: Optional[FunctionDefinition] = None
 
 
-Tool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction]
+AssistantTool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction, FileSearchTool]
 
 
 class Assistant(BaseModel, extra="allow"):
@@ -41,7 +65,8 @@ class Assistant(BaseModel, extra="allow"):
     model: Optional[str] = None
     name: Optional[str] = None
     object: Optional[str] = None
-    tools: Optional[List[Tool]]
+    tools: Optional[List[AssistantTool]] = None
+    response_format: Optional[Any] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

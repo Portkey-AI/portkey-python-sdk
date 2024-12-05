@@ -5,17 +5,26 @@ import httpx
 from .utils import parse_headers
 from typing import List, Any
 from pydantic import BaseModel, PrivateAttr
-from ..._vendor.openai.types.batch_error import BatchError
-from ..._vendor.openai.types.batch_request_counts import BatchRequestCounts
 
 __all__ = ["Batch", "BatchList", "Errors"]
 
 
+class BatchError(BaseModel, extra="allow"):
+    code: Optional[str] = None
+    line: Optional[int] = None
+    message: Optional[str] = None
+    param: Optional[str] = None
+
+
+class BatchRequestCounts(BaseModel, extra="allow"):
+    completed: Optional[int] = None
+    failed: Optional[int] = None
+    total: Optional[int] = None
+
+
 class Errors(BaseModel, extra="allow"):
     data: Optional[List[BatchError]] = None
-
     object: Optional[str] = None
-    """The object type, which is always `list`."""
 
 
 class Batch(BaseModel, extra="allow"):
