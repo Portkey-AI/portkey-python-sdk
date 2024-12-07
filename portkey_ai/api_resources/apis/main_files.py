@@ -58,11 +58,21 @@ class MainFiles(APIResource):
         return data
 
     def content(self, file_id, **kwargs) -> Any:
-        response = self.openai_client.files.content(file_id=file_id, extra_body=kwargs)
+        if kwargs:
+            response = self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.files.content(file_id=file_id)
         return response
 
     def retrieve_content(self, file_id, **kwargs) -> Any:
-        response = self.openai_client.files.content(file_id=file_id, extra_body=kwargs)
+        if kwargs:
+            response = self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.files.content(file_id=file_id)
         return response
 
     def wait_for_processing(
@@ -130,15 +140,21 @@ class AsyncMainFiles(AsyncAPIResource):
         return data
 
     async def content(self, file_id, **kwargs) -> Any:
-        response = await self.openai_client.files.content(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.files.content(file_id=file_id)
         return response
 
     async def retrieve_content(self, file_id, **kwargs) -> Any:
-        response = await self.openai_client.files.content(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.files.content(file_id=file_id)
         return response
 
     async def wait_for_processing(
