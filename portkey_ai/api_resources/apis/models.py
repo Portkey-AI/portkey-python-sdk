@@ -20,9 +20,14 @@ class Models(APIResource):
     def retrieve(
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> Model:
-        response = self.openai_client.with_raw_response.models.retrieve(
-            model=model, timeout=timeout, extra_body=kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.models.retrieve(
+                model=model, timeout=timeout, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.models.retrieve(
+                model=model, timeout=timeout
+            )
         data = Model(**json.loads(response.text))
         data._headers = response.headers
         return data
@@ -52,9 +57,14 @@ class AsyncModels(AsyncAPIResource):
     async def retrieve(
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> Model:
-        response = await self.openai_client.with_raw_response.models.retrieve(
-            model=model, timeout=timeout, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.models.retrieve(
+                model=model, timeout=timeout, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.with_raw_response.models.retrieve(
+                model=model, timeout=timeout
+            )
         data = Model(**json.loads(response.text))
         data._headers = response.headers
         return data

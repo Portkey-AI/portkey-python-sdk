@@ -36,9 +36,14 @@ class Batches(APIResource):
         return data
 
     def retrieve(self, batch_id, **kwargs) -> Batch:
-        response = self.openai_client.with_raw_response.batches.retrieve(
-            batch_id=batch_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.batches.retrieve(
+                batch_id=batch_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.batches.retrieve(
+                batch_id=batch_id
+            )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
 
@@ -97,9 +102,14 @@ class AsyncBatches(AsyncAPIResource):
         return data
 
     async def retrieve(self, batch_id, **kwargs) -> Batch:
-        response = await self.openai_client.with_raw_response.batches.retrieve(
-            batch_id=batch_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.batches.retrieve(
+                batch_id=batch_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.with_raw_response.batches.retrieve(
+                batch_id=batch_id
+            )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
 

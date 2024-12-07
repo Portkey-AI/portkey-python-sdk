@@ -35,9 +35,14 @@ class MainFiles(APIResource):
         return data
 
     def retrieve(self, file_id, **kwargs) -> FileObject:
-        response = self.openai_client.with_raw_response.files.retrieve(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id
+            )
         data = FileObject(**json.loads(response.text))
         data._headers = response.headers
 
@@ -102,9 +107,14 @@ class AsyncMainFiles(AsyncAPIResource):
         return data
 
     async def retrieve(self, file_id, **kwargs) -> FileObject:
-        response = await self.openai_client.with_raw_response.files.retrieve(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id
+            )
         data = FileObject(**json.loads(response.text))
         data._headers = response.headers
 
