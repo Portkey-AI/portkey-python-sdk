@@ -7,7 +7,7 @@ portkey = Portkey(
 )
 
 
-file_name = "/Users/chandeep/Downloads/seed_tasks.jsonl"
+file_name = "./tests/configs/batches/seed_tasks.jsonl"
 
 
 print("Step 1: Create a batch file")
