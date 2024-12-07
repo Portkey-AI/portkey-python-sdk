@@ -10,6 +10,7 @@ portkey = AsyncPortkey(
 
 file_to_upload_path = "./tests/configs/threads/sample.pdf"
 
+
 async def main():
     print("Step 1: Create Assistant")
     assistant = await AsyncAssistants(portkey).create(
@@ -35,7 +36,9 @@ async def main():
     print(part)
 
     print("Step 4: Complete the upload")
-    complete_upload = await AsyncUploads(portkey).complete(upload_id=upload.id, part_ids=[part.id])
+    complete_upload = await AsyncUploads(portkey).complete(
+        upload_id=upload.id, part_ids=[part.id]
+    )
     print(complete_upload)
 
     print("Step 5: Create a run and poll")
@@ -61,7 +64,7 @@ async def main():
 
     print("Step 6: Get the list of the messages")
     messages = await AsyncMessages(portkey).list(thread_id=run.thread_id)
-    print(messages) 
+    print(messages)
 
 
 asyncio.run(main())
