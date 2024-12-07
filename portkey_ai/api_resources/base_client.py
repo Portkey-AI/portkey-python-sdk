@@ -639,6 +639,9 @@ class APIClient:
             )
             return stream_response
 
+        if not cast_to:
+            return res  # type: ignore [return-value]
+
         response = (
             cast(
                 ResponseT,
@@ -1278,6 +1281,9 @@ class AsyncAPIClient:
                 response=res, cast_to=self._extract_stream_chunk_type(stream_cls)
             )
             return stream_response
+
+        if not cast_to:
+            return res  # type: ignore [return-value]
 
         response = (
             cast(

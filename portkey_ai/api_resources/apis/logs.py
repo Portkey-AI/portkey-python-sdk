@@ -19,6 +19,29 @@ class Logs(APIResource):
         super().__init__(client)
         self.exports = Exports(client)
 
+    def create(
+        self,
+        *,
+        request: Optional[Dict[str, Any]] = None,
+        response: Optional[Dict[str, Any]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
+        body = {
+            "request": request,
+            "response": response,
+            "metadata": metadata,
+        }
+        response = self._post(
+            f"{PortkeyApiPaths.LOGS_API}",
+            body=body,
+            params=None,
+            cast_to=None,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+        return response
+
 
 class Exports(APIResource):
     def __init__(self, client: APIClient) -> None:
@@ -152,6 +175,28 @@ class AsyncLogs(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
         self.exports = AsyncExports(client)
+
+    async def create(
+        self,
+        *,
+        request: Optional[Dict[str, Any]] = None,
+        response: Optional[Dict[str, Any]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
+        body = {
+            "request": request,
+            "response": response,
+            "metadata": metadata,
+        }
+        return await self._post(
+            f"{PortkeyApiPaths.LOGS_API}",
+            body=body,
+            params=None,
+            cast_to=None,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
 
 
 class AsyncExports(AsyncAPIResource):
