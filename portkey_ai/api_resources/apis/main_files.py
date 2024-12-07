@@ -35,9 +35,14 @@ class MainFiles(APIResource):
         return data
 
     def retrieve(self, file_id, **kwargs) -> FileObject:
-        response = self.openai_client.with_raw_response.files.retrieve(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id
+            )
         data = FileObject(**json.loads(response.text))
         data._headers = response.headers
 
@@ -53,11 +58,21 @@ class MainFiles(APIResource):
         return data
 
     def content(self, file_id, **kwargs) -> Any:
-        response = self.openai_client.files.content(file_id=file_id, extra_body=kwargs)
+        if kwargs:
+            response = self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.files.content(file_id=file_id)
         return response
 
     def retrieve_content(self, file_id, **kwargs) -> Any:
-        response = self.openai_client.files.content(file_id=file_id, extra_body=kwargs)
+        if kwargs:
+            response = self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.files.content(file_id=file_id)
         return response
 
     def wait_for_processing(
@@ -102,9 +117,14 @@ class AsyncMainFiles(AsyncAPIResource):
         return data
 
     async def retrieve(self, file_id, **kwargs) -> FileObject:
-        response = await self.openai_client.with_raw_response.files.retrieve(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.with_raw_response.files.retrieve(
+                file_id=file_id
+            )
         data = FileObject(**json.loads(response.text))
         data._headers = response.headers
 
@@ -120,15 +140,21 @@ class AsyncMainFiles(AsyncAPIResource):
         return data
 
     async def content(self, file_id, **kwargs) -> Any:
-        response = await self.openai_client.files.content(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.files.content(file_id=file_id)
         return response
 
     async def retrieve_content(self, file_id, **kwargs) -> Any:
-        response = await self.openai_client.files.content(
-            file_id=file_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.files.content(
+                file_id=file_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.files.content(file_id=file_id)
         return response
 
     async def wait_for_processing(
