@@ -48,9 +48,14 @@ class Assistants(APIResource):
         return data
 
     def retrieve(self, assistant_id, **kwargs) -> Assistant:
-        response = self.openai_client.with_raw_response.beta.assistants.retrieve(
-            assistant_id=assistant_id, **kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.beta.assistants.retrieve(
+                assistant_id=assistant_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.beta.assistants.retrieve(
+                assistant_id=assistant_id
+            )
         data = Assistant(**json.loads(response.text))
         data._headers = response.headers
 
@@ -156,9 +161,18 @@ class AsyncAssistants(AsyncAPIResource):
         return data
 
     async def retrieve(self, assistant_id, **kwargs) -> Assistant:
-        response = await self.openai_client.with_raw_response.beta.assistants.retrieve(
-            assistant_id=assistant_id, **kwargs
-        )
+        if kwargs:
+            response = (
+                await self.openai_client.with_raw_response.beta.assistants.retrieve(
+                    assistant_id=assistant_id, extra_body=kwargs
+                )
+            )
+        else:
+            response = (
+                await self.openai_client.with_raw_response.beta.assistants.retrieve(
+                    assistant_id=assistant_id
+                )
+            )
         data = Assistant(**json.loads(response.text))
         data._headers = response.headers
 

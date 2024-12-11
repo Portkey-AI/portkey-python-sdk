@@ -69,9 +69,14 @@ class Threads(APIResource):
         return data
 
     def retrieve(self, thread_id, **kwargs) -> Thread:
-        response = self.openai_client.with_raw_response.beta.threads.retrieve(
-            thread_id=thread_id, **kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.beta.threads.retrieve(
+                thread_id=thread_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.beta.threads.retrieve(
+                thread_id=thread_id
+            )
         data = Thread(**json.loads(response.text))
         data._headers = response.headers
 
@@ -303,9 +308,18 @@ class Messages(APIResource):
         return data
 
     def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
-        response = self.openai_client.with_raw_response.beta.threads.messages.retrieve(
-            thread_id=thread_id, message_id=message_id, **kwargs
-        )
+        if kwargs:
+            response = (
+                self.openai_client.with_raw_response.beta.threads.messages.retrieve(
+                    thread_id=thread_id, message_id=message_id, extra_body=kwargs
+                )
+            )
+        else:
+            response = (
+                self.openai_client.with_raw_response.beta.threads.messages.retrieve(
+                    thread_id=thread_id, message_id=message_id
+                )
+            )
         data = ThreadMessage(**json.loads(response.text))
         data._headers = response.headers
         return data
@@ -391,9 +405,14 @@ class Runs(APIResource):
             )
 
     def retrieve(self, thread_id, run_id, **kwargs) -> Run:
-        response = self.openai_client.with_raw_response.beta.threads.runs.retrieve(
-            thread_id=thread_id, run_id=run_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.beta.threads.runs.retrieve(
+                thread_id=thread_id, run_id=run_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.beta.threads.runs.retrieve(
+                thread_id=thread_id, run_id=run_id
+            )
         data = Run(**json.loads(response.text))
         data._headers = response.headers
 
@@ -678,11 +697,21 @@ class Steps(APIResource):
         return data
 
     def retrieve(self, thread_id, run_id, step_id, **kwargs) -> RunStep:
-        response = (
-            self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
-                thread_id=thread_id, run_id=run_id, step_id=step_id, extra_body=kwargs
+        if kwargs:
+            response = (
+                self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
+                    thread_id=thread_id,
+                    run_id=run_id,
+                    step_id=step_id,
+                    extra_body=kwargs,
+                )
             )
-        )
+        else:
+            response = (
+                self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
+                    thread_id=thread_id, run_id=run_id, step_id=step_id
+                )
+            )
         data = RunStep(**json.loads(response.text))
         data._headers = response.headers
 
@@ -716,9 +745,14 @@ class AsyncThreads(AsyncAPIResource):
         return data
 
     async def retrieve(self, thread_id, **kwargs) -> Thread:
-        response = await self.openai_client.with_raw_response.beta.threads.retrieve(
-            thread_id=thread_id, **kwargs
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.threads.retrieve(
+                thread_id=thread_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.with_raw_response.beta.threads.retrieve(
+                thread_id=thread_id
+            )
         data = Thread(**json.loads(response.text))
         data._headers = response.headers
 
@@ -958,11 +992,14 @@ class AsyncMessages(AsyncAPIResource):
         return data
 
     async def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
-        response = (
-            await self.openai_client.with_raw_response.beta.threads.messages.retrieve(
-                thread_id=thread_id, message_id=message_id, **kwargs
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.threads.messages.retrieve(  # noqa: E501
+                thread_id=thread_id, message_id=message_id, extra_body=kwargs
             )
-        )
+        else:
+            response = await self.openai_client.with_raw_response.beta.threads.messages.retrieve(  # noqa: E501
+                thread_id=thread_id, message_id=message_id
+            )
         data = ThreadMessage(**json.loads(response.text))
         data._headers = response.headers
         return data
@@ -1050,11 +1087,18 @@ class AsyncRuns(AsyncAPIResource):
             return await self.normal_create(thread_id, assistant_id, **kwargs)
 
     async def retrieve(self, thread_id, run_id, **kwargs) -> Run:
-        response = (
-            await self.openai_client.with_raw_response.beta.threads.runs.retrieve(
-                thread_id=thread_id, run_id=run_id, extra_body=kwargs
+        if kwargs:
+            response = (
+                await self.openai_client.with_raw_response.beta.threads.runs.retrieve(
+                    thread_id=thread_id, run_id=run_id, extra_body=kwargs
+                )
             )
-        )
+        else:
+            response = (
+                await self.openai_client.with_raw_response.beta.threads.runs.retrieve(
+                    thread_id=thread_id, run_id=run_id
+                )
+            )
         data = Run(**json.loads(response.text))
         data._headers = response.headers
 
@@ -1357,11 +1401,14 @@ class AsyncSteps(AsyncAPIResource):
         return data
 
     async def retrieve(self, thread_id, run_id, step_id, **kwargs) -> RunStep:
-        response = (
-            await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(  # noqa: E501
                 thread_id=thread_id, run_id=run_id, step_id=step_id, extra_body=kwargs
             )
-        )
+        else:
+            response = await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(  # noqa: E501
+                thread_id=thread_id, run_id=run_id, step_id=step_id
+            )
         data = RunStep(**json.loads(response.text))
         data._headers = response.headers
 

@@ -55,10 +55,15 @@ class VectorStores(APIResource):
         vector_store_id: str,
         **kwargs,
     ) -> VectorStore:
-        response = self.openai_client.with_raw_response.beta.vector_stores.retrieve(
-            vector_store_id=vector_store_id,
-            **kwargs,
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.beta.vector_stores.retrieve(
+                vector_store_id=vector_store_id,
+                extra_body=kwargs,
+            )
+        else:
+            response = self.openai_client.with_raw_response.beta.vector_stores.retrieve(
+                vector_store_id=vector_store_id,
+            )
         data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
@@ -153,13 +158,21 @@ class VectorFiles(APIResource):
         vector_store_id: str,
         **kwargs,
     ) -> VectorStoreFile:
-        response = (
-            self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(
-                file_id=file_id,
-                vector_store_id=vector_store_id,
-                **kwargs,
+        if kwargs:
+            response = (
+                self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(
+                    file_id=file_id,
+                    vector_store_id=vector_store_id,
+                    extra_body=kwargs,
+                )
             )
-        )
+        else:
+            response = (
+                self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(
+                    file_id=file_id,
+                    vector_store_id=vector_store_id,
+                )
+            )
         data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
 
@@ -312,11 +325,17 @@ class VectorFileBatches(APIResource):
     def retrieve(
         self, batch_id: str, *, vector_store_id: str, **kwargs
     ) -> VectorStoreFileBatch:
-        response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
-            batch_id=batch_id,
-            vector_store_id=vector_store_id,
-            **kwargs,
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
+                batch_id=batch_id,
+                vector_store_id=vector_store_id,
+                extra_body=kwargs,
+            )
+        else:
+            response = self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
+                batch_id=batch_id,
+                vector_store_id=vector_store_id,
+            )
         data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 
@@ -462,12 +481,19 @@ class AsyncVectorStores(AsyncAPIResource):
         vector_store_id: str,
         **kwargs,
     ) -> VectorStore:
-        response = (
-            await self.openai_client.with_raw_response.beta.vector_stores.retrieve(
-                vector_store_id=vector_store_id,
-                **kwargs,
+        if kwargs:
+            response = (
+                await self.openai_client.with_raw_response.beta.vector_stores.retrieve(
+                    vector_store_id=vector_store_id,
+                    extra_body=kwargs,
+                )
             )
-        )
+        else:
+            response = (
+                await self.openai_client.with_raw_response.beta.vector_stores.retrieve(
+                    vector_store_id=vector_store_id,
+                )
+            )
         data = VectorStore(**json.loads(response.text))
         data._headers = response.headers
 
@@ -564,11 +590,17 @@ class AsyncVectorFiles(AsyncAPIResource):
         vector_store_id: str,
         **kwargs,
     ) -> VectorStoreFile:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(  # noqa: E501
-            file_id=file_id,
-            vector_store_id=vector_store_id,
-            **kwargs,
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(  # noqa: E501
+                file_id=file_id,
+                vector_store_id=vector_store_id,
+                extra_body=kwargs,
+            )
+        else:
+            response = await self.openai_client.with_raw_response.beta.vector_stores.files.retrieve(  # noqa: E501
+                file_id=file_id,
+                vector_store_id=vector_store_id,
+            )
         data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers
 
@@ -723,11 +755,17 @@ class AsyncVectorFileBatches(AsyncAPIResource):
     async def retrieve(
         self, batch_id: str, *, vector_store_id: str, **kwargs
     ) -> VectorStoreFileBatch:
-        response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
-            batch_id=batch_id,
-            vector_store_id=vector_store_id,
-            **kwargs,
-        )
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
+                batch_id=batch_id,
+                vector_store_id=vector_store_id,
+                extra_body=kwargs,
+            )
+        else:
+            response = await self.openai_client.with_raw_response.beta.vector_stores.file_batches.retrieve(  # noqa: E501
+                batch_id=batch_id,
+                vector_store_id=vector_store_id,
+            )
         data = VectorStoreFileBatch(**json.loads(response.text))
         data._headers = response.headers
 

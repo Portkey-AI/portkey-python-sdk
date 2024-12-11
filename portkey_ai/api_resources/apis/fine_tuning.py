@@ -56,9 +56,14 @@ class Jobs(APIResource):
         return data
 
     def retrieve(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
-        response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-            fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
+                fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
+            )
+        else:
+            response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
+                fine_tuning_job_id=fine_tuning_job_id
+            )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
@@ -179,9 +184,19 @@ class AsyncJobs(AsyncAPIResource):
         return data
 
     async def retrieve(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
-        response = await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-            fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
-        )
+        if kwargs:
+            response = (
+                await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
+                    fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
+                )
+            )
+        else:
+            response = (
+                await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
+                    fine_tuning_job_id=fine_tuning_job_id
+                )
+            )
+
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
