@@ -115,6 +115,7 @@ class APIClient:
         self.anthropic_beta = anthropic_beta
         self.anthropic_version = anthropic_version
         self.mistral_fim_completion = mistral_fim_completion
+        self.http_client = http_client
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -152,12 +153,30 @@ class APIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
-        self._client = http_client or httpx.Client(
-            base_url=self.base_url,
-            headers={
-                "Accept": "application/json",
-            },
-        )
+
+        if self.http_client:
+            self._client = httpx.Client(
+                auth=self.http_client.auth,
+                params=self.http_client.params,
+                headers={
+                    "Accept": "application/json",
+                    **self.http_client.headers,
+                },
+                cookies=self.http_client.cookies,
+                trust_env=self.http_client.trust_env,
+                timeout=self.http_client.timeout,
+                follow_redirects=self.http_client.follow_redirects,
+                max_redirects=self.http_client.max_redirects,
+                event_hooks=self.http_client.event_hooks,
+                base_url=self.base_url,
+            )
+        else:
+            self._client = httpx.Client(
+                base_url=self.base_url,
+                headers={
+                    "Accept": "application/json",
+                },
+            )
 
         self.response_headers: httpx.Headers | None = None
 
@@ -759,6 +778,7 @@ class AsyncAPIClient:
         self.anthropic_beta = anthropic_beta
         self.anthropic_version = anthropic_version
         self.mistral_fim_completion = mistral_fim_completion
+        self.http_client = http_client
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -796,12 +816,30 @@ class AsyncAPIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
-        self._client = http_client or AsyncHttpxClientWrapper(
-            base_url=self.base_url,
-            headers={
-                "Accept": "application/json",
-            },
-        )
+
+        if self.http_client:
+            self._client = httpx.AsyncClient(
+                auth=self.http_client.auth,
+                params=self.http_client.params,
+                headers={
+                    "Accept": "application/json",
+                    **self.http_client.headers,
+                },
+                cookies=self.http_client.cookies,
+                trust_env=self.http_client.trust_env,
+                timeout=self.http_client.timeout,
+                follow_redirects=self.http_client.follow_redirects,
+                max_redirects=self.http_client.max_redirects,
+                event_hooks=self.http_client.event_hooks,
+                base_url=self.base_url,
+            )
+        else:
+            self._client = AsyncHttpxClientWrapper(
+                base_url=self.base_url,
+                headers={
+                    "Accept": "application/json",
+                },
+            )
 
         self.response_headers: httpx.Headers | None = None
 

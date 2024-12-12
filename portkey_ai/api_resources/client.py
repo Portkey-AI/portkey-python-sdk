@@ -211,7 +211,7 @@ class Portkey(APIClient):
             azure_endpoint_name=azure_endpoint_name or self.azure_endpoint_name,
             huggingface_base_url=huggingface_base_url or self.huggingface_base_url,
             cache_namespace=cache_namespace or self.cache_namespace,
-            http_client=http_client or self._client,
+            http_client=http_client or self.http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance
             or self.strict_open_ai_compliance,
@@ -428,7 +428,7 @@ class AsyncPortkey(AsyncAPIClient):
             azure_endpoint_name=azure_endpoint_name or self.azure_endpoint_name,
             huggingface_base_url=huggingface_base_url or self.huggingface_base_url,
             cache_namespace=cache_namespace or self.cache_namespace,
-            http_client=http_client or self._client,
+            http_client=http_client or self.http_client or self._client,
             request_timeout=request_timeout or self.request_timeout,
             strict_open_ai_compliance=strict_open_ai_compliance
             or self.strict_open_ai_compliance,
