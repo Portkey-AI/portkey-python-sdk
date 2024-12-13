@@ -74,6 +74,7 @@ class TextCompletionChunk(BaseModel, extra="allow"):
     created: Optional[int] = None
     model: Optional[str] = None
     provider: Optional[str] = None
+    usage: Optional[CompletionUsage] = None
     choices: List[TextChoice]
 
     def __str__(self):
