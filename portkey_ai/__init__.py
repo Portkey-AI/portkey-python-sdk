@@ -89,6 +89,10 @@ from portkey_ai.api_resources import (
     AsyncVirtualKeys,
     Logs,
     AsyncLogs,
+    BetaRealtime,
+    AsyncBetaRealtime,
+    BetaSessions,
+    AsyncBetaSessions,
 )
 
 from portkey_ai.version import VERSION
@@ -197,4 +201,8 @@ __all__ = [
     "AsyncVirtualKeys",
     "Logs",
     "AsyncLogs",
+    "BetaRealtime",
+    "AsyncBetaRealtime",
+    "BetaSessions",
+    "AsyncBetaSessions",
 ]

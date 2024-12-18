@@ -97,12 +97,14 @@ class VectorStores(APIResource):
         self,
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
+        before: Union[str, NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
         order: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreList:
         response = self.openai_client.with_raw_response.beta.vector_stores.list(
             after=after,
+            before=before,
             limit=limit,
             order=order,
             **kwargs,
@@ -398,7 +400,7 @@ class VectorFileBatches(APIResource):
             order=order,
             **kwargs,
         )
-        data = VectorStoreFileBatch(**json.loads(response.text))
+        data = VectorStoreFileList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -527,12 +529,14 @@ class AsyncVectorStores(AsyncAPIResource):
         self,
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
+        before: Union[str, NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
         order: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStoreList:
         response = await self.openai_client.with_raw_response.beta.vector_stores.list(
             after=after,
+            before=before,
             limit=limit,
             order=order,
             **kwargs,

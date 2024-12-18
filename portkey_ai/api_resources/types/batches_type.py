@@ -28,13 +28,13 @@ class Errors(BaseModel, extra="allow"):
 
 
 class Batch(BaseModel, extra="allow"):
-    id: str
-    completion_window: str
-    created_at: int
-    endpoint: str
-    input_file_id: str
-    object: str
-    status: str
+    id: Optional[str] = None
+    completion_window: Optional[str] = None
+    created_at: Optional[int] = None
+    endpoint: Optional[str] = None
+    input_file_id: Optional[str] = None
+    object: Optional[str] = None
+    status: Optional[str] = None
     cancelled_at: Optional[int] = None
     cancelling_at: Optional[int] = None
     completed_at: Optional[int] = None

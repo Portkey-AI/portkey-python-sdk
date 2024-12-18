@@ -77,6 +77,10 @@ from .apis import (
     AsyncVirtualKeys,
     Logs,
     AsyncLogs,
+    BetaRealtime,
+    AsyncBetaRealtime,
+    BetaSessions,
+    AsyncBetaSessions,
 )
 from .utils import (
     Modes,
@@ -189,4 +193,8 @@ __all__ = [
     "AsyncVirtualKeys",
     "Logs",
     "AsyncLogs",
+    "BetaRealtime",
+    "AsyncBetaRealtime",
+    "BetaSessions",
+    "AsyncBetaSessions",
 ]

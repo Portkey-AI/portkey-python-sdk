@@ -17,6 +17,11 @@ __all__ = [
     "FineTuningJobCheckpointList",
     "FineTuningJobWandbIntegration",
     "FineTuningJobWandbIntegrationObject",
+    "MethodDpoHyperparameters",
+    "MethodSupervisedHyperparameters",
+    "MethodDpo",
+    "MethodSupervised",
+    "Method",
 ]
 
 
@@ -27,7 +32,9 @@ class Error(BaseModel, extra="allow"):
 
 
 class Hyperparameters(BaseModel, extra="allow"):
-    n_epochs: Union[str, int]
+    batch_size: Optional[Union[str, int]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
 
 
 class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
@@ -42,24 +49,52 @@ class FineTuningJobWandbIntegrationObject(BaseModel, extra="allow"):
     wandb: FineTuningJobWandbIntegration
 
 
+class MethodDpoHyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    beta: Optional[Union[str, float]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
+
+
+class MethodSupervisedHyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
+
+
+class MethodDpo(BaseModel, extra="allow"):
+    hyperparameters: Optional[MethodDpoHyperparameters] = None
+
+
+class MethodSupervised(BaseModel, extra="allow"):
+    hyperparameters: Optional[MethodSupervisedHyperparameters] = None
+
+
+class Method(BaseModel, extra="allow"):
+    dpo: Optional[MethodDpo] = None
+    supervised: Optional[MethodSupervised] = None
+    type: Optional[str] = None
+
+
 class FineTuningJob(BaseModel, extra="allow"):
-    id: str
-    created_at: int
+    id: Optional[str] = None
+    created_at: Optional[int] = None
     error: Optional[Error] = None
     fine_tuned_model: Optional[str] = None
     finished_at: Optional[int] = None
-    hyperparameters: Hyperparameters
-    model: str
-    object: str
-    organization_id: str
-    result_files: List[str]
-    seed: int
-    status: str
+    hyperparameters: Optional[Hyperparameters] = None
+    model: Optional[str] = None
+    object: Optional[str] = None
+    organization_id: Optional[str] = None
+    result_files: Optional[List[str]] = None
+    seed: Optional[int] = None
+    status: Optional[str] = None
     trained_tokens: Optional[int] = None
-    training_file: str
+    training_file: Optional[str] = None
     validation_file: Optional[str] = None
     estimated_finish: Optional[int] = None
     integrations: Optional[List[FineTuningJobWandbIntegrationObject]] = None
+    method: Optional[Method] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -96,11 +131,13 @@ class FineTuningJobList(BaseModel, extra="allow"):
 
 
 class FineTuningJobEvent(BaseModel, extra="allow"):
-    id: str
-    created_at: int
-    level: str
-    message: str
-    object: str
+    id: Optional[str] = None
+    created_at: Optional[int] = None
+    level: Optional[str] = None
+    message: Optional[str] = None
+    object: Optional[str] = None
+    data: Optional[Any] = None
+    type: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -147,13 +184,13 @@ class Metrics(BaseModel, extra="allow"):
 
 
 class FineTuningJobCheckpoint(BaseModel, extra="allow"):
-    id: str
-    created_at: int
-    fine_tuned_model_checkpoint: str
-    fine_tuning_job_id: str
-    metrics: Metrics
-    object: str
-    step_number: int
+    id: Optional[str] = None
+    created_at: Optional[int] = None
+    fine_tuned_model_checkpoint: Optional[str] = None
+    fine_tuning_job_id: Optional[str] = None
+    metrics: Optional[Metrics] = None
+    object: Optional[str] = None
+    step_number: Optional[int] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

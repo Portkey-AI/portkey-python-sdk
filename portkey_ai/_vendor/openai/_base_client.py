@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import json
 import time
 import uuid
@@ -61,7 +62,7 @@ from ._types import (
     HttpxRequestFiles,
     ModelBuilderProtocol,
 )
-from ._utils import is_dict, is_list, asyncify, is_given, lru_cache, is_mapping
+from ._utils import SensitiveHeadersFilter, is_dict, is_list, asyncify, is_given, lru_cache, is_mapping
 from ._compat import model_copy, model_dump
 from ._models import GenericModel, FinalRequestOptions, validate_type, construct_type
 from ._response import (
@@ -89,6 +90,7 @@ from ._exceptions import (
 from ._legacy_response import LegacyAPIResponse
 
 log: logging.Logger = logging.getLogger(__name__)
+log.addFilter(SensitiveHeadersFilter())
 
 # TODO: make base page type vars covariant
 SyncPageT = TypeVar("SyncPageT", bound="BaseSyncPage[Any]")
@@ -142,6 +144,12 @@ class PageInfo:
     ) -> None:
         self.url = url
         self.params = params
+
+    @override
+    def __repr__(self) -> str:
+        if self.url:
+            return f"{self.__class__.__name__}(url={self.url})"
+        return f"{self.__class__.__name__}(params={self.params})"
 
 
 class BasePage(GenericModel, Generic[_T]):
@@ -400,14 +408,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
     ) -> _exceptions.APIStatusError:
         raise NotImplementedError()
 
-    def _remaining_retries(
-        self,
-        remaining_retries: Optional[int],
-        options: FinalRequestOptions,
-    ) -> int:
-        return remaining_retries if remaining_retries is not None else options.get_max_retries(self.max_retries)
-
-    def _build_headers(self, options: FinalRequestOptions) -> httpx.Headers:
+    def _build_headers(self, options: FinalRequestOptions, *, retries_taken: int = 0) -> httpx.Headers:
         custom_headers = options.headers or {}
         headers_dict = _merge_mappings(self.default_headers, custom_headers)
         self._validate_headers(headers_dict, custom_headers)
@@ -418,6 +419,11 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         idempotency_header = self._idempotency_header
         if idempotency_header and options.method.lower() != "get" and idempotency_header not in headers:
             headers[idempotency_header] = options.idempotency_key or self._idempotency_key()
+
+        # Don't set the retry count header if it was already set or removed by the caller. We check
+        # `custom_headers`, which can contain `Omit()`, instead of `headers` to account for the removal case.
+        if "x-stainless-retry-count" not in (header.lower() for header in custom_headers):
+            headers["x-stainless-retry-count"] = str(retries_taken)
 
         return headers
 
@@ -440,6 +446,8 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
     def _build_request(
         self,
         options: FinalRequestOptions,
+        *,
+        retries_taken: int = 0,
     ) -> httpx.Request:
         if log.isEnabledFor(logging.DEBUG):
             log.debug("Request options: %s", model_dump(options, exclude_unset=True))
@@ -455,7 +463,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             else:
                 raise RuntimeError(f"Unexpected JSON data type, {type(json_data)}, cannot merge with `extra_body`")
 
-        headers = self._build_headers(options)
+        headers = self._build_headers(options, retries_taken=retries_taken)
         params = _merge_mappings(self.default_query, options.params)
         content_type = headers.get("Content-Type")
         files = options.files
@@ -489,12 +497,17 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
             if not files:
                 files = cast(HttpxRequestFiles, ForceMultipartDict())
 
+        prepared_url = self._prepare_url(options.url)
+        if "_" in prepared_url.host:
+            # work around https://github.com/encode/httpx/discussions/2880
+            kwargs["extensions"] = {"sni_hostname": prepared_url.host.replace("_", "-")}
+
         # TODO: report this error to httpx
         return self._client.build_request(  # pyright: ignore[reportUnknownMemberType]
             headers=headers,
             timeout=self.timeout if isinstance(options.timeout, NotGiven) else options.timeout,
             method=options.method,
-            url=self._prepare_url(options.url),
+            url=prepared_url,
             # the `Query` type that we use is incompatible with qs'
             # `Params` type as it needs to be typed as `Mapping[str, object]`
             # so that passing a `TypedDict` doesn't cause an error.
@@ -684,7 +697,8 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         if retry_after is not None and 0 < retry_after <= 60:
             return retry_after
 
-        nb_retries = max_retries - remaining_retries
+        # Also cap retry count to 1000 to avoid any potential overflows with `pow`
+        nb_retries = min(max_retries - remaining_retries, 1000)
 
         # Apply exponential backoff, but not more than the max.
         sleep_seconds = min(INITIAL_RETRY_DELAY * pow(2.0, nb_retries), MAX_RETRY_DELAY)
@@ -849,7 +863,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
             timeout=cast(Timeout, timeout),
             limits=limits,
             follow_redirects=True,
-            **kwargs, # type: ignore
+            **kwargs,  # type: ignore
         )
 
     def is_closed(self) -> bool:
@@ -935,12 +949,17 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         stream: bool = False,
         stream_cls: type[_StreamT] | None = None,
     ) -> ResponseT | _StreamT:
+        if remaining_retries is not None:
+            retries_taken = options.get_max_retries(self.max_retries) - remaining_retries
+        else:
+            retries_taken = 0
+
         return self._request(
             cast_to=cast_to,
             options=options,
             stream=stream,
             stream_cls=stream_cls,
-            remaining_retries=remaining_retries,
+            retries_taken=retries_taken,
         )
 
     def _request(
@@ -948,7 +967,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         options: FinalRequestOptions,
-        remaining_retries: int | None,
+        retries_taken: int,
         stream: bool,
         stream_cls: type[_StreamT] | None,
     ) -> ResponseT | _StreamT:
@@ -960,8 +979,8 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         cast_to = self._maybe_override_cast_to(cast_to, options)
         options = self._prepare_options(options)
 
-        retries = self._remaining_retries(remaining_retries, options)
-        request = self._build_request(options)
+        remaining_retries = options.get_max_retries(self.max_retries) - retries_taken
+        request = self._build_request(options, retries_taken=retries_taken)
         self._prepare_request(request)
 
         kwargs: HttpxSendArgs = {}
@@ -979,11 +998,11 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if retries > 0:
+            if remaining_retries > 0:
                 return self._retry_request(
                     input_options,
                     cast_to,
-                    retries,
+                    retries_taken=retries_taken,
                     stream=stream,
                     stream_cls=stream_cls,
                     response_headers=None,
@@ -994,11 +1013,11 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except Exception as err:
             log.debug("Encountered Exception", exc_info=True)
 
-            if retries > 0:
+            if remaining_retries > 0:
                 return self._retry_request(
                     input_options,
                     cast_to,
-                    retries,
+                    retries_taken=retries_taken,
                     stream=stream,
                     stream_cls=stream_cls,
                     response_headers=None,
@@ -1022,13 +1041,13 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
             log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
 
-            if retries > 0 and self._should_retry(err.response):
+            if remaining_retries > 0 and self._should_retry(err.response):
                 err.response.close()
                 return self._retry_request(
                     input_options,
                     cast_to,
-                    retries,
-                    err.response.headers,
+                    retries_taken=retries_taken,
+                    response_headers=err.response.headers,
                     stream=stream,
                     stream_cls=stream_cls,
                 )
@@ -1047,26 +1066,26 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
             response=response,
             stream=stream,
             stream_cls=stream_cls,
-            retries_taken=options.get_max_retries(self.max_retries) - retries,
+            retries_taken=retries_taken,
         )
 
     def _retry_request(
         self,
         options: FinalRequestOptions,
         cast_to: Type[ResponseT],
-        remaining_retries: int,
-        response_headers: httpx.Headers | None,
         *,
+        retries_taken: int,
+        response_headers: httpx.Headers | None,
         stream: bool,
         stream_cls: type[_StreamT] | None,
     ) -> ResponseT | _StreamT:
-        remaining = remaining_retries - 1
-        if remaining == 1:
+        remaining_retries = options.get_max_retries(self.max_retries) - retries_taken
+        if remaining_retries == 1:
             log.debug("1 retry left")
         else:
-            log.debug("%i retries left", remaining)
+            log.debug("%i retries left", remaining_retries)
 
-        timeout = self._calculate_retry_timeout(remaining, options, response_headers)
+        timeout = self._calculate_retry_timeout(remaining_retries, options, response_headers)
         log.info("Retrying request to %s in %f seconds", options.url, timeout)
 
         # In a synchronous context we are blocking the entire thread. Up to the library user to run the client in a
@@ -1076,7 +1095,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         return self._request(
             options=options,
             cast_to=cast_to,
-            remaining_retries=remaining,
+            retries_taken=retries_taken + 1,
             stream=stream,
             stream_cls=stream_cls,
         )
@@ -1427,7 +1446,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
             timeout=cast(Timeout, timeout),
             limits=limits,
             follow_redirects=True,
-            **kwargs, # type: ignore
+            **kwargs,  # type: ignore
         )
 
     def is_closed(self) -> bool:
@@ -1510,12 +1529,17 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         stream_cls: type[_AsyncStreamT] | None = None,
         remaining_retries: Optional[int] = None,
     ) -> ResponseT | _AsyncStreamT:
+        if remaining_retries is not None:
+            retries_taken = options.get_max_retries(self.max_retries) - remaining_retries
+        else:
+            retries_taken = 0
+
         return await self._request(
             cast_to=cast_to,
             options=options,
             stream=stream,
             stream_cls=stream_cls,
-            remaining_retries=remaining_retries,
+            retries_taken=retries_taken,
         )
 
     async def _request(
@@ -1525,7 +1549,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         stream: bool,
         stream_cls: type[_AsyncStreamT] | None,
-        remaining_retries: int | None,
+        retries_taken: int,
     ) -> ResponseT | _AsyncStreamT:
         if self._platform is None:
             # `get_platform` can make blocking IO calls so we
@@ -1540,8 +1564,8 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         cast_to = self._maybe_override_cast_to(cast_to, options)
         options = await self._prepare_options(options)
 
-        retries = self._remaining_retries(remaining_retries, options)
-        request = self._build_request(options)
+        remaining_retries = options.get_max_retries(self.max_retries) - retries_taken
+        request = self._build_request(options, retries_taken=retries_taken)
         await self._prepare_request(request)
 
         kwargs: HttpxSendArgs = {}
@@ -1557,11 +1581,11 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if retries > 0:
+            if remaining_retries > 0:
                 return await self._retry_request(
                     input_options,
                     cast_to,
-                    retries,
+                    retries_taken=retries_taken,
                     stream=stream,
                     stream_cls=stream_cls,
                     response_headers=None,
@@ -1572,11 +1596,11 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except Exception as err:
             log.debug("Encountered Exception", exc_info=True)
 
-            if retries > 0:
+            if remaining_retries > 0:
                 return await self._retry_request(
                     input_options,
                     cast_to,
-                    retries,
+                    retries_taken=retries_taken,
                     stream=stream,
                     stream_cls=stream_cls,
                     response_headers=None,
@@ -1594,13 +1618,13 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
             log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
 
-            if retries > 0 and self._should_retry(err.response):
+            if remaining_retries > 0 and self._should_retry(err.response):
                 await err.response.aclose()
                 return await self._retry_request(
                     input_options,
                     cast_to,
-                    retries,
-                    err.response.headers,
+                    retries_taken=retries_taken,
+                    response_headers=err.response.headers,
                     stream=stream,
                     stream_cls=stream_cls,
                 )
@@ -1619,26 +1643,26 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
             response=response,
             stream=stream,
             stream_cls=stream_cls,
-            retries_taken=options.get_max_retries(self.max_retries) - retries,
+            retries_taken=retries_taken,
         )
 
     async def _retry_request(
         self,
         options: FinalRequestOptions,
         cast_to: Type[ResponseT],
-        remaining_retries: int,
-        response_headers: httpx.Headers | None,
         *,
+        retries_taken: int,
+        response_headers: httpx.Headers | None,
         stream: bool,
         stream_cls: type[_AsyncStreamT] | None,
     ) -> ResponseT | _AsyncStreamT:
-        remaining = remaining_retries - 1
-        if remaining == 1:
+        remaining_retries = options.get_max_retries(self.max_retries) - retries_taken
+        if remaining_retries == 1:
             log.debug("1 retry left")
         else:
-            log.debug("%i retries left", remaining)
+            log.debug("%i retries left", remaining_retries)
 
-        timeout = self._calculate_retry_timeout(remaining, options, response_headers)
+        timeout = self._calculate_retry_timeout(remaining_retries, options, response_headers)
         log.info("Retrying request to %s in %f seconds", options.url, timeout)
 
         await anyio.sleep(timeout)
@@ -1646,7 +1670,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         return await self._request(
             options=options,
             cast_to=cast_to,
-            remaining_retries=remaining,
+            retries_taken=retries_taken + 1,
             stream=stream,
             stream_cls=stream_cls,
         )
@@ -2016,7 +2040,6 @@ def get_python_version() -> str:
 
 def get_architecture() -> Arch:
     try:
-        python_bitness, _ = platform.architecture()
         machine = platform.machine().lower()
     except Exception:
         return "unknown"
@@ -2032,7 +2055,7 @@ def get_architecture() -> Arch:
         return "x64"
 
     # TODO: untested
-    if python_bitness == "32bit":
+    if sys.maxsize <= 2**32:
         return "x32"
 
     if machine:

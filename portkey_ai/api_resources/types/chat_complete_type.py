@@ -41,10 +41,24 @@ class ChoiceLogprobs(BaseModel, extra="allow"):
     refusal: Optional[List[ChatCompletionTokenLogprob]] = None
 
 
+class CompletionTokensDetails(BaseModel, extra="allow"):
+    accepted_prediction_tokens: Optional[int] = None
+    audio_tokens: Optional[int] = None
+    reasoning_tokens: Optional[int] = None
+    rejected_prediction_tokens: Optional[int] = None
+
+
+class PromptTokensDetails(BaseModel, extra="allow"):
+    audio_tokens: Optional[int] = None
+    cached_tokens: Optional[int] = None
+
+
 class Usage(BaseModel, extra="allow"):
     prompt_tokens: Optional[int] = None
     completion_tokens: Optional[int] = None
     total_tokens: Optional[int] = None
+    completion_tokens_details: Optional[CompletionTokensDetails] = None
+    prompt_tokens_details: Optional[PromptTokensDetails] = None
 
 
 class DeltaToolCallFunction(BaseModel, extra="allow"):
@@ -93,12 +107,20 @@ class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
     type: Optional[str] = None
 
 
+class ChatCompletionAudio(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    data: Optional[str] = None
+    expires_at: Optional[int] = None
+    transcript: Optional[str] = None
+
+
 class ChatCompletionMessage(BaseModel, extra="allow"):
     content: Optional[Union[str, Iterable[Any]]] = None
     role: Optional[str] = None
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
     refusal: Optional[str] = None
+    audio: Optional[ChatCompletionAudio] = None
 
 
 class Choice(BaseModel, extra="allow"):
@@ -140,6 +162,8 @@ class ChatCompletionChunk(BaseModel, extra="allow"):
     model: Optional[str] = None
     choices: Optional[List[StreamChoice]]
     service_tier: Optional[str] = None
+    system_fingerprint: Optional[str] = None
+    usage: Optional[Usage] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)

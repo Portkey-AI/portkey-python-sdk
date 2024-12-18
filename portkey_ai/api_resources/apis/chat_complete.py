@@ -4,8 +4,10 @@ import json
 from typing import (
     Any,
     AsyncIterator,
+    Dict,
     Iterable,
     Iterator,
+    List,
     Mapping,
     Optional,
     Union,
@@ -44,7 +46,21 @@ class Completions(APIResource):
         self.openai_client = client.openai_client
 
     def stream_create(  # type: ignore[return]
-        self, model, messages, stream, temperature, max_tokens, top_p, **kwargs
+        self,
+        model,
+        messages,
+        stream,
+        temperature,
+        max_tokens,
+        top_p,
+        audio,
+        max_completion_tokens,
+        metadata,
+        modalities,
+        prediction,
+        reasoning_effort,
+        store,
+        **kwargs,
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
         with self.openai_client.with_streaming_response.chat.completions.create(
             model=model,
@@ -53,6 +69,13 @@ class Completions(APIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            audio=audio,
+            max_completion_tokens=max_completion_tokens,
+            metadata=metadata,
+            modalities=modalities,
+            prediction=prediction,
+            reasoning_effort=reasoning_effort,
+            store=store,
             extra_body=kwargs,
         ) as response:
             for line in response.iter_lines():
@@ -70,7 +93,21 @@ class Completions(APIResource):
                     return ""
 
     def normal_create(
-        self, model, messages, stream, temperature, max_tokens, top_p, **kwargs
+        self,
+        model,
+        messages,
+        stream,
+        temperature,
+        max_tokens,
+        top_p,
+        audio,
+        max_completion_tokens,
+        metadata,
+        modalities,
+        prediction,
+        reasoning_effort,
+        store,
+        **kwargs,
     ) -> ChatCompletions:
         response = self.openai_client.with_raw_response.chat.completions.create(
             model=model,
@@ -79,6 +116,13 @@ class Completions(APIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            audio=audio,
+            max_completion_tokens=max_completion_tokens,
+            metadata=metadata,
+            modalities=modalities,
+            prediction=prediction,
+            reasoning_effort=reasoning_effort,
+            store=store,
             extra_body=kwargs,
         )
         data = ChatCompletions(**json.loads(response.text))
@@ -94,6 +138,13 @@ class Completions(APIResource):
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         max_tokens: Union[int, NotGiven] = NOT_GIVEN,
         top_p: Union[float, NotGiven] = NOT_GIVEN,
+        audio: Optional[Any] = NOT_GIVEN,
+        max_completion_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, str], NotGiven] = NOT_GIVEN,
+        modalities: Union[List[Any], NotGiven] = NOT_GIVEN,
+        prediction: Union[Any, NotGiven] = NOT_GIVEN,
+        reasoning_effort: Union[Any, NotGiven] = NOT_GIVEN,
+        store: Union[Optional[bool], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
         if stream is True:
@@ -104,6 +155,13 @@ class Completions(APIResource):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 top_p=top_p,
+                audio=audio,
+                max_completion_tokens=max_completion_tokens,
+                metadata=metadata,
+                modalities=modalities,
+                prediction=prediction,
+                reasoning_effort=reasoning_effort,
+                store=store,
                 **kwargs,
             )
         else:
@@ -114,6 +172,13 @@ class Completions(APIResource):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 top_p=top_p,
+                audio=audio,
+                max_completion_tokens=max_completion_tokens,
+                metadata=metadata,
+                modalities=modalities,
+                prediction=prediction,
+                reasoning_effort=reasoning_effort,
+                store=store,
                 **kwargs,
             )
 

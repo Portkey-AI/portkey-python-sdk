@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import typing_extensions
-from typing import Union, Iterable, Optional, overload
+from typing import List, Union, Iterable, Optional
 from functools import partial
-from typing_extensions import Literal
+from typing_extensions import Literal, overload
 
 import httpx
 
@@ -49,6 +49,7 @@ from .....types.beta.threads import (
 from .....types.beta.threads.run import Run
 from .....types.beta.assistant_tool_param import AssistantToolParam
 from .....types.beta.assistant_stream_event import AssistantStreamEvent
+from .....types.beta.threads.runs.run_step_include import RunStepInclude
 from .....types.beta.assistant_tool_choice_option_param import AssistantToolChoiceOptionParam
 from .....types.beta.assistant_response_format_option_param import AssistantResponseFormatOptionParam
 
@@ -62,10 +63,21 @@ class Runs(SyncAPIResource):
 
     @cached_property
     def with_raw_response(self) -> RunsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return RunsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> RunsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return RunsWithStreamingResponse(self)
 
     @overload
@@ -74,6 +86,7 @@ class Runs(SyncAPIResource):
         thread_id: str,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -104,6 +117,14 @@ class Runs(SyncAPIResource):
               [assistant](https://platform.openai.com/docs/api-reference/assistants) to use to
               execute this run.
 
+          include: A list of additional fields to include in the response. Currently the only
+              supported value is `step_details.tool_calls[*].file_search.results[*].content`
+              to fetch the file search result content.
+
+              See the
+              [file search tool documentation](https://platform.openai.com/docs/assistants/tools/file-search#customizing-file-search-settings)
+              for more information.
+
           additional_instructions: Appends additional instructions at the end of the instructions for the run. This
               is useful for modifying the behavior on a per-run basis without overriding other
               instructions.
@@ -128,7 +149,7 @@ class Runs(SyncAPIResource):
 
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           model: The ID of the [Model](https://platform.openai.com/docs/api-reference/models) to
@@ -137,20 +158,20 @@ class Runs(SyncAPIResource):
               assistant will be used.
 
           parallel_tool_calls: Whether to enable
-              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
               and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
               Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-              Outputs which guarantees the model will match your supplied JSON schema. Learn
-              more in the
+              Outputs which ensures the model will match your supplied JSON schema. Learn more
+              in the
               [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-              Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+              Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
               message the model generates is valid JSON.
 
               **Important:** when using JSON mode, you **must** also instruct the model to
@@ -206,6 +227,7 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         stream: Literal[True],
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -239,6 +261,14 @@ class Runs(SyncAPIResource):
               events, terminating when the Run enters a terminal state with a `data: [DONE]`
               message.
 
+          include: A list of additional fields to include in the response. Currently the only
+              supported value is `step_details.tool_calls[*].file_search.results[*].content`
+              to fetch the file search result content.
+
+              See the
+              [file search tool documentation](https://platform.openai.com/docs/assistants/tools/file-search#customizing-file-search-settings)
+              for more information.
+
           additional_instructions: Appends additional instructions at the end of the instructions for the run. This
               is useful for modifying the behavior on a per-run basis without overriding other
               instructions.
@@ -263,7 +293,7 @@ class Runs(SyncAPIResource):
 
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           model: The ID of the [Model](https://platform.openai.com/docs/api-reference/models) to
@@ -272,20 +302,20 @@ class Runs(SyncAPIResource):
               assistant will be used.
 
           parallel_tool_calls: Whether to enable
-              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
               and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
               Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-              Outputs which guarantees the model will match your supplied JSON schema. Learn
-              more in the
+              Outputs which ensures the model will match your supplied JSON schema. Learn more
+              in the
               [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-              Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+              Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
               message the model generates is valid JSON.
 
               **Important:** when using JSON mode, you **must** also instruct the model to
@@ -337,6 +367,7 @@ class Runs(SyncAPIResource):
         *,
         assistant_id: str,
         stream: bool,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -370,6 +401,14 @@ class Runs(SyncAPIResource):
               events, terminating when the Run enters a terminal state with a `data: [DONE]`
               message.
 
+          include: A list of additional fields to include in the response. Currently the only
+              supported value is `step_details.tool_calls[*].file_search.results[*].content`
+              to fetch the file search result content.
+
+              See the
+              [file search tool documentation](https://platform.openai.com/docs/assistants/tools/file-search#customizing-file-search-settings)
+              for more information.
+
           additional_instructions: Appends additional instructions at the end of the instructions for the run. This
               is useful for modifying the behavior on a per-run basis without overriding other
               instructions.
@@ -394,7 +433,7 @@ class Runs(SyncAPIResource):
 
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           model: The ID of the [Model](https://platform.openai.com/docs/api-reference/models) to
@@ -403,20 +442,20 @@ class Runs(SyncAPIResource):
               assistant will be used.
 
           parallel_tool_calls: Whether to enable
-              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
               and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
               Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-              Outputs which guarantees the model will match your supplied JSON schema. Learn
-              more in the
+              Outputs which ensures the model will match your supplied JSON schema. Learn more
+              in the
               [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-              Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+              Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
               message the model generates is valid JSON.
 
               **Important:** when using JSON mode, you **must** also instruct the model to
@@ -467,6 +506,7 @@ class Runs(SyncAPIResource):
         thread_id: str,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -516,7 +556,11 @@ class Runs(SyncAPIResource):
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"include": include}, run_create_params.RunCreateParams),
             ),
             cast_to=Run,
             stream=stream or False,
@@ -579,7 +623,7 @@ class Runs(SyncAPIResource):
         Args:
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           extra_headers: Send extra headers
@@ -630,8 +674,8 @@ class Runs(SyncAPIResource):
 
           before: A cursor for use in pagination. `before` is an object ID that defines your place
               in the list. For instance, if you make a list request and receive 100 objects,
-              ending with obj_foo, your subsequent call can include before=obj_foo in order to
-              fetch the previous page of the list.
+              starting with obj_foo, your subsequent call can include before=obj_foo in order
+              to fetch the previous page of the list.
 
           limit: A limit on the number of objects to be returned. Limit can range between 1 and
               100, and the default is 20.
@@ -712,6 +756,7 @@ class Runs(SyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -743,6 +788,7 @@ class Runs(SyncAPIResource):
         run = self.create(
             thread_id=thread_id,
             assistant_id=assistant_id,
+            include=include,
             additional_instructions=additional_instructions,
             additional_messages=additional_messages,
             instructions=instructions,
@@ -958,6 +1004,7 @@ class Runs(SyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -988,6 +1035,7 @@ class Runs(SyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -1018,6 +1066,7 @@ class Runs(SyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -1076,7 +1125,11 @@ class Runs(SyncAPIResource):
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"include": include}, run_create_params.RunCreateParams),
             ),
             cast_to=Run,
             stream=True,
@@ -1375,10 +1428,21 @@ class AsyncRuns(AsyncAPIResource):
 
     @cached_property
     def with_raw_response(self) -> AsyncRunsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return AsyncRunsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncRunsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return AsyncRunsWithStreamingResponse(self)
 
     @overload
@@ -1387,6 +1451,7 @@ class AsyncRuns(AsyncAPIResource):
         thread_id: str,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -1417,6 +1482,14 @@ class AsyncRuns(AsyncAPIResource):
               [assistant](https://platform.openai.com/docs/api-reference/assistants) to use to
               execute this run.
 
+          include: A list of additional fields to include in the response. Currently the only
+              supported value is `step_details.tool_calls[*].file_search.results[*].content`
+              to fetch the file search result content.
+
+              See the
+              [file search tool documentation](https://platform.openai.com/docs/assistants/tools/file-search#customizing-file-search-settings)
+              for more information.
+
           additional_instructions: Appends additional instructions at the end of the instructions for the run. This
               is useful for modifying the behavior on a per-run basis without overriding other
               instructions.
@@ -1441,7 +1514,7 @@ class AsyncRuns(AsyncAPIResource):
 
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           model: The ID of the [Model](https://platform.openai.com/docs/api-reference/models) to
@@ -1450,20 +1523,20 @@ class AsyncRuns(AsyncAPIResource):
               assistant will be used.
 
           parallel_tool_calls: Whether to enable
-              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
               and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
               Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-              Outputs which guarantees the model will match your supplied JSON schema. Learn
-              more in the
+              Outputs which ensures the model will match your supplied JSON schema. Learn more
+              in the
               [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-              Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+              Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
               message the model generates is valid JSON.
 
               **Important:** when using JSON mode, you **must** also instruct the model to
@@ -1519,6 +1592,7 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         stream: Literal[True],
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -1552,6 +1626,14 @@ class AsyncRuns(AsyncAPIResource):
               events, terminating when the Run enters a terminal state with a `data: [DONE]`
               message.
 
+          include: A list of additional fields to include in the response. Currently the only
+              supported value is `step_details.tool_calls[*].file_search.results[*].content`
+              to fetch the file search result content.
+
+              See the
+              [file search tool documentation](https://platform.openai.com/docs/assistants/tools/file-search#customizing-file-search-settings)
+              for more information.
+
           additional_instructions: Appends additional instructions at the end of the instructions for the run. This
               is useful for modifying the behavior on a per-run basis without overriding other
               instructions.
@@ -1576,7 +1658,7 @@ class AsyncRuns(AsyncAPIResource):
 
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           model: The ID of the [Model](https://platform.openai.com/docs/api-reference/models) to
@@ -1585,20 +1667,20 @@ class AsyncRuns(AsyncAPIResource):
               assistant will be used.
 
           parallel_tool_calls: Whether to enable
-              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
               and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
               Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-              Outputs which guarantees the model will match your supplied JSON schema. Learn
-              more in the
+              Outputs which ensures the model will match your supplied JSON schema. Learn more
+              in the
               [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-              Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+              Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
               message the model generates is valid JSON.
 
               **Important:** when using JSON mode, you **must** also instruct the model to
@@ -1650,6 +1732,7 @@ class AsyncRuns(AsyncAPIResource):
         *,
         assistant_id: str,
         stream: bool,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -1683,6 +1766,14 @@ class AsyncRuns(AsyncAPIResource):
               events, terminating when the Run enters a terminal state with a `data: [DONE]`
               message.
 
+          include: A list of additional fields to include in the response. Currently the only
+              supported value is `step_details.tool_calls[*].file_search.results[*].content`
+              to fetch the file search result content.
+
+              See the
+              [file search tool documentation](https://platform.openai.com/docs/assistants/tools/file-search#customizing-file-search-settings)
+              for more information.
+
           additional_instructions: Appends additional instructions at the end of the instructions for the run. This
               is useful for modifying the behavior on a per-run basis without overriding other
               instructions.
@@ -1707,7 +1798,7 @@ class AsyncRuns(AsyncAPIResource):
 
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           model: The ID of the [Model](https://platform.openai.com/docs/api-reference/models) to
@@ -1716,20 +1807,20 @@ class AsyncRuns(AsyncAPIResource):
               assistant will be used.
 
           parallel_tool_calls: Whether to enable
-              [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+              [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
           response_format: Specifies the format that the model must output. Compatible with
-              [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-              [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+              [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+              [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
               and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
               Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-              Outputs which guarantees the model will match your supplied JSON schema. Learn
-              more in the
+              Outputs which ensures the model will match your supplied JSON schema. Learn more
+              in the
               [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-              Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+              Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
               message the model generates is valid JSON.
 
               **Important:** when using JSON mode, you **must** also instruct the model to
@@ -1780,6 +1871,7 @@ class AsyncRuns(AsyncAPIResource):
         thread_id: str,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -1829,7 +1921,11 @@ class AsyncRuns(AsyncAPIResource):
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform({"include": include}, run_create_params.RunCreateParams),
             ),
             cast_to=Run,
             stream=stream or False,
@@ -1892,7 +1988,7 @@ class AsyncRuns(AsyncAPIResource):
         Args:
           metadata: Set of 16 key-value pairs that can be attached to an object. This can be useful
               for storing additional information about the object in a structured format. Keys
-              can be a maximum of 64 characters long and values can be a maxium of 512
+              can be a maximum of 64 characters long and values can be a maximum of 512
               characters long.
 
           extra_headers: Send extra headers
@@ -1943,8 +2039,8 @@ class AsyncRuns(AsyncAPIResource):
 
           before: A cursor for use in pagination. `before` is an object ID that defines your place
               in the list. For instance, if you make a list request and receive 100 objects,
-              ending with obj_foo, your subsequent call can include before=obj_foo in order to
-              fetch the previous page of the list.
+              starting with obj_foo, your subsequent call can include before=obj_foo in order
+              to fetch the previous page of the list.
 
           limit: A limit on the number of objects to be returned. Limit can range between 1 and
               100, and the default is 20.
@@ -2025,6 +2121,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -2056,6 +2153,7 @@ class AsyncRuns(AsyncAPIResource):
         run = await self.create(
             thread_id=thread_id,
             assistant_id=assistant_id,
+            include=include,
             additional_instructions=additional_instructions,
             additional_messages=additional_messages,
             instructions=instructions,
@@ -2303,6 +2401,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -2333,6 +2432,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: List[RunStepInclude] | NotGiven = NOT_GIVEN,
         additional_instructions: Optional[str] | NotGiven = NOT_GIVEN,
         additional_messages: Optional[Iterable[run_create_params.AdditionalMessage]] | NotGiven = NOT_GIVEN,
         instructions: Optional[str] | NotGiven = NOT_GIVEN,
@@ -2393,7 +2493,11 @@ class AsyncRuns(AsyncAPIResource):
                 run_create_params.RunCreateParams,
             ),
             options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform({"include": include}, run_create_params.RunCreateParams),
             ),
             cast_to=Run,
             stream=True,
