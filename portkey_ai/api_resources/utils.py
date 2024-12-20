@@ -126,6 +126,9 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     LOGS_EXPORT_API = "/logs/exports"
     LOGS_API = "/logs"
 
+    def __str__(self):
+        return self.value
+
 
 class Options(BaseModel):
     method: str
