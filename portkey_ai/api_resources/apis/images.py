@@ -13,27 +13,23 @@ class Images(APIResource):
         self.openai_client = client.openai_client
 
     @typing.no_type_check
-    def generate(
+    def create_variation(
         self,
         *,
-        prompt: str,
-        model: Union[str, NotGiven] = NOT_GIVEN,
+        image,
         n: Union[int, NotGiven] = NOT_GIVEN,
-        quality: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         size: Union[str, NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
-        style: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> ImagesResponse:
-        response = self.openai_client.with_raw_response.images.generate(
-            prompt=prompt,
-            model=model,
+        response = self.openai_client.with_raw_response.images.create_variation(
+            image=image,
             n=n,
-            quality=quality,
+            model=model,
             response_format=response_format,
             size=size,
-            style=style,
             user=user,
             extra_body=kwargs,
         )
@@ -73,21 +69,27 @@ class Images(APIResource):
         return data
 
     @typing.no_type_check
-    def create_variation(
+    def generate(
         self,
         *,
-        image,
+        prompt: str,
+        model: Union[str, NotGiven] = NOT_GIVEN,
         n: Union[int, NotGiven] = NOT_GIVEN,
+        quality: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         size: Union[str, NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
+        style: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> ImagesResponse:
-        response = self.openai_client.with_raw_response.images.create_variation(
-            image=image,
+        response = self.openai_client.with_raw_response.images.generate(
+            prompt=prompt,
+            model=model,
             n=n,
+            quality=quality,
             response_format=response_format,
             size=size,
+            style=style,
             user=user,
             extra_body=kwargs,
         )
@@ -103,27 +105,21 @@ class AsyncImages(AsyncAPIResource):
         self.openai_client = client.openai_client
 
     @typing.no_type_check
-    async def generate(
+    async def create_variation(
         self,
         *,
-        prompt: str,
-        model: Union[str, NotGiven] = NOT_GIVEN,
+        image,
         n: Union[int, NotGiven] = NOT_GIVEN,
-        quality: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         size: Union[str, NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
-        style: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> ImagesResponse:
-        response = await self.openai_client.with_raw_response.images.generate(
-            prompt=prompt,
-            model=model,
+        response = await self.openai_client.with_raw_response.images.create_variation(
+            image=image,
             n=n,
-            quality=quality,
             response_format=response_format,
             size=size,
-            style=style,
             user=user,
             extra_body=kwargs,
         )
@@ -163,21 +159,27 @@ class AsyncImages(AsyncAPIResource):
         return data
 
     @typing.no_type_check
-    async def create_variation(
+    async def generate(
         self,
         *,
-        image,
+        prompt: str,
+        model: Union[str, NotGiven] = NOT_GIVEN,
         n: Union[int, NotGiven] = NOT_GIVEN,
+        quality: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         size: Union[str, NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
+        style: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> ImagesResponse:
-        response = await self.openai_client.with_raw_response.images.create_variation(
-            image=image,
+        response = await self.openai_client.with_raw_response.images.generate(
+            prompt=prompt,
+            model=model,
             n=n,
+            quality=quality,
             response_format=response_format,
             size=size,
+            style=style,
             user=user,
             extra_body=kwargs,
         )

@@ -43,10 +43,21 @@ class Jobs(SyncAPIResource):
 
     @cached_property
     def with_raw_response(self) -> JobsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return JobsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> JobsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return JobsWithStreamingResponse(self)
 
     def create(
@@ -56,6 +67,7 @@ class Jobs(SyncAPIResource):
         training_file: str,
         hyperparameters: job_create_params.Hyperparameters | NotGiven = NOT_GIVEN,
         integrations: Optional[Iterable[job_create_params.Integration]] | NotGiven = NOT_GIVEN,
+        method: job_create_params.Method | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         suffix: Optional[str] | NotGiven = NOT_GIVEN,
         validation_file: Optional[str] | NotGiven = NOT_GIVEN,
@@ -77,7 +89,7 @@ class Jobs(SyncAPIResource):
 
         Args:
           model: The name of the model to fine-tune. You can select one of the
-              [supported models](https://platform.openai.com/docs/guides/fine-tuning/which-models-can-be-fine-tuned).
+              [supported models](https://platform.openai.com/docs/guides/fine-tuning#which-models-can-be-fine-tuned).
 
           training_file: The ID of an uploaded file that contains training data.
 
@@ -88,22 +100,27 @@ class Jobs(SyncAPIResource):
               your file with the purpose `fine-tune`.
 
               The contents of the file should differ depending on if the model uses the
-              [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input) or
+              [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input),
               [completions](https://platform.openai.com/docs/api-reference/fine-tuning/completions-input)
+              format, or if the fine-tuning method uses the
+              [preference](https://platform.openai.com/docs/api-reference/fine-tuning/preference-input)
               format.
 
               See the [fine-tuning guide](https://platform.openai.com/docs/guides/fine-tuning)
               for more details.
 
-          hyperparameters: The hyperparameters used for the fine-tuning job.
+          hyperparameters: The hyperparameters used for the fine-tuning job. This value is now deprecated
+              in favor of `method`, and should be passed in under the `method` parameter.
 
           integrations: A list of integrations to enable for your fine-tuning job.
+
+          method: The method used for fine-tuning.
 
           seed: The seed controls the reproducibility of the job. Passing in the same seed and
               job parameters should produce the same results, but may differ in rare cases. If
               a seed is not specified, one will be generated for you.
 
-          suffix: A string of up to 18 characters that will be added to your fine-tuned model
+          suffix: A string of up to 64 characters that will be added to your fine-tuned model
               name.
 
               For example, a `suffix` of "custom-model-name" would produce a model name like
@@ -138,6 +155,7 @@ class Jobs(SyncAPIResource):
                     "training_file": training_file,
                     "hyperparameters": hyperparameters,
                     "integrations": integrations,
+                    "method": method,
                     "seed": seed,
                     "suffix": suffix,
                     "validation_file": validation_file,
@@ -323,10 +341,21 @@ class AsyncJobs(AsyncAPIResource):
 
     @cached_property
     def with_raw_response(self) -> AsyncJobsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return AsyncJobsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncJobsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return AsyncJobsWithStreamingResponse(self)
 
     async def create(
@@ -336,6 +365,7 @@ class AsyncJobs(AsyncAPIResource):
         training_file: str,
         hyperparameters: job_create_params.Hyperparameters | NotGiven = NOT_GIVEN,
         integrations: Optional[Iterable[job_create_params.Integration]] | NotGiven = NOT_GIVEN,
+        method: job_create_params.Method | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         suffix: Optional[str] | NotGiven = NOT_GIVEN,
         validation_file: Optional[str] | NotGiven = NOT_GIVEN,
@@ -357,7 +387,7 @@ class AsyncJobs(AsyncAPIResource):
 
         Args:
           model: The name of the model to fine-tune. You can select one of the
-              [supported models](https://platform.openai.com/docs/guides/fine-tuning/which-models-can-be-fine-tuned).
+              [supported models](https://platform.openai.com/docs/guides/fine-tuning#which-models-can-be-fine-tuned).
 
           training_file: The ID of an uploaded file that contains training data.
 
@@ -368,22 +398,27 @@ class AsyncJobs(AsyncAPIResource):
               your file with the purpose `fine-tune`.
 
               The contents of the file should differ depending on if the model uses the
-              [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input) or
+              [chat](https://platform.openai.com/docs/api-reference/fine-tuning/chat-input),
               [completions](https://platform.openai.com/docs/api-reference/fine-tuning/completions-input)
+              format, or if the fine-tuning method uses the
+              [preference](https://platform.openai.com/docs/api-reference/fine-tuning/preference-input)
               format.
 
               See the [fine-tuning guide](https://platform.openai.com/docs/guides/fine-tuning)
               for more details.
 
-          hyperparameters: The hyperparameters used for the fine-tuning job.
+          hyperparameters: The hyperparameters used for the fine-tuning job. This value is now deprecated
+              in favor of `method`, and should be passed in under the `method` parameter.
 
           integrations: A list of integrations to enable for your fine-tuning job.
+
+          method: The method used for fine-tuning.
 
           seed: The seed controls the reproducibility of the job. Passing in the same seed and
               job parameters should produce the same results, but may differ in rare cases. If
               a seed is not specified, one will be generated for you.
 
-          suffix: A string of up to 18 characters that will be added to your fine-tuned model
+          suffix: A string of up to 64 characters that will be added to your fine-tuned model
               name.
 
               For example, a `suffix` of "custom-model-name" would produce a model name like
@@ -418,6 +453,7 @@ class AsyncJobs(AsyncAPIResource):
                     "training_file": training_file,
                     "hyperparameters": hyperparameters,
                     "integrations": integrations,
+                    "method": method,
                     "seed": seed,
                     "suffix": suffix,
                     "validation_file": validation_file,

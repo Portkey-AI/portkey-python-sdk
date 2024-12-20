@@ -74,6 +74,13 @@ from .beta_chat import (
     AsyncBetaCompletions,
 )
 
+from .beta_realtime import (
+    BetaRealtime,
+    AsyncBetaRealtime,
+    BetaSessions,
+    AsyncBetaSessions,
+)
+
 from .uploads import (
     Uploads,
     Parts,
@@ -171,4 +178,8 @@ __all__ = [
     "AsyncVirtualKeys",
     "Logs",
     "AsyncLogs",
+    "BetaRealtime",
+    "AsyncBetaRealtime",
+    "BetaSessions",
+    "AsyncBetaSessions",
 ]

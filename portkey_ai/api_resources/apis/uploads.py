@@ -1,5 +1,7 @@
 import json
+import os
 from typing import Any, List, Union
+import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.upload_types import Upload, UploadPart
@@ -11,6 +13,29 @@ class Uploads(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
         self.parts = Parts(client)
+
+    @typing.no_type_check
+    def upload_file_chunked(
+        self,
+        *,
+        file: Union[os.PathLike[str], bytes],
+        mime_type: str,
+        purpose: Any,
+        filename: Union[str, None] = None,
+        bytes: Union[int, None] = None,
+        part_size: Union[int, None] = None,
+        md5: Union[str, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = self.openai_client.uploads.upload_file_chunked(
+            file=file,
+            mime_type=mime_type,
+            purpose=purpose,
+            filename=filename,
+            bytes=bytes,
+            part_size=part_size,
+            md5=md5,
+        )
+        return response
 
     def create(
         self, *, bytes: int, filename: str, mime_type: str, purpose: Any, **kwargs
@@ -45,7 +70,7 @@ class Uploads(APIResource):
         *,
         part_ids: List[str],
         md5: Union[str, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> Upload:
         extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.uploads.complete(
@@ -86,6 +111,29 @@ class AsyncUploads(AsyncAPIResource):
         self.openai_client = client.openai_client
         self.parts = AsyncParts(client)
 
+    @typing.no_type_check
+    async def upload_file_chunked(
+        self,
+        *,
+        file: Union[os.PathLike[str], bytes],
+        mime_type: str,
+        purpose: Any,
+        filename: Union[str, None] = None,
+        bytes: Union[int, None] = None,
+        part_size: Union[int, None] = None,
+        md5: Union[str, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = await self.openai_client.uploads.upload_file_chunked(
+            file=file,
+            mime_type=mime_type,
+            purpose=purpose,
+            filename=filename,
+            bytes=bytes,
+            part_size=part_size,
+            md5=md5,
+        )
+        return response
+
     async def create(
         self, *, bytes: int, filename: str, mime_type: str, purpose: Any, **kwargs
     ) -> Upload:
@@ -119,7 +167,7 @@ class AsyncUploads(AsyncAPIResource):
         *,
         part_ids: List[str],
         md5: Union[str, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> Upload:
         extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.uploads.complete(

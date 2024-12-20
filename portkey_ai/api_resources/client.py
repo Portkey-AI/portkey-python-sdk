@@ -38,12 +38,14 @@ class Portkey(APIClient):
         threads: apis.Threads
         vector_stores: apis.VectorStores
         chat: apis.BetaChat
+        realtime: apis.BetaRealtime
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
             self.vector_stores = apis.VectorStores(client)
             self.chat = apis.BetaChat(client)
+            self.realtime = apis.BetaRealtime(client)
 
     def __init__(
         self,
@@ -51,6 +53,7 @@ class Portkey(APIClient):
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
+        websocket_base_url: Optional[Union[str, httpx.URL]] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -86,6 +89,7 @@ class Portkey(APIClient):
             api_key=api_key,
             base_url=base_url,
             virtual_key=virtual_key,
+            websocket_base_url=websocket_base_url,
             config=config,
             provider=provider,
             trace_id=trace_id,
@@ -124,6 +128,7 @@ class Portkey(APIClient):
             default_headers=self.allHeaders,
             http_client=http_client,
             max_retries=0,
+            websocket_base_url=websocket_base_url,
         )
 
         self.completions = apis.Completion(self)
@@ -153,6 +158,7 @@ class Portkey(APIClient):
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
+        websocket_base_url: Optional[Union[str, httpx.URL]] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -188,6 +194,7 @@ class Portkey(APIClient):
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
             virtual_key=virtual_key or self.virtual_key,
+            websocket_base_url=websocket_base_url or self.websocket_base_url,
             config=config or self.config,
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
@@ -255,12 +262,14 @@ class AsyncPortkey(AsyncAPIClient):
         threads: apis.AsyncThreads
         vector_stores: apis.AsyncVectorStores
         chat: apis.AsyncBetaChat
+        realtime: apis.AsyncBetaRealtime
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
             self.vector_stores = apis.AsyncVectorStores(client)
             self.chat = apis.AsyncBetaChat(client)
+            self.realtime = apis.AsyncBetaRealtime(client)
 
     def __init__(
         self,
@@ -268,6 +277,7 @@ class AsyncPortkey(AsyncAPIClient):
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
+        websocket_base_url: Optional[Union[str, httpx.URL]] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -303,6 +313,7 @@ class AsyncPortkey(AsyncAPIClient):
             api_key=api_key,
             base_url=base_url,
             virtual_key=virtual_key,
+            websocket_base_url=websocket_base_url,
             config=config,
             provider=provider,
             trace_id=trace_id,
@@ -341,6 +352,7 @@ class AsyncPortkey(AsyncAPIClient):
             default_headers=self.allHeaders,
             http_client=http_client,
             max_retries=0,
+            websocket_base_url=websocket_base_url,
         )
 
         self.completions = apis.AsyncCompletion(self)
@@ -370,6 +382,7 @@ class AsyncPortkey(AsyncAPIClient):
         api_key: Optional[str] = None,
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
+        websocket_base_url: Optional[Union[str, httpx.URL]] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -405,6 +418,7 @@ class AsyncPortkey(AsyncAPIClient):
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
             virtual_key=virtual_key or self.virtual_key,
+            websocket_base_url=websocket_base_url or self.websocket_base_url,
             config=config or self.config,
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,

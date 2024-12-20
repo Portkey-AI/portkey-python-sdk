@@ -35,6 +35,7 @@ class Jobs(APIResource):
         integrations: Union[
             Optional[Iterable[job_create_params.Integration]], NotGiven
         ] = NOT_GIVEN,
+        method: Union[job_create_params.Method, NotGiven] = NOT_GIVEN,
         seed: Union[Optional[int], NotGiven] = NOT_GIVEN,
         suffix: Union[Optional[str], NotGiven] = NOT_GIVEN,
         validation_file: Union[Optional[str], NotGiven] = NOT_GIVEN,
@@ -45,6 +46,7 @@ class Jobs(APIResource):
             training_file=training_file,
             hyperparameters=hyperparameters,
             integrations=integrations,
+            method=method,
             seed=seed,
             suffix=suffix,
             validation_file=validation_file,
@@ -163,6 +165,7 @@ class AsyncJobs(AsyncAPIResource):
         integrations: Union[
             Optional[Iterable[job_create_params.Integration]], NotGiven
         ] = NOT_GIVEN,
+        method: Union[job_create_params.Method, NotGiven] = NOT_GIVEN,
         seed: Union[Optional[int], NotGiven] = NOT_GIVEN,
         suffix: Union[Optional[str], NotGiven] = NOT_GIVEN,
         validation_file: Union[Optional[str], NotGiven] = NOT_GIVEN,
@@ -173,6 +176,7 @@ class AsyncJobs(AsyncAPIResource):
             training_file=training_file,
             hyperparameters=hyperparameters,
             integrations=integrations,
+            method=method,
             seed=seed,
             suffix=suffix,
             validation_file=validation_file,

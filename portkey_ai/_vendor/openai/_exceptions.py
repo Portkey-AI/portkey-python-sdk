@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional, cast
+from typing import TYPE_CHECKING, Any, Optional, cast
 from typing_extensions import Literal
 
 import httpx
 
 from ._utils import is_dict
 from ._models import construct_type
+
+if TYPE_CHECKING:
+    from .types.chat import ChatCompletion
 
 __all__ = [
     "BadRequestError",
@@ -88,11 +91,7 @@ class APIStatusError(APIError):
 
 
 class APIConnectionError(APIError):
-    LOCALHOST_CONNECTION_ERROR = """Could not instantiate the Portkey client. \
-You can either add a valid `api_key` parameter (from https://app.portkey.ai/api-keys) \
-or check the `base_url` parameter in the Portkey client, for your AI Gateway's instance's URL.
-"""
-    def __init__(self, *, message: str = LOCALHOST_CONNECTION_ERROR, request: httpx.Request) -> None:
+    def __init__(self, *, message: str = "Connection error.", request: httpx.Request) -> None:
         super().__init__(message, request, body=None)
 
 
@@ -134,10 +133,20 @@ class InternalServerError(APIStatusError):
 
 
 class LengthFinishReasonError(OpenAIError):
-    def __init__(self) -> None:
-        super().__init__(
-            f"Could not parse response content as the length limit was reached",
-        )
+    completion: ChatCompletion
+    """The completion that caused this error.
+
+    Note: this will *not* be a complete `ChatCompletion` object when streaming as `usage`
+          will not be included.
+    """
+
+    def __init__(self, *, completion: ChatCompletion) -> None:
+        msg = "Could not parse response content as the length limit was reached"
+        if completion.usage:
+            msg += f" - {completion.usage}"
+
+        super().__init__(msg)
+        self.completion = completion
 
 
 class ContentFilterFinishReasonError(OpenAIError):

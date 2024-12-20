@@ -11,12 +11,6 @@ class Models(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def list(self, **kwargs) -> ModelList:
-        response = self.openai_client.with_raw_response.models.list(**kwargs)
-        data = ModelList(**json.loads(response.text))
-        data._headers = response.headers
-        return data
-
     def retrieve(
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> Model:
@@ -29,6 +23,12 @@ class Models(APIResource):
                 model=model, timeout=timeout
             )
         data = Model(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    def list(self, **kwargs) -> ModelList:
+        response = self.openai_client.with_raw_response.models.list(**kwargs)
+        data = ModelList(**json.loads(response.text))
         data._headers = response.headers
         return data
 
@@ -48,12 +48,6 @@ class AsyncModels(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def list(self, **kwargs) -> ModelList:
-        response = await self.openai_client.with_raw_response.models.list(**kwargs)
-        data = ModelList(**json.loads(response.text))
-        data._headers = response.headers
-        return data
-
     async def retrieve(
         self, model: str, *, timeout: Union[float, NotGiven] = NOT_GIVEN, **kwargs
     ) -> Model:
@@ -66,6 +60,12 @@ class AsyncModels(AsyncAPIResource):
                 model=model, timeout=timeout
             )
         data = Model(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    async def list(self, **kwargs) -> ModelList:
+        response = await self.openai_client.with_raw_response.models.list(**kwargs)
+        data = ModelList(**json.loads(response.text))
         data._headers = response.headers
         return data
 

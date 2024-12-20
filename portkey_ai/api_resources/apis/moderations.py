@@ -1,5 +1,5 @@
 import json
-from typing import List, Union
+from typing import Any, Iterable, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN
@@ -14,7 +14,7 @@ class Moderations(APIResource):
     def create(
         self,
         *,
-        input: Union[str, List[str]],
+        input: Union[str, List[str], Iterable[Any]],
         model: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> ModerationCreateResponse:
@@ -35,7 +35,7 @@ class AsyncModerations(AsyncAPIResource):
     async def create(
         self,
         *,
-        input: Union[str, List[str]],
+        input: Union[str, List[str], Iterable[Any]],
         model: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> ModerationCreateResponse:

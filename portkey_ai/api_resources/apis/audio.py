@@ -5,7 +5,12 @@ from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
 
-from portkey_ai.api_resources.types.audio_types import Transcription, Translation
+from portkey_ai.api_resources.types.audio_types import (
+    Transcription,
+    TranscriptionVerbose,
+    Translation,
+    TranslationVerbose,
+)
 
 
 class Audio(APIResource):
@@ -34,7 +39,7 @@ class Transcriptions(APIResource):
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Transcription:
+    ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.audio.transcriptions.create(
             file=file,
@@ -47,8 +52,16 @@ class Transcriptions(APIResource):
             extra_headers=extra_headers,
             extra_body=kwargs,
         )
-        data = Transcription(**json.loads(response.text))
-        data._headers = response.headers
+
+        if response_format == "verbose_json":
+            data = TranscriptionVerbose(**json.loads(response.text))
+            data._headers = response.headers
+        elif response_format == "json":
+            data = Transcription(**json.loads(response.text))
+            data._headers = response.headers
+        else:
+            data = Transcription(**json.loads(response.text))
+            data._headers = response.headers
 
         return data
 
@@ -64,16 +77,14 @@ class Translations(APIResource):
         file: FileTypes,
         model: str,
         prompt: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Translation:
+    ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         response = self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
             prompt=prompt,
-            response_format=response_format,
             temperature=temperature,
             extra_headers=extra_headers,
             extra_body=kwargs,
@@ -143,7 +154,7 @@ class AsyncTranscriptions(AsyncAPIResource):
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Transcription:
+    ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         response = (
             await self.openai_client.with_raw_response.audio.transcriptions.create(
@@ -158,8 +169,16 @@ class AsyncTranscriptions(AsyncAPIResource):
                 extra_body=kwargs,
             )
         )
-        data = Transcription(**json.loads(response.text))
-        data._headers = response.headers
+
+        if response_format == "verbose_json":
+            data = TranscriptionVerbose(**json.loads(response.text))
+            data._headers = response.headers
+        elif response_format == "json":
+            data = Transcription(**json.loads(response.text))
+            data._headers = response.headers
+        else:
+            data = Transcription(**json.loads(response.text))
+            data._headers = response.headers
 
         return data
 
@@ -175,16 +194,14 @@ class AsyncTranslations(AsyncAPIResource):
         file: FileTypes,
         model: str,
         prompt: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Translation:
+    ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         response = await self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
             prompt=prompt,
-            response_format=response_format,
             temperature=temperature,
             extra_headers=extra_headers,
             extra_body=kwargs,

@@ -83,7 +83,6 @@ class Text(BaseModel, extra="allow"):
 
 class RefusalContentBlock(BaseModel, extra="allow"):
     refusal: Optional[str] = None
-
     type: Optional[str] = None
 
 
@@ -94,7 +93,6 @@ class ImageURL(BaseModel, extra="allow"):
 
 class ImageURLContentBlock(BaseModel, extra="allow"):
     image_url: ImageURL
-
     type: Optional[str] = None
 
 
@@ -105,6 +103,7 @@ class MessageContentText(BaseModel, extra="allow"):
 
 class ImageFile(BaseModel, extra="allow"):
     file_id: Optional[str] = None
+    detail: Optional[str] = None
 
 
 class MessageContentImageFile(BaseModel, extra="allow"):

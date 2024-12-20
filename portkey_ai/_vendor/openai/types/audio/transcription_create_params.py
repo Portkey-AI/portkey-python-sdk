@@ -7,6 +7,7 @@ from typing_extensions import Literal, Required, TypedDict
 
 from ..._types import FileTypes
 from ..audio_model import AudioModel
+from ..audio_response_format import AudioResponseFormat
 
 __all__ = ["TranscriptionCreateParams"]
 
@@ -37,14 +38,14 @@ class TranscriptionCreateParams(TypedDict, total=False):
     """An optional text to guide the model's style or continue a previous audio
     segment.
 
-    The [prompt](https://platform.openai.com/docs/guides/speech-to-text/prompting)
+    The [prompt](https://platform.openai.com/docs/guides/speech-to-text#prompting)
     should match the audio language.
     """
 
-    response_format: Literal["json", "text", "srt", "verbose_json", "vtt"]
+    response_format: AudioResponseFormat
     """
-    The format of the transcript output, in one of these options: `json`, `text`,
-    `srt`, `verbose_json`, or `vtt`.
+    The format of the output, in one of these options: `json`, `text`, `srt`,
+    `verbose_json`, or `vtt`.
     """
 
     temperature: float

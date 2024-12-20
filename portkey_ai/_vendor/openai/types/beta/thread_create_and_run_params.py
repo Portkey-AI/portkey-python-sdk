@@ -9,6 +9,7 @@ from ..chat_model import ChatModel
 from .function_tool_param import FunctionToolParam
 from .file_search_tool_param import FileSearchToolParam
 from .code_interpreter_tool_param import CodeInterpreterToolParam
+from .file_chunking_strategy_param import FileChunkingStrategyParam
 from .assistant_tool_choice_option_param import AssistantToolChoiceOptionParam
 from .threads.message_content_part_param import MessageContentPartParam
 from .assistant_response_format_option_param import AssistantResponseFormatOptionParam
@@ -24,10 +25,6 @@ __all__ = [
     "ThreadToolResourcesCodeInterpreter",
     "ThreadToolResourcesFileSearch",
     "ThreadToolResourcesFileSearchVectorStore",
-    "ThreadToolResourcesFileSearchVectorStoreChunkingStrategy",
-    "ThreadToolResourcesFileSearchVectorStoreChunkingStrategyAuto",
-    "ThreadToolResourcesFileSearchVectorStoreChunkingStrategyStatic",
-    "ThreadToolResourcesFileSearchVectorStoreChunkingStrategyStaticStatic",
     "ToolResources",
     "ToolResourcesCodeInterpreter",
     "ToolResourcesFileSearch",
@@ -75,7 +72,7 @@ class ThreadCreateAndRunParamsBase(TypedDict, total=False):
 
     This can be useful for storing additional information about the object in a
     structured format. Keys can be a maximum of 64 characters long and values can be
-    a maxium of 512 characters long.
+    a maximum of 512 characters long.
     """
 
     model: Union[str, ChatModel, None]
@@ -89,23 +86,23 @@ class ThreadCreateAndRunParamsBase(TypedDict, total=False):
     parallel_tool_calls: bool
     """
     Whether to enable
-    [parallel function calling](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)
+    [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
     during tool use.
     """
 
     response_format: Optional[AssistantResponseFormatOptionParam]
     """Specifies the format that the model must output.
 
-    Compatible with [GPT-4o](https://platform.openai.com/docs/models/gpt-4o),
-    [GPT-4 Turbo](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4),
+    Compatible with [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
+    [GPT-4 Turbo](https://platform.openai.com/docs/models#gpt-4-turbo-and-gpt-4),
     and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
     Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
-    Outputs which guarantees the model will match your supplied JSON schema. Learn
-    more in the
+    Outputs which ensures the model will match your supplied JSON schema. Learn more
+    in the
     [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
-    Setting to `{ "type": "json_object" }` enables JSON mode, which guarantees the
+    Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the
     message the model generates is valid JSON.
 
     **Important:** when using JSON mode, you **must** also instruct the model to
@@ -205,7 +202,7 @@ class ThreadMessage(TypedDict, total=False):
 
     This can be useful for storing additional information about the object in a
     structured format. Keys can be a maximum of 64 characters long and values can be
-    a maxium of 512 characters long.
+    a maximum of 512 characters long.
     """
 
 
@@ -218,44 +215,12 @@ class ThreadToolResourcesCodeInterpreter(TypedDict, total=False):
     """
 
 
-class ThreadToolResourcesFileSearchVectorStoreChunkingStrategyAuto(TypedDict, total=False):
-    type: Required[Literal["auto"]]
-    """Always `auto`."""
-
-
-class ThreadToolResourcesFileSearchVectorStoreChunkingStrategyStaticStatic(TypedDict, total=False):
-    chunk_overlap_tokens: Required[int]
-    """The number of tokens that overlap between chunks. The default value is `400`.
-
-    Note that the overlap must not exceed half of `max_chunk_size_tokens`.
-    """
-
-    max_chunk_size_tokens: Required[int]
-    """The maximum number of tokens in each chunk.
-
-    The default value is `800`. The minimum value is `100` and the maximum value is
-    `4096`.
-    """
-
-
-class ThreadToolResourcesFileSearchVectorStoreChunkingStrategyStatic(TypedDict, total=False):
-    static: Required[ThreadToolResourcesFileSearchVectorStoreChunkingStrategyStaticStatic]
-
-    type: Required[Literal["static"]]
-    """Always `static`."""
-
-
-ThreadToolResourcesFileSearchVectorStoreChunkingStrategy: TypeAlias = Union[
-    ThreadToolResourcesFileSearchVectorStoreChunkingStrategyAuto,
-    ThreadToolResourcesFileSearchVectorStoreChunkingStrategyStatic,
-]
-
-
 class ThreadToolResourcesFileSearchVectorStore(TypedDict, total=False):
-    chunking_strategy: ThreadToolResourcesFileSearchVectorStoreChunkingStrategy
+    chunking_strategy: FileChunkingStrategyParam
     """The chunking strategy used to chunk the file(s).
 
-    If not set, will use the `auto` strategy.
+    If not set, will use the `auto` strategy. Only applicable if `file_ids` is
+    non-empty.
     """
 
     file_ids: List[str]
@@ -270,7 +235,7 @@ class ThreadToolResourcesFileSearchVectorStore(TypedDict, total=False):
 
     This can be useful for storing additional information about the vector store in
     a structured format. Keys can be a maximum of 64 characters long and values can
-    be a maxium of 512 characters long.
+    be a maximum of 512 characters long.
     """
 
 
@@ -310,7 +275,7 @@ class Thread(TypedDict, total=False):
 
     This can be useful for storing additional information about the object in a
     structured format. Keys can be a maximum of 64 characters long and values can be
-    a maxium of 512 characters long.
+    a maximum of 512 characters long.
     """
 
     tool_resources: Optional[ThreadToolResources]
@@ -367,7 +332,7 @@ class TruncationStrategy(TypedDict, total=False):
     """
 
 
-class ThreadCreateAndRunParamsNonStreaming(ThreadCreateAndRunParamsBase):
+class ThreadCreateAndRunParamsNonStreaming(ThreadCreateAndRunParamsBase, total=False):
     stream: Optional[Literal[False]]
     """
     If `true`, returns a stream of events that happen during the Run as server-sent

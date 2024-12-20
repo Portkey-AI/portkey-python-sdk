@@ -1,5 +1,6 @@
 import json
 from typing import Any, Union
+import typing_extensions
 from portkey_ai._vendor.openai._types import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -25,15 +26,6 @@ class MainFiles(APIResource):
 
         return data
 
-    def list(self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs) -> FileList:
-        response = self.openai_client.with_raw_response.files.list(
-            purpose=purpose, **kwargs
-        )
-        data = FileList(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
-
     def retrieve(self, file_id, **kwargs) -> FileObject:
         if kwargs:
             response = self.openai_client.with_raw_response.files.retrieve(
@@ -44,6 +36,27 @@ class MainFiles(APIResource):
                 file_id=file_id
             )
         data = FileObject(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def list(
+        self,
+        *,
+        purpose: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Any, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> FileList:
+        response = self.openai_client.with_raw_response.files.list(
+            purpose=purpose,
+            after=after,
+            limit=limit,
+            order=order,
+            **kwargs,
+        )
+        data = FileList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -66,6 +79,7 @@ class MainFiles(APIResource):
             response = self.openai_client.files.content(file_id=file_id)
         return response
 
+    @typing_extensions.deprecated("The `.content()` method should be used instead")
     def retrieve_content(self, file_id, **kwargs) -> Any:
         if kwargs:
             response = self.openai_client.files.content(
@@ -105,17 +119,6 @@ class AsyncMainFiles(AsyncAPIResource):
 
         return data
 
-    async def list(
-        self, purpose: Union[str, NotGiven] = NOT_GIVEN, **kwargs
-    ) -> FileList:
-        response = await self.openai_client.with_raw_response.files.list(
-            purpose=purpose, **kwargs
-        )
-        data = FileList(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
-
     async def retrieve(self, file_id, **kwargs) -> FileObject:
         if kwargs:
             response = await self.openai_client.with_raw_response.files.retrieve(
@@ -126,6 +129,27 @@ class AsyncMainFiles(AsyncAPIResource):
                 file_id=file_id
             )
         data = FileObject(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def list(
+        self,
+        *,
+        purpose: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Any, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> FileList:
+        response = await self.openai_client.with_raw_response.files.list(
+            purpose=purpose,
+            after=after,
+            limit=limit,
+            order=order,
+            **kwargs,
+        )
+        data = FileList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -148,6 +172,7 @@ class AsyncMainFiles(AsyncAPIResource):
             response = await self.openai_client.files.content(file_id=file_id)
         return response
 
+    @typing_extensions.deprecated("The `.content()` method should be used instead")
     async def retrieve_content(self, file_id, **kwargs) -> Any:
         if kwargs:
             response = await self.openai_client.files.content(

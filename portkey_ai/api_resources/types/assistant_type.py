@@ -17,11 +17,20 @@ __all__ = [
     "FunctionParameters",
     "FileSearch",
     "FileSearchTool",
+    "ToolResources",
+    "ToolResourcesCodeInterpreter",
+    "ToolResourcesFileSearch",
 ]
+
+
+class FileSearchRankingOptions(BaseModel, extra="allow"):
+    score_threshold: Optional[float] = None
+    ranker: Optional[str] = None
 
 
 class FileSearch(BaseModel, extra="allow"):
     max_num_results: Optional[int] = None
+    ranking_options: Optional[FileSearchRankingOptions] = None
 
 
 class FileSearchTool(BaseModel, extra="allow"):
@@ -48,11 +57,24 @@ class ToolRetrieval(BaseModel, extra="allow"):
 
 
 class ToolFunction(BaseModel, extra="allow"):
-    type: Optional[str] = None
     function: Optional[FunctionDefinition] = None
+    type: Optional[str] = None
 
 
 AssistantTool = Union[ToolCodeInterpreter, ToolRetrieval, ToolFunction, FileSearchTool]
+
+
+class ToolResourcesCodeInterpreter(BaseModel, extra="allow"):
+    file_ids: Optional[List[str]] = None
+
+
+class ToolResourcesFileSearch(BaseModel, extra="allow"):
+    vector_store_ids: Optional[List[str]] = None
+
+
+class ToolResources(BaseModel, extra="allow"):
+    code_interpreter: Optional[ToolResourcesCodeInterpreter] = None
+    file_search: Optional[ToolResourcesFileSearch] = None
 
 
 class Assistant(BaseModel, extra="allow"):
@@ -67,6 +89,9 @@ class Assistant(BaseModel, extra="allow"):
     object: Optional[str] = None
     tools: Optional[List[AssistantTool]] = None
     response_format: Optional[Any] = None
+    temperature: Optional[float] = None
+    tool_resources: Optional[ToolResources] = None
+    top_p: Optional[float] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

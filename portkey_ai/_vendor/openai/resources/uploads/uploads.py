@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
-from typing import List
-from typing_extensions import Literal
+import io
+import os
+import logging
+import builtins
+from typing import List, overload
+from pathlib import Path
 
+import anyio
 import httpx
 
 from ... import _legacy_response
@@ -16,7 +21,7 @@ from .parts import (
     PartsWithStreamingResponse,
     AsyncPartsWithStreamingResponse,
 )
-from ...types import upload_create_params, upload_complete_params
+from ...types import FilePurpose, upload_create_params, upload_complete_params
 from ..._types import NOT_GIVEN, Body, Query, Headers, NotGiven
 from ..._utils import (
     maybe_transform,
@@ -27,8 +32,15 @@ from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from ..._base_client import make_request_options
 from ...types.upload import Upload
+from ...types.file_purpose import FilePurpose
 
 __all__ = ["Uploads", "AsyncUploads"]
+
+
+# 64MB
+DEFAULT_PART_SIZE = 64 * 1024 * 1024
+
+log: logging.Logger = logging.getLogger(__name__)
 
 
 class Uploads(SyncAPIResource):
@@ -38,11 +50,121 @@ class Uploads(SyncAPIResource):
 
     @cached_property
     def with_raw_response(self) -> UploadsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return UploadsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> UploadsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return UploadsWithStreamingResponse(self)
+
+    @overload
+    def upload_file_chunked(
+        self,
+        *,
+        file: os.PathLike[str],
+        mime_type: str,
+        purpose: FilePurpose,
+        bytes: int | None = None,
+        part_size: int | None = None,
+        md5: str | NotGiven = NOT_GIVEN,
+    ) -> Upload:
+        """Splits a file into multiple 64MB parts and uploads them sequentially."""
+
+    @overload
+    def upload_file_chunked(
+        self,
+        *,
+        file: bytes,
+        filename: str,
+        bytes: int,
+        mime_type: str,
+        purpose: FilePurpose,
+        part_size: int | None = None,
+        md5: str | NotGiven = NOT_GIVEN,
+    ) -> Upload:
+        """Splits an in-memory file into multiple 64MB parts and uploads them sequentially."""
+
+    def upload_file_chunked(
+        self,
+        *,
+        file: os.PathLike[str] | bytes,
+        mime_type: str,
+        purpose: FilePurpose,
+        filename: str | None = None,
+        bytes: int | None = None,
+        part_size: int | None = None,
+        md5: str | NotGiven = NOT_GIVEN,
+    ) -> Upload:
+        """Splits the given file into multiple parts and uploads them sequentially.
+
+        ```py
+        from pathlib import Path
+
+        client.uploads.upload_file(
+            file=Path("my-paper.pdf"),
+            mime_type="pdf",
+            purpose="assistants",
+        )
+        ```
+        """
+        if isinstance(file, builtins.bytes):
+            if filename is None:
+                raise TypeError("The `filename` argument must be given for in-memory files")
+
+            if bytes is None:
+                raise TypeError("The `bytes` argument must be given for in-memory files")
+        else:
+            if not isinstance(file, Path):
+                file = Path(file)
+
+            if not filename:
+                filename = file.name
+
+            if bytes is None:
+                bytes = file.stat().st_size
+
+        upload = self.create(
+            bytes=bytes,
+            filename=filename,
+            mime_type=mime_type,
+            purpose=purpose,
+        )
+
+        part_ids: list[str] = []
+
+        if part_size is None:
+            part_size = DEFAULT_PART_SIZE
+
+        if isinstance(file, builtins.bytes):
+            buf: io.FileIO | io.BytesIO = io.BytesIO(file)
+        else:
+            buf = io.FileIO(file)
+
+        try:
+            while True:
+                data = buf.read(part_size)
+                if not data:
+                    # EOF
+                    break
+
+                part = self.parts.create(upload_id=upload.id, data=data)
+                log.info("Uploaded part %s for upload %s", part.id, upload.id)
+                part_ids.append(part.id)
+        except Exception:
+            buf.close()
+            raise
+
+        return self.complete(upload_id=upload.id, part_ids=part_ids, md5=md5)
 
     def create(
         self,
@@ -50,7 +172,7 @@ class Uploads(SyncAPIResource):
         bytes: int,
         filename: str,
         mime_type: str,
-        purpose: Literal["assistants", "batch", "fine-tune", "vision"],
+        purpose: FilePurpose,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -74,7 +196,7 @@ class Uploads(SyncAPIResource):
         For certain `purpose`s, the correct `mime_type` must be specified. Please refer
         to documentation for the supported MIME types for your use case:
 
-        - [Assistants](https://platform.openai.com/docs/assistants/tools/file-search/supported-files)
+        - [Assistants](https://platform.openai.com/docs/assistants/tools/file-search#supported-files)
 
         For guidance on the proper filename extensions for each purpose, please follow
         the documentation on
@@ -221,11 +343,132 @@ class AsyncUploads(AsyncAPIResource):
 
     @cached_property
     def with_raw_response(self) -> AsyncUploadsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return AsyncUploadsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncUploadsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return AsyncUploadsWithStreamingResponse(self)
+
+    @overload
+    async def upload_file_chunked(
+        self,
+        *,
+        file: os.PathLike[str],
+        mime_type: str,
+        purpose: FilePurpose,
+        bytes: int | None = None,
+        part_size: int | None = None,
+        md5: str | NotGiven = NOT_GIVEN,
+    ) -> Upload:
+        """Splits a file into multiple 64MB parts and uploads them sequentially."""
+
+    @overload
+    async def upload_file_chunked(
+        self,
+        *,
+        file: bytes,
+        filename: str,
+        bytes: int,
+        mime_type: str,
+        purpose: FilePurpose,
+        part_size: int | None = None,
+        md5: str | NotGiven = NOT_GIVEN,
+    ) -> Upload:
+        """Splits an in-memory file into multiple 64MB parts and uploads them sequentially."""
+
+    async def upload_file_chunked(
+        self,
+        *,
+        file: os.PathLike[str] | bytes,
+        mime_type: str,
+        purpose: FilePurpose,
+        filename: str | None = None,
+        bytes: int | None = None,
+        part_size: int | None = None,
+        md5: str | NotGiven = NOT_GIVEN,
+    ) -> Upload:
+        """Splits the given file into multiple parts and uploads them sequentially.
+
+        ```py
+        from pathlib import Path
+
+        client.uploads.upload_file(
+            file=Path("my-paper.pdf"),
+            mime_type="pdf",
+            purpose="assistants",
+        )
+        ```
+        """
+        if isinstance(file, builtins.bytes):
+            if filename is None:
+                raise TypeError("The `filename` argument must be given for in-memory files")
+
+            if bytes is None:
+                raise TypeError("The `bytes` argument must be given for in-memory files")
+        else:
+            if not isinstance(file, anyio.Path):
+                file = anyio.Path(file)
+
+            if not filename:
+                filename = file.name
+
+            if bytes is None:
+                stat = await file.stat()
+                bytes = stat.st_size
+
+        upload = await self.create(
+            bytes=bytes,
+            filename=filename,
+            mime_type=mime_type,
+            purpose=purpose,
+        )
+
+        part_ids: list[str] = []
+
+        if part_size is None:
+            part_size = DEFAULT_PART_SIZE
+
+        if isinstance(file, anyio.Path):
+            fd = await file.open("rb")
+            async with fd:
+                while True:
+                    data = await fd.read(part_size)
+                    if not data:
+                        # EOF
+                        break
+
+                    part = await self.parts.create(upload_id=upload.id, data=data)
+                    log.info("Uploaded part %s for upload %s", part.id, upload.id)
+                    part_ids.append(part.id)
+        else:
+            buf = io.BytesIO(file)
+
+            try:
+                while True:
+                    data = buf.read(part_size)
+                    if not data:
+                        # EOF
+                        break
+
+                    part = await self.parts.create(upload_id=upload.id, data=data)
+                    log.info("Uploaded part %s for upload %s", part.id, upload.id)
+                    part_ids.append(part.id)
+            except Exception:
+                buf.close()
+                raise
+
+        return await self.complete(upload_id=upload.id, part_ids=part_ids, md5=md5)
 
     async def create(
         self,
@@ -233,7 +476,7 @@ class AsyncUploads(AsyncAPIResource):
         bytes: int,
         filename: str,
         mime_type: str,
-        purpose: Literal["assistants", "batch", "fine-tune", "vision"],
+        purpose: FilePurpose,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -257,7 +500,7 @@ class AsyncUploads(AsyncAPIResource):
         For certain `purpose`s, the correct `mime_type` must be specified. Please refer
         to documentation for the supported MIME types for your use case:
 
-        - [Assistants](https://platform.openai.com/docs/assistants/tools/file-search/supported-files)
+        - [Assistants](https://platform.openai.com/docs/assistants/tools/file-search#supported-files)
 
         For guidance on the proper filename extensions for each purpose, please follow
         the documentation on
