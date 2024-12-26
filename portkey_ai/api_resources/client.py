@@ -128,7 +128,7 @@ class Portkey(APIClient):
             default_headers=self.allHeaders,
             http_client=http_client,
             max_retries=0,
-            websocket_base_url=websocket_base_url,
+            websocket_base_url=self.websocket_base_url,
         )
 
         self.completions = apis.Completion(self)
@@ -352,7 +352,7 @@ class AsyncPortkey(AsyncAPIClient):
             default_headers=self.allHeaders,
             http_client=http_client,
             max_retries=0,
-            websocket_base_url=websocket_base_url,
+            websocket_base_url=self.websocket_base_url,
         )
 
         self.completions = apis.AsyncCompletion(self)

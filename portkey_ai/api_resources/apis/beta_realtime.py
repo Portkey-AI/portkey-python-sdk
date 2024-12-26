@@ -29,6 +29,7 @@ class BetaRealtime(APIResource):
         return self.openai_client.beta.realtime.connect(
             model=model,
             websocket_connection_options=websocket_connection_options,
+            extra_headers=self.openai_client.default_headers,
             **kwargs,
         )
 
@@ -49,6 +50,7 @@ class AsyncBetaRealtime(AsyncAPIResource):
         return self.openai_client.beta.realtime.connect(
             model=model,
             websocket_connection_options=websocket_connection_options,
+            extra_headers=self.openai_client.default_headers,
             **kwargs,
         )
 
