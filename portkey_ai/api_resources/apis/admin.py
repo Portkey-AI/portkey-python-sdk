@@ -170,6 +170,17 @@ class Invites(APIResource):
             headers={},
         )
 
+    def resend(self, *, invite_id: str) -> Any:
+        return self._post(
+            f"{PortkeyApiPaths.INVITE_API}/{invite_id}/resend",
+            body=None,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
 
 class Workspaces(APIResource):
     def __init__(self, client: APIClient) -> None:
@@ -448,6 +459,17 @@ class AsyncUsers(AsyncAPIResource):
             f"{PortkeyApiPaths.USER_API}/{user_id}",
             params=None,
             body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def resend(self, *, invite_id: str) -> Any:
+        return await self._post(
+            f"{PortkeyApiPaths.INVITE_API}/{invite_id}/resend",
+            body=None,
+            params=None,
             cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
