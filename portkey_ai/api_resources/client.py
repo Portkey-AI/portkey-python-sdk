@@ -4,6 +4,7 @@ from typing import List, Mapping, Optional, Union
 import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
+from portkey_ai.api_resources.utils import set_base_url
 
 # from openai import AsyncOpenAI, OpenAI
 from .._vendor.openai import OpenAI, AsyncOpenAI
@@ -82,9 +83,10 @@ class Portkey(APIClient):
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
+        options = {base_url: base_url or set_base_url(base_url, api_key)}
         super().__init__(
             api_key=api_key,
-            base_url=base_url,
+            base_url=options.get("base_url"),
             virtual_key=virtual_key,
             config=config,
             provider=provider,
@@ -299,9 +301,10 @@ class AsyncPortkey(AsyncAPIClient):
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
+        options = {base_url: base_url or set_base_url(base_url, api_key)}
         super().__init__(
             api_key=api_key,
-            base_url=base_url,
+            base_url=options.get("base_url"),
             virtual_key=virtual_key,
             config=config,
             provider=provider,
