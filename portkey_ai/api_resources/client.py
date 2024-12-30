@@ -83,7 +83,7 @@ class Portkey(APIClient):
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
-        options = {base_url: base_url or set_base_url(base_url, api_key)}
+        options = {"base_url": set_base_url(base_url, api_key)}
         super().__init__(
             api_key=api_key,
             base_url=options.get("base_url"),
@@ -301,7 +301,7 @@ class AsyncPortkey(AsyncAPIClient):
         mistral_fim_completion: Optional[str] = None,
         **kwargs,
     ) -> None:
-        options = {base_url: base_url or set_base_url(base_url, api_key)}
+        options = {"base_url": base_url or set_base_url(base_url, api_key)}
         super().__init__(
             api_key=api_key,
             base_url=options.get("base_url"),
