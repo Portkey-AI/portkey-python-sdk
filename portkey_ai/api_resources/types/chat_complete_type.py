@@ -33,7 +33,7 @@ class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
     token: Optional[str] = None
     bytes: Optional[List[int]] = None
     logprob: Optional[float] = None
-    top_logprobs: Optional[List[TopLogprob]]
+    top_logprobs: Optional[List[TopLogprob]] = None
 
 
 class ChoiceLogprobs(BaseModel, extra="allow"):
@@ -68,7 +68,7 @@ class Delta(BaseModel, extra="allow"):
 
 class StreamChoice(BaseModel, extra="allow"):
     index: Optional[int] = None
-    delta: Optional[Delta]
+    delta: Optional[Delta] = None
     finish_reason: Optional[str] = None
     logprobs: Optional[ChoiceLogprobs] = None
 
@@ -89,7 +89,7 @@ class FunctionCall(BaseModel, extra="allow"):
 
 class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
     id: Optional[str] = None
-    function: Optional[FunctionCall]
+    function: Optional[FunctionCall] = None
     type: Optional[str] = None
 
 
@@ -105,12 +105,12 @@ class Choice(BaseModel, extra="allow"):
     finish_reason: Optional[str] = None
     index: Optional[int] = None
     logprobs: Optional[ChoiceLogprobs] = None
-    message: Optional[ChatCompletionMessage]
+    message: Optional[ChatCompletionMessage] = None
 
 
 class ChatCompletions(BaseModel, extra="allow"):
     id: Optional[str] = None
-    choices: Optional[List[Choice]]
+    choices: Optional[List[Choice]] = None
     created: Optional[int] = None
     model: Optional[str] = None
     object: Optional[str] = None
@@ -138,7 +138,7 @@ class ChatCompletionChunk(BaseModel, extra="allow"):
     object: Optional[str] = None
     created: Optional[int] = None
     model: Optional[str] = None
-    choices: Optional[List[StreamChoice]]
+    choices: Optional[List[StreamChoice]] = None
     service_tier: Optional[str] = None
 
     def __str__(self):

@@ -31,7 +31,7 @@ class Model(BaseModel, extra="allow"):
 
 class ModelList(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: List[Model]
+    data: Optional[List[Model]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

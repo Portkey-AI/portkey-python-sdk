@@ -53,13 +53,13 @@ class Function(BaseModel, extra="allow"):
 
 class FunctionToolCall(BaseModel, extra="allow"):
     id: Optional[str] = None
-    function: Function
-    type: Literal["function"]
+    function: Optional[Function] = None
+    type: Optional[Literal["function"]] = None
 
 
 class RetrievalToolCall(BaseModel, extra="allow"):
     id: Optional[str] = None
-    retrieval: Optional[object]
+    retrieval: Optional[object] = None
     type: Optional[str] = None
 
 
@@ -73,7 +73,7 @@ class CodeInterpreterOutputImageImage(BaseModel, extra="allow"):
 
 
 class CodeInterpreterOutputImage(BaseModel, extra="allow"):
-    image: CodeInterpreterOutputImageImage
+    image: Optional[CodeInterpreterOutputImageImage] = None
     type: Optional[str] = None
 
 
@@ -82,20 +82,26 @@ CodeInterpreterOutput = Union[CodeInterpreterOutputLogs, CodeInterpreterOutputIm
 
 class CodeInterpreter(BaseModel, extra="allow"):
     input: Optional[str] = None
-    outputs: List[CodeInterpreterOutput]
+    outputs: Optional[List[CodeInterpreterOutput]] = None
 
 
 class CodeToolCall(BaseModel, extra="allow"):
     id: Optional[str] = None
-    code_interpreter: CodeInterpreter
+    code_interpreter: Optional[CodeInterpreter] = None
     type: Optional[str] = None
 
 
-ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall]
+class FileSearchToolCall(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    file_search: Optional[object] = None
+    type: Optional[str] = None
+
+
+ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall, FileSearchToolCall]
 
 
 class ToolCallsStepDetails(BaseModel, extra="allow"):
-    tool_calls: Optional[List[ToolCall]]
+    tool_calls: Optional[List[ToolCall]] = None
     type: Optional[str] = None
 
 
@@ -104,7 +110,7 @@ class MessageCreation(BaseModel, extra="allow"):
 
 
 class MessageCreationStepDetails(BaseModel, extra="allow"):
-    message_creation: Optional[MessageCreation]
+    message_creation: Optional[MessageCreation] = None
 
     type: Optional[str] = None
 
@@ -130,16 +136,16 @@ class FunctionRA(BaseModel, extra="allow"):
 
 class RequiredActionFunctionToolCall(BaseModel, extra="allow"):
     id: Optional[str] = None
-    function: Optional[FunctionRA]
+    function: Optional[FunctionRA] = None
     type: Optional[str] = None
 
 
 class RequiredActionSubmitToolOutputs(BaseModel, extra="allow"):
-    tool_calls: Optional[List[RequiredActionFunctionToolCall]]
+    tool_calls: Optional[List[RequiredActionFunctionToolCall]] = None
 
 
 class RequiredAction(BaseModel, extra="allow"):
-    submit_tool_outputs: Optional[RequiredActionSubmitToolOutputs]
+    submit_tool_outputs: Optional[RequiredActionSubmitToolOutputs] = None
     type: Optional[str] = None
 
 
@@ -161,7 +167,7 @@ class ToolAssistantToolsRetrieval(BaseModel, extra="allow"):
 
 
 class ToolAssistantToolsFunction(BaseModel, extra="allow"):
-    function: Optional[FunctionDefinition]
+    function: Optional[FunctionDefinition] = None
     type: Optional[str] = None
 
 
@@ -210,7 +216,7 @@ class Run(BaseModel, extra="allow"):
     started_at: Optional[int] = None
     status: Optional[str] = None
     thread_id: Optional[str] = None
-    tools: Optional[List[AssistantTool]]
+    tools: Optional[List[AssistantTool]] = None
     usage: Optional[Usage] = None
     incomplete_details: Optional[IncompleteDetails] = None
     max_completion_tokens: Optional[int] = None
@@ -232,7 +238,7 @@ class Run(BaseModel, extra="allow"):
 
 class RunList(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: Optional[List[Run]]
+    data: Optional[List[Run]] = None
     first_id: Optional[str] = None
     last_id: Optional[str] = None
     has_more: Optional[bool] = None
@@ -259,7 +265,7 @@ class RunStep(BaseModel, extra="allow"):
     object: Optional[str] = None
     run_id: Optional[str] = None
     status: Optional[str] = None
-    step_details: Optional[StepDetails]
+    step_details: Optional[StepDetails] = None
     thread_id: Optional[str] = None
     type: Optional[str] = None
     usage: Optional[Usage] = None
@@ -275,7 +281,7 @@ class RunStep(BaseModel, extra="allow"):
 
 class RunStepList(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: Optional[List[RunStep]]
+    data: Optional[List[RunStep]] = None
     first_id: Optional[str] = None
     last_id: Optional[str] = None
     has_more: Optional[bool] = None

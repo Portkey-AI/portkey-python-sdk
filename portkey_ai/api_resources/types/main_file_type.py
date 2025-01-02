@@ -35,7 +35,7 @@ class FileObject(BaseModel, extra="allow"):
 
 class FileList(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: List[FileObject]
+    data: Optional[List[FileObject]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

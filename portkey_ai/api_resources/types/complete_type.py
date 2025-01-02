@@ -30,7 +30,7 @@ class CompletionChoice(BaseModel, extra="allow"):
 
 class TextCompletion(BaseModel, extra="allow"):
     id: Optional[str] = None
-    choices: List[CompletionChoice]
+    choices: Optional[List[CompletionChoice]] = None
     created: Optional[int] = None
     model: Optional[str] = None
     object: Optional[str] = None
@@ -74,7 +74,7 @@ class TextCompletionChunk(BaseModel, extra="allow"):
     created: Optional[int] = None
     model: Optional[str] = None
     provider: Optional[str] = None
-    choices: List[TextChoice]
+    choices: Optional[List[TextChoice]] = None
 
     def __str__(self):
         return json.dumps(self.dict(), indent=4)

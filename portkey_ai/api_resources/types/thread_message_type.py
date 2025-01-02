@@ -59,7 +59,7 @@ class TextAnnotationFileCitationFileCitation(BaseModel, extra="allow"):
 
 class TextAnnotationFilePath(BaseModel, extra="allow"):
     end_index: Optional[int] = None
-    file_path: Optional[TextAnnotationFilePathFilePath]
+    file_path: Optional[TextAnnotationFilePathFilePath] = None
     start_index: Optional[int] = None
     text: Optional[str] = None
     type: Optional[str] = None
@@ -67,7 +67,7 @@ class TextAnnotationFilePath(BaseModel, extra="allow"):
 
 class TextAnnotationFileCitation(BaseModel, extra="allow"):
     end_index: Optional[int] = None
-    file_citation: Optional[TextAnnotationFileCitationFileCitation]
+    file_citation: Optional[TextAnnotationFileCitationFileCitation] = None
     start_index: Optional[int] = None
     text: Optional[str] = None
     type: Optional[str] = None
@@ -77,7 +77,7 @@ TextAnnotation = Union[TextAnnotationFileCitation, TextAnnotationFilePath]
 
 
 class Text(BaseModel, extra="allow"):
-    annotations: Optional[List[TextAnnotation]]
+    annotations: Optional[List[TextAnnotation]] = None
     value: Optional[str] = None
 
 
@@ -93,13 +93,12 @@ class ImageURL(BaseModel, extra="allow"):
 
 
 class ImageURLContentBlock(BaseModel, extra="allow"):
-    image_url: ImageURL
-
+    image_url: Optional[ImageURL] = None
     type: Optional[str] = None
 
 
 class MessageContentText(BaseModel, extra="allow"):
-    text: Optional[Text]
+    text: Optional[Text] = None
     type: Optional[str] = None
 
 
@@ -108,7 +107,7 @@ class ImageFile(BaseModel, extra="allow"):
 
 
 class MessageContentImageFile(BaseModel, extra="allow"):
-    image_file: Optional[ImageFile]
+    image_file: Optional[ImageFile] = None
     type: Optional[str] = None
 
 
@@ -123,7 +122,7 @@ Content = Union[
 class ThreadMessage(BaseModel, extra="allow"):
     id: Optional[str] = None
     assistant_id: Optional[str] = None
-    content: Optional[List[Content]]
+    content: Optional[List[Content]] = None
     created_at: Optional[int] = None
     file_ids: Optional[List[str]] = None
     metadata: Optional[object] = None
@@ -149,7 +148,7 @@ class ThreadMessage(BaseModel, extra="allow"):
 
 class MessageList(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: Optional[List[ThreadMessage]]
+    data: Optional[List[ThreadMessage]] = None
     first_id: Optional[str] = None
     last_id: Optional[str] = None
     has_more: Optional[bool] = None
