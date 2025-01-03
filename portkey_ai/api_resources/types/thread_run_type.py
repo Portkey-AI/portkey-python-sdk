@@ -96,12 +96,6 @@ class CodeToolCall(BaseModel, extra="allow"):
     type: Optional[str] = None
 
 
-class FileSearchToolCall(BaseModel, extra="allow"):
-    id: Optional[str] = None
-    file_search: Optional[object] = None
-    type: Optional[str] = None
-
-
 class FileSearchRankingOptions(BaseModel, extra="allow"):
     ranker: Optional[str] = None
     score_threshold: Optional[float] = None

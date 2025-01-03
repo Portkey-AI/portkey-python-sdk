@@ -76,33 +76,6 @@ class Method(BaseModel, extra="allow"):
     type: Optional[str] = None
 
 
-class MethodDpoHyperparameters(BaseModel, extra="allow"):
-    batch_size: Optional[Union[str, int]] = None
-    beta: Optional[Union[str, float]] = None
-    learning_rate_multiplier: Optional[Union[str, float]] = None
-    n_epochs: Optional[Union[str, int]] = None
-
-
-class MethodSupervisedHyperparameters(BaseModel, extra="allow"):
-    batch_size: Optional[Union[str, int]] = None
-    learning_rate_multiplier: Optional[Union[str, float]] = None
-    n_epochs: Optional[Union[str, int]] = None
-
-
-class MethodDpo(BaseModel, extra="allow"):
-    hyperparameters: Optional[MethodDpoHyperparameters] = None
-
-
-class MethodSupervised(BaseModel, extra="allow"):
-    hyperparameters: Optional[MethodSupervisedHyperparameters] = None
-
-
-class Method(BaseModel, extra="allow"):
-    dpo: Optional[MethodDpo] = None
-    supervised: Optional[MethodSupervised] = None
-    type: Optional[str] = None
-
-
 class FineTuningJob(BaseModel, extra="allow"):
     id: Optional[str] = None
     created_at: Optional[int] = None
