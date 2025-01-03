@@ -16,7 +16,7 @@ class Usage(BaseModel, extra="allow"):
 
 
 class Embedding(BaseModel, extra="allow"):
-    embedding: Union[List[float], str]
+    embedding: Optional[Union[List[float], str]] = None
     index: Optional[int] = None
     object: Optional[str] = None
 
@@ -24,10 +24,10 @@ class Embedding(BaseModel, extra="allow"):
 class CreateEmbeddingResponse(BaseModel, extra="allow"):
     success: Optional[bool] = None
     warning: Optional[str] = None
-    data: List[Embedding]
+    data: Optional[List[Embedding]] = None
     model: Optional[str] = None
     object: Optional[str] = None
-    usage: Usage
+    usage: Optional[Usage] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

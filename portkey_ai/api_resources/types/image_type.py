@@ -16,7 +16,7 @@ class Image(BaseModel, extra="allow"):
 
 class ImagesResponse(BaseModel, extra="allow"):
     created: Optional[int] = None
-    data: List[Image]
+    data: Optional[List[Image]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

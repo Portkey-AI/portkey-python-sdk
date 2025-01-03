@@ -11,9 +11,9 @@ __all__ = ["ModerationCreateResponse"]
 
 
 class ModerationCreateResponse(BaseModel, extra="allow"):
-    id: str
-    model: str
-    results: List[Moderation]
+    id: Optional[str] = None
+    model: Optional[str] = None
+    results: Optional[List[Moderation]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

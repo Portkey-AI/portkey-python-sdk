@@ -21,17 +21,17 @@ __all__ = [
 
 
 class Error(BaseModel, extra="allow"):
-    code: str
-    message: str
+    code: Optional[str] = None
+    message: Optional[str] = None
     param: Optional[str] = None
 
 
 class Hyperparameters(BaseModel, extra="allow"):
-    n_epochs: Union[str, int]
+    n_epochs: Optional[Union[str, int]] = None
 
 
 class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
-    project: str
+    project: Optional[str] = None
     entity: Optional[str] = None
     name: Optional[str] = None
     tags: Optional[List[str]] = None
@@ -39,24 +39,24 @@ class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
 
 class FineTuningJobWandbIntegrationObject(BaseModel, extra="allow"):
     type: Optional[str] = None
-    wandb: FineTuningJobWandbIntegration
+    wandb: Optional[FineTuningJobWandbIntegration] = None
 
 
 class FineTuningJob(BaseModel, extra="allow"):
-    id: str
-    created_at: int
+    id: Optional[str] = None
+    created_at: Optional[int] = None
     error: Optional[Error] = None
     fine_tuned_model: Optional[str] = None
     finished_at: Optional[int] = None
-    hyperparameters: Hyperparameters
-    model: str
-    object: str
-    organization_id: str
-    result_files: List[str]
-    seed: int
-    status: str
+    hyperparameters: Optional[Hyperparameters] = None
+    model: Optional[str] = None
+    object: Optional[str] = None
+    organization_id: Optional[str] = None
+    result_files: Optional[List[str]] = None
+    seed: Optional[int] = None
+    status: Optional[str] = None
     trained_tokens: Optional[int] = None
-    training_file: str
+    training_file: Optional[str] = None
     validation_file: Optional[str] = None
     estimated_finish: Optional[int] = None
     integrations: Optional[List[FineTuningJobWandbIntegrationObject]] = None
@@ -96,11 +96,11 @@ class FineTuningJobList(BaseModel, extra="allow"):
 
 
 class FineTuningJobEvent(BaseModel, extra="allow"):
-    id: str
-    created_at: int
-    level: str
-    message: str
-    object: str
+    id: Optional[str] = None
+    created_at: Optional[int] = None
+    level: Optional[str] = None
+    message: Optional[str] = None
+    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -147,13 +147,13 @@ class Metrics(BaseModel, extra="allow"):
 
 
 class FineTuningJobCheckpoint(BaseModel, extra="allow"):
-    id: str
-    created_at: int
-    fine_tuned_model_checkpoint: str
-    fine_tuning_job_id: str
-    metrics: Metrics
-    object: str
-    step_number: int
+    id: Optional[str] = None
+    created_at: Optional[int] = None
+    fine_tuned_model_checkpoint: Optional[str] = None
+    fine_tuning_job_id: Optional[str] = None
+    metrics: Optional[Metrics] = None
+    object: Optional[str] = None
+    step_number: Optional[int] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
