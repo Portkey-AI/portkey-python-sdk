@@ -26,8 +26,8 @@ __all__ = [
 
 
 class Error(BaseModel, extra="allow"):
-    code: str
-    message: str
+    code: Optional[str] = None
+    message: Optional[str] = None
     param: Optional[str] = None
 
 
@@ -38,7 +38,7 @@ class Hyperparameters(BaseModel, extra="allow"):
 
 
 class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
-    project: str
+    project: Optional[str] = None
     entity: Optional[str] = None
     name: Optional[str] = None
     tags: Optional[List[str]] = None
@@ -46,7 +46,34 @@ class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
 
 class FineTuningJobWandbIntegrationObject(BaseModel, extra="allow"):
     type: Optional[str] = None
-    wandb: FineTuningJobWandbIntegration
+    wandb: Optional[FineTuningJobWandbIntegration] = None
+
+
+class MethodDpoHyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    beta: Optional[Union[str, float]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
+
+
+class MethodSupervisedHyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
+
+
+class MethodDpo(BaseModel, extra="allow"):
+    hyperparameters: Optional[MethodDpoHyperparameters] = None
+
+
+class MethodSupervised(BaseModel, extra="allow"):
+    hyperparameters: Optional[MethodSupervisedHyperparameters] = None
+
+
+class Method(BaseModel, extra="allow"):
+    dpo: Optional[MethodDpo] = None
+    supervised: Optional[MethodSupervised] = None
+    type: Optional[str] = None
 
 
 class MethodDpoHyperparameters(BaseModel, extra="allow"):

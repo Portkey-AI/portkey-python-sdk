@@ -23,9 +23,9 @@ class Upload(BaseModel, extra="allow"):
     created_at: Optional[int] = None
     expires_at: Optional[int] = None
     filename: Optional[str] = None
-    object: Optional[Literal["upload"]]
+    object: Optional[Literal["upload"]] = None
     purpose: Optional[str] = None
-    status: Optional[Literal["pending", "completed", "cancelled", "expired"]]
+    status: Optional[Literal["pending", "completed", "cancelled", "expired"]] = None
     file: Optional[FileObject] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -40,7 +40,7 @@ class Upload(BaseModel, extra="allow"):
 class UploadPart(BaseModel, extra="allow"):
     id: Optional[str] = None
     created_at: Optional[int] = None
-    object: Optional[Literal["upload.part"]]
+    object: Optional[Literal["upload.part"]] = None
     upload_id: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 

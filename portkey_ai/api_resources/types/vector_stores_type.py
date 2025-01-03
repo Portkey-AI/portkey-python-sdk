@@ -37,7 +37,7 @@ class ExpiresAfter(BaseModel, extra="allow"):
 class VectorStore(BaseModel, extra="allow"):
     id: Optional[str] = None
     created_at: Optional[int] = None
-    file_counts: FileCounts
+    file_counts: Optional[FileCounts] = None
     last_active_at: Optional[int] = None
     metadata: Optional[object] = None
     name: Optional[str] = None
@@ -57,7 +57,7 @@ class VectorStore(BaseModel, extra="allow"):
 
 
 class VectorStoreList(BaseModel, extra="allow"):
-    data: List[VectorStore]
+    data: Optional[List[VectorStore]] = None
     object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -128,7 +128,7 @@ class VectorStoreFile(BaseModel, extra="allow"):
 
 
 class VectorStoreFileList(BaseModel, extra="allow"):
-    data: List[VectorStoreFile]
+    data: Optional[List[VectorStoreFile]] = None
     object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
@@ -157,7 +157,7 @@ class VectorStoreFileDeleted(BaseModel, extra="allow"):
 class VectorStoreFileBatch(BaseModel, extra="allow"):
     id: Optional[str] = None
     created_at: Optional[int] = None
-    file_counts: FileCounts
+    file_counts: Optional[FileCounts] = None
     object: Optional[str] = None
     status: Optional[str] = None
     vector_store_id: Optional[str] = None

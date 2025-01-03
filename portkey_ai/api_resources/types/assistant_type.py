@@ -110,7 +110,7 @@ class Assistant(BaseModel, extra="allow"):
 
 class AssistantList(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: Optional[List[Assistant]]
+    data: Optional[List[Assistant]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

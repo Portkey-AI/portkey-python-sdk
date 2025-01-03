@@ -50,7 +50,7 @@ class TranscriptionVerbose(BaseModel, extra="allow"):
 
 
 class Transcription(BaseModel, extra="allow"):
-    text: str
+    text: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -89,7 +89,7 @@ class TranslationVerbose(BaseModel, extra="allow"):
 
 
 class Translation(BaseModel, extra="allow"):
-    text: str
+    text: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
