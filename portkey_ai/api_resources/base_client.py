@@ -53,6 +53,7 @@ class APIClient:
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
         virtual_key: Optional[str] = None,
+        websocket_base_url: Optional[Union[str, httpx.URL]] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -87,6 +88,7 @@ class APIClient:
         self.base_url = set_base_url(base_url, api_key)
         self.api_key = default_api_key(self.base_url, api_key)
         self.virtual_key = virtual_key
+        self.websocket_base_url = websocket_base_url
         self.config = config
         self.provider = provider
         self.trace_id = trace_id
@@ -697,6 +699,7 @@ class AsyncAPIClient:
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
         virtual_key: Optional[str] = None,
+        websocket_base_url: Optional[Union[str, httpx.URL]] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -731,6 +734,7 @@ class AsyncAPIClient:
         self.base_url = set_base_url(base_url, api_key)
         self.api_key = default_api_key(self.base_url, api_key)
         self.virtual_key = virtual_key
+        self.websocket_base_url = websocket_base_url
         self.config = config
         self.provider = provider
         self.trace_id = trace_id

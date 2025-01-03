@@ -25,8 +25,8 @@ import httpx
 import pydantic
 
 from ._types import NoneType
-from ._utils import is_given, extract_type_arg, is_annotated_type, extract_type_var_from_base
-from ._models import BaseModel, is_basemodel
+from ._utils import is_given, extract_type_arg, is_annotated_type, is_type_alias_type, extract_type_var_from_base
+from ._models import BaseModel, is_basemodel, add_request_id
 from ._constants import RAW_RESPONSE_HEADER, OVERRIDE_CAST_TO_HEADER
 from ._streaming import Stream, AsyncStream, is_stream_class_type, extract_stream_chunk_type
 from ._exceptions import OpenAIError, APIResponseValidationError
@@ -126,9 +126,15 @@ class BaseAPIResponse(Generic[R]):
         )
 
     def _parse(self, *, to: type[_T] | None = None) -> R | _T:
+        cast_to = to if to is not None else self._cast_to
+
+        # unwrap `TypeAlias('Name', T)` -> `T`
+        if is_type_alias_type(cast_to):
+            cast_to = cast_to.__value__  # type: ignore[unreachable]
+
         # unwrap `Annotated[T, ...]` -> `T`
-        if to and is_annotated_type(to):
-            to = extract_type_arg(to, 0)
+        if cast_to and is_annotated_type(cast_to):
+            cast_to = extract_type_arg(cast_to, 0)
 
         if self._is_sse_stream:
             if to:
@@ -164,17 +170,11 @@ class BaseAPIResponse(Generic[R]):
             return cast(
                 R,
                 stream_cls(
-                    cast_to=self._cast_to,
+                    cast_to=cast_to,
                     response=self.http_response,
                     client=cast(Any, self._client),
                 ),
             )
-
-        cast_to = to if to is not None else self._cast_to
-
-        # unwrap `Annotated[T, ...]` -> `T`
-        if is_annotated_type(cast_to):
-            cast_to = extract_type_arg(cast_to, 0)
 
         if cast_to is NoneType:
             return cast(R, None)
@@ -191,6 +191,9 @@ class BaseAPIResponse(Generic[R]):
 
         if cast_to == float:
             return cast(R, float(response.text))
+
+        if cast_to == bool:
+            return cast(R, response.text.lower() == "true")
 
         origin = get_origin(cast_to) or cast_to
 
@@ -315,8 +318,11 @@ class APIResponse(BaseAPIResponse[R]):
         if is_given(self._options.post_parser):
             parsed = self._options.post_parser(parsed)
 
+        if isinstance(parsed, BaseModel):
+            add_request_id(parsed, self.request_id)
+
         self._parsed_by_type[cache_key] = parsed
-        return parsed
+        return cast(R, parsed)
 
     def read(self) -> bytes:
         """Read and return the binary response content."""
@@ -419,8 +425,11 @@ class AsyncAPIResponse(BaseAPIResponse[R]):
         if is_given(self._options.post_parser):
             parsed = self._options.post_parser(parsed)
 
+        if isinstance(parsed, BaseModel):
+            add_request_id(parsed, self.request_id)
+
         self._parsed_by_type[cache_key] = parsed
-        return parsed
+        return cast(R, parsed)
 
     async def read(self) -> bytes:
         """Read and return the binary response content."""

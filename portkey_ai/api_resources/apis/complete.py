@@ -1,5 +1,5 @@
 import json
-from typing import AsyncIterator, Iterator, Optional, Union
+from typing import Any, AsyncIterator, Dict, Iterable, Iterator, List, Optional, Union
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
@@ -18,7 +18,26 @@ class Completion(APIResource):
         self.client = client
 
     def stream_create(  # type: ignore[return]
-        self, model, prompt, stream, temperature, max_tokens, top_p, **kwargs
+        self,
+        model,
+        prompt,
+        stream,
+        temperature,
+        max_tokens,
+        top_p,
+        best_of,
+        echo,
+        frequency_penalty,
+        logit_bias,
+        logprobs,
+        n,
+        presence_penalty,
+        seed,
+        stop,
+        suffix,
+        user,
+        stream_options,
+        **kwargs,
     ) -> Union[TextCompletion, Iterator[TextCompletionChunk]]:
         with self.openai_client.with_streaming_response.completions.create(
             model=model,
@@ -27,6 +46,18 @@ class Completion(APIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            best_of=best_of,
+            echo=echo,
+            frequency_penalty=frequency_penalty,
+            logit_bias=logit_bias,
+            logprobs=logprobs,
+            n=n,
+            presence_penalty=presence_penalty,
+            seed=seed,
+            stop=stop,
+            suffix=suffix,
+            user=user,
+            stream_options=stream_options,
             extra_body=kwargs,
         ) as response:
             for line in response.iter_lines():
@@ -44,7 +75,26 @@ class Completion(APIResource):
                     return ""
 
     def normal_create(
-        self, model, prompt, stream, temperature, max_tokens, top_p, **kwargs
+        self,
+        model,
+        prompt,
+        stream,
+        temperature,
+        max_tokens,
+        top_p,
+        best_of,
+        echo,
+        frequency_penalty,
+        logit_bias,
+        logprobs,
+        n,
+        presence_penalty,
+        seed,
+        stop,
+        suffix,
+        user,
+        stream_options,
+        **kwargs,
     ) -> TextCompletion:
         response = self.openai_client.with_raw_response.completions.create(
             model=model,
@@ -53,6 +103,18 @@ class Completion(APIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            best_of=best_of,
+            echo=echo,
+            frequency_penalty=frequency_penalty,
+            logit_bias=logit_bias,
+            logprobs=logprobs,
+            n=n,
+            presence_penalty=presence_penalty,
+            seed=seed,
+            stop=stop,
+            suffix=suffix,
+            user=user,
+            stream_options=stream_options,
             extra_body=kwargs,
         )
         data = TextCompletion(**json.loads(response.text))
@@ -63,11 +125,25 @@ class Completion(APIResource):
         self,
         *,
         model: Optional[str] = "portkey-default",
-        prompt: Optional[str] = None,
+        prompt: Union[
+            str, List[str], Iterable[int], Iterable[Iterable[int]], None
+        ] = None,
         stream: Union[bool, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         max_tokens: Union[int, NotGiven] = NOT_GIVEN,
         top_p: Union[bool, NotGiven] = NOT_GIVEN,
+        best_of: Union[int, NotGiven] = NOT_GIVEN,
+        echo: Union[bool, NotGiven] = NOT_GIVEN,
+        frequency_penalty: Union[float, NotGiven] = NOT_GIVEN,
+        logit_bias: Union[Dict[str, int], NotGiven] = NOT_GIVEN,
+        logprobs: Union[int, NotGiven] = NOT_GIVEN,
+        n: Union[int, NotGiven] = NOT_GIVEN,
+        presence_penalty: Union[float, NotGiven] = NOT_GIVEN,
+        seed: Union[int, NotGiven] = NOT_GIVEN,
+        stop: Union[Optional[str], List[str], None, NotGiven] = NOT_GIVEN,
+        suffix: Union[str, NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        stream_options: Optional[Any] = NOT_GIVEN,
         **kwargs,
     ) -> Union[TextCompletion, Iterator[TextCompletionChunk]]:
         if stream is True:
@@ -78,6 +154,18 @@ class Completion(APIResource):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 top_p=top_p,
+                best_of=best_of,
+                echo=echo,
+                frequency_penalty=frequency_penalty,
+                logit_bias=logit_bias,
+                logprobs=logprobs,
+                n=n,
+                presence_penalty=presence_penalty,
+                seed=seed,
+                stop=stop,
+                suffix=suffix,
+                user=user,
+                stream_options=stream_options,
                 **kwargs,
             )
         else:
@@ -88,6 +176,18 @@ class Completion(APIResource):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 top_p=top_p,
+                best_of=best_of,
+                echo=echo,
+                frequency_penalty=frequency_penalty,
+                logit_bias=logit_bias,
+                logprobs=logprobs,
+                n=n,
+                presence_penalty=presence_penalty,
+                seed=seed,
+                stop=stop,
+                suffix=suffix,
+                user=user,
+                stream_options=stream_options,
                 **kwargs,
             )
 
@@ -98,7 +198,26 @@ class AsyncCompletion(AsyncAPIResource):
         self.openai_client = client.openai_client
 
     async def stream_create(
-        self, model, prompt, stream, temperature, max_tokens, top_p, **kwargs
+        self,
+        model,
+        prompt,
+        stream,
+        temperature,
+        max_tokens,
+        top_p,
+        best_of,
+        echo,
+        frequency_penalty,
+        logit_bias,
+        logprobs,
+        n,
+        presence_penalty,
+        seed,
+        stop,
+        suffix,
+        user,
+        stream_options,
+        **kwargs,
     ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
         async with self.openai_client.with_streaming_response.completions.create(
             model=model,
@@ -107,6 +226,18 @@ class AsyncCompletion(AsyncAPIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            best_of=best_of,
+            echo=echo,
+            frequency_penalty=frequency_penalty,
+            logit_bias=logit_bias,
+            logprobs=logprobs,
+            n=n,
+            presence_penalty=presence_penalty,
+            seed=seed,
+            stop=stop,
+            suffix=suffix,
+            user=user,
+            stream_options=stream_options,
             extra_body=kwargs,
         ) as response:
             async for line in response.iter_lines():
@@ -124,7 +255,26 @@ class AsyncCompletion(AsyncAPIResource):
                     pass
 
     async def normal_create(
-        self, model, prompt, stream, temperature, max_tokens, top_p, **kwargs
+        self,
+        model,
+        prompt,
+        stream,
+        temperature,
+        max_tokens,
+        top_p,
+        best_of,
+        echo,
+        frequency_penalty,
+        logit_bias,
+        logprobs,
+        n,
+        presence_penalty,
+        seed,
+        stop,
+        suffix,
+        user,
+        stream_options,
+        **kwargs,
     ) -> TextCompletion:
         response = await self.openai_client.with_raw_response.completions.create(
             model=model,
@@ -133,6 +283,18 @@ class AsyncCompletion(AsyncAPIResource):
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
+            best_of=best_of,
+            echo=echo,
+            frequency_penalty=frequency_penalty,
+            logit_bias=logit_bias,
+            logprobs=logprobs,
+            n=n,
+            presence_penalty=presence_penalty,
+            seed=seed,
+            stop=stop,
+            suffix=suffix,
+            user=user,
+            stream_options=stream_options,
             extra_body=kwargs,
         )
         data = TextCompletion(**json.loads(response.text))
@@ -143,11 +305,25 @@ class AsyncCompletion(AsyncAPIResource):
         self,
         *,
         model: Optional[str] = "portkey-default",
-        prompt: Optional[str] = None,
+        prompt: Union[
+            str, List[str], Iterable[int], Iterable[Iterable[int]], None
+        ] = None,
         stream: Union[bool, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         max_tokens: Union[int, NotGiven] = NOT_GIVEN,
         top_p: Union[bool, NotGiven] = NOT_GIVEN,
+        best_of: Union[int, NotGiven] = NOT_GIVEN,
+        echo: Union[bool, NotGiven] = NOT_GIVEN,
+        frequency_penalty: Union[float, NotGiven] = NOT_GIVEN,
+        logit_bias: Union[Dict[str, int], NotGiven] = NOT_GIVEN,
+        logprobs: Union[int, NotGiven] = NOT_GIVEN,
+        n: Union[int, NotGiven] = NOT_GIVEN,
+        presence_penalty: Union[float, NotGiven] = NOT_GIVEN,
+        seed: Union[int, NotGiven] = NOT_GIVEN,
+        stop: Union[Optional[str], List[str], None, NotGiven] = NOT_GIVEN,
+        suffix: Union[str, NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        stream_options: Optional[Any] = NOT_GIVEN,
         **kwargs,
     ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
         if stream is True:
@@ -158,6 +334,18 @@ class AsyncCompletion(AsyncAPIResource):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 top_p=top_p,
+                best_of=best_of,
+                echo=echo,
+                frequency_penalty=frequency_penalty,
+                logit_bias=logit_bias,
+                logprobs=logprobs,
+                n=n,
+                presence_penalty=presence_penalty,
+                seed=seed,
+                stop=stop,
+                suffix=suffix,
+                user=user,
+                stream_options=stream_options,
                 **kwargs,
             )
         else:
@@ -168,5 +356,17 @@ class AsyncCompletion(AsyncAPIResource):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 top_p=top_p,
+                best_of=best_of,
+                echo=echo,
+                frequency_penalty=frequency_penalty,
+                logit_bias=logit_bias,
+                logprobs=logprobs,
+                n=n,
+                presence_penalty=presence_penalty,
+                seed=seed,
+                stop=stop,
+                suffix=suffix,
+                user=user,
+                stream_options=stream_options,
                 **kwargs,
             )

@@ -1,5 +1,14 @@
 import json
-from typing import Any, AsyncIterator, Iterable, Iterator, Literal, Optional, Union
+from typing import (
+    Any,
+    AsyncIterator,
+    Iterable,
+    Iterator,
+    List,
+    Literal,
+    Optional,
+    Union,
+)
 import typing
 
 from portkey_ai._vendor.openai.types.beta.assistant_stream_event import (
@@ -283,6 +292,38 @@ class Messages(APIResource):
 
         return data
 
+    def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
+        if kwargs:
+            response = (
+                self.openai_client.with_raw_response.beta.threads.messages.retrieve(
+                    thread_id=thread_id, message_id=message_id, extra_body=kwargs
+                )
+            )
+        else:
+            response = (
+                self.openai_client.with_raw_response.beta.threads.messages.retrieve(
+                    thread_id=thread_id, message_id=message_id
+                )
+            )
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    def update(
+        self,
+        thread_id,
+        message_id,
+        *,
+        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> ThreadMessage:
+        response = self.openai_client.with_raw_response.beta.threads.messages.update(
+            thread_id=thread_id, message_id=message_id, metadata=metadata, **kwargs
+        )
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
     def list(
         self,
         thread_id,
@@ -304,31 +345,6 @@ class Messages(APIResource):
             **kwargs,
         )
         data = MessageList(**json.loads(response.text))
-        data._headers = response.headers
-        return data
-
-    def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
-        if kwargs:
-            response = (
-                self.openai_client.with_raw_response.beta.threads.messages.retrieve(
-                    thread_id=thread_id, message_id=message_id, extra_body=kwargs
-                )
-            )
-        else:
-            response = (
-                self.openai_client.with_raw_response.beta.threads.messages.retrieve(
-                    thread_id=thread_id, message_id=message_id
-                )
-            )
-        data = ThreadMessage(**json.loads(response.text))
-        data._headers = response.headers
-        return data
-
-    def update(self, thread_id, message_id, **kwargs) -> ThreadMessage:
-        response = self.openai_client.with_raw_response.beta.threads.messages.update(
-            thread_id=thread_id, message_id=message_id, **kwargs
-        )
-        data = ThreadMessage(**json.loads(response.text))
         data._headers = response.headers
         return data
 
@@ -418,15 +434,6 @@ class Runs(APIResource):
 
         return data
 
-    def list(self, thread_id, **kwargs) -> RunList:
-        response = self.openai_client.with_raw_response.beta.threads.runs.list(
-            thread_id=thread_id, **kwargs
-        )
-        data = RunList(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
-
     def update(
         self,
         thread_id,
@@ -442,13 +449,25 @@ class Runs(APIResource):
 
         return data
 
-    def submit_tool_outputs(self, thread_id, tool_outputs, run_id, **kwargs) -> Run:
-        response = (
-            self.openai_client.with_raw_response.beta.threads.runs.submit_tool_outputs(
-                thread_id=thread_id, run_id=run_id, tool_outputs=tool_outputs, **kwargs
-            )
+    def list(
+        self,
+        thread_id,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        before: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunList:
+        response = self.openai_client.with_raw_response.beta.threads.runs.list(
+            thread_id=thread_id,
+            after=after,
+            before=before,
+            limit=limit,
+            order=order,
+            **kwargs,
         )
-        data = Run(**json.loads(response.text))
+        data = RunList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -466,6 +485,7 @@ class Runs(APIResource):
         self,
         *,
         assistant_id: str,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         additional_messages: Union[
             Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
@@ -475,6 +495,7 @@ class Runs(APIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
+        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
         ] = NOT_GIVEN,
@@ -493,6 +514,7 @@ class Runs(APIResource):
     ) -> Run:
         response = self.openai_client.beta.threads.runs.create_and_poll(
             assistant_id=assistant_id,
+            include=include,
             additional_instructions=additional_instructions,
             additional_messages=additional_messages,
             instructions=instructions,
@@ -500,6 +522,7 @@ class Runs(APIResource):
             max_prompt_tokens=max_prompt_tokens,
             metadata=metadata,
             model=model,
+            parallel_tool_calls=parallel_tool_calls,
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
@@ -528,6 +551,7 @@ class Runs(APIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
+        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
         ] = NOT_GIVEN,
@@ -556,6 +580,7 @@ class Runs(APIResource):
             max_prompt_tokens=max_prompt_tokens,
             metadata=metadata,
             model=model,
+            parallel_tool_calls=parallel_tool_calls,
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
@@ -588,6 +613,7 @@ class Runs(APIResource):
         self,
         *,
         assistant_id: str,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         additional_messages: Union[
             Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
@@ -597,6 +623,7 @@ class Runs(APIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
+        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
         ] = NOT_GIVEN,
@@ -618,6 +645,7 @@ class Runs(APIResource):
     ]:
         response = self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
+            include=include,
             additional_instructions=additional_instructions,
             additional_messages=additional_messages,
             instructions=instructions,
@@ -625,6 +653,7 @@ class Runs(APIResource):
             max_prompt_tokens=max_prompt_tokens,
             metadata=metadata,
             model=model,
+            parallel_tool_calls=parallel_tool_calls,
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
@@ -636,6 +665,29 @@ class Runs(APIResource):
             extra_body=kwargs,
         )
         data = response
+        return data
+
+    def submit_tool_outputs(
+        self,
+        run_id,
+        *,
+        thread_id,
+        tool_outputs,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> Run:
+        response = (
+            self.openai_client.with_raw_response.beta.threads.runs.submit_tool_outputs(
+                thread_id=thread_id,
+                run_id=run_id,
+                tool_outputs=tool_outputs,
+                stream=stream,
+                **kwargs,
+            )
+        )
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+
         return data
 
     def submit_tool_outputs_and_poll(
@@ -687,32 +739,61 @@ class Steps(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    def list(self, thread_id, run_id, **kwargs) -> RunStepList:
-        response = self.openai_client.with_raw_response.beta.threads.runs.steps.list(
-            thread_id=thread_id, run_id=run_id, **kwargs
-        )
-        data = RunStepList(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
-
-    def retrieve(self, thread_id, run_id, step_id, **kwargs) -> RunStep:
+    def retrieve(
+        self,
+        thread_id,
+        run_id,
+        step_id,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunStep:
         if kwargs:
             response = (
                 self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
                     thread_id=thread_id,
                     run_id=run_id,
                     step_id=step_id,
+                    include=include,
                     extra_body=kwargs,
                 )
             )
         else:
             response = (
                 self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(
-                    thread_id=thread_id, run_id=run_id, step_id=step_id
+                    thread_id=thread_id,
+                    run_id=run_id,
+                    step_id=step_id,
+                    include=include,
                 )
             )
         data = RunStep(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def list(
+        self,
+        run_id,
+        *,
+        thread_id,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        before: Union[str, NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Any, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunStepList:
+        response = self.openai_client.with_raw_response.beta.threads.runs.steps.list(
+            thread_id=thread_id,
+            run_id=run_id,
+            after=after,
+            before=before,
+            include=include,
+            limit=limit,
+            order=order,
+            **kwargs,
+        )
+        data = RunStepList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -965,6 +1046,36 @@ class AsyncMessages(AsyncAPIResource):
 
         return data
 
+    async def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.threads.messages.retrieve(  # noqa: E501
+                thread_id=thread_id, message_id=message_id, extra_body=kwargs
+            )
+        else:
+            response = await self.openai_client.with_raw_response.beta.threads.messages.retrieve(  # noqa: E501
+                thread_id=thread_id, message_id=message_id
+            )
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    async def update(
+        self,
+        thread_id,
+        message_id,
+        *,
+        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> ThreadMessage:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.messages.update(
+                thread_id=thread_id, message_id=message_id, metadata=metadata, **kwargs
+            )
+        )
+        data = ThreadMessage(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
     async def list(
         self,
         thread_id,
@@ -988,29 +1099,6 @@ class AsyncMessages(AsyncAPIResource):
             )
         )
         data = MessageList(**json.loads(response.text))
-        data._headers = response.headers
-        return data
-
-    async def retrieve(self, thread_id, message_id, **kwargs) -> ThreadMessage:
-        if kwargs:
-            response = await self.openai_client.with_raw_response.beta.threads.messages.retrieve(  # noqa: E501
-                thread_id=thread_id, message_id=message_id, extra_body=kwargs
-            )
-        else:
-            response = await self.openai_client.with_raw_response.beta.threads.messages.retrieve(  # noqa: E501
-                thread_id=thread_id, message_id=message_id
-            )
-        data = ThreadMessage(**json.loads(response.text))
-        data._headers = response.headers
-        return data
-
-    async def update(self, thread_id, message_id, **kwargs) -> ThreadMessage:
-        response = (
-            await self.openai_client.with_raw_response.beta.threads.messages.update(
-                thread_id=thread_id, message_id=message_id, **kwargs
-            )
-        )
-        data = ThreadMessage(**json.loads(response.text))
         data._headers = response.headers
         return data
 
@@ -1104,15 +1192,6 @@ class AsyncRuns(AsyncAPIResource):
 
         return data
 
-    async def list(self, thread_id, **kwargs) -> RunList:
-        response = await self.openai_client.with_raw_response.beta.threads.runs.list(
-            thread_id=thread_id, **kwargs
-        )
-        data = RunList(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
-
     async def update(
         self,
         thread_id,
@@ -1128,23 +1207,25 @@ class AsyncRuns(AsyncAPIResource):
 
         return data
 
-    async def submit_tool_outputs(
-        self, thread_id, tool_outputs, run_id, **kwargs
-    ) -> Run:
-        # fmt: off
-        response = await self.openai_client\
-            .with_raw_response\
-            .beta\
-            .threads\
-            .runs\
-            .submit_tool_outputs(
-                thread_id=thread_id,
-                run_id=run_id,
-                tool_outputs=tool_outputs,
-                **kwargs
+    async def list(
+        self,
+        thread_id,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        before: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunList:
+        response = await self.openai_client.with_raw_response.beta.threads.runs.list(
+            thread_id=thread_id,
+            after=after,
+            before=before,
+            limit=limit,
+            order=order,
+            **kwargs,
         )
-        # fmt: on
-        data = Run(**json.loads(response.text))
+        data = RunList(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -1162,6 +1243,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         additional_messages: Union[
             Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
@@ -1171,6 +1253,7 @@ class AsyncRuns(AsyncAPIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
+        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
         ] = NOT_GIVEN,
@@ -1189,6 +1272,7 @@ class AsyncRuns(AsyncAPIResource):
     ) -> Run:
         response = await self.openai_client.beta.threads.runs.create_and_poll(
             assistant_id=assistant_id,
+            include=include,
             additional_instructions=additional_instructions,
             additional_messages=additional_messages,
             instructions=instructions,
@@ -1196,6 +1280,7 @@ class AsyncRuns(AsyncAPIResource):
             max_prompt_tokens=max_prompt_tokens,
             metadata=metadata,
             model=model,
+            parallel_tool_calls=parallel_tool_calls,
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
@@ -1224,6 +1309,7 @@ class AsyncRuns(AsyncAPIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
+        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
         ] = NOT_GIVEN,
@@ -1254,6 +1340,7 @@ class AsyncRuns(AsyncAPIResource):
             max_prompt_tokens=max_prompt_tokens,
             metadata=metadata,
             model=model,
+            parallel_tool_calls=parallel_tool_calls,
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
@@ -1286,6 +1373,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
         additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         additional_messages: Union[
             Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
@@ -1295,6 +1383,7 @@ class AsyncRuns(AsyncAPIResource):
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
+        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
         ] = NOT_GIVEN,
@@ -1318,6 +1407,7 @@ class AsyncRuns(AsyncAPIResource):
     ):
         response = await self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
+            include=include,
             additional_instructions=additional_instructions,
             additional_messages=additional_messages,
             instructions=instructions,
@@ -1325,6 +1415,7 @@ class AsyncRuns(AsyncAPIResource):
             max_prompt_tokens=max_prompt_tokens,
             metadata=metadata,
             model=model,
+            parallel_tool_calls=parallel_tool_calls,
             response_format=response_format,
             temperature=temperature,
             tool_choice=tool_choice,
@@ -1336,6 +1427,34 @@ class AsyncRuns(AsyncAPIResource):
             extra_body=kwargs,
         )
         data = response
+        return data
+
+    async def submit_tool_outputs(
+        self,
+        run_id,
+        *,
+        thread_id,
+        tool_outputs,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> Run:
+        # fmt: off
+        response = await self.openai_client\
+            .with_raw_response\
+            .beta\
+            .threads\
+            .runs\
+            .submit_tool_outputs(
+                thread_id=thread_id,
+                run_id=run_id,
+                tool_outputs=tool_outputs,
+                stream=stream,
+                **kwargs
+        )
+        # fmt: on
+        data = Run(**json.loads(response.text))
+        data._headers = response.headers
+
         return data
 
     async def submit_tool_outputs_and_poll(
@@ -1389,27 +1508,56 @@ class AsyncSteps(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
 
-    async def list(self, thread_id, run_id, **kwargs) -> RunStepList:
-        response = (
-            await self.openai_client.with_raw_response.beta.threads.runs.steps.list(
-                thread_id=thread_id, run_id=run_id, **kwargs
+    async def retrieve(
+        self,
+        thread_id,
+        run_id,
+        step_id,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunStep:
+        if kwargs:
+            response = await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(  # noqa: E501
+                thread_id=thread_id,
+                run_id=run_id,
+                step_id=step_id,
+                include=include,
+                extra_body=kwargs,
             )
-        )
-        data = RunStepList(**json.loads(response.text))
+        else:
+            response = await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(  # noqa: E501
+                thread_id=thread_id, run_id=run_id, step_id=step_id, include=include
+            )
+        data = RunStep(**json.loads(response.text))
         data._headers = response.headers
 
         return data
 
-    async def retrieve(self, thread_id, run_id, step_id, **kwargs) -> RunStep:
-        if kwargs:
-            response = await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(  # noqa: E501
-                thread_id=thread_id, run_id=run_id, step_id=step_id, extra_body=kwargs
+    async def list(
+        self,
+        run_id,
+        *,
+        thread_id,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        before: Union[str, NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Any, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunStepList:
+        response = (
+            await self.openai_client.with_raw_response.beta.threads.runs.steps.list(
+                thread_id=thread_id,
+                run_id=run_id,
+                after=after,
+                before=before,
+                include=include,
+                limit=limit,
+                order=order,
+                **kwargs,
             )
-        else:
-            response = await self.openai_client.with_raw_response.beta.threads.runs.steps.retrieve(  # noqa: E501
-                thread_id=thread_id, run_id=run_id, step_id=step_id
-            )
-        data = RunStep(**json.loads(response.text))
+        )
+        data = RunStepList(**json.loads(response.text))
         data._headers = response.headers
 
         return data

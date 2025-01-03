@@ -24,7 +24,6 @@ class ToolResourcesFileSearch(BaseModel, extra="allow"):
 
 class ToolResources(BaseModel, extra="allow"):
     code_interpreter: Optional[ToolResourcesCodeInterpreter] = None
-
     file_search: Optional[ToolResourcesFileSearch] = None
 
 

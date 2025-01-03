@@ -16,9 +16,8 @@ from .._compat import cached_property
 from .._extras import numpy as np, has_numpy
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
-from .._base_client import (
-    make_request_options,
-)
+from .._base_client import make_request_options
+from ..types.embedding_model import EmbeddingModel
 from ..types.create_embedding_response import CreateEmbeddingResponse
 
 __all__ = ["Embeddings", "AsyncEmbeddings"]
@@ -27,17 +26,28 @@ __all__ = ["Embeddings", "AsyncEmbeddings"]
 class Embeddings(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> EmbeddingsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return EmbeddingsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> EmbeddingsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return EmbeddingsWithStreamingResponse(self)
 
     def create(
         self,
         *,
         input: Union[str, List[str], Iterable[int], Iterable[Iterable[int]]],
-        model: Union[str, Literal["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]],
+        model: Union[str, EmbeddingModel],
         dimensions: int | NotGiven = NOT_GIVEN,
         encoding_format: Literal["float", "base64"] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
@@ -63,8 +73,8 @@ class Embeddings(SyncAPIResource):
           model: ID of the model to use. You can use the
               [List models](https://platform.openai.com/docs/api-reference/models/list) API to
               see all of your available models, or see our
-              [Model overview](https://platform.openai.com/docs/models/overview) for
-              descriptions of them.
+              [Model overview](https://platform.openai.com/docs/models) for descriptions of
+              them.
 
           dimensions: The number of dimensions the resulting output embeddings should have. Only
               supported in `text-embedding-3` and later models.
@@ -74,7 +84,7 @@ class Embeddings(SyncAPIResource):
 
           user: A unique identifier representing your end-user, which can help OpenAI to monitor
               and detect abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids).
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           extra_headers: Send extra headers
 
@@ -128,17 +138,28 @@ class Embeddings(SyncAPIResource):
 class AsyncEmbeddings(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncEmbeddingsWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return AsyncEmbeddingsWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncEmbeddingsWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return AsyncEmbeddingsWithStreamingResponse(self)
 
     async def create(
         self,
         *,
         input: Union[str, List[str], Iterable[int], Iterable[Iterable[int]]],
-        model: Union[str, Literal["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]],
+        model: Union[str, EmbeddingModel],
         dimensions: int | NotGiven = NOT_GIVEN,
         encoding_format: Literal["float", "base64"] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
@@ -164,8 +185,8 @@ class AsyncEmbeddings(AsyncAPIResource):
           model: ID of the model to use. You can use the
               [List models](https://platform.openai.com/docs/api-reference/models/list) API to
               see all of your available models, or see our
-              [Model overview](https://platform.openai.com/docs/models/overview) for
-              descriptions of them.
+              [Model overview](https://platform.openai.com/docs/models) for descriptions of
+              them.
 
           dimensions: The number of dimensions the resulting output embeddings should have. Only
               supported in `text-embedding-3` and later models.
@@ -175,7 +196,7 @@ class AsyncEmbeddings(AsyncAPIResource):
 
           user: A unique identifier representing your end-user, which can help OpenAI to monitor
               and detect abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids).
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           extra_headers: Send extra headers
 

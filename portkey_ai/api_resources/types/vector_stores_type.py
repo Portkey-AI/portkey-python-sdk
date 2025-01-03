@@ -4,10 +4,6 @@ from typing_extensions import Annotated, TypeAlias
 import httpx
 
 from portkey_ai._vendor.openai._utils._transform import PropertyInfo
-from portkey_ai._vendor.openai.types.beta.vector_stores.vector_store_file import (
-    ChunkingStrategyOther,
-    ChunkingStrategyStatic,
-)
 from .utils import parse_headers
 from pydantic import BaseModel, PrivateAttr
 
@@ -92,8 +88,22 @@ class LastError(BaseModel, extra="allow"):
     message: Optional[str] = None
 
 
+class StaticFileChunkingStrategy(BaseModel, extra="allow"):
+    chunk_overlap_tokens: Optional[int] = None
+    max_chunk_size_tokens: Optional[int] = None
+
+
+class StaticFileChunkingStrategyObject(BaseModel, extra="allow"):
+    static: StaticFileChunkingStrategy
+    type: Optional[str] = None
+
+
+class OtherFileChunkingStrategyObject(BaseModel, extra="allow"):
+    type: Optional[str] = None
+
+
 ChunkingStrategy: TypeAlias = Annotated[
-    Union[ChunkingStrategyStatic, ChunkingStrategyOther],
+    Union[StaticFileChunkingStrategyObject, OtherFileChunkingStrategyObject],
     PropertyInfo(discriminator="type"),
 ]
 

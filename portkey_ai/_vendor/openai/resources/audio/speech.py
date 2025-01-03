@@ -31,10 +31,21 @@ __all__ = ["Speech", "AsyncSpeech"]
 class Speech(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> SpeechWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return SpeechWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> SpeechWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return SpeechWithStreamingResponse(self)
 
     def create(
@@ -59,13 +70,13 @@ class Speech(SyncAPIResource):
           input: The text to generate audio for. The maximum length is 4096 characters.
 
           model:
-              One of the available [TTS models](https://platform.openai.com/docs/models/tts):
+              One of the available [TTS models](https://platform.openai.com/docs/models#tts):
               `tts-1` or `tts-1-hd`
 
           voice: The voice to use when generating the audio. Supported voices are `alloy`,
               `echo`, `fable`, `onyx`, `nova`, and `shimmer`. Previews of the voices are
               available in the
-              [Text to speech guide](https://platform.openai.com/docs/guides/text-to-speech/voice-options).
+              [Text to speech guide](https://platform.openai.com/docs/guides/text-to-speech#voice-options).
 
           response_format: The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`,
               `wav`, and `pcm`.
@@ -104,10 +115,21 @@ class Speech(SyncAPIResource):
 class AsyncSpeech(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncSpeechWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/openai/openai-python#accessing-raw-response-data-eg-headers
+        """
         return AsyncSpeechWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncSpeechWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/openai/openai-python#with_streaming_response
+        """
         return AsyncSpeechWithStreamingResponse(self)
 
     async def create(
@@ -132,13 +154,13 @@ class AsyncSpeech(AsyncAPIResource):
           input: The text to generate audio for. The maximum length is 4096 characters.
 
           model:
-              One of the available [TTS models](https://platform.openai.com/docs/models/tts):
+              One of the available [TTS models](https://platform.openai.com/docs/models#tts):
               `tts-1` or `tts-1-hd`
 
           voice: The voice to use when generating the audio. Supported voices are `alloy`,
               `echo`, `fable`, `onyx`, `nova`, and `shimmer`. Previews of the voices are
               available in the
-              [Text to speech guide](https://platform.openai.com/docs/guides/text-to-speech/voice-options).
+              [Text to speech guide](https://platform.openai.com/docs/guides/text-to-speech#voice-options).
 
           response_format: The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`,
               `wav`, and `pcm`.

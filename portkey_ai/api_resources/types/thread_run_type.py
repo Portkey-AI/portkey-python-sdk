@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Literal, Optional, Union
+from typing import Any, Dict, Literal, Optional, Union
 import httpx
 
 from portkey_ai.api_resources.types.assistant_type import AssistantTool
@@ -42,6 +42,11 @@ __all__ = [
     "AssistantToolChoiceFunction",
     "AssistantToolChoiceOption",
     "TruncationStrategy",
+    "FileSearchRankingOptions",
+    "FileSearchResultContent",
+    "FileSearchResult",
+    "FileSearch",
+    "FileSearchToolCall",
 ]
 
 
@@ -91,13 +96,35 @@ class CodeToolCall(BaseModel, extra="allow"):
     type: Optional[str] = None
 
 
-class FileSearchToolCall(BaseModel, extra="allow"):
-    id: Optional[str] = None
-    file_search: Optional[object] = None
+class FileSearchRankingOptions(BaseModel, extra="allow"):
+    ranker: Optional[str] = None
+    score_threshold: Optional[float] = None
+
+
+class FileSearchResultContent(BaseModel, extra="allow"):
+    text: Optional[str] = None
     type: Optional[str] = None
 
 
-ToolCall = Union[CodeToolCall, RetrievalToolCall, FunctionToolCall, FileSearchToolCall]
+class FileSearchResult(BaseModel, extra="allow"):
+    file_id: Optional[str] = None
+    file_name: Optional[str] = None
+    score: Optional[float] = None
+    content: Optional[List[FileSearchResultContent]] = None
+
+
+class FileSearch(BaseModel, extra="allow"):
+    ranking_options: Optional[FileSearchRankingOptions] = None
+    results: Optional[List[FileSearchResult]] = None
+
+
+class FileSearchToolCall(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    file_search: Optional[FileSearch] = None
+    type: Optional[str] = None
+
+
+ToolCall = Union[CodeToolCall, FileSearchToolCall, RetrievalToolCall, FunctionToolCall]
 
 
 class ToolCallsStepDetails(BaseModel, extra="allow"):
@@ -226,6 +253,7 @@ class Run(BaseModel, extra="allow"):
     truncation_strategy: Optional[TruncationStrategy] = None
     temperature: Optional[float] = None
     top_p: Optional[float] = None
+    response_format: Optional[Any] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

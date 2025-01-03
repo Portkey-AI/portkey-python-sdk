@@ -17,6 +17,11 @@ __all__ = [
     "FineTuningJobCheckpointList",
     "FineTuningJobWandbIntegration",
     "FineTuningJobWandbIntegrationObject",
+    "MethodDpoHyperparameters",
+    "MethodSupervisedHyperparameters",
+    "MethodDpo",
+    "MethodSupervised",
+    "Method",
 ]
 
 
@@ -27,6 +32,8 @@ class Error(BaseModel, extra="allow"):
 
 
 class Hyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
     n_epochs: Optional[Union[str, int]] = None
 
 
@@ -40,6 +47,33 @@ class FineTuningJobWandbIntegration(BaseModel, extra="allow"):
 class FineTuningJobWandbIntegrationObject(BaseModel, extra="allow"):
     type: Optional[str] = None
     wandb: Optional[FineTuningJobWandbIntegration] = None
+
+
+class MethodDpoHyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    beta: Optional[Union[str, float]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
+
+
+class MethodSupervisedHyperparameters(BaseModel, extra="allow"):
+    batch_size: Optional[Union[str, int]] = None
+    learning_rate_multiplier: Optional[Union[str, float]] = None
+    n_epochs: Optional[Union[str, int]] = None
+
+
+class MethodDpo(BaseModel, extra="allow"):
+    hyperparameters: Optional[MethodDpoHyperparameters] = None
+
+
+class MethodSupervised(BaseModel, extra="allow"):
+    hyperparameters: Optional[MethodSupervisedHyperparameters] = None
+
+
+class Method(BaseModel, extra="allow"):
+    dpo: Optional[MethodDpo] = None
+    supervised: Optional[MethodSupervised] = None
+    type: Optional[str] = None
 
 
 class FineTuningJob(BaseModel, extra="allow"):
@@ -60,6 +94,7 @@ class FineTuningJob(BaseModel, extra="allow"):
     validation_file: Optional[str] = None
     estimated_finish: Optional[int] = None
     integrations: Optional[List[FineTuningJobWandbIntegrationObject]] = None
+    method: Optional[Method] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -101,6 +136,8 @@ class FineTuningJobEvent(BaseModel, extra="allow"):
     level: Optional[str] = None
     message: Optional[str] = None
     object: Optional[str] = None
+    data: Optional[Any] = None
+    type: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
