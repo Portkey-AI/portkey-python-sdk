@@ -11,6 +11,12 @@ class CreateHeaders:
 
     def json(self) -> Mapping:
         headers = {}
+        forward_headers = self.kwargs.get("forward_headers", [])
+        # Logic to accept both _ and - in forward_headers for devex
+        if forward_headers:
+            forward_headers = [
+                "-".join(header.split("_")) for header in forward_headers
+            ]
         for k, v in self.kwargs.items():
             # logic for boolean type headers
             if isinstance(v, bool):
@@ -22,7 +28,10 @@ class CreateHeaders:
                 v = json.dumps(v)
             if v:
                 if k.lower() != "authorization":
-                    headers[get_portkey_header(k)] = str(v)
+                    if forward_headers and k in forward_headers:
+                        headers[k] = str(v)
+                    else:
+                        headers[get_portkey_header(k)] = str(v)
                 else:
                     # Logic to add Bearer only if it is not present.
                     # Else it would be added everytime a request is made
