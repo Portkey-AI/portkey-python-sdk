@@ -46,6 +46,7 @@ class MissingStreamClassError(TypeError):
 class APIClient:
     _client: httpx.Client
     _default_stream_cls: Union[type[Stream[Any]], None] = None
+    max_retries: int = 1
 
     def __init__(
         self,
@@ -582,6 +583,7 @@ class APIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: Literal[False],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
@@ -593,6 +595,7 @@ class APIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: Literal[True],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
@@ -604,6 +607,7 @@ class APIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
@@ -614,6 +618,7 @@ class APIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
@@ -625,6 +630,15 @@ class APIClient:
         except httpx.HTTPStatusError as err:  # 4xx and 5xx errors
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
+
+            if retry_count < self.max_retries:
+                self._request(
+                    options=options,
+                    stream=stream,
+                    cast_to=cast_to,
+                    stream_cls=stream_cls,
+                    retry_count=retry_count + 1,
+                )
             err.response.read()
             raise self._make_status_error_from_response(request, err.response) from None
         except httpx.TimeoutException as err:
@@ -692,6 +706,7 @@ class AsyncHttpxClientWrapper(httpx.AsyncClient):
 class AsyncAPIClient:
     _client: httpx.AsyncClient
     _default_stream_cls: Union[type[AsyncStream[Any]], None] = None
+    max_retries: int = 1
 
     def __init__(
         self,
@@ -1227,6 +1242,7 @@ class AsyncAPIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: Literal[False],
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
@@ -1238,6 +1254,7 @@ class AsyncAPIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: Literal[True],
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
@@ -1249,6 +1266,7 @@ class AsyncAPIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
@@ -1259,6 +1277,7 @@ class AsyncAPIClient:
         self,
         *,
         options: Options,
+        retry_count: int = 0,
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
@@ -1270,6 +1289,14 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as err:  # 4xx and 5xx errors
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
+            if retry_count < self.max_retries:
+                await self._request(
+                    options=options,
+                    stream=stream,
+                    cast_to=cast_to,
+                    stream_cls=stream_cls,
+                    retry_count=retry_count + 1,
+                )
             await err.response.aread()
             raise self._make_status_error_from_response(request, err.response) from None
         except httpx.TimeoutException as err:
