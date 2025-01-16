@@ -709,39 +709,56 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         return timeout if timeout >= 0 else 0
 
     def _should_retry(self, response: httpx.Response) -> bool:
-        # Note: this is not a standard header
-        should_retry_header = response.headers.get("x-should-retry")
+        # Custom Retry Conditions
+        retry_status_code = response.status_code
+        retry_trace_id = response.headers.get("x-portkey-trace-id")
+        retry_request_id = response.headers.get("x-portkey-request-id")
+        retry_gateway_exception = response.headers.get("x-portkey-gateway-exception")
 
-        # If the server explicitly says whether or not to retry, obey.
-        if should_retry_header == "true":
-            log.debug("Retrying as header `x-should-retry` is set to `true`")
-            return True
-        if should_retry_header == "false":
-            log.debug("Not retrying as header `x-should-retry` is set to `false`")
+        if (
+            retry_status_code < 500
+            or retry_trace_id
+            or retry_request_id
+            or retry_gateway_exception
+        ):
             return False
 
-        # Retry on request timeouts.
-        if response.status_code == 408:
-            log.debug("Retrying due to status code %i", response.status_code)
-            return True
+        return True
+    
+        # # Note: CSG: Commenting this logic for reference to the original code
+        # # Note: this is not a standard header
+        # should_retry_header = response.headers.get("x-should-retry")
 
-        # Retry on lock timeouts.
-        if response.status_code == 409:
-            log.debug("Retrying due to status code %i", response.status_code)
-            return True
+        # # If the server explicitly says whether or not to retry, obey.
+        # if should_retry_header == "true":
+        #     log.debug("Retrying as header `x-should-retry` is set to `true`")
+        #     return True
+        # if should_retry_header == "false":
+        #     log.debug("Not retrying as header `x-should-retry` is set to `false`")
+        #     return False
 
-        # Retry on rate limits.
-        if response.status_code == 429:
-            log.debug("Retrying due to status code %i", response.status_code)
-            return True
+        # # Retry on request timeouts.
+        # if response.status_code == 408:
+        #     log.debug("Retrying due to status code %i", response.status_code)
+        #     return True
 
-        # Retry internal errors.
-        if response.status_code >= 500:
-            log.debug("Retrying due to status code %i", response.status_code)
-            return True
+        # # Retry on lock timeouts.
+        # if response.status_code == 409:
+        #     log.debug("Retrying due to status code %i", response.status_code)
+        #     return True
 
-        log.debug("Not retrying")
-        return False
+        # # Retry on rate limits.
+        # if response.status_code == 429:
+        #     log.debug("Retrying due to status code %i", response.status_code)
+        #     return True
+
+        # # Retry internal errors.
+        # if response.status_code >= 500:
+        #     log.debug("Retrying due to status code %i", response.status_code)
+        #     return True
+
+        # log.debug("Not retrying")
+        # return False
 
     def _idempotency_key(self) -> str:
         return f"stainless-python-retry-{uuid.uuid4()}"
@@ -998,7 +1015,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if remaining_retries > 0:
+            if remaining_retries > 0 and self._should_retry(err.response):
                 return self._retry_request(
                     input_options,
                     cast_to,
@@ -1581,7 +1598,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if remaining_retries > 0:
+            if remaining_retries > 0 and self._should_retry(err.response):
                 return await self._retry_request(
                     input_options,
                     cast_to,
