@@ -578,6 +578,23 @@ class APIClient:
         )
         return request
 
+    def _should_retry(self, response: httpx.Response) -> bool:
+        # Retry Conditions
+        retry_status_code = response.status_code
+        retry_trace_id = response.headers.get("x-portkey-trace-id")
+        retry_request_id = response.headers.get("x-portkey-request-id")
+        retry_gateway_exception = response.headers.get("x-portkey-gateway-exception")
+
+        if (
+            retry_status_code < 500
+            or retry_trace_id
+            or retry_request_id
+            or retry_gateway_exception
+        ):
+            return False
+
+        return True
+
     @overload
     def _request(
         self,
@@ -631,7 +648,7 @@ class APIClient:
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
 
-            if retry_count < self.max_retries:
+            if retry_count < self.max_retries and self._should_retry(err.response):
                 self._request(
                     options=options,
                     stream=stream,
@@ -644,6 +661,14 @@ class APIClient:
         except httpx.TimeoutException as err:
             raise APITimeoutError(request=request) from err
         except Exception as err:
+            if retry_count < self.max_retries:
+                self._request(
+                    options=options,
+                    stream=stream,
+                    cast_to=cast_to,
+                    stream_cls=stream_cls,
+                    retry_count=retry_count + 1,
+                )
             raise APIConnectionError(request=request) from err
 
         self.response_headers = res.headers
@@ -1237,6 +1262,23 @@ class AsyncAPIClient:
         )
         return request
 
+    def _should_retry(self, response: httpx.Response) -> bool:
+        # Retry Conditions
+        retry_status_code = response.status_code
+        retry_trace_id = response.headers.get("x-portkey-trace-id")
+        retry_request_id = response.headers.get("x-portkey-request-id")
+        retry_gateway_exception = response.headers.get("x-portkey-gateway-exception")
+
+        if (
+            retry_status_code < 500
+            or retry_trace_id
+            or retry_request_id
+            or retry_gateway_exception
+        ):
+            return False
+
+        return True
+
     @overload
     async def _request(
         self,
@@ -1289,7 +1331,7 @@ class AsyncAPIClient:
         except httpx.HTTPStatusError as err:  # 4xx and 5xx errors
             # If the response is streamed then we need to explicitly read the response
             # to completion before attempting to access the response text.
-            if retry_count < self.max_retries:
+            if retry_count < self.max_retries and self._should_retry(err.response):
                 await self._request(
                     options=options,
                     stream=stream,
@@ -1302,6 +1344,14 @@ class AsyncAPIClient:
         except httpx.TimeoutException as err:
             raise APITimeoutError(request=request) from err
         except Exception as err:
+            if retry_count < self.max_retries:
+                await self._request(
+                    options=options,
+                    stream=stream,
+                    cast_to=cast_to,
+                    stream_cls=stream_cls,
+                    retry_count=retry_count + 1,
+                )
             raise APIConnectionError(request=request) from err
 
         self.response_headers = res.headers
