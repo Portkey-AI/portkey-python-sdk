@@ -260,6 +260,7 @@ class Constructs(BaseModel):
     debug: Optional[bool] = None
     custom_host: Optional[str] = None
     forward_headers: Optional[str] = None
+    instrumentation: Optional[bool] = None
     weight: Optional[float] = None
     retry: Optional[RetrySettings] = None
     deployment_id: Optional[str] = None
