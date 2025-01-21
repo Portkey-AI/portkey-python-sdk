@@ -7,7 +7,6 @@ from portkey_ai.api_resources.global_constants import PORTKEY_BASE_URL
 
 
 class Logger:
-
     def __init__(
         self, api_key: Optional[str] = None, base_url: Optional[str] = None
     ) -> None:

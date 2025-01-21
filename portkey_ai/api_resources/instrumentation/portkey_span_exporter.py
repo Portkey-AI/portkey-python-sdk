@@ -1,5 +1,5 @@
 import json
-from typing import Any, Collection, Sequence
+from typing import Any, Sequence
 from opentelemetry.sdk.trace.export import (
     SpanExporter,
     SpanExportResult,
@@ -11,7 +11,6 @@ from portkey_ai.utils import string_to_uuid_v3
 
 
 class PortkeySpanExporter(SpanExporter):
-
     def __init__(self, api_key: str, base_url: str):
         self.api_key = api_key
         self.base_url = base_url
@@ -54,7 +53,7 @@ class PortkeySpanExporter(SpanExporter):
             logs.append(self.transform_span_to_log(span))
         try:
             logger.log(logs)
-        except Exception as e:
+        except Exception:
             return SpanExportResult.FAILURE
 
         return SpanExportResult.SUCCESS

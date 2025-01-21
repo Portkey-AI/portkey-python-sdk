@@ -156,6 +156,12 @@ class Portkey(APIClient):
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
+            try:
+                from opentelemetry import trace
+            except ImportError:
+                raise ImportError(
+                    "Please install opentelemetry for instrumentation, you can use `make instrumentation` to install the dependencies"
+                )
             initialize_instrumentation(api_key=self.api_key, base_url=self.base_url)
 
     def copy(

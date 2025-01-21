@@ -1,6 +1,12 @@
 import importlib.metadata
 from typing import Any, Collection
-from opentelemetry.instrumentation.instrumentor import BaseInstrumentor
+
+try:
+    from opentelemetry.instrumentation.instrumentor import BaseInstrumentor
+except ImportError:
+    raise ImportError(
+        "Please install opentelemetry for instrumentation, you can use `make instrumentation` to install the dependencies"
+    )
 from opentelemetry.trace import get_tracer
 from wrapt import wrap_function_wrapper
 
