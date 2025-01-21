@@ -8,8 +8,7 @@ from portkey_ai.api_resources.global_constants import PORTKEY_BASE_URL
 
 class Logger:
     def __init__(
-        self,
-        api_key: Optional[str] = None,
+        self, api_key: Optional[str] = None, base_url: Optional[str] = None
     ) -> None:
         api_key = api_key or os.getenv("PORTKEY_API_KEY")
         if api_key is None:
@@ -20,7 +19,7 @@ class Logger:
             "x-portkey-api-key": api_key,
         }
 
-        self.url = PORTKEY_BASE_URL + "/logs"
+        self.url = (base_url or PORTKEY_BASE_URL) + "/logs"
 
     def log(
         self,
