@@ -10,7 +10,7 @@ from .._vendor.openai import OpenAI, AsyncOpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
 )
-
+from portkey_ai.api_resources.instrumentation import initialize_instrumentation
 
 class Portkey(APIClient):
     completions: apis.Completion
@@ -63,6 +63,7 @@ class Portkey(APIClient):
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
         forward_headers: Optional[List[str]] = None,
+        instrumentation: Optional[bool] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -98,6 +99,7 @@ class Portkey(APIClient):
             cache_force_refresh=cache_force_refresh,
             custom_host=custom_host,
             forward_headers=forward_headers,
+            instrumentation=instrumentation,
             openai_project=openai_project,
             openai_organization=openai_organization,
             aws_secret_access_key=aws_secret_access_key,
@@ -152,6 +154,9 @@ class Portkey(APIClient):
         self.logs = apis.Logs(self)
         self.beta = self.beta(self)  # type: ignore
 
+        if self.instrumentation:
+            initialize_instrumentation(api_key=self.api_key)
+
     def copy(
         self,
         *,
@@ -168,6 +173,7 @@ class Portkey(APIClient):
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
         forward_headers: Optional[List[str]] = None,
+        instrumentation: Optional[bool] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -203,6 +209,7 @@ class Portkey(APIClient):
             cache_force_refresh=cache_force_refresh or self.cache_force_refresh,
             custom_host=custom_host or self.custom_host,
             forward_headers=forward_headers or self.forward_headers,
+            instrumentation=instrumentation or self.instrumentation,
             openai_project=openai_project or self.openai_project,
             openai_organization=openai_organization or self.openai_organization,
             aws_secret_access_key=aws_secret_access_key or self.aws_secret_access_key,
@@ -287,6 +294,7 @@ class AsyncPortkey(AsyncAPIClient):
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
         forward_headers: Optional[List[str]] = None,
+        instrumentation: Optional[bool] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -322,6 +330,7 @@ class AsyncPortkey(AsyncAPIClient):
             cache_force_refresh=cache_force_refresh,
             custom_host=custom_host,
             forward_headers=forward_headers,
+            instrumentation=instrumentation,
             openai_project=openai_project,
             openai_organization=openai_organization,
             aws_secret_access_key=aws_secret_access_key,
@@ -392,6 +401,7 @@ class AsyncPortkey(AsyncAPIClient):
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
         forward_headers: Optional[List[str]] = None,
+        instrumentation: Optional[bool] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -427,6 +437,7 @@ class AsyncPortkey(AsyncAPIClient):
             cache_force_refresh=cache_force_refresh or self.cache_force_refresh,
             custom_host=custom_host or self.custom_host,
             forward_headers=forward_headers or self.forward_headers,
+            instrumentation=instrumentation or self.instrumentation,
             openai_project=openai_project or self.openai_project,
             openai_organization=openai_organization or self.openai_organization,
             aws_secret_access_key=aws_secret_access_key or self.aws_secret_access_key,

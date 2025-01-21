@@ -63,6 +63,7 @@ class APIClient:
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
         forward_headers: Optional[List[str]] = None,
+        instrumentation: Optional[bool] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -97,6 +98,7 @@ class APIClient:
         self.cache_force_refresh = cache_force_refresh
         self.custom_host = custom_host
         self.forward_headers = forward_headers
+        self.instrumentation = instrumentation or False
         self.openai_project = openai_project
         self.openai_organization = openai_organization
         self.aws_secret_access_key = aws_secret_access_key
@@ -130,6 +132,7 @@ class APIClient:
             cache_force_refresh=cache_force_refresh,
             custom_host=custom_host,
             forward_headers=forward_headers,
+            instrumentation=instrumentation,
             openai_project=openai_project,
             openai_organization=openai_organization,
             aws_secret_access_key=aws_secret_access_key,
@@ -709,6 +712,7 @@ class AsyncAPIClient:
         cache_force_refresh: Optional[bool] = None,
         custom_host: Optional[str] = None,
         forward_headers: Optional[List[str]] = None,
+        instrumentation: Optional[bool] = None,
         openai_project: Optional[str] = None,
         openai_organization: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
@@ -743,6 +747,7 @@ class AsyncAPIClient:
         self.cache_force_refresh = cache_force_refresh
         self.custom_host = custom_host
         self.forward_headers = forward_headers
+        self.instrumentation = instrumentation
         self.openai_project = openai_project
         self.openai_organization = openai_organization
         self.aws_secret_access_key = aws_secret_access_key
@@ -776,6 +781,7 @@ class AsyncAPIClient:
             cache_force_refresh=cache_force_refresh,
             custom_host=custom_host,
             forward_headers=forward_headers,
+            instrumentation=instrumentation,
             openai_project=openai_project,
             openai_organization=openai_organization,
             aws_secret_access_key=aws_secret_access_key,
