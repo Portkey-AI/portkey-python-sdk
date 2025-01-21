@@ -8,10 +8,10 @@ from .portkey_span_exporter import PortkeySpanExporter
 __all__ = ["CrewAIInstrumentor", "PortkeySpanExporter", "initialize_instrumentation"]
 
 
-def initialize_instrumentation(api_key: str):
+def initialize_instrumentation(api_key: str, base_url: str):
     tracer_provider = TracerProvider()
-    exporter = PortkeySpanExporter(api_key=api_key)
+    exporter = PortkeySpanExporter(api_key=api_key, base_url=base_url)
     trace.set_tracer_provider(tracer_provider)
     tracer_provider.add_span_processor(BatchSpanProcessor(exporter))
     CrewAIInstrumentor().instrument()
-    print("CrewAI Instrumentation initialized")
+    print("Portkey: CrewAI Instrumentation initialized")

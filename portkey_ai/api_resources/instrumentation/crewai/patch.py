@@ -1,4 +1,3 @@
-import json
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Status, StatusCode
 

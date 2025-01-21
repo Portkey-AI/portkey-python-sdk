@@ -1,5 +1,5 @@
 import importlib.metadata
-from typing import Collection
+from typing import Any, Collection
 from opentelemetry.instrumentation.instrumentor import BaseInstrumentor
 from opentelemetry.trace import get_tracer
 from wrapt import wrap_function_wrapper
@@ -50,7 +50,7 @@ class CrewAIInstrumentor(BaseInstrumentor):
     def instrumentation_dependencies(self) -> Collection[str]:
         return ["crewai >= 0.32.0"]
 
-    def _instrument(self, **kwargs: any) -> None:
+    def _instrument(self, **kwargs: Any) -> None:
         version = importlib.metadata.version("crewai")
         tracer_provider = kwargs.get("tracer_provider")
         tracer = get_tracer(__name__, "", tracer_provider)
@@ -64,5 +64,5 @@ class CrewAIInstrumentor(BaseInstrumentor):
         except Exception as e:
             print(f"Failed to instrument CrewAI: {e}")
 
-    def _uninstrument(self, **kwargs: any) -> None:
+    def _uninstrument(self, **kwargs: Any) -> None:
         pass

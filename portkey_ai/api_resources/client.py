@@ -12,6 +12,7 @@ from portkey_ai.api_resources.global_constants import (
 )
 from portkey_ai.api_resources.instrumentation import initialize_instrumentation
 
+
 class Portkey(APIClient):
     completions: apis.Completion
     chat: apis.ChatCompletion
@@ -155,7 +156,7 @@ class Portkey(APIClient):
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
-            initialize_instrumentation(api_key=self.api_key)
+            initialize_instrumentation(api_key=self.api_key, base_url=self.base_url)
 
     def copy(
         self,
