@@ -164,7 +164,9 @@ class AsyncApiKeys(AsyncAPIResource):
             "rate_limits": rate_limits,
             "usage_limits": usage_limits,
             "scopes": scopes,
-            "defaults": defaults,
+            "defaults": defaults
+            if defaults is not None
+            else {"config_id": None, "metadata": None},
         }
         return await self._post(
             f"{PortkeyApiPaths.API_KEYS_API}/{type}/{sub_type}",
@@ -229,7 +231,9 @@ class AsyncApiKeys(AsyncAPIResource):
             "rate_limits": rate_limits,
             "usage_limits": usage_limits,
             "scopes": scopes,
-            "defaults": defaults,
+            "defaults": defaults
+            if defaults is not None
+            else {"config_id": None, "metadata": None},
         }
         return await self._put(
             f"{PortkeyApiPaths.API_KEYS_API}/{id}",
