@@ -118,7 +118,7 @@ class ChatCompletionMessage(BaseModel, extra="allow"):
     content: Optional[Union[str, Iterable[Any]]] = None
     role: Optional[str] = None
     function_call: Optional[FunctionCall] = None
-    tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
+    tool_calls: Optional[List[Optional[ChatCompletionMessageToolCall]]] = None
     refusal: Optional[str] = None
     audio: Optional[ChatCompletionAudio] = None
 
