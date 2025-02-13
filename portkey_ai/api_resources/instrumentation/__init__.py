@@ -1,4 +1,5 @@
-import importlib
+from importlib import metadata
+from typing import Dict
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -11,7 +12,7 @@ from .langgraph import LanggraphInstrumentor
 
 __all__ = ["initialize_instrumentation"]
 
-package_instrumentor_map: dict[str, BaseInstrumentor] = {
+package_instrumentor_map: Dict[str, BaseInstrumentor] = {
     "crewai": CrewAIInstrumentor,
     "litellm": LitellmInstrumentor,
     "langgraph": LanggraphInstrumentor,
@@ -24,6 +25,6 @@ def initialize_instrumentation(api_key: str, base_url: str):
     trace.set_tracer_provider(tracer_provider)
     tracer_provider.add_span_processor(BatchSpanProcessor(exporter))
     for package, instrumentor in package_instrumentor_map.items():
-        if importlib.util.find_spec(package):
+        if metadata.version(package):
             instrumentor().instrument()
             print(f"Portkey: {package} Instrumentation initialized")
