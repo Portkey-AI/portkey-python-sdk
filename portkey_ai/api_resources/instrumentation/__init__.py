@@ -1,4 +1,4 @@
-from importlib.metadata import version
+from importlib.metadata import version, PackageNotFoundError
 from typing import Dict
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -23,7 +23,7 @@ def is_package_installed(pkg_name):
     try:
         version(pkg_name)
         return True
-    except:
+    except PackageNotFoundError:
         return False
 
 
