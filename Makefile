@@ -38,4 +38,4 @@ llama_index_callback:
 	pip install -e ".[llama_index_callback]"
 
 instrumentation:
-	pip install -e ".[opentelemetry]"
+	pip install -e ".[instrumentation]"

@@ -40,7 +40,7 @@ class OpenaiInstrumentor(BaseInstrumentor):
     ]
 
     def instrumentation_dependencies(self) -> Collection[str]:
-        return ["openai >= 0.27.0", "trace-attributes >= 4.0.5"]
+        return ["openai >= 0.27.0"]
 
     def _instrument(self, **kwargs: Any) -> None:
         version = importlib.metadata.version("openai")
