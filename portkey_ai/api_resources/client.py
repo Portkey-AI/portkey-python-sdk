@@ -162,7 +162,8 @@ class Portkey(APIClient):
             except ImportError:
                 raise ImportError(
                     """Please install opentelemetry for instrumentation, 
-                    you can use `portkey-ai[instrumentation]` to install"""
+                    you can use `pip install 'portkey-ai[instrumentation]'` 
+                    to install"""
                 )
             initialize_instrumentation(api_key=self.api_key, base_url=self.base_url)
 
@@ -402,7 +403,8 @@ class AsyncPortkey(AsyncAPIClient):
             except ImportError:
                 raise ImportError(
                     """Please install opentelemetry for instrumentation, 
-                    you can use `portkey-ai[instrumentation]` to install"""
+                    you can use `pip install 'portkey-ai[instrumentation]'` 
+                    to install"""
                 )
             initialize_instrumentation(api_key=self.api_key, base_url=self.base_url)
 
