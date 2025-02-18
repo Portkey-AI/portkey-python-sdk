@@ -36,3 +36,6 @@ langchain_callback:
 
 llama_index_callback:
 	pip install -e ".[llama_index_callback]"
+
+instrumentation:
+	pip install -e ".[instrumentation]"
