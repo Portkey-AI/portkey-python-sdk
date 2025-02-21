@@ -173,3 +173,81 @@ class ChatCompletionChunk(BaseModel, extra="allow"):
 
     def get(self, key: str, default: Optional[Any] = None):
         return getattr(self, key, None) or default
+
+
+class ChatCompletionList(BaseModel, extra="allow"):
+    object: Optional[str] = None
+    data: Optional[List[ChatCompletions]] = None
+    has_more: Optional[bool] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class ChatCompletionDeleted(BaseModel, extra="allow"):
+    id: Optional[str] = None
+    deleted: Optional[bool] = None
+    object: Optional[str] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class ChatCompletionStoreMessage(ChatCompletionMessage, extra="allow"):
+    id: Optional[str] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class ChatCompletionStoreMessageList(BaseModel, extra="allow"):
+    object: Optional[str] = None
+    data: Optional[List[ChatCompletionStoreMessage]] = None
+    has_more: Optional[bool] = None
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)

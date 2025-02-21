@@ -5,7 +5,12 @@ sys.modules["openai"] = vendored_openai
 """
 import sys
 from ..._vendor import openai as vendored_openai
-from .chat_complete import ChatCompletion, AsyncChatCompletion
+from .chat_complete import (
+    ChatCompletion,
+    AsyncChatCompletion,
+    ChatCompletionsMessages,
+    AsyncChatCompletionsMessages,
+)
 from .complete import Completion, AsyncCompletion
 from .generation import Generations, AsyncGenerations, Prompts, AsyncPrompts
 from .feedback import Feedback, AsyncFeedback
@@ -101,6 +106,8 @@ __all__ = [
     "AsyncCompletion",
     "ChatCompletion",
     "AsyncChatCompletion",
+    "ChatCompletionsMessages",
+    "AsyncChatCompletionsMessages",
     "Generations",
     "AsyncGenerations",
     "Feedback",

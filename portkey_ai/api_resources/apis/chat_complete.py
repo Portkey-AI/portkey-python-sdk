@@ -8,17 +8,25 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Literal,
     Mapping,
     Optional,
     Union,
 )
+
+import httpx
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.chat_complete_type import (
     ChatCompletionChunk,
+    ChatCompletionDeleted,
+    ChatCompletionList,
+    ChatCompletionStoreMessageList,
     ChatCompletions,
 )
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
+from portkey_ai.api_resources.types.shared_types import Headers, Metadata, Query
+from portkey_ai.api_resources.utils import Body
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 __all__ = ["ChatCompletion", "AsyncChatCompletion"]
@@ -44,6 +52,7 @@ class Completions(APIResource):
     def __init__(self, client: Portkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
+        self.messages = ChatCompletionsMessages(client)
 
     def stream_create(  # type: ignore[return]
         self,
@@ -182,11 +191,112 @@ class Completions(APIResource):
                 **kwargs,
             )
 
+    def retrieve(
+        self,
+        completion_id: str,
+    ) -> ChatCompletions:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = self.openai_client.with_raw_response.chat.completions.retrieve(
+            completion_id=completion_id
+        )
+        data = ChatCompletions(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def update(
+        self,
+        completion_id: str,
+        *,
+        metadata: Optional[Metadata] = None,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletions:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = self.openai_client.with_raw_response.chat.completions.update(
+            completion_id=completion_id,
+            metadata=metadata,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletions(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def list(
+        self,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        metadata: Union[Metadata, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletionList:
+        response = self.openai_client.with_raw_response.chat.completions.list(
+            after=after,
+            limit=limit,
+            metadata=metadata,
+            model=model,
+            order=order,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletionList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def delete(
+        self,
+        completion_id: str,
+        *,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletionDeleted:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = self.openai_client.with_raw_response.chat.completions.delete(
+            completion_id=completion_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletionDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
 
 class AsyncCompletions(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
+        self.messages = AsyncChatCompletionsMessages(client)
 
     async def stream_create(
         self,
@@ -325,5 +435,178 @@ class AsyncCompletions(AsyncAPIResource):
                 **kwargs,
             )
 
+    async def retrieve(
+        self,
+        completion_id: str,
+    ) -> ChatCompletions:
+        response = await self.openai_client.with_raw_response.chat.completions.retrieve(
+            completion_id=completion_id
+        )
+        data = ChatCompletions(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def update(
+        self,
+        completion_id: str,
+        *,
+        metadata: Optional[Metadata] = None,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletions:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = await self.openai_client.with_raw_response.chat.completions.update(
+            completion_id=completion_id,
+            metadata=metadata,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletions(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def list(
+        self,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        metadata: Union[Metadata, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletionList:
+        response = await self.openai_client.with_raw_response.chat.completions.list(
+            after=after,
+            limit=limit,
+            metadata=metadata,
+            model=model,
+            order=order,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletionList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def delete(
+        self,
+        completion_id: str,
+        *,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletionDeleted:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = await self.openai_client.with_raw_response.chat.completions.delete(
+            completion_id=completion_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletionDeleted(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
     def _get_config_string(self, config: Union[Mapping, str]) -> str:
         return config if isinstance(config, str) else json.dumps(config)
+
+
+class ChatCompletionsMessages(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    def list(
+        self,
+        completion_id: str,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletionStoreMessageList:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = self.openai_client.with_raw_response.chat.completions.messages.list(
+            completion_id=completion_id,
+            after=after,
+            limit=limit,
+            order=order,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        data = ChatCompletionStoreMessageList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+
+class AsyncChatCompletionsMessages(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    async def list(
+        self,
+        completion_id: str,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Optional[float | httpx.Timeout | None | NotGiven] = NOT_GIVEN,
+    ) -> ChatCompletionStoreMessageList:
+        if not completion_id:
+            raise ValueError(
+                "Expected a non-empty value for `completion_id` but received "
+                f"{completion_id!r}"
+            )
+        response = (
+            await self.openai_client.with_raw_response.chat.completions.messages.list(
+                completion_id=completion_id,
+                after=after,
+                limit=limit,
+                order=order,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+        )
+        data = ChatCompletionStoreMessageList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data

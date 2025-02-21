@@ -3,6 +3,7 @@ from typing import Any, Iterable, List, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.types.shared_types import Metadata
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
 from ..._vendor.openai.types.beta import (
     vector_store_create_params,
@@ -35,7 +36,7 @@ class VectorStores(APIResource):
             vector_store_create_params.ExpiresAfter, NotGiven
         ] = NOT_GIVEN,
         file_ids: Union[List[str], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
     ) -> VectorStore:
         response = self.openai_client.with_raw_response.beta.vector_stores.create(
@@ -76,7 +77,7 @@ class VectorStores(APIResource):
         expires_after: Union[
             vector_store_update_params.ExpiresAfter, NotGiven
         ] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStore:
@@ -463,7 +464,7 @@ class AsyncVectorStores(AsyncAPIResource):
             vector_store_create_params.ExpiresAfter, NotGiven
         ] = NOT_GIVEN,
         file_ids: Union[List[str], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
     ) -> VectorStore:
         response = await self.openai_client.with_raw_response.beta.vector_stores.create(
@@ -508,7 +509,7 @@ class AsyncVectorStores(AsyncAPIResource):
         expires_after: Union[
             vector_store_update_params.ExpiresAfter, NotGiven
         ] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> VectorStore:

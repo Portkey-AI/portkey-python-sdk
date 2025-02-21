@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import httpx
 from .utils import parse_headers
 from typing import Any
@@ -28,7 +28,7 @@ class TranscriptionWord(BaseModel, extra="allow"):
 
 
 class TranscriptionVerbose(BaseModel, extra="allow"):
-    duration: Optional[str] = None
+    duration: Optional[Union[str, float]] = None
     language: Optional[str] = None
     text: Optional[str] = None
     segments: Optional[List[TranscriptionSegment]] = None
@@ -68,7 +68,7 @@ class Transcription(BaseModel, extra="allow"):
 
 
 class TranslationVerbose(BaseModel, extra="allow"):
-    duration: Optional[str] = None
+    duration: Optional[Union[str, float]] = None
     language: Optional[str] = None
     text: Optional[str] = None
     segments: Optional[List[TranscriptionSegment]] = None
