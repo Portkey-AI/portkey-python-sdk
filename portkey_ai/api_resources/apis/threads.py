@@ -16,6 +16,7 @@ from portkey_ai._vendor.openai.types.beta.assistant_stream_event import (
 )
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.types.shared_types import Metadata
 from portkey_ai.api_resources.types.thread_message_type import (
     MessageList,
     ThreadMessage,
@@ -62,7 +63,7 @@ class Threads(APIResource):
         self,
         *,
         messages: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Thread:
@@ -95,7 +96,7 @@ class Threads(APIResource):
         self,
         thread_id,
         *,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Thread:
@@ -163,7 +164,7 @@ class Threads(APIResource):
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
@@ -276,7 +277,7 @@ class Messages(APIResource):
         content: Union[str, Any],
         role: Any,
         attachments: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ThreadMessage:
         response = self.openai_client.with_raw_response.beta.threads.messages.create(
@@ -314,7 +315,7 @@ class Messages(APIResource):
         thread_id,
         message_id,
         *,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ThreadMessage:
         response = self.openai_client.with_raw_response.beta.threads.messages.update(
@@ -438,7 +439,7 @@ class Runs(APIResource):
         self,
         thread_id,
         run_id,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Run:
         response = self.openai_client.with_raw_response.beta.threads.runs.update(
@@ -493,7 +494,7 @@ class Runs(APIResource):
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
         parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[
@@ -810,7 +811,7 @@ class AsyncThreads(AsyncAPIResource):
         self,
         *,
         messages: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Thread:
@@ -843,7 +844,7 @@ class AsyncThreads(AsyncAPIResource):
         self,
         thread_id,
         *,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Thread:
@@ -913,7 +914,7 @@ class AsyncThreads(AsyncAPIResource):
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
         response_format: Union[
             Optional[AssistantResponseFormatOptionParam], NotGiven
@@ -1028,7 +1029,7 @@ class AsyncMessages(AsyncAPIResource):
         content: Union[str, Any],
         role: Any,
         attachments: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ThreadMessage:
         response = (
@@ -1064,7 +1065,7 @@ class AsyncMessages(AsyncAPIResource):
         thread_id,
         message_id,
         *,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ThreadMessage:
         response = (
@@ -1196,7 +1197,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         thread_id,
         run_id,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Run:
         response = await self.openai_client.with_raw_response.beta.threads.runs.update(
@@ -1251,7 +1252,7 @@ class AsyncRuns(AsyncAPIResource):
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
         max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         model: Union[str, None, NotGiven] = NOT_GIVEN,
         parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
         response_format: Union[

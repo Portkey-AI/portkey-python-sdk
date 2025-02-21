@@ -1,5 +1,5 @@
 import json
-from typing import Any, Literal, Union
+from typing import Any, Literal, Optional, Union
 from portkey_ai._vendor.openai._types import NotGiven, NOT_GIVEN
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -8,6 +8,7 @@ from portkey_ai.api_resources.types.assistant_type import (
     AssistantList,
     AssistantDeleted,
 )
+from portkey_ai.api_resources.types.shared_types import Metadata
 
 
 class Assistants(APIResource):
@@ -20,7 +21,7 @@ class Assistants(APIResource):
         model: Union[str, Any] = "portkey-default",
         description: Union[str, NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[object, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[Any, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
@@ -67,7 +68,7 @@ class Assistants(APIResource):
         *,
         description: Union[str, NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[object, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         model: Union[str, NotGiven] = "portkey-default",
         name: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[Any, NotGiven] = NOT_GIVEN,
@@ -133,7 +134,7 @@ class AsyncAssistants(AsyncAPIResource):
         model: Union[str, Any] = "portkey-default",
         description: Union[str, NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[object, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[Any, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
@@ -184,7 +185,7 @@ class AsyncAssistants(AsyncAPIResource):
         *,
         description: Union[str, NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[object, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         model: Union[str, NotGiven] = "portkey-default",
         name: Union[str, NotGiven] = NOT_GIVEN,
         response_format: Union[Any, NotGiven] = NOT_GIVEN,
