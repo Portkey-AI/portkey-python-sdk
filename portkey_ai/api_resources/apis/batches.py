@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -21,7 +21,7 @@ class Batches(APIResource):
         endpoint: str,
         input_file_id: str,
         metadata: Union[Optional[Dict[str, str]], NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> Batch:
         response = self.openai_client.with_raw_response.batches.create(
             completion_window=completion_window,
@@ -54,7 +54,7 @@ class Batches(APIResource):
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> BatchList:
         response = self.openai_client.with_raw_response.batches.list(
             after=after, limit=limit
@@ -73,6 +73,19 @@ class Batches(APIResource):
 
         return data
 
+    def output(self, batch_id: str, **kwargs) -> Any:
+        response = self._get(
+            f"/batches/{batch_id}/output",
+            params=None,
+            body=None,
+            cast_to=None,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+        return response
+
 
 class AsyncBatches(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
@@ -87,7 +100,7 @@ class AsyncBatches(AsyncAPIResource):
         endpoint: str,
         input_file_id: str,
         metadata: Union[Optional[Dict[str, str]], NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> Batch:
         response = await self.openai_client.with_raw_response.batches.create(
             completion_window=completion_window,
@@ -120,7 +133,7 @@ class AsyncBatches(AsyncAPIResource):
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> BatchList:
         response = await self.openai_client.with_raw_response.batches.list(
             after=after, limit=limit
@@ -138,3 +151,16 @@ class AsyncBatches(AsyncAPIResource):
         data._headers = response.headers
 
         return data
+
+    async def output(self, batch_id: str, **kwargs) -> Any:
+        response = await self._get(
+            f"/batches/{batch_id}/output",
+            params=None,
+            body=None,
+            cast_to=None,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+        return response
