@@ -1025,7 +1025,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if remaining_retries > 0 and self._should_retry(err.response):
+            if remaining_retries > 0:
                 return self._retry_request(
                     input_options,
                     cast_to,
@@ -1611,7 +1611,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if remaining_retries > 0 and self._should_retry(err.response):
+            if remaining_retries > 0:
                 return await self._retry_request(
                     input_options,
                     cast_to,
