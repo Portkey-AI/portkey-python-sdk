@@ -724,6 +724,8 @@ class APIClient:
 
 class AsyncHttpxClientWrapper(httpx.AsyncClient):
     def __del__(self) -> None:
+        if self.is_closed:
+            return
         try:
             asyncio.get_running_loop().create_task(self.aclose())
         except Exception:
