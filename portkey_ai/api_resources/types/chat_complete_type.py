@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Iterable, Optional, Union
+from typing import Dict, Optional, Union
 import httpx
 from .utils import parse_headers
 from typing import List, Any
@@ -115,7 +115,7 @@ class ChatCompletionAudio(BaseModel, extra="allow"):
 
 
 class ChatCompletionMessage(BaseModel, extra="allow"):
-    content: Optional[Union[str, Iterable[Any]]] = None
+    content: Optional[Union[str, List[Any]]] = None
     role: Optional[str] = None
     function_call: Optional[FunctionCall] = None
     tool_calls: Optional[List[ChatCompletionMessageToolCall]] = None
