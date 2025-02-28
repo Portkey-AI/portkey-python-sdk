@@ -1025,7 +1025,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if remaining_retries > 0:
+            if remaining_retries > 0 and self._should_retry(err.response):
                 return self._retry_request(
                     input_options,
                     cast_to,
@@ -1068,7 +1068,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
             log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
 
-            if remaining_retries > 0:
+            if remaining_retries > 0 and self._should_retry(err.response):
                 err.response.close()
                 return self._retry_request(
                     input_options,
@@ -1611,7 +1611,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except httpx.TimeoutException as err:
             log.debug("Encountered httpx.TimeoutException", exc_info=True)
 
-            if remaining_retries > 0:
+            if remaining_retries > 0 and self._should_retry(err.response):
                 return await self._retry_request(
                     input_options,
                     cast_to,
@@ -1648,7 +1648,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         except httpx.HTTPStatusError as err:  # thrown on 4xx and 5xx status code
             log.debug("Encountered httpx.HTTPStatusError", exc_info=True)
 
-            if remaining_retries > 0:
+            if remaining_retries > 0 and self._should_retry(err.response):
                 await err.response.aclose()
                 return await self._retry_request(
                     input_options,
