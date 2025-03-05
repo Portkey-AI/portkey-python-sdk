@@ -43,7 +43,6 @@ class CreateHeaders:
                 # logic for List of str to comma separated string
                 if k == "forward-headers":
                     headers[get_portkey_header(k)] = ",".join(v)
-        print("headers", headers)
         return headers
 
 
