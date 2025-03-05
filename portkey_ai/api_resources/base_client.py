@@ -85,6 +85,12 @@ class APIClient:
         anthropic_beta: Optional[str] = None,
         anthropic_version: Optional[str] = None,
         mistral_fim_completion: Optional[str] = None,
+        vertex_storage_bucket_name: Optional[str] = None,
+        provider_file_name: Optional[str] = None,
+        provider_model: Optional[str] = None,
+        aws_s3_bucket: Optional[str] = None,
+        aws_s3_object_key: Optional[str] = None,
+        aws_bedrock_model: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.base_url = set_base_url(base_url, api_key)
@@ -120,6 +126,12 @@ class APIClient:
         self.anthropic_beta = anthropic_beta
         self.anthropic_version = anthropic_version
         self.mistral_fim_completion = mistral_fim_completion
+        self.vertex_storage_bucket_name = vertex_storage_bucket_name
+        self.provider_file_name = provider_file_name
+        self.provider_model = provider_model
+        self.aws_s3_bucket = aws_s3_bucket
+        self.aws_s3_object_key = aws_s3_object_key
+        self.aws_bedrock_model = aws_bedrock_model
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -153,6 +165,12 @@ class APIClient:
             anthropic_beta=anthropic_beta,
             anthropic_version=anthropic_version,
             mistral_fim_completion=mistral_fim_completion,
+            vertex_storage_bucket_name=vertex_storage_bucket_name,
+            provider_file_name=provider_file_name,
+            provider_model=provider_model,
+            aws_s3_bucket=aws_s3_bucket,
+            aws_s3_object_key=aws_s3_object_key,
+            aws_bedrock_model=aws_bedrock_model,
             **kwargs,
         )
 
@@ -774,6 +792,12 @@ class AsyncAPIClient:
         anthropic_beta: Optional[str] = None,
         anthropic_version: Optional[str] = None,
         mistral_fim_completion: Optional[str] = None,
+        vertex_storage_bucket_name: Optional[str] = None,
+        provider_file_name: Optional[str] = None,
+        provider_model: Optional[str] = None,
+        aws_s3_bucket: Optional[str] = None,
+        aws_s3_object_key: Optional[str] = None,
+        aws_bedrock_model: Optional[str] = None,
         **kwargs,
     ) -> None:
         self.base_url = set_base_url(base_url, api_key)
@@ -809,6 +833,12 @@ class AsyncAPIClient:
         self.anthropic_beta = anthropic_beta
         self.anthropic_version = anthropic_version
         self.mistral_fim_completion = mistral_fim_completion
+        self.vertex_storage_bucket_name = vertex_storage_bucket_name
+        self.provider_file_name = provider_file_name
+        self.provider_model = provider_model
+        self.aws_s3_bucket = aws_s3_bucket
+        self.aws_s3_object_key = aws_s3_object_key
+        self.aws_bedrock_model = aws_bedrock_model
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -842,6 +872,12 @@ class AsyncAPIClient:
             anthropic_beta=anthropic_beta,
             anthropic_version=anthropic_version,
             mistral_fim_completion=mistral_fim_completion,
+            vertex_storage_bucket_name=vertex_storage_bucket_name,
+            provider_file_name=provider_file_name,
+            provider_model=provider_model,
+            aws_s3_bucket=aws_s3_bucket,
+            aws_s3_object_key=aws_s3_object_key,
+            aws_bedrock_model=aws_bedrock_model,
             **kwargs,
         )
 
