@@ -285,6 +285,12 @@ class Constructs(BaseModel):
     anthropic_beta: Optional[str] = None
     anthropic_version: Optional[str] = None
     mistral_fim_completion: Optional[bool] = None
+    vertex_storage_bucket_name: Optional[str] = None
+    provider_file_name: Optional[str] = None
+    provider_model: Optional[str] = None
+    aws_s3_bucket: Optional[str] = None
+    aws_s3_object_key: Optional[str] = None
+    aws_bedrock_model: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):

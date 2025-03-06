@@ -84,6 +84,12 @@ class Portkey(APIClient):
         anthropic_beta: Optional[str] = None,
         anthropic_version: Optional[str] = None,
         mistral_fim_completion: Optional[str] = None,
+        vertex_storage_bucket_name: Optional[str] = None,
+        provider_file_name: Optional[str] = None,
+        provider_model: Optional[str] = None,
+        aws_s3_bucket: Optional[str] = None,
+        aws_s3_object_key: Optional[str] = None,
+        aws_bedrock_model: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -121,6 +127,12 @@ class Portkey(APIClient):
             anthropic_beta=anthropic_beta,
             anthropic_version=anthropic_version,
             mistral_fim_completion=mistral_fim_completion,
+            vertex_storage_bucket_name=vertex_storage_bucket_name,
+            provider_file_name=provider_file_name,
+            provider_model=provider_model,
+            aws_s3_bucket=aws_s3_bucket,
+            aws_s3_object_key=aws_s3_object_key,
+            aws_bedrock_model=aws_bedrock_model,
             **kwargs,
         )
 
@@ -204,6 +216,12 @@ class Portkey(APIClient):
         anthropic_beta: Optional[str] = None,
         anthropic_version: Optional[str] = None,
         mistral_fim_completion: Optional[str] = None,
+        vertex_storage_bucket_name: Optional[str] = None,
+        provider_file_name: Optional[str] = None,
+        provider_model: Optional[str] = None,
+        aws_s3_bucket: Optional[str] = None,
+        aws_s3_object_key: Optional[str] = None,
+        aws_bedrock_model: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -243,6 +261,13 @@ class Portkey(APIClient):
             anthropic_version=anthropic_version or self.anthropic_version,
             mistral_fim_completion=mistral_fim_completion
             or self.mistral_fim_completion,
+            vertex_storage_bucket_name=vertex_storage_bucket_name
+            or self.vertex_storage_bucket_name,
+            provider_file_name=provider_file_name or self.provider_file_name,
+            provider_model=provider_model or self.provider_model,
+            aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
+            aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
+            aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
             **self.kwargs,
             **kwargs,
         )
@@ -325,6 +350,12 @@ class AsyncPortkey(AsyncAPIClient):
         anthropic_beta: Optional[str] = None,
         anthropic_version: Optional[str] = None,
         mistral_fim_completion: Optional[str] = None,
+        vertex_storage_bucket_name: Optional[str] = None,
+        provider_file_name: Optional[str] = None,
+        provider_model: Optional[str] = None,
+        aws_s3_bucket: Optional[str] = None,
+        aws_s3_object_key: Optional[str] = None,
+        aws_bedrock_model: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -362,6 +393,12 @@ class AsyncPortkey(AsyncAPIClient):
             anthropic_beta=anthropic_beta,
             anthropic_version=anthropic_version,
             mistral_fim_completion=mistral_fim_completion,
+            vertex_storage_bucket_name=vertex_storage_bucket_name,
+            provider_file_name=provider_file_name,
+            provider_model=provider_model,
+            aws_s3_bucket=aws_s3_bucket,
+            aws_s3_object_key=aws_s3_object_key,
+            aws_bedrock_model=aws_bedrock_model,
             **kwargs,
         )
 
@@ -445,6 +482,12 @@ class AsyncPortkey(AsyncAPIClient):
         anthropic_beta: Optional[str] = None,
         anthropic_version: Optional[str] = None,
         mistral_fim_completion: Optional[str] = None,
+        vertex_storage_bucket_name: Optional[str] = None,
+        provider_file_name: Optional[str] = None,
+        provider_model: Optional[str] = None,
+        aws_s3_bucket: Optional[str] = None,
+        aws_s3_object_key: Optional[str] = None,
+        aws_bedrock_model: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -484,6 +527,13 @@ class AsyncPortkey(AsyncAPIClient):
             anthropic_version=anthropic_version or self.anthropic_version,
             mistral_fim_completion=mistral_fim_completion
             or self.mistral_fim_completion,
+            vertex_storage_bucket_name=vertex_storage_bucket_name
+            or self.vertex_storage_bucket_name,
+            provider_file_name=provider_file_name or self.provider_file_name,
+            provider_model=provider_model or self.provider_model,
+            aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
+            aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
+            aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
             **self.kwargs,
             **kwargs,
         )
