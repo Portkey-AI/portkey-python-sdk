@@ -1,6 +1,7 @@
 from __future__ import annotations
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
+from portkey_ai.api_resources.apis.create_headers import createHeaders
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.types.generation_type import (
     PromptCompletion,
@@ -178,6 +179,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Stream[PromptCompletionChunk]:
         ...
@@ -194,6 +196,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> PromptCompletion:
         ...
@@ -210,6 +213,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]:
         ...
@@ -225,6 +229,7 @@ class Completions(APIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, Stream[PromptCompletionChunk],]:
         """Prompt completions Method"""
@@ -239,6 +244,9 @@ class Completions(APIResource):
             "stream": stream,
             **kwargs,
         }
+
+        extra_headers = createHeaders(**extra_headers)
+
         return self._post(
             f"/prompts/{prompt_id}/completions",
             body=body,
@@ -246,7 +254,7 @@ class Completions(APIResource):
             cast_to=PromptCompletion,
             stream_cls=Stream[PromptCompletionChunk],
             stream=stream,
-            headers={},
+            headers=extra_headers,
         )
 
 
@@ -266,6 +274,7 @@ class AsyncCompletions(AsyncAPIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> AsyncStream[PromptCompletionChunk]:
         ...
@@ -282,6 +291,7 @@ class AsyncCompletions(AsyncAPIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> PromptCompletion:
         ...
@@ -298,6 +308,7 @@ class AsyncCompletions(AsyncAPIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
         ...
@@ -313,6 +324,7 @@ class AsyncCompletions(AsyncAPIResource):
         max_tokens: Optional[int] = None,
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
+        extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
         """Prompt completions Method"""
@@ -327,6 +339,9 @@ class AsyncCompletions(AsyncAPIResource):
             "stream": stream,
             **kwargs,
         }
+
+        extra_headers = createHeaders(**extra_headers)
+
         return await self._post(
             f"/prompts/{prompt_id}/completions",
             body=body,
@@ -334,5 +349,5 @@ class AsyncCompletions(AsyncAPIResource):
             cast_to=PromptCompletion,
             stream_cls=AsyncStream[PromptCompletionChunk],
             stream=stream,
-            headers={},
+            headers=extra_headers,
         )
