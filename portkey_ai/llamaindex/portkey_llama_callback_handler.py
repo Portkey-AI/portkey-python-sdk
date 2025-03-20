@@ -26,6 +26,7 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         self,
         api_key: str,
         metadata: Optional[Dict[str, Any]] = None,
+        base_url: Optional[str] = None,
     ) -> None:
         super().__init__(
             event_starts_to_ignore=[
@@ -47,10 +48,11 @@ class LlamaIndexCallbackHandler(LlamaIndexBaseCallbackHandler):
         )
 
         self.api_key = api_key
+        self.base_url = base_url
         self.metadata: Dict[str, Any] = metadata or {}
         self.metadata.update({"_source": "LlamaIndex", "_source_type": "Agent"})
 
-        self.portkey_logger = Logger(api_key=api_key)
+        self.portkey_logger = Logger(api_key=api_key, base_url=base_url)
 
         self._token_counter = TokenCounter()
         self.completion_tokens = 0
