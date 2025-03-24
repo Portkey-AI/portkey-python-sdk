@@ -1,7 +1,6 @@
 from __future__ import annotations
 import warnings
 from typing import Literal, Optional, Union, Mapping, Any, overload
-from portkey_ai.api_resources.apis.create_headers import createHeaders
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.types.generation_type import (
     PromptCompletion,
@@ -245,7 +244,7 @@ class Completions(APIResource):
             **kwargs,
         }
 
-        extra_headers = createHeaders(**extra_headers)
+        extra_headers = extra_headers
 
         return self._post(
             f"/prompts/{prompt_id}/completions",
@@ -340,7 +339,7 @@ class AsyncCompletions(AsyncAPIResource):
             **kwargs,
         }
 
-        extra_headers = createHeaders(**extra_headers)
+        extra_headers = extra_headers
 
         return await self._post(
             f"/prompts/{prompt_id}/completions",

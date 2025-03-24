@@ -71,6 +71,7 @@ class Completions(APIResource):
         store,
         **kwargs,
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
+        extra_headers = kwargs.get("extra_headers", {})
         with self.openai_client.with_streaming_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -85,6 +86,7 @@ class Completions(APIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
+            extra_headers=extra_headers,
             extra_body=kwargs,
         ) as response:
             for line in response.iter_lines():
@@ -118,6 +120,7 @@ class Completions(APIResource):
         store,
         **kwargs,
     ) -> ChatCompletions:
+        extra_headers = kwargs.get("extra_headers", {})
         response = self.openai_client.with_raw_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -132,6 +135,7 @@ class Completions(APIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
+            extra_headers=extra_headers,
             extra_body=kwargs,
         )
         data = ChatCompletions(**json.loads(response.text))
@@ -315,6 +319,7 @@ class AsyncCompletions(AsyncAPIResource):
         store,
         **kwargs,
     ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
+        extra_headers = kwargs.get("extra_headers", {})
         async with self.openai_client.with_streaming_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -329,6 +334,7 @@ class AsyncCompletions(AsyncAPIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
+            extra_headers=extra_headers,
             extra_body=kwargs,
         ) as response:
             async for line in response.iter_lines():
@@ -362,6 +368,7 @@ class AsyncCompletions(AsyncAPIResource):
         store,
         **kwargs,
     ) -> ChatCompletions:
+        extra_headers = kwargs.get("extra_headers", {})
         response = await self.openai_client.with_raw_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -376,6 +383,7 @@ class AsyncCompletions(AsyncAPIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
+            extra_headers=extra_headers,
             extra_body=kwargs,
         )
         data = ChatCompletions(**json.loads(response.text))
