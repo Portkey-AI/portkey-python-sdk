@@ -226,7 +226,7 @@ class Completions(APIResource):
         top_k: Optional[int] = None,
         top_p: Optional[float] = None,
         **kwargs,
-    ) -> Union[PromptCompletion, Stream[PromptCompletionChunk],]:
+    ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]:
         """Prompt completions Method"""
         if config is None:
             config = retrieve_config()

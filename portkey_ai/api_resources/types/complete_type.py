@@ -20,6 +20,15 @@ class Logprobs(BaseModel, extra="allow"):
     tokens: Optional[List[str]] = None
     top_logprobs: Optional[List[Optional[Dict[str, float]]]] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class CompletionChoice(BaseModel, extra="allow"):
     finish_reason: Optional[str] = None

@@ -28,6 +28,15 @@ class TopLogprob(BaseModel, extra="allow"):
     bytes: Optional[List[int]] = None
     logprob: Optional[float] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
     token: Optional[str] = None
@@ -35,10 +44,28 @@ class ChatCompletionTokenLogprob(BaseModel, extra="allow"):
     logprob: Optional[float] = None
     top_logprobs: Optional[List[TopLogprob]] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class ChoiceLogprobs(BaseModel, extra="allow"):
     content: Optional[List[ChatCompletionTokenLogprob]] = None
     refusal: Optional[List[ChatCompletionTokenLogprob]] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class CompletionTokensDetails(BaseModel, extra="allow"):
@@ -47,10 +74,28 @@ class CompletionTokensDetails(BaseModel, extra="allow"):
     reasoning_tokens: Optional[int] = None
     rejected_prediction_tokens: Optional[int] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class PromptTokensDetails(BaseModel, extra="allow"):
     audio_tokens: Optional[int] = None
     cached_tokens: Optional[int] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class Usage(BaseModel, extra="allow"):
@@ -60,10 +105,28 @@ class Usage(BaseModel, extra="allow"):
     completion_tokens_details: Optional[CompletionTokensDetails] = None
     prompt_tokens_details: Optional[PromptTokensDetails] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class DeltaToolCallFunction(BaseModel, extra="allow"):
     arguments: Optional[str] = None
     name: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class DeltaToolCall(BaseModel, extra="allow"):
@@ -72,12 +135,30 @@ class DeltaToolCall(BaseModel, extra="allow"):
     function: Optional[DeltaToolCallFunction] = None
     type: Optional[str] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class Delta(BaseModel, extra="allow"):
     role: Optional[str] = None
     content: Optional[str] = ""
     tool_calls: Optional[List[DeltaToolCall]] = None
     refusal: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class StreamChoice(BaseModel, extra="allow"):
@@ -100,11 +181,29 @@ class FunctionCall(BaseModel, extra="allow"):
     arguments: Optional[str] = None
     name: Optional[str] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class ChatCompletionMessageToolCall(BaseModel, extra="allow"):
     id: Optional[str] = None
     function: Optional[FunctionCall] = None
     type: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class ChatCompletionAudio(BaseModel, extra="allow"):
@@ -112,6 +211,15 @@ class ChatCompletionAudio(BaseModel, extra="allow"):
     data: Optional[str] = None
     expires_at: Optional[int] = None
     transcript: Optional[str] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class ChatCompletionMessage(BaseModel, extra="allow"):
@@ -122,12 +230,30 @@ class ChatCompletionMessage(BaseModel, extra="allow"):
     refusal: Optional[str] = None
     audio: Optional[ChatCompletionAudio] = None
 
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
 
 class Choice(BaseModel, extra="allow"):
     finish_reason: Optional[str] = None
     index: Optional[int] = None
     logprobs: Optional[ChoiceLogprobs] = None
     message: Optional[ChatCompletionMessage] = None
+
+    def __str__(self):
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
 
 
 class ChatCompletions(BaseModel, extra="allow"):
