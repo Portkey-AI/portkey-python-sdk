@@ -244,8 +244,6 @@ class Completions(APIResource):
             **kwargs,
         }
 
-        extra_headers = extra_headers
-
         return self._post(
             f"/prompts/{prompt_id}/completions",
             body=body,
@@ -338,8 +336,6 @@ class AsyncCompletions(AsyncAPIResource):
             "stream": stream,
             **kwargs,
         }
-
-        extra_headers = extra_headers
 
         return await self._post(
             f"/prompts/{prompt_id}/completions",
