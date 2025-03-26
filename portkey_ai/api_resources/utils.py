@@ -43,6 +43,8 @@ from .global_constants import (
     PORTKEY_PROXY_ENV,
 )
 
+import audioread
+
 
 class MetaEnum(EnumMeta):
     def __contains__(cls, item):
@@ -504,3 +506,8 @@ def set_base_url(base_url, api_key):
         return env_base_url
     api_key = api_key or os.environ.get(PORTKEY_API_KEY_ENV)
     return PORTKEY_BASE_URL if api_key else LOCAL_BASE_URL
+
+
+def get_audio_duration(file_path) -> float:
+    with audioread.audio_open(file_path) as audio:
+        return audio.duration

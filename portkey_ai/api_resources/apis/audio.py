@@ -1,6 +1,7 @@
 import json
 from typing import Any, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
+from portkey_ai.api_resources.utils import get_audio_duration
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
@@ -41,6 +42,10 @@ class Transcriptions(APIResource):
         **kwargs
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
+        if file.name:
+            print("FILE: ", file)
+            duration = get_audio_duration(file.name)
+            print("DURATION: ", duration)
         response = self.openai_client.with_raw_response.audio.transcriptions.create(
             file=file,
             model=model,
@@ -81,6 +86,10 @@ class Translations(APIResource):
         **kwargs
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
+        if file.name:  # type: ignore[union-attr]
+            print("FILE: ", file.name)  # type: ignore[union-attr]
+            duration = get_audio_duration(file.name)  # type: ignore[union-attr]
+            print("DURATION: ", duration)
         response = self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
@@ -156,6 +165,10 @@ class AsyncTranscriptions(AsyncAPIResource):
         **kwargs
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
+        if file.name:
+            print("ASYNC FILE: ", file.name)
+            duration = get_audio_duration(file.name)
+            print("ASYNC DURATION: ", duration)
         response = (
             await self.openai_client.with_raw_response.audio.transcriptions.create(
                 file=file,
@@ -198,6 +211,10 @@ class AsyncTranslations(AsyncAPIResource):
         **kwargs
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
+        if file.name:  # type: ignore[union-attr]
+            print("ASYNC FILE: ", file.name)  # type: ignore[union-attr]
+            duration = get_audio_duration(file.name)  # type: ignore[union-attr]
+            print("ASYNC DURATION: ", duration)
         response = await self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
