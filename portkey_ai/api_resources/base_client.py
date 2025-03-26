@@ -20,9 +20,7 @@ import httpx
 import platform
 
 from portkey_ai.api_resources.apis.create_headers import createHeaders
-from .global_constants import (
-    PORTKEY_HEADER_PREFIX,
-)
+from .global_constants import PORTKEY_HEADER_PREFIX, DEFAULT_CONNECTION_LIMITS
 from .utils import remove_empty_values, Options, set_base_url
 from .exceptions import (
     APIStatusError,
@@ -180,6 +178,7 @@ class APIClient:
             headers={
                 "Accept": "application/json",
             },
+            limits=DEFAULT_CONNECTION_LIMITS,
         )
 
         self.response_headers: httpx.Headers | None = None
@@ -887,6 +886,7 @@ class AsyncAPIClient:
             headers={
                 "Accept": "application/json",
             },
+            limits=DEFAULT_CONNECTION_LIMITS,
         )
 
         self.response_headers: httpx.Headers | None = None

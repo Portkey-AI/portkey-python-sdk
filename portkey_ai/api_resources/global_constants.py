@@ -1,3 +1,6 @@
+import httpx
+
+
 MISSING_API_KEY_ERROR_MESSAGE = """Portkey API Key Not Found \
 
 Resolution: \
@@ -43,3 +46,6 @@ LOCAL_BASE_URL = "http://localhost:8787/v1"
 PORTKEY_API_KEY_ENV = "PORTKEY_API_KEY"
 PORTKEY_PROXY_ENV = "PORTKEY_PROXY"
 OPEN_AI_API_KEY = "OPENAI_API_KEY"
+DEFAULT_CONNECTION_LIMITS = httpx.Limits(
+    max_connections=1000, max_keepalive_connections=100
+)
