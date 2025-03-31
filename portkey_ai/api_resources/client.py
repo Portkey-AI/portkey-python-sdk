@@ -1,11 +1,8 @@
 from __future__ import annotations
-
 from typing import List, Mapping, Optional, Union
 import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
-
-# from openai import AsyncOpenAI, OpenAI
 from .._vendor.openai import OpenAI, AsyncOpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
@@ -26,6 +23,8 @@ class Portkey(APIClient):
     audio: apis.Audio
     batches: apis.Batches
     fine_tuning: apis.FineTuning
+    vector_stores: apis.VectorStores
+    responses: apis.Responses
     admin: apis.Admin
     uploads: apis.Uploads
     configs: apis.Configs
@@ -36,14 +35,12 @@ class Portkey(APIClient):
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
-        vector_stores: apis.VectorStores
         chat: apis.BetaChat
         realtime: apis.BetaRealtime
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
-            self.vector_stores = apis.VectorStores(client)
             self.chat = apis.BetaChat(client)
             self.realtime = apis.BetaRealtime(client)
 
@@ -158,6 +155,8 @@ class Portkey(APIClient):
         self.audio = apis.Audio(self)
         self.batches = apis.Batches(self)
         self.fine_tuning = apis.FineTuning(self)
+        self.vector_stores = apis.VectorStores(self)
+        self.responses = apis.Responses(self)
         self.admin = apis.Admin(self)
         self.uploads = apis.Uploads(self)
         self.configs = apis.Configs(self)
@@ -292,6 +291,8 @@ class AsyncPortkey(AsyncAPIClient):
     audio: apis.AsyncAudio
     batches: apis.AsyncBatches
     fine_tuning: apis.AsyncFineTuning
+    vector_stores: apis.AsyncVectorStores
+    responses: apis.AsyncResponses
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
     configs: apis.AsyncConfigs
@@ -302,14 +303,12 @@ class AsyncPortkey(AsyncAPIClient):
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
-        vector_stores: apis.AsyncVectorStores
         chat: apis.AsyncBetaChat
         realtime: apis.AsyncBetaRealtime
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
-            self.vector_stores = apis.AsyncVectorStores(client)
             self.chat = apis.AsyncBetaChat(client)
             self.realtime = apis.AsyncBetaRealtime(client)
 
@@ -424,6 +423,8 @@ class AsyncPortkey(AsyncAPIClient):
         self.audio = apis.AsyncAudio(self)
         self.batches = apis.AsyncBatches(self)
         self.fine_tuning = apis.AsyncFineTuning(self)
+        self.vector_stores = apis.AsyncVectorStores(self)
+        self.responses = apis.AsyncResponses(self)
         self.admin = apis.AsyncAdmin(self)
         self.uploads = apis.AsyncUploads(self)
         self.configs = apis.AsyncConfigs(self)
