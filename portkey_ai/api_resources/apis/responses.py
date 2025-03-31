@@ -219,7 +219,7 @@ class Responses(APIResource):
         *,
         input: Union[str, ResponseInputParam],
         model: Union[str, ChatModel],
-        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,
+        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,  # type: ignore[type-arg]
         tools: Union[Iterable[ParseableToolParam], NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
@@ -271,7 +271,7 @@ class Responses(APIResource):
         *,
         input: Union[str, ResponseInputParam],
         model: Union[str, ChatModel],
-        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,
+        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,  # type: ignore[type-arg]
         tools: Union[Iterable[ParseableToolParam], NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
@@ -540,7 +540,7 @@ class AsyncResponses(AsyncAPIResource):
         *,
         input: Union[str, ResponseInputParam],
         model: Union[str, ChatModel],
-        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,
+        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,  # type: ignore[type-arg]
         tools: Union[Iterable[ParseableToolParam], NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
@@ -592,7 +592,7 @@ class AsyncResponses(AsyncAPIResource):
         *,
         input: Union[str, ResponseInputParam],
         model: Union[str, ChatModel],
-        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,
+        text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,  # type: ignore[type-arg]
         tools: Union[Iterable[ParseableToolParam], NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
         instructions: Union[str, NotGiven] = NOT_GIVEN,
