@@ -46,7 +46,7 @@ class Transcriptions(APIResource):
         if file.name:
             duration = get_audio_duration(file.name)
             if duration is not None:
-                extra_headers[AUDIO_FILE_DURATION_HEADER] = str(f"{duration:.2f}")
+                extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = self.openai_client.with_raw_response.audio.transcriptions.create(
             file=file,
             model=model,
@@ -90,7 +90,7 @@ class Translations(APIResource):
         if file.name:  # type: ignore[union-attr]
             duration = get_audio_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
-                extra_headers[AUDIO_FILE_DURATION_HEADER] = str(f"{duration:.2f}")
+                extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
@@ -169,7 +169,7 @@ class AsyncTranscriptions(AsyncAPIResource):
         if file.name:
             duration = get_audio_duration(file.name)
             if duration is not None:
-                extra_headers[AUDIO_FILE_DURATION_HEADER] = str(f"{duration:.2f}")
+                extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = (
             await self.openai_client.with_raw_response.audio.transcriptions.create(
                 file=file,
@@ -215,7 +215,7 @@ class AsyncTranslations(AsyncAPIResource):
         if file.name:  # type: ignore[union-attr]
             duration = get_audio_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
-                extra_headers[AUDIO_FILE_DURATION_HEADER] = str(f"{duration:.2f}")
+                extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = await self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,

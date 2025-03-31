@@ -508,9 +508,10 @@ def set_base_url(base_url, api_key):
     return PORTKEY_BASE_URL if api_key else LOCAL_BASE_URL
 
 
-def get_audio_duration(file_path) -> Optional[float]:
+def get_audio_duration(file_path) -> Optional[str]:
     try:
         with audioread.audio_open(file_path) as audio:
-            return audio.duration
+            duration = audio.duration
+            return str(int(duration * 1000))
     except Exception:
         return None
