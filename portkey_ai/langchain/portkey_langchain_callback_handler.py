@@ -17,14 +17,16 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         self,
         api_key: str,
         metadata: Optional[Dict[str, Any]] = None,
+        base_url: Optional[str] = None,
     ) -> None:
         super().__init__()
 
         self.api_key = api_key
+        self.base_url = base_url
         self.metadata: Dict[str, Any] = metadata or {}
         self.metadata.update({"_source": "Langchain", "_source_type": "Agent"})
 
-        self.portkey_logger = Logger(api_key=api_key)
+        self.portkey_logger = Logger(api_key=api_key, base_url=base_url)
 
         self.log_object: Any = []
         self.prompt_records: Any = []

@@ -1,14 +1,13 @@
 from __future__ import annotations
-
 import json
 from typing import Any, Iterator, AsyncIterator, Generic, cast, Union, Type
-
 import httpx
-
 from .utils import (
     ResponseT,
     make_status_error,
 )
+from types import TracebackType
+from typing_extensions import Self
 
 
 class ServerSentEvent:
@@ -189,6 +188,20 @@ class Stream(Generic[ResponseT]):
                     request=self.response.request,
                 )
 
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        self.close()
+
+    def close(self) -> None:
+        self.response.close()
+
 
 class AsyncStream(Generic[ResponseT]):
     """Provides the core interface to iterate over a asynchronous stream response."""
@@ -241,3 +254,17 @@ class AsyncStream(Generic[ResponseT]):
                     response=self.response,
                     request=self.response.request,
                 )
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        await self.close()
+
+    async def close(self) -> None:
+        await self.response.aclose()
