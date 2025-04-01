@@ -90,6 +90,7 @@ class Portkey(APIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -133,6 +134,7 @@ class Portkey(APIClient):
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            calculate_audio_duration=calculate_audio_duration,
             **kwargs,
         )
 
@@ -222,6 +224,7 @@ class Portkey(APIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -268,6 +271,8 @@ class Portkey(APIClient):
             aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
+            calculate_audio_duration=calculate_audio_duration
+            or self.calculate_audio_duration,
             **self.kwargs,
             **kwargs,
         )
@@ -356,6 +361,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -399,6 +405,7 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            calculate_audio_duration=calculate_audio_duration,
             **kwargs,
         )
 
@@ -488,6 +495,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -534,6 +542,8 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
+            calculate_audio_duration=calculate_audio_duration
+            or self.calculate_audio_duration,
             **self.kwargs,
             **kwargs,
         )

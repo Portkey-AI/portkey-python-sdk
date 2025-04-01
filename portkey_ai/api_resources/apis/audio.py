@@ -43,7 +43,7 @@ class Transcriptions(APIResource):
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
-        if file.name:
+        if file.name and self._client.calculate_audio_duration:
             duration = get_audio_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
@@ -87,7 +87,7 @@ class Translations(APIResource):
         **kwargs,
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
-        if file.name:  # type: ignore[union-attr]
+        if file.name and self._client.calculate_audio_duration:  # type: ignore[union-attr]
             duration = get_audio_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
@@ -166,7 +166,7 @@ class AsyncTranscriptions(AsyncAPIResource):
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
-        if file.name:
+        if file.name and self._client.calculate_audio_duration:
             duration = get_audio_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
@@ -212,7 +212,7 @@ class AsyncTranslations(AsyncAPIResource):
         **kwargs,
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
-        if file.name:  # type: ignore[union-attr]
+        if file.name and self._client.calculate_audio_duration:  # type: ignore[union-attr]
             duration = get_audio_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
