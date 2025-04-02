@@ -89,6 +89,7 @@ class APIClient:
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
         self.base_url = set_base_url(base_url, api_key)
@@ -130,6 +131,7 @@ class APIClient:
         self.aws_s3_bucket = aws_s3_bucket
         self.aws_s3_object_key = aws_s3_object_key
         self.aws_bedrock_model = aws_bedrock_model
+        self.calculate_audio_duration = calculate_audio_duration
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
@@ -797,6 +799,7 @@ class AsyncAPIClient:
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
         self.base_url = set_base_url(base_url, api_key)
@@ -838,6 +841,7 @@ class AsyncAPIClient:
         self.aws_s3_bucket = aws_s3_bucket
         self.aws_s3_object_key = aws_s3_object_key
         self.aws_bedrock_model = aws_bedrock_model
+        self.calculate_audio_duration = calculate_audio_duration
         self.kwargs = kwargs
 
         self.custom_headers = createHeaders(
