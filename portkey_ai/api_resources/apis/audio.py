@@ -2,7 +2,7 @@ import json
 from typing import Any, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.global_constants import AUDIO_FILE_DURATION_HEADER
-from portkey_ai.api_resources.utils import get_audio_duration
+from portkey_ai.api_resources.get_audio_duration import get_audio_file_duration
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
@@ -44,7 +44,7 @@ class Transcriptions(APIResource):
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         if file.name and self._client.calculate_audio_duration:
-            duration = get_audio_duration(file.name)
+            duration = get_audio_file_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = self.openai_client.with_raw_response.audio.transcriptions.create(
@@ -88,7 +88,7 @@ class Translations(APIResource):
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         if file.name and self._client.calculate_audio_duration:  # type: ignore[union-attr]
-            duration = get_audio_duration(file.name)  # type: ignore[union-attr]
+            duration = get_audio_file_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = self.openai_client.with_raw_response.audio.translations.create(
@@ -167,7 +167,7 @@ class AsyncTranscriptions(AsyncAPIResource):
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         if file.name and self._client.calculate_audio_duration:
-            duration = get_audio_duration(file.name)
+            duration = get_audio_file_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = (
@@ -213,7 +213,7 @@ class AsyncTranslations(AsyncAPIResource):
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
         if file.name and self._client.calculate_audio_duration:  # type: ignore[union-attr]
-            duration = get_audio_duration(file.name)  # type: ignore[union-attr]
+            duration = get_audio_file_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = await self.openai_client.with_raw_response.audio.translations.create(
