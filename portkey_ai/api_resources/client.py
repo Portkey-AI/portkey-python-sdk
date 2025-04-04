@@ -90,6 +90,7 @@ class Portkey(APIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -133,6 +134,7 @@ class Portkey(APIClient):
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id,
             **kwargs,
         )
 
@@ -222,6 +224,7 @@ class Portkey(APIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -268,6 +271,7 @@ class Portkey(APIClient):
             aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id or self.fireworks_account_id,
             **self.kwargs,
             **kwargs,
         )
@@ -356,6 +360,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -399,6 +404,7 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id,
             **kwargs,
         )
 
@@ -488,6 +494,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -534,6 +541,7 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id or self.fireworks_account_id,
             **self.kwargs,
             **kwargs,
         )

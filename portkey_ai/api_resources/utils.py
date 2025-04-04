@@ -291,6 +291,7 @@ class Constructs(BaseModel):
     aws_s3_bucket: Optional[str] = None
     aws_s3_object_key: Optional[str] = None
     aws_bedrock_model: Optional[str] = None
+    fireworks_account_id: Optional[str] = None
 
 
 class LLMOptions(Constructs, ConversationInput, ModelParams):
