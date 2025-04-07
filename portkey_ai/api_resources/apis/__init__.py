@@ -86,6 +86,13 @@ from .beta_realtime import (
     AsyncBetaSessions,
 )
 
+from .responses import (
+    Responses,
+    InputItems,
+    AsyncResponses,
+    AsyncInputItems,
+)
+
 from .uploads import (
     Uploads,
     Parts,
@@ -189,4 +196,8 @@ __all__ = [
     "AsyncBetaRealtime",
     "BetaSessions",
     "AsyncBetaSessions",
+    "Responses",
+    "InputItems",
+    "AsyncResponses",
+    "AsyncInputItems",
 ]
