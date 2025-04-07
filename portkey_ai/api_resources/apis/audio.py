@@ -45,6 +45,7 @@ class Transcriptions(APIResource):
         extra_headers = kwargs.pop("extra_headers", {})
         if file.name and self._client.calculate_audio_duration:
             duration = get_audio_file_duration(file.name)
+            print(f"duration: {duration}")
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
         response = self.openai_client.with_raw_response.audio.transcriptions.create(

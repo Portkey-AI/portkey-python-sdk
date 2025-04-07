@@ -14,6 +14,7 @@ def get_audio_file_duration(file_path):
         str: Duration in milliseconds as a string
     """
     file_ext = os.path.splitext(file_path)[1].lower()
+    file_size = os.path.getsize(file_path)
 
     # WAV files - use wave module
     if file_ext == ".wav":
@@ -26,38 +27,61 @@ def get_audio_file_duration(file_path):
     # MP3 files
     elif file_ext in [".mp3", ".mpga"]:
         with open(file_path, "rb") as f:
-            buffer = f.read()
-
-            # Skip ID3v2 tag if present
+            # Check for ID3v2 tag
+            header = f.read(10)
             offset = 0
-            if buffer[0:3] == b"ID3":
+            id3v2_size = 0
+
+            if header[:3] == b"ID3":
+                # Calculate ID3v2 tag size
                 tag_size = (
-                    ((buffer[6] & 0x7F) << 21)
-                    | ((buffer[7] & 0x7F) << 14)
-                    | ((buffer[8] & 0x7F) << 7)
-                    | (buffer[9] & 0x7F)
+                    ((header[6] & 0x7F) << 21)
+                    | ((header[7] & 0x7F) << 14)
+                    | ((header[8] & 0x7F) << 7)
+                    | (header[9] & 0x7F)
                 )
                 offset = tag_size + 10
+                id3v2_size = offset
+                f.seek(offset)
+            else:
+                f.seek(0)  # Reset to beginning if no ID3v2 tag
 
-            # MPEG frame sync pattern: 11 bits set to 1 (0xFFE0)
-            # Find first valid MPEG frame
+            # Find first valid MPEG frame by reading small chunks
+            chunk_size = 4096
             frame_header = None
-            while offset < len(buffer) - 4:
-                if buffer[offset] == 0xFF and (buffer[offset + 1] & 0xE0) == 0xE0:
-                    frame_header = buffer[offset : offset + 4]
+            chunk_offset = 0
+
+            while True:
+                chunk = f.read(chunk_size)
+                if not chunk:
                     break
-                offset += 1
+
+                # Look for frame sync pattern in this chunk
+                for i in range(len(chunk) - 3):
+                    if chunk[i] == 0xFF and (chunk[i + 1] & 0xE0) == 0xE0:
+                        frame_header = chunk[i : i + 4]
+                        offset += i
+                        break
+
+                if frame_header:
+                    break
+
+                offset += len(chunk)
+                chunk_offset += 1
+
+                # Seek back 3 bytes to handle case where sync is split between chunks
+                if chunk and len(chunk) >= 3:
+                    f.seek(-3, 1)
+                    offset -= 3
 
             if not frame_header:
                 return None  # No valid MPEG frame found
 
-            # Extract version, layer, bitrate index, sample rate index, padding
+            # Extract version, layer, bitrate index, sample rate index
             version_bits = (frame_header[1] & 0x18) >> 3
             layer_bits = (frame_header[1] & 0x06) >> 1
-            frame_header[1] & 0x01
             bitrate_index = (frame_header[2] & 0xF0) >> 4
             sample_rate_index = (frame_header[2] & 0x0C) >> 2
-            (frame_header[2] & 0x02) >> 1
 
             # Determine MPEG version (2.5, 2, 1)
             if version_bits == 0:
@@ -211,183 +235,160 @@ def get_audio_file_duration(file_path):
 
             if bitrate == 0 or sample_rate == 0:
                 return None  # Invalid bitrate or sample rate
-            # Calculate CBR duration based on file size and bitrate
-            # First, find file size excluding ID3 tags
-            file_size = len(buffer)
 
-            # Check for ID3v1 tag at the end (128 bytes)
-            if file_size >= 128 and buffer[-128:-125] == b"TAG":
-                file_size -= 128
-
-            # Account for ID3v2 tag at the beginning
-            if buffer[0:3] == b"ID3":
-                tag_size = (
-                    ((buffer[6] & 0x7F) << 21)
-                    | ((buffer[7] & 0x7F) << 14)
-                    | ((buffer[8] & 0x7F) << 7)
-                    | (buffer[9] & 0x7F)
-                )
-                file_size -= tag_size + 10
-
-            # For VBR files, try to find Xing or VBRI header
+            # Check for VBR headers
             is_vbr = False
             total_frames = 0
 
-            # Check for Xing/Info header (common in VBR files)
-            if version == 1:
-                # MPEG 1: Xing header starts 36 bytes after the frame header
-                xing_offset = offset + 4 + 32
-            else:
-                # MPEG 2/2.5: Xing header starts 21 bytes after the frame header
-                xing_offset = offset + 4 + 17
+            # Calculate offsets for Xing/VBRI headers
+            xing_offset_from_frame = 36 if version == 1 else 21
+            f.seek(offset + 4)  # Move past the frame header
 
-            if xing_offset + 4 < len(buffer) and (
-                buffer[xing_offset : xing_offset + 4] == b"Xing"
-                or buffer[xing_offset : xing_offset + 4] == b"Info"
+            # Read enough data for possible VBR headers
+            vbr_data = f.read(max(xing_offset_from_frame + 16, 36 + 16))
+
+            # Check for Xing/Info header
+            xing_pos = (
+                xing_offset_from_frame - 4
+            )  # Adjust for earlier read of frame header
+            if len(vbr_data) > xing_pos + 4 and (
+                vbr_data[xing_pos : xing_pos + 4] == b"Xing"
+                or vbr_data[xing_pos : xing_pos + 4] == b"Info"
             ):
-                # Check if frames field is present (bit 0 of flags)
-                flags = (
-                    (buffer[xing_offset + 4] << 24)
-                    | (buffer[xing_offset + 5] << 16)
-                    | (buffer[xing_offset + 6] << 8)
-                    | buffer[xing_offset + 7]
-                )
-
-                if flags & 0x1:  # Frames field is present
-                    total_frames = (
-                        (buffer[xing_offset + 8] << 24)
-                        | (buffer[xing_offset + 9] << 16)
-                        | (buffer[xing_offset + 10] << 8)
-                        | buffer[xing_offset + 11]
+                # Check if frames field is present
+                if len(vbr_data) > xing_pos + 8:
+                    flags = (
+                        (vbr_data[xing_pos + 4] << 24)
+                        | (vbr_data[xing_pos + 5] << 16)
+                        | (vbr_data[xing_pos + 6] << 8)
+                        | vbr_data[xing_pos + 7]
                     )
-                    is_vbr = True
 
-                    # Calculate duration based on frames and sample rate
-                    if version == 1:
-                        samples_per_frame = 1152  # MPEG 1 Layer 3
-                    else:
-                        samples_per_frame = 576  # MPEG 2/2.5 Layer 3
+                    if (flags & 0x1) and len(
+                        vbr_data
+                    ) > xing_pos + 12:  # Frames field present
+                        total_frames = (
+                            (vbr_data[xing_pos + 8] << 24)
+                            | (vbr_data[xing_pos + 9] << 16)
+                            | (vbr_data[xing_pos + 10] << 8)
+                            | vbr_data[xing_pos + 11]
+                        )
+                        is_vbr = True
 
-                    duration_sec = total_frames * samples_per_frame / sample_rate
-                    return str(int(duration_sec * 1000))
+                        # Calculate duration based on frames and sample rate
+                        samples_per_frame = 1152 if version == 1 else 576
+                        duration_sec = total_frames * samples_per_frame / sample_rate
+                        return str(int(duration_sec * 1000))
 
-            # VBRI header check (less common than Xing)
-            vbri_offset = offset + 4 + 32  # VBRI is usually at a fixed position
+            # Check for VBRI header (less common)
+            vbri_pos = 32  # VBRI is usually at fixed position from frame start
             if (
-                vbri_offset + 4 < len(buffer)
-                and buffer[vbri_offset : vbri_offset + 4] == b"VBRI"
+                len(vbr_data) > vbri_pos + 4
+                and vbr_data[vbri_pos : vbri_pos + 4] == b"VBRI"
+                and len(vbr_data) > vbri_pos + 18
             ):
-                # VBRI header has total frames at offset +14 (4 bytes)
+                # Extract frames count
                 total_frames = (
-                    (buffer[vbri_offset + 14] << 24)
-                    | (buffer[vbri_offset + 15] << 16)
-                    | (buffer[vbri_offset + 16] << 8)
-                    | buffer[vbri_offset + 17]
+                    (vbr_data[vbri_pos + 14] << 24)
+                    | (vbr_data[vbri_pos + 15] << 16)
+                    | (vbr_data[vbri_pos + 16] << 8)
+                    | vbr_data[vbri_pos + 17]
                 )
                 is_vbr = True
 
-                # Calculate duration based on frames and sample rate
-                if version == 1:
-                    samples_per_frame = 1152  # MPEG 1 Layer 3
-                else:
-                    samples_per_frame = 576  # MPEG 2/2.5 Layer 3
-
+                # Calculate duration
+                samples_per_frame = 1152 if version == 1 else 576
                 duration_sec = total_frames * samples_per_frame / sample_rate
                 return str(int(duration_sec * 1000))
 
             if not is_vbr:
-                # Calculate bitrate in bits per second
+                # For CBR, use file size method
+                # Check for ID3v1 tag (128 bytes at the end)
+                id3v1_size = 0
+                f.seek(-128, 2)
+                if f.read(3) == b"TAG":
+                    id3v1_size = 128
+
+                # Calculate audio size by removing tags
+                audio_size = file_size - id3v2_size - id3v1_size
+
+                # Calculate duration
                 bitrate_bps = bitrate * 1000
-                duration_sec = (file_size * 8) / bitrate_bps
+                duration_sec = (audio_size * 8) / bitrate_bps
                 return str(int(duration_sec * 1000))
 
     # OGG files
     elif file_ext == ".ogg":
         with open(file_path, "rb") as f:
-            buffer = f.read()
-
             # Check for OggS signature
-            if not buffer.startswith(b"OggS"):
+            header = f.read(4)
+            if header != b"OggS":
                 return None  # Not a valid OGG file
 
-            # First, look for the first Vorbis header packet
-            # We need to find the identification header to get the sample rate
+            # We need to find the last page's granule position and the sample rate
+            # from an identification header
             sample_rate = 0
             granule_position = 0
 
-            # Iterate through Ogg pages to find the last one and the sample rate
-            offset = 0
-            while offset < len(buffer) - 27:  # Minimum Ogg page header size is 27 bytes
-                # Check for OggS capture pattern
-                if buffer[offset : offset + 4] == b"OggS":
-                    # Page header structure:
-                    # 0-3: capture pattern "OggS"
-                    # 4: stream structure version (0)
-                    # 5: header type flag
-                    # 6-13: granule position (64-bit)
-                    # 14-17: stream serial number
-                    # 18-21: page sequence number
-                    # 22-25: CRC checksum
-                    # 26: number of segments in the page
+            # Reset to beginning
+            f.seek(0)
 
-                    # Extract granule position (64-bit)
-                    page_granule = (
-                        (buffer[offset + 13] << 56)
-                        | (buffer[offset + 12] << 48)
-                        | (buffer[offset + 11] << 40)
-                        | (buffer[offset + 10] << 32)
-                        | (buffer[offset + 9] << 24)
-                        | (buffer[offset + 8] << 16)
-                        | (buffer[offset + 7] << 8)
-                        | buffer[offset + 6]
-                    )
+            # Read in chunks to find the sample rate and last granule position
+            while True:
+                # Read enough for Ogg page header
+                page_header = f.read(27)
+                if len(page_header) < 27:
+                    break
 
-                    if page_granule > granule_position:
-                        granule_position = page_granule
-
-                    # Get number of segments
-                    num_segments = buffer[offset + 26]
-
-                    segment_table_offset = offset + 27
-                    segment_table_end = segment_table_offset + num_segments
-
-                    if segment_table_end >= len(buffer):
+                if page_header[0:4] != b"OggS":
+                    # Try to resync
+                    chunk = f.read(2048)
+                    if not chunk:
                         break
+                    sync_pos = chunk.find(b"OggS")
+                    if sync_pos == -1:
+                        continue
+                    f.seek(-len(chunk) + sync_pos, 1)
+                    continue
 
-                    # Calculate total size of all segments in this page
-                    page_size = 27 + num_segments  # Header + segment table
-                    for i in range(num_segments):
-                        page_size += buffer[segment_table_offset + i]
+                # Extract granule position (64-bit)
+                page_granule = int.from_bytes(page_header[6:14], byteorder="little")
+                if page_granule > granule_position:
+                    granule_position = page_granule
 
-                    # Check for Vorbis identification header in the first few pages
-                    if sample_rate == 0 and offset < 10000:  # Only check the beginning
-                        segment_data_offset = segment_table_end
+                # Get number of segments
+                num_segments = page_header[26]
 
-                        # Look for Vorbis identification header pattern
-                        for i in range(
-                            segment_data_offset,
-                            min(segment_data_offset + 40, len(buffer) - 7),
-                        ):
-                            if buffer[i] == 1 and buffer[i + 1 : i + 7] == b"vorbis":
-                                if i + 16 < len(buffer):
-                                    sample_rate = (
-                                        (buffer[i + 15] << 24)
-                                        | (buffer[i + 14] << 16)
-                                        | (buffer[i + 13] << 8)
-                                        | buffer[i + 12]
-                                    )
-                                    break
+                # Read segment table
+                segment_table = f.read(num_segments)
+                if len(segment_table) < num_segments:
+                    break
 
-                    # Move to next page
-                    offset += page_size
+                # Calculate total size of all segments
+                page_size = sum(segment_table)
+
+                # If we haven't found sample rate and we're in the first 3 pages
+                if sample_rate == 0 and f.tell() < 10000:
+                    # Read this page's data to look for Vorbis header
+                    page_data = f.read(min(page_size, 100))  # Only need beginning
+
+                    # Look for Vorbis identification header pattern
+                    vorbis_pos = page_data.find(b"\x01vorbis")
+                    if vorbis_pos != -1 and vorbis_pos + 16 < len(page_data):
+                        # Sample rate is at offset 12 from start of vorbis header
+                        sr_pos = vorbis_pos + 12
+                        if sr_pos + 4 <= len(page_data):
+                            sample_rate = int.from_bytes(
+                                page_data[sr_pos : sr_pos + 4], byteorder="little"
+                            )
+                    # Skip rest of page data if we read only part of it
+                    if len(page_data) < page_size:
+                        f.seek(page_size - len(page_data), 1)
                 else:
-                    # If we lose sync, try to find the next "OggS" signature
-                    start_idx = buffer.find(b"OggS", offset + 1)
-                    if start_idx == -1:
-                        break
-                    offset = start_idx
+                    # Skip page data
+                    f.seek(page_size, 1)
 
-            # If we found both the granule position and sample rate, calculate duration
+            # If we found both granule position and sample rate, calculate duration
             if granule_position > 0 and sample_rate > 0:
                 duration_sec = granule_position / sample_rate
                 return str(int(duration_sec * 1000))
@@ -397,64 +398,65 @@ def get_audio_file_duration(file_path):
     # FLAC files
     elif file_ext == ".flac":
         with open(file_path, "rb") as f:
-            # Read the entire file into a buffer for easier manipulation
-            buffer = f.read()
-
             # Check FLAC signature
-            if buffer[0:4].decode("ascii", errors="ignore") != "fLaC":
+            header = f.read(4)
+            if header != b"fLaC":
                 return None  # Not a FLAC file
 
-            offset = 4
+            # Process metadata blocks
             is_last_block = False
             found_stream_info = False
             total_samples = 0
             sample_rate = 0
 
-            while not is_last_block and offset < len(buffer):
-                is_last_block = (buffer[offset] & 0x80) == 0x80
-                block_type = buffer[offset] & 0x7F
-
-                block_length = (
-                    ((buffer[offset] & 0x7F) << 16)
-                    | (buffer[offset + 1] << 8)
-                    | buffer[offset + 2]
-                )
-                offset += 4
-
-                if block_type == 0:  # STREAMINFO block
-                    # Extract sample rate (20 bits)
-                    sample_rate = (
-                        (buffer[offset + 10] << 12)
-                        | (buffer[offset + 11] << 4)
-                        | ((buffer[offset + 12] & 0xF0) >> 4)
-                    )
-
-                    # Extract total samples (36 bits)
-                    total_samples = (
-                        ((buffer[offset + 13] & 0x0F) << 32)
-                        | (buffer[offset + 14] << 24)
-                        | (buffer[offset + 15] << 16)
-                        | (buffer[offset + 16] << 8)
-                        | buffer[offset + 17]
-                    )
-
-                    found_stream_info = True
+            while not is_last_block:
+                # Read block header
+                block_header = f.read(4)
+                if len(block_header) < 4:
                     break
 
-                offset += block_length
+                is_last_block = (block_header[0] & 0x80) == 0x80
+                block_type = block_header[0] & 0x7F
+                block_length = (
+                    (block_header[1] << 16) | (block_header[2] << 8) | block_header[3]
+                )
 
-            if not found_stream_info or sample_rate == 0:
-                return None
+                if block_type == 0:  # STREAMINFO block
+                    if block_length >= 18:  # STREAMINFO is at least 18 bytes
+                        stream_info = f.read(block_length)
+                        if len(stream_info) >= 18:
+                            # Extract sample rate (20 bits starting at byte 10)
+                            sample_rate = (
+                                (stream_info[10] << 12)
+                                | (stream_info[11] << 4)
+                                | ((stream_info[12] & 0xF0) >> 4)
+                            )
 
-            duration_sec = total_samples / sample_rate
-            duration_ms = round(duration_sec * 1000)
+                            # Extract total samples (36 bits starting at byte 13 bit 4)
+                            total_samples = (
+                                ((stream_info[13] & 0x0F) << 32)
+                                | (stream_info[14] << 24)
+                                | (stream_info[15] << 16)
+                                | (stream_info[16] << 8)
+                                | stream_info[17]
+                            )
+                            found_stream_info = True
+                    else:
+                        f.seek(block_length, 1)  # Skip this block
+                else:
+                    f.seek(block_length, 1)  # Skip this block
 
-            return str(duration_ms)
+            if found_stream_info and sample_rate > 0:
+                duration_sec = total_samples / sample_rate
+                duration_ms = round(duration_sec * 1000)
+                return str(duration_ms)
+
+            return None
 
     # MP4/M4A files
     elif file_ext in [".mp4", ".m4a"]:
         with open(file_path, "rb") as f:
-            # Find 'moov' atom
+            # Find 'moov' atom by reading header chunks
             while True:
                 atom_header = f.read(8)
                 if not atom_header or len(atom_header) < 8:
@@ -482,9 +484,15 @@ def get_audio_file_duration(file_path):
                             # Skip creation time and modification time
                             f.seek(8, 1)
                             # Read time scale (frequency)
-                            time_scale = int.from_bytes(f.read(4), byteorder="big")
+                            time_scale_data = f.read(4)
+                            time_scale = int.from_bytes(
+                                time_scale_data, byteorder="big"
+                            )
                             # Read duration
-                            duration_raw = int.from_bytes(f.read(4), byteorder="big")
+                            duration_data = f.read(4)
+                            duration_raw = int.from_bytes(
+                                duration_data, byteorder="big"
+                            )
 
                             if time_scale > 0:
                                 duration = duration_raw / time_scale
