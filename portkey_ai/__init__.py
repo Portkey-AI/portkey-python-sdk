@@ -99,6 +99,8 @@ from portkey_ai.api_resources import (
     InputItems,
     AsyncResponses,
     AsyncInputItems,
+    Labels,
+    AsyncLabels,
 )
 
 from portkey_ai.version import VERSION
@@ -217,4 +219,6 @@ __all__ = [
     "InputItems",
     "AsyncResponses",
     "AsyncInputItems",
+    "Labels",
+    "AsyncLabels",
 ]

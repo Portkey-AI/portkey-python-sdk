@@ -31,6 +31,7 @@ class Portkey(APIClient):
     api_keys: apis.ApiKeys
     virtual_keys: apis.VirtualKeys
     logs: apis.Logs
+    labels: apis.Labels
 
     class beta:
         assistants: apis.Assistants
@@ -165,6 +166,7 @@ class Portkey(APIClient):
         self.api_keys = apis.ApiKeys(self)
         self.virtual_keys = apis.VirtualKeys(self)
         self.logs = apis.Logs(self)
+        self.labels = apis.Labels(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -303,6 +305,7 @@ class AsyncPortkey(AsyncAPIClient):
     api_keys: apis.AsyncApiKeys
     virtual_keys: apis.AsyncVirtualKeys
     logs: apis.AsyncLogs
+    labels: apis.AsyncLabels
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -437,6 +440,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.api_keys = apis.AsyncApiKeys(self)
         self.virtual_keys = apis.AsyncVirtualKeys(self)
         self.logs = apis.AsyncLogs(self)
+        self.labels = apis.AsyncLabels(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
