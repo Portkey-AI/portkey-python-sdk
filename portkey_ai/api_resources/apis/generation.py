@@ -769,6 +769,7 @@ class AsyncPromptVersions(AsyncAPIResource):
 class PromptPartials(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
+        self.versions = PromptPartialVersions(client)
 
     def create(
         self,
@@ -890,6 +891,7 @@ class PromptPartials(APIResource):
 class AsyncPromptPartials(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
+        self.versions = AsyncPromptPartialVersions(client)
 
     async def create(
         self,
@@ -1001,6 +1003,44 @@ class AsyncPromptPartials(AsyncAPIResource):
             f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}/makeDefault",
             params=None,
             body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class PromptPartialVersions(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
+    def list(
+        self,
+        partial_slug: str,
+    ) -> Any:
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}/versions",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class AsyncPromptPartialVersions(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+
+    async def list(
+        self,
+        partial_slug: str,
+    ) -> Any:
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}/versions",
+            params=None,
+            body=None,
             cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
