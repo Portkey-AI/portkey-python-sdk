@@ -91,6 +91,7 @@ class Prompts(APIResource):
         super().__init__(client)
         self.completions = Completions(client)
         self.versions = PromptVersions(client)
+        self.partials = PromptPartials(client)
 
     def render(
         self,
@@ -284,6 +285,7 @@ class AsyncPrompts(AsyncAPIResource):
         super().__init__(client)
         self.completions = AsyncCompletions(client)
         self.versions = AsyncPromptVersions(client)
+        self.partials = AsyncPromptPartials(client)
 
     async def render(
         self,
@@ -755,6 +757,248 @@ class AsyncPromptVersions(AsyncAPIResource):
         }
         return await self._put(
             f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions/{version_id}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class PromptPartials(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
+    def create(
+        self,
+        *,
+        name: str,
+        string: str,
+        workspace_id: Optional[str] = None,
+        version_description: Optional[str] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "string": string,
+            "workspace_id": workspace_id,
+            "version_description": version_description,
+        }
+        return self._post(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def list(
+        self,
+        *,
+        collection_id: Optional[str] = None,
+    ) -> Any:
+        query = {
+            "collection_id": collection_id,
+        }
+        filtered_query = {k: v for k, v in query.items() if v is not None}
+        query_string = urlencode(filtered_query)
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}?{query_string}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def retrieve(
+        self,
+        partial_slug: str,
+    ) -> Any:
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def update(
+        self,
+        partial_slug: str,
+        *,
+        name: Optional[str] = None,
+        string: Optional[str] = None,
+        description: Optional[str] = None,
+        status: Optional[str] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "string": string,
+            "description": description,
+            "status": status,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def delete(
+        self,
+        partial_slug: str,
+    ) -> Any:
+        return self._delete(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def publish(
+        self,
+        partial_slug: str,
+        *,
+        version: int,
+    ) -> Any:
+        body = {
+            "version": version,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}/makeDefault",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class AsyncPromptPartials(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+
+    async def create(
+        self,
+        *,
+        name: str,
+        string: str,
+        workspace_id: Optional[str] = None,
+        version_description: Optional[str] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "string": string,
+            "workspace_id": workspace_id,
+            "version_description": version_description,
+        }
+        return await self._post(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def list(
+        self,
+        *,
+        collection_id: Optional[str] = None,
+    ) -> Any:
+        query = {
+            "collection_id": collection_id,
+        }
+        filtered_query = {k: v for k, v in query.items() if v is not None}
+        query_string = urlencode(filtered_query)
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}?{query_string}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def retrieve(
+        self,
+        partial_slug: str,
+    ) -> Any:
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def update(
+        self,
+        partial_slug: str,
+        *,
+        name: Optional[str] = None,
+        string: Optional[str] = None,
+        description: Optional[str] = None,
+        status: Optional[str] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "string": string,
+            "description": description,
+            "status": status,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def delete(
+        self,
+        partial_slug: str,
+    ) -> Any:
+        return await self._delete(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def publish(
+        self,
+        partial_slug: str,
+        *,
+        version: int,
+    ) -> Any:
+        body = {
+            "version": version,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}/{partial_slug}/makeDefault",
             params=None,
             body=body,
             cast_to=GenericResponse,
