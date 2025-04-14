@@ -1,6 +1,7 @@
 from __future__ import annotations
+from urllib.parse import urlencode
 import warnings
-from typing import Literal, Optional, Union, Mapping, Any, overload
+from typing import Dict, List, Literal, Optional, Union, Mapping, Any, overload
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.types.generation_type import (
     PromptCompletion,
@@ -8,6 +9,7 @@ from portkey_ai.api_resources.types.generation_type import (
     PromptRender,
 )
 from portkey_ai.api_resources.utils import (
+    PortkeyApiPaths,
     retrieve_config,
     GenericResponse,
 )
@@ -121,6 +123,158 @@ class Prompts(APIResource):
             headers={},
         )
 
+    def create(
+        self,
+        *,
+        name: str,
+        collection_id: str,
+        string: str,
+        parameters: Dict[str, Any],
+        virtual_key: Optional[str] = None,
+        model: Optional[str] = None,
+        functions: Optional[List[Any]] = None,
+        tools: Optional[List[Any]] = None,
+        tool_choice: Optional[Dict[str, Any]] = None,
+        version_description: Optional[str] = None,
+        template_metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "collection_id": collection_id,
+            "string": string,
+            "parameters": parameters,
+            "virtual_key": virtual_key,
+            "model": model,
+            "functions": functions,
+            "tools": tools,
+            "tool_choice": tool_choice,
+            "version_description": version_description,
+            "template_metadata": template_metadata,
+        }
+        return self._post(
+            f"{PortkeyApiPaths.PROMPTS_API}",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream_cls=None,
+            stream=False,
+            headers={},
+        )
+
+    def list(
+        self,
+        *,
+        collection_id: Optional[str] = None,
+        workspace_id: Optional[str] = None,
+        current_page: Optional[int] = None,
+        page_size: Optional[int] = None,
+        search: Optional[str] = None,
+    ) -> Any:
+        query = {
+            "collection_id": collection_id,
+            "workspace_id": workspace_id,
+            "current_page": current_page,
+            "page_size": page_size,
+            "search": search,
+        }
+        filtered_query = {k: v for k, v in query.items() if v is not None}
+        query_string = urlencode(filtered_query)
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}?{query_string}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def retrieve(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def update(
+        self,
+        prompt_slug: str,
+        *,
+        name: Optional[str] = None,
+        collection_id: Optional[str] = None,
+        string: Optional[str] = None,
+        parameters: Optional[Dict[str, Any]] = None,
+        virtual_key: Optional[str] = None,
+        model: Optional[str] = None,
+        functions: Optional[List[Any]] = None,
+        tools: Optional[List[Any]] = None,
+        tool_choice: Optional[Dict[str, Any]] = None,
+        version_description: Optional[str] = None,
+        template_metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "collection_id": collection_id,
+            "string": string,
+            "parameters": parameters,
+            "virtual_key": virtual_key,
+            "model": model,
+            "functions": functions,
+            "tools": tools,
+            "tool_choice": tool_choice,
+            "version_description": version_description,
+            "template_metadata": template_metadata,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def delete(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return self._delete(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def publish(
+        self,
+        prompt_slug: str,
+        *,
+        version: int,
+    ) -> Any:
+        body = {
+            "version": version,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/makeDefault",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
 
 class AsyncPrompts(AsyncAPIResource):
     completions: AsyncCompletions
@@ -158,6 +312,158 @@ class AsyncPrompts(AsyncAPIResource):
             cast_to=PromptRender,
             stream=False,
             stream_cls=AsyncStream[PromptRender],
+            headers={},
+        )
+
+    async def create(
+        self,
+        *,
+        name: str,
+        collection_id: str,
+        string: str,
+        parameters: Dict[str, Any],
+        virtual_key: Optional[str] = None,
+        model: Optional[str] = None,
+        functions: Optional[List[Any]] = None,
+        tools: Optional[List[Any]] = None,
+        tool_choice: Optional[Dict[str, Any]] = None,
+        version_description: Optional[str] = None,
+        template_metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "collection_id": collection_id,
+            "string": string,
+            "parameters": parameters,
+            "virtual_key": virtual_key,
+            "model": model,
+            "functions": functions,
+            "tools": tools,
+            "tool_choice": tool_choice,
+            "version_description": version_description,
+            "template_metadata": template_metadata,
+        }
+        return await self._post(
+            f"{PortkeyApiPaths.PROMPTS_API}",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream_cls=None,
+            stream=False,
+            headers={},
+        )
+
+    async def list(
+        self,
+        *,
+        collection_id: Optional[str] = None,
+        workspace_id: Optional[str] = None,
+        current_page: Optional[int] = None,
+        page_size: Optional[int] = None,
+        search: Optional[str] = None,
+    ) -> Any:
+        query = {
+            "collection_id": collection_id,
+            "workspace_id": workspace_id,
+            "current_page": current_page,
+            "page_size": page_size,
+            "search": search,
+        }
+        filtered_query = {k: v for k, v in query.items() if v is not None}
+        query_string = urlencode(filtered_query)
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}?{query_string}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def retrieve(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def update(
+        self,
+        prompt_slug: str,
+        *,
+        name: Optional[str] = None,
+        collection_id: Optional[str] = None,
+        string: Optional[str] = None,
+        parameters: Optional[Dict[str, Any]] = None,
+        virtual_key: Optional[str] = None,
+        model: Optional[str] = None,
+        functions: Optional[List[Any]] = None,
+        tools: Optional[List[Any]] = None,
+        tool_choice: Optional[Dict[str, Any]] = None,
+        version_description: Optional[str] = None,
+        template_metadata: Optional[Dict[str, Any]] = None,
+    ) -> Any:
+        body = {
+            "name": name,
+            "collection_id": collection_id,
+            "string": string,
+            "parameters": parameters,
+            "virtual_key": virtual_key,
+            "model": model,
+            "functions": functions,
+            "tools": tools,
+            "tool_choice": tool_choice,
+            "version_description": version_description,
+            "template_metadata": template_metadata,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def delete(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return await self._delete(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def publish(
+        self,
+        prompt_slug: str,
+        *,
+        version: int,
+    ) -> Any:
+        body = {
+            "version": version,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/makeDefault",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
             headers={},
         )
 
