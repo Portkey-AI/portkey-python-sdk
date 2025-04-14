@@ -90,6 +90,7 @@ class Prompts(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
         self.completions = Completions(client)
+        self.versions = PromptVersions(client)
 
     def render(
         self,
@@ -282,6 +283,7 @@ class AsyncPrompts(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
         self.completions = AsyncCompletions(client)
+        self.versions = AsyncPromptVersions(client)
 
     async def render(
         self,
@@ -651,4 +653,112 @@ class AsyncCompletions(AsyncAPIResource):
             stream_cls=AsyncStream[PromptCompletionChunk],
             stream=stream,
             headers=extra_headers,
+        )
+
+
+class PromptVersions(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
+    def list(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def retrieve(
+        self,
+        prompt_slug: str,
+        version_id: str,
+    ) -> Any:
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions/{version_id}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def update(
+        self,
+        prompt_slug: str,
+        version_id: str,
+        *,
+        label_id: Optional[str] = None,
+    ) -> Any:
+        body = {
+            "label_id": label_id,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions/{version_id}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class AsyncPromptVersions(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+
+    async def list(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def retrieve(
+        self,
+        prompt_slug: str,
+        version_id: str,
+    ) -> Any:
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions/{version_id}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def update(
+        self,
+        prompt_slug: str,
+        version_id: str,
+        *,
+        label_id: Optional[str] = None,
+    ) -> Any:
+        body = {
+            "label_id": label_id,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions/{version_id}",
+            params=None,
+            body=body,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
         )
