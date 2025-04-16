@@ -184,7 +184,7 @@ class Permissions(APIResource):
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        order: Union[Literal["ascending", "descending"], NotGiven] = NOT_GIVEN,
         project_id: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> PermissionRetrieveResponse:
@@ -387,7 +387,7 @@ class AsyncPermissions(AsyncAPIResource):
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        order: Union[Literal["ascending", "descending"], NotGiven] = NOT_GIVEN,
         project_id: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> PermissionRetrieveResponse:
