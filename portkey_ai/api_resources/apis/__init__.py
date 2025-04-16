@@ -50,6 +50,10 @@ from .fine_tuning import (
     AsyncFineTuning,
     AsyncJobs,
     AsyncCheckpoints,
+    FineTuningCheckpoints,
+    Permissions,
+    AsyncFineTuningCheckpoints,
+    AsyncPermissions,
 )
 from .vector_stores import (
     VectorStores,
@@ -200,4 +204,8 @@ __all__ = [
     "InputItems",
     "AsyncResponses",
     "AsyncInputItems",
+    "FineTuningCheckpoints",
+    "AsyncFineTuningCheckpoints",
+    "Permissions",
+    "AsyncPermissions",
 ]

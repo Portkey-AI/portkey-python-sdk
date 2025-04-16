@@ -87,6 +87,10 @@ from .apis import (
     InputItems,
     AsyncResponses,
     AsyncInputItems,
+    FineTuningCheckpoints,
+    AsyncFineTuningCheckpoints,
+    Permissions,
+    AsyncPermissions,
 )
 from .utils import (
     Modes,
@@ -209,4 +213,8 @@ __all__ = [
     "InputItems",
     "AsyncResponses",
     "AsyncInputItems",
+    "FineTuningCheckpoints",
+    "AsyncFineTuningCheckpoints",
+    "Permissions",
+    "AsyncPermissions",
 ]
