@@ -91,6 +91,8 @@ from .apis import (
     AsyncFineTuningCheckpoints,
     Permissions,
     AsyncPermissions,
+    Evals,
+    AsyncEvals,
 )
 from .utils import (
     Modes,
@@ -217,4 +219,6 @@ __all__ = [
     "AsyncFineTuningCheckpoints",
     "Permissions",
     "AsyncPermissions",
+    "Evals",
+    "AsyncEvals",
 ]

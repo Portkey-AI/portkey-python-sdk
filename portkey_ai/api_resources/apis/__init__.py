@@ -104,6 +104,8 @@ from .uploads import (
     AsyncParts,
 )
 
+from .evals import Evals, AsyncEvals
+
 from .configs import Configs, AsyncConfigs
 
 from .api_keys import ApiKeys, AsyncApiKeys
@@ -208,4 +210,6 @@ __all__ = [
     "AsyncFineTuningCheckpoints",
     "Permissions",
     "AsyncPermissions",
+    "Evals",
+    "AsyncEvals",
 ]
