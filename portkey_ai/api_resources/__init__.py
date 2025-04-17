@@ -93,6 +93,8 @@ from .apis import (
     AsyncPermissions,
     Evals,
     AsyncEvals,
+    EvalsRuns,
+    AsyncEvalsRuns,
 )
 from .utils import (
     Modes,
@@ -221,4 +223,6 @@ __all__ = [
     "AsyncPermissions",
     "Evals",
     "AsyncEvals",
+    "EvalsRuns",
+    "AsyncEvalsRuns",
 ]

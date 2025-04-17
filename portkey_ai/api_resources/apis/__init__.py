@@ -104,7 +104,7 @@ from .uploads import (
     AsyncParts,
 )
 
-from .evals import Evals, AsyncEvals
+from .evals import Evals, AsyncEvals, EvalsRuns, AsyncEvalsRuns
 
 from .configs import Configs, AsyncConfigs
 
@@ -212,4 +212,6 @@ __all__ = [
     "AsyncPermissions",
     "Evals",
     "AsyncEvals",
+    "EvalsRuns",
+    "AsyncEvalsRuns",
 ]

@@ -105,6 +105,8 @@ from portkey_ai.api_resources import (
     AsyncPermissions,
     Evals,
     AsyncEvals,
+    EvalsRuns,
+    AsyncEvalsRuns,
 )
 
 from portkey_ai.version import VERSION
@@ -229,4 +231,6 @@ __all__ = [
     "AsyncPermissions",
     "Evals",
     "AsyncEvals",
+    "EvalsRuns",
+    "AsyncEvalsRuns",
 ]
