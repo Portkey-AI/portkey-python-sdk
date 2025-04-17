@@ -1,6 +1,6 @@
 Metadata-Version: 2.3
 Name: openai
-Version: 1.69.0
+Version: 1.74.0
 Summary: The official Python library for the openai API
 Project-URL: Homepage, https://github.com/openai/openai-python
 Project-URL: Repository, https://github.com/openai/openai-python
@@ -34,7 +34,7 @@ Requires-Dist: numpy>=1; extra == 'datalib'
 Requires-Dist: pandas-stubs>=1.1.0.11; extra == 'datalib'
 Requires-Dist: pandas>=1.2.3; extra == 'datalib'
 Provides-Extra: realtime
-Requires-Dist: websockets<15,>=13; extra == 'realtime'
+Requires-Dist: websockets<16,>=13; extra == 'realtime'
 Provides-Extra: voice-helpers
 Requires-Dist: numpy>=2.0.2; extra == 'voice-helpers'
 Requires-Dist: sounddevice>=0.5.1; extra == 'voice-helpers'
@@ -393,7 +393,7 @@ response = client.chat.responses.create(
 
 ## File uploads
 
-Request parameters that correspond to file uploads can be passed as `bytes`, a [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) instance or a tuple of `(filename, contents, media type)`.
+Request parameters that correspond to file uploads can be passed as `bytes`, or a [`PathLike`](https://docs.python.org/3/library/os.html#os.PathLike) instance or a tuple of `(filename, contents, media type)`.
 
 ```python
 from pathlib import Path

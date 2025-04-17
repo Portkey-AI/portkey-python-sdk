@@ -99,6 +99,16 @@ from portkey_ai.api_resources import (
     InputItems,
     AsyncResponses,
     AsyncInputItems,
+    FineTuningCheckpoints,
+    AsyncFineTuningCheckpoints,
+    Permissions,
+    AsyncPermissions,
+    Evals,
+    AsyncEvals,
+    EvalsRuns,
+    AsyncEvalsRuns,
+    OutputItems,
+    AsyncOutputItems,
 )
 
 from portkey_ai.version import VERSION
@@ -217,4 +227,14 @@ __all__ = [
     "InputItems",
     "AsyncResponses",
     "AsyncInputItems",
+    "FineTuningCheckpoints",
+    "AsyncFineTuningCheckpoints",
+    "Permissions",
+    "AsyncPermissions",
+    "Evals",
+    "AsyncEvals",
+    "EvalsRuns",
+    "AsyncEvalsRuns",
+    "OutputItems",
+    "AsyncOutputItems",
 ]
