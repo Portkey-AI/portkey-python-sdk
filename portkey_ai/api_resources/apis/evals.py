@@ -3,6 +3,13 @@ from typing import Any, Literal, Optional, Union
 from portkey_ai._vendor.openai._types import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.types.evals_runs_type import (
+    RunCancelResponse,
+    RunCreateResponse,
+    RunDeleteResponse,
+    RunListResponseList,
+    RunRetrieveResponse,
+)
 from portkey_ai.api_resources.types.evals_types import (
     EvalCreateResponse,
     EvalDeleteResponse,
@@ -17,6 +24,7 @@ class Evals(APIResource):
     def __init__(self, client: Portkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
+        self.runs = EvalsRuns(client)
 
     def create(
         self,
@@ -110,10 +118,111 @@ class Evals(APIResource):
         return data
 
 
+class EvalsRuns(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    def create(
+        self,
+        eval_id: str,
+        *,
+        data_source: Any,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunCreateResponse:
+        response = self.openai_client.with_raw_response.evals.runs.create(
+            eval_id=eval_id,
+            data_source=data_source,
+            metadata=metadata,
+            name=name,
+            extra_body=kwargs,
+        )
+        data = RunCreateResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def retrieve(
+        self,
+        run_id: str,
+        *,
+        eval_id: str,
+    ) -> RunRetrieveResponse:
+        response = self.openai_client.with_raw_response.evals.runs.retrieve(
+            run_id=run_id,
+            eval_id=eval_id,
+        )
+        data = RunRetrieveResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def list(
+        self,
+        eval_id: str,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        status: Union[
+            Literal["queued", "in_progress", "completed", "canceled", "failed"],
+            NotGiven,
+        ] = NOT_GIVEN,
+    ) -> RunListResponseList:
+        response = self.openai_client.with_raw_response.evals.runs.list(
+            eval_id=eval_id,
+            after=after,
+            limit=limit,
+            order=order,
+            status=status,
+        )
+        data = RunListResponseList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def delete(
+        self,
+        run_id: str,
+        *,
+        eval_id: str,
+        **kwargs,
+    ) -> RunDeleteResponse:
+        response = self.openai_client.with_raw_response.evals.runs.delete(
+            run_id=run_id,
+            eval_id=eval_id,
+            extra_body=kwargs,
+        )
+        data = RunDeleteResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def cancel(
+        self,
+        run_id: str,
+        *,
+        eval_id: str,
+        **kwargs,
+    ) -> RunCancelResponse:
+        response = self.openai_client.with_raw_response.evals.runs.cancel(
+            run_id=run_id,
+            eval_id=eval_id,
+            extra_body=kwargs,
+        )
+        data = RunCancelResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+
 class AsyncEvals(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
+        self.runs = AsyncEvalsRuns(client)
 
     async def create(
         self,
@@ -202,6 +311,106 @@ class AsyncEvals(AsyncAPIResource):
         )
 
         data = EvalDeleteResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+
+class AsyncEvalsRuns(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    async def create(
+        self,
+        eval_id: str,
+        *,
+        data_source: Any,
+        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs,
+    ) -> RunCreateResponse:
+        response = await self.openai_client.with_raw_response.evals.runs.create(
+            eval_id=eval_id,
+            data_source=data_source,
+            metadata=metadata,
+            name=name,
+            extra_body=kwargs,
+        )
+        data = RunCreateResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def retrieve(
+        self,
+        run_id: str,
+        *,
+        eval_id: str,
+    ) -> RunRetrieveResponse:
+        response = await self.openai_client.with_raw_response.evals.runs.retrieve(
+            run_id=run_id,
+            eval_id=eval_id,
+        )
+        data = RunRetrieveResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def list(
+        self,
+        eval_id: str,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        status: Union[
+            Literal["queued", "in_progress", "completed", "canceled", "failed"],
+            NotGiven,
+        ] = NOT_GIVEN,
+    ) -> RunListResponseList:
+        response = await self.openai_client.with_raw_response.evals.runs.list(
+            eval_id=eval_id,
+            after=after,
+            limit=limit,
+            order=order,
+            status=status,
+        )
+        data = RunListResponseList(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def delete(
+        self,
+        run_id: str,
+        *,
+        eval_id: str,
+        **kwargs,
+    ) -> RunDeleteResponse:
+        response = await self.openai_client.with_raw_response.evals.runs.delete(
+            run_id=run_id,
+            eval_id=eval_id,
+            extra_body=kwargs,
+        )
+        data = RunDeleteResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def cancel(
+        self,
+        run_id: str,
+        *,
+        eval_id: str,
+        **kwargs,
+    ) -> RunCancelResponse:
+        response = await self.openai_client.with_raw_response.evals.runs.cancel(
+            run_id=run_id,
+            eval_id=eval_id,
+            extra_body=kwargs,
+        )
+        data = RunCancelResponse(**json.loads(response.text))
         data._headers = response.headers
 
         return data
