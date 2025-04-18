@@ -10,7 +10,6 @@ from portkey_ai.api_resources.instrumentation.utils import Patcher
 from portkey_ai.api_resources.instrumentation.models.tracing_config import (
     TracingConfig,
     ModuleConfig,
-    ClassConfig,
     MethodConfig,
 )
 

@@ -27,5 +27,14 @@ langchain_community_tracing_config = TracingConfig(
                 ),
             ],
         ),
+        ModuleConfig(
+            name="langchain_community.utilities",
+            classes=[
+                ClassConfig(
+                    pattern=".*",
+                    methods=[MethodConfig(pattern=".*")],
+                ),
+            ],
+        ),
     ],
 )
