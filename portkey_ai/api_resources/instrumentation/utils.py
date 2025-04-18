@@ -1,6 +1,18 @@
+from importlib.metadata import PackageNotFoundError, version
 import json
 from typing import Any
-from opentelemetry.trace import Span
+from opentelemetry import trace
+from opentelemetry.trace import SpanKind, Status, StatusCode, Span
+
+from portkey_ai.utils.json_utils import serialize_args, serialize_kwargs
+
+
+def is_package_installed(pkg_name):
+    try:
+        version(pkg_name)
+        return True
+    except PackageNotFoundError:
+        return False
 
 
 def set_span_attribute(span: Span, key: str, value: Any, _processed=None, depth=0):
@@ -36,3 +48,47 @@ def set_members(span: Span, instance: Any, module_name: str, class_name: str):
         return
     for key, value in instance.__dict__.items():
         set_span_attribute(span, f"{module_name}.{class_name}.{key}", value)
+
+
+class Patcher:
+    def __init__(self, source: str, version: str, tracer: trace.Tracer):
+        self.source = source
+        self.version = version
+        self.tracer = tracer
+
+    def patch_operation(self, operation_name: str):
+        def traced_func(wrapped, instance, args, kwargs):
+            with self.tracer.start_as_current_span(
+                name=operation_name, kind=SpanKind.CLIENT
+            ) as span:
+                try:
+                    module_name = instance.__module__
+                    class_name = instance.__class__.__name__
+
+                    span.set_attribute("_source", self.source)
+                    span.set_attribute("framework.version", self.version)
+                    span.set_attribute("module", module_name)
+                    span.set_attribute("method", operation_name)
+                    span.set_attribute("args", serialize_args(*args))
+                    span.set_attribute("kwargs", serialize_kwargs(**kwargs))
+
+                    result = wrapped(*args, **kwargs)
+                    if isinstance(result, instance.__class__):
+                        pass
+                    else:
+                        set_span_attribute(span, "result", result)
+
+                    span.set_status(Status(StatusCode.OK))
+
+                    try:
+                        set_members(span, instance, module_name, class_name)
+                    except Exception as e:
+                        span.record_exception(e)
+
+                except Exception as e:
+                    span.record_exception(e)
+                    span.set_status(Status(StatusCode.ERROR, str(e)))
+                    raise
+                return result
+
+        return traced_func

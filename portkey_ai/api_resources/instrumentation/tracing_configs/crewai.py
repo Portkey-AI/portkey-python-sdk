@@ -1,0 +1,58 @@
+from portkey_ai.api_resources.instrumentation.models.tracing_config import (
+    ClassConfig,
+    ModuleConfig,
+    TracingConfig,
+    MethodConfig,
+)
+
+crewai_tracing_config = TracingConfig(
+    name="crewai",
+    min_version="0.32.0",
+    modules=[
+        ModuleConfig(
+            name="crewai.crew",
+            classes=[
+                ClassConfig(
+                    name="Crew",
+                    methods=[
+                        MethodConfig(name="kickoff"),
+                        MethodConfig(name="kickoff_for_each"),
+                        MethodConfig(name="kickoff_async"),
+                        MethodConfig(name="kickoff_for_each_async"),
+                    ],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="crewai.agent",
+            classes=[
+                ClassConfig(
+                    name="Agent",
+                    methods=[MethodConfig(name="execute_task")],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="crewai.task",
+            classes=[
+                ClassConfig(
+                    name="Task",
+                    methods=[MethodConfig(name="execute_sync")],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="crewai.memory.storage.rag_storage",
+            classes=[
+                ClassConfig(
+                    name="RAGStorage",
+                    methods=[
+                        MethodConfig(name="save"),
+                        MethodConfig(name="search"),
+                        MethodConfig(name="reset"),
+                    ],
+                ),
+            ],
+        ),
+    ],
+)

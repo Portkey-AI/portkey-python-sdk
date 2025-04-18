@@ -1,38 +1,35 @@
 from importlib.metadata import version, PackageNotFoundError
-from typing import Dict
+from typing import Dict, Any
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.instrumentation.instrumentor import BaseInstrumentor  # type: ignore [attr-defined]
 
-from .crewai import CrewAIInstrumentor
-from .litellm import LitellmInstrumentor
-from .portkey_span_exporter import PortkeySpanExporter
-from .langgraph import LanggraphInstrumentor
-
-__all__ = ["initialize_instrumentation"]
-
-package_instrumentor_map: Dict[str, BaseInstrumentor] = {
-    "crewai": CrewAIInstrumentor,
-    "litellm": LitellmInstrumentor,
-    "langgraph": LanggraphInstrumentor,
-}
-
-
-def is_package_installed(pkg_name):
-    try:
-        version(pkg_name)
-        return True
-    except PackageNotFoundError:
-        return False
+from portkey_ai.api_resources.instrumentation.PortkeyBaseInstrumentor import PortkeyBaseInstrumentor  # type: ignore [attr-defined]
+from portkey_ai.api_resources.instrumentation.portkey_span_exporter import (
+    PortkeySpanExporter,
+)
+from portkey_ai.api_resources.instrumentation.tracing_configs import tracing_configs
+from portkey_ai.api_resources.instrumentation.utils import is_package_installed
 
 
 def initialize_instrumentation(api_key: str, base_url: str):
-    tracer_provider = TracerProvider()
+    if not isinstance(trace.get_tracer_provider(), TracerProvider):
+        tracer_provider = TracerProvider()
+        trace.set_tracer_provider(tracer_provider)
+    else:
+        tracer_provider = trace.get_tracer_provider()
     exporter = PortkeySpanExporter(api_key=api_key, base_url=base_url)
-    trace.set_tracer_provider(tracer_provider)
     tracer_provider.add_span_processor(BatchSpanProcessor(exporter))
-    for package, instrumentor in package_instrumentor_map.items():
+    for package, config in tracing_configs.items():
         if is_package_installed(package):
-            instrumentor().instrument()
+            InstrumentorClass = type(
+                f"{package}Instrumentor", (PortkeyBaseInstrumentor,), {"config": config}
+            )
+            instrumentor = InstrumentorClass(config)
+            instrumentor.instrument()
             print(f"Portkey: {package} Instrumentation initialized")
+        else:
+            print(f"Portkey: {package} is not installed")
+
+
+__all__ = ["initialize_instrumentation"]
