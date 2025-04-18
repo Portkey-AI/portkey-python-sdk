@@ -38,7 +38,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                 lambda x: inspect.isfunction(x),
             )
             for method_name, _ in methods:
-                if method_regex.match(method_name):
+                if not method_name.startswith("_") or method_regex.match(method_name):
                     flattened_list.append(
                         {
                             "module": module.name,
