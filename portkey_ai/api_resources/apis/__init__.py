@@ -106,6 +106,10 @@ from .api_keys import ApiKeys, AsyncApiKeys
 from .virtual_keys import VirtualKeys, AsyncVirtualKeys
 from .logs import Logs, AsyncLogs
 
+from .labels import Labels, AsyncLabels
+
+from .collections import Collections, AsyncCollections
+
 sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
 
 __all__ = [
@@ -200,4 +204,8 @@ __all__ = [
     "InputItems",
     "AsyncResponses",
     "AsyncInputItems",
+    "Labels",
+    "AsyncLabels",
+    "Collections",
+    "AsyncCollections",
 ]

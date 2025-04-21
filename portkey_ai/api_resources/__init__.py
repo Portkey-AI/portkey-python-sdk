@@ -87,6 +87,10 @@ from .apis import (
     InputItems,
     AsyncResponses,
     AsyncInputItems,
+    Labels,
+    AsyncLabels,
+    Collections,
+    AsyncCollections,
 )
 from .utils import (
     Modes,
@@ -209,4 +213,8 @@ __all__ = [
     "InputItems",
     "AsyncResponses",
     "AsyncInputItems",
+    "Labels",
+    "AsyncLabels",
+    "Collections",
+    "AsyncCollections",
 ]
