@@ -10,6 +10,7 @@ from portkey_ai.api_resources.instrumentation.portkey_span_exporter import (
 )
 from portkey_ai.api_resources.instrumentation.tracing_configs import tracing_configs
 from portkey_ai.api_resources.instrumentation.utils import is_package_installed
+from portkey_ai.api_resources.instrumentation.decorator import watch
 
 
 def initialize_instrumentation(api_key: str, base_url: str):
@@ -30,4 +31,4 @@ def initialize_instrumentation(api_key: str, base_url: str):
             print(f"Portkey: {package} Instrumentation initialized")
 
 
-__all__ = ["initialize_instrumentation"]
+__all__ = ["initialize_instrumentation", "watch"]

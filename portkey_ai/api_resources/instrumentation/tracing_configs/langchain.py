@@ -28,5 +28,21 @@ langchain_tracing_config = TracingConfig(
                 ),
             ],
         ),
+        ModuleConfig(
+            name="langchain.chains.base",
+            classes=[
+                ClassConfig(
+                    name="Chain",
+                    methods=[
+                        MethodConfig(name="invoke"),
+                        MethodConfig(name="ainvoke"),
+                        MethodConfig(name="prep_outputs"),
+                        MethodConfig(name="aprep_inputs"),
+                        MethodConfig(name="prep_inputs"),
+                        MethodConfig(name="aprep_inputs"),
+                    ],
+                )
+            ],
+        ),
     ],
 )

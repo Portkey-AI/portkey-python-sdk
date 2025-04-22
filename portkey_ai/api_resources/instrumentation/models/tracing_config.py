@@ -8,7 +8,8 @@ from pydantic import BaseModel, ConfigDict
 class MethodConfig(BaseModel):
     name: str | None = None
     pattern: str | None = None
-
+    args: str | None = None
+    result: str | None = None
 
 class ClassConfig(BaseModel):
     pattern: str | None = None

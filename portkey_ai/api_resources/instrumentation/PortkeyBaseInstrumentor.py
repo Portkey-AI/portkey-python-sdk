@@ -42,6 +42,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                         {
                             "module": module.name,
                             "method": f"{class_name}.{method_name}",
+                            "config": method_to_instrument,
                         }
                     )
         elif method_to_instrument.name is not None:
@@ -49,6 +50,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                 {
                     "module": module.name,
                     "method": f"{class_name}.{method_to_instrument.name}",
+                    "config": method_to_instrument,
                 }
             )
         return flattened_list
@@ -115,16 +117,18 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
             for method_to_instrument in flattened_list:
                 try:
                     method_name = method_to_instrument["method"]
-                    print(f"Instrumenting {method_name}")
                     wrap_function_wrapper(
                         module=method_to_instrument["module"],
                         name=method_name,
-                        wrapper=patcher.patch_operation(method_name),
+                        wrapper=patcher.patch_operation(
+                            method_name,
+                            method_to_instrument["config"],
+                        ),
                     )
                 except Exception as e:
                     pass
         except Exception as e:
-            print(f"Failed to instrument {self.config.name}: {e}")
+            pass
 
     def _uninstrument(self, **kwargs: Any) -> None:
         pass

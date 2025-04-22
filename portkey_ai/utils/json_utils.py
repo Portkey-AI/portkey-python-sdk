@@ -1,7 +1,8 @@
 import json
+import re
 
 
-def serialize_kwargs(**kwargs):
+def serialize_kwargs(pattern: str = ".*", **kwargs):
     # Function to check if a value is serializable
     def is_serializable(value):
         try:
@@ -11,13 +12,18 @@ def serialize_kwargs(**kwargs):
             return False
 
     # Filter out non-serializable items
-    serializable_kwargs = {k: v for k, v in kwargs.items() if is_serializable(v)}
+    regex = re.compile(pattern) if pattern else None
+    serializable_kwargs = {
+        k: v
+        for k, v in kwargs.items()
+        if regex and regex.match(k) and is_serializable(v)
+    }
 
     # Convert to string representation
     return json.dumps(serializable_kwargs)
 
 
-def serialize_args(*args):
+def serialize_args(pattern: str = ".*", *args):
     # Function to check if a value is serializable
     def is_serializable(value):
         try:
@@ -27,7 +33,10 @@ def serialize_args(*args):
             return False
 
     # Filter out non-serializable items
-    serializable_args = [arg for arg in args if is_serializable(arg)]
+    regex = re.compile(pattern) if pattern else None
+    serializable_args = [
+        arg for arg in args if regex and regex.match(arg) and is_serializable(arg)
+    ]
 
     # Convert to string representation
     return json.dumps(serializable_args)
