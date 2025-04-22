@@ -10,7 +10,7 @@ langchain_tracing_config = TracingConfig(
     min_version="0.2.0",
     modules=[
         ModuleConfig(
-            name="langchain.agents",
+            name="langchain.agents.agent",
             classes=[
                 ClassConfig(
                     name="RunnableAgent",

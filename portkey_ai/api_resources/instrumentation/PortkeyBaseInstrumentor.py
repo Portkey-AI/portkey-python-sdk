@@ -37,7 +37,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                 lambda x: inspect.isfunction(x),
             )
             for method_name, _ in methods:
-                if not method_name.startswith("_") or method_regex.match(method_name):
+                if not method_name.startswith("_") and method_regex.match(method_name):
                     flattened_list.append(
                         {
                             "module": module.name,
@@ -61,34 +61,57 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
             patcher = Patcher(source=self.config.name, version=version, tracer=tracer)
             flattened_list = []
             for module in self.config.modules:
-                classes_to_instrument = module.classes
-                for class_to_instrument in classes_to_instrument:
-                    if class_to_instrument.pattern is not None:
-                        class_regex = re.compile(class_to_instrument.pattern)
-                        imported_module = importlib.import_module(module.name)
-                        classes = inspect.getmembers(imported_module, lambda x: inspect.isclass(x) and class_regex.match(x.__name__))
-                        for class_name, _ in classes:
-                            for method_to_instrument in class_to_instrument.methods:
-                                flattened_list.extend(
-                                    self._get_methods_to_instrument(
-                                        method_to_instrument,
-                                        module,
+                try:
+                    classes_to_instrument = module.classes
+                    for class_to_instrument in classes_to_instrument:
+                        try:
+                            if class_to_instrument.pattern is not None:
+                                class_regex = re.compile(class_to_instrument.pattern)
+                                imported_module = importlib.import_module(module.name)
+                                if (
+                                    getattr(imported_module, "_module_lookup", None)
+                                    is not None
+                                ):
+                                    classes = [
+                                        [x, ""]
+                                        for x in getattr(
+                                            imported_module, "_module_lookup", []
+                                        ).keys()
+                                    ]
+                                else:
+                                    classes = inspect.getmembers(
                                         imported_module,
-                                        class_name,
+                                        lambda x: inspect.isclass(x)
+                                        and class_regex.match(x.__name__),
                                     )
-                                )
-                    elif class_to_instrument.name is not None:
-                        methods_to_instrument = class_to_instrument.methods
-                        imported_module = importlib.import_module(module.name)
-                        for method_to_instrument in methods_to_instrument:
-                            flattened_list.extend(
-                                self._get_methods_to_instrument(
-                                    method_to_instrument,
-                                    module,
-                                    imported_module,
-                                    class_to_instrument.name,
-                                )
-                            )
+                                for class_name, _ in classes:
+                                    for (
+                                        method_to_instrument
+                                    ) in class_to_instrument.methods:
+                                        flattened_list.extend(
+                                            self._get_methods_to_instrument(
+                                                method_to_instrument,
+                                                module,
+                                                imported_module,
+                                                class_name,
+                                            )
+                                        )
+                            elif class_to_instrument.name is not None:
+                                methods_to_instrument = class_to_instrument.methods
+                                imported_module = importlib.import_module(module.name)
+                                for method_to_instrument in methods_to_instrument:
+                                    flattened_list.extend(
+                                        self._get_methods_to_instrument(
+                                            method_to_instrument,
+                                            module,
+                                            imported_module,
+                                            class_to_instrument.name,
+                                        )
+                                    )
+                        except Exception as e:
+                            pass  # TODO: report error to portkey
+                except Exception as e:
+                    pass  # TODO: report error to portkey
             for method_to_instrument in flattened_list:
                 try:
                     method_name = method_to_instrument["method"]
@@ -99,9 +122,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                         wrapper=patcher.patch_operation(method_name),
                     )
                 except Exception as e:
-                    print(
-                        f"Failed to instrument {method_to_instrument['module']}.{method_to_instrument['method']}: {e}"
-                    )
+                    pass
         except Exception as e:
             print(f"Failed to instrument {self.config.name}: {e}")
 

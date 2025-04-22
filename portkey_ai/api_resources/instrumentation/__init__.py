@@ -28,8 +28,6 @@ def initialize_instrumentation(api_key: str, base_url: str):
             instrumentor = InstrumentorClass(config)
             instrumentor.instrument()
             print(f"Portkey: {package} Instrumentation initialized")
-        else:
-            print(f"Portkey: {package} is not installed")
 
 
 __all__ = ["initialize_instrumentation"]

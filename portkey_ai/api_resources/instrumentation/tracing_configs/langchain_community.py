@@ -14,25 +14,24 @@ langchain_community_tracing_config = TracingConfig(
             classes=[
                 ClassConfig(
                     pattern=".*",
-                    methods=[MethodConfig(pattern=".*")],
-                ),
-            ],
-        ),
-        ModuleConfig(
-            name="langchain_community.document_loaders",
-            classes=[
-                ClassConfig(
-                    pattern=".*",
-                    methods=[MethodConfig(pattern=".*")],
-                ),
-            ],
-        ),
-        ModuleConfig(
-            name="langchain_community.utilities",
-            classes=[
-                ClassConfig(
-                    pattern=".*",
-                    methods=[MethodConfig(pattern=".*")],
+                    methods=[
+                        MethodConfig(name="add_texts"),
+                        MethodConfig(name="delete"),
+                        MethodConfig(name="get_by_ids"),
+                        MethodConfig(name="add_documents"),
+                        MethodConfig(name="search"),
+                        MethodConfig(name="similarity_search"),
+                        MethodConfig(name="similarity_search_with_score"),
+                        MethodConfig(name="similarity_search_with_relevance_scores"),
+                        MethodConfig(name="similarity_search_by_text"),
+                        MethodConfig(name="similarity_search_by_vector"),
+                        MethodConfig(name="max_marginal_relevance_search"),
+                        MethodConfig(name="max_marginal_relevance_search_by_vector"),
+                        MethodConfig(name="from_documents"),
+                        MethodConfig(name="from_texts"),
+                        MethodConfig(name="as_retriever"),
+                        MethodConfig(name="add_texts"),
+                    ],
                 ),
             ],
         ),
