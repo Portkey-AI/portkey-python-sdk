@@ -49,3 +49,4 @@ OPEN_AI_API_KEY = "OPENAI_API_KEY"
 DEFAULT_CONNECTION_LIMITS = httpx.Limits(
     max_connections=1000, max_keepalive_connections=100
 )
+AUDIO_FILE_DURATION_HEADER = "x-portkey-audio-file-duration"
