@@ -95,13 +95,23 @@ class Configs(APIResource):
             headers={},
         )
 
-    def delete(
-        self,
-        *,
-        id: Optional[str],
-    ) -> Any:
+    def delete(self, *, id: Optional[str] = None, slug: Optional[str] = None) -> Any:
+        config_slug = None
+        if id:
+            import warnings
+
+            warnings.warn(
+                """You are using 'id' to delete a config.
+This will be deprecated in the future.
+Please use 'slug' instead.""",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            config_slug = id
+        elif slug:
+            config_slug = slug
         return self._delete(
-            f"{PortkeyApiPaths.CONFIG_API}/{id}",
+            f"{PortkeyApiPaths.CONFIG_API}/{config_slug}",
             params=None,
             body=None,
             cast_to=GenericResponse,
@@ -197,10 +207,25 @@ class AsyncConfigs(AsyncAPIResource):
     async def delete(
         self,
         *,
-        id: Optional[str],
+        id: Optional[str] = None,
+        slug: Optional[str] = None,
     ) -> Any:
+        config_slug = None
+        if id:
+            import warnings
+
+            warnings.warn(
+                """You are using 'id' to delete a config.
+This will be deprecated in the future.
+Please use 'slug' instead.""",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            config_slug = id
+        elif slug:
+            config_slug = slug
         return await self._delete(
-            f"{PortkeyApiPaths.CONFIG_API}/{id}",
+            f"{PortkeyApiPaths.CONFIG_API}/{config_slug}",
             params=None,
             body=None,
             cast_to=GenericResponse,

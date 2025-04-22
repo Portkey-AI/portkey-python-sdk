@@ -89,6 +89,7 @@ class APIClient:
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
@@ -131,6 +132,7 @@ class APIClient:
         self.aws_s3_bucket = aws_s3_bucket
         self.aws_s3_object_key = aws_s3_object_key
         self.aws_bedrock_model = aws_bedrock_model
+        self.fireworks_account_id = fireworks_account_id
         self.calculate_audio_duration = calculate_audio_duration
         self.kwargs = kwargs
 
@@ -171,6 +173,7 @@ class APIClient:
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id,
             **kwargs,
         )
 
@@ -799,6 +802,7 @@ class AsyncAPIClient:
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
@@ -841,6 +845,7 @@ class AsyncAPIClient:
         self.aws_s3_bucket = aws_s3_bucket
         self.aws_s3_object_key = aws_s3_object_key
         self.aws_bedrock_model = aws_bedrock_model
+        self.fireworks_account_id = fireworks_account_id
         self.calculate_audio_duration = calculate_audio_duration
         self.kwargs = kwargs
 
@@ -881,6 +886,7 @@ class AsyncAPIClient:
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id,
             **kwargs,
         )
 

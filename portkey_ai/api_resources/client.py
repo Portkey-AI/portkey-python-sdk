@@ -1,11 +1,8 @@
 from __future__ import annotations
-
 from typing import List, Mapping, Optional, Union
 import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
-
-# from openai import AsyncOpenAI, OpenAI
 from .._vendor.openai import OpenAI, AsyncOpenAI
 from portkey_ai.api_resources.global_constants import (
     OPEN_AI_API_KEY,
@@ -26,24 +23,26 @@ class Portkey(APIClient):
     audio: apis.Audio
     batches: apis.Batches
     fine_tuning: apis.FineTuning
+    vector_stores: apis.VectorStores
+    responses: apis.Responses
     admin: apis.Admin
     uploads: apis.Uploads
     configs: apis.Configs
     api_keys: apis.ApiKeys
     virtual_keys: apis.VirtualKeys
     logs: apis.Logs
+    labels: apis.Labels
+    collections: apis.Collections
 
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
-        vector_stores: apis.VectorStores
         chat: apis.BetaChat
         realtime: apis.BetaRealtime
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
-            self.vector_stores = apis.VectorStores(client)
             self.chat = apis.BetaChat(client)
             self.realtime = apis.BetaRealtime(client)
 
@@ -90,6 +89,7 @@ class Portkey(APIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
@@ -134,6 +134,7 @@ class Portkey(APIClient):
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id,
             calculate_audio_duration=calculate_audio_duration,
             **kwargs,
         )
@@ -160,12 +161,16 @@ class Portkey(APIClient):
         self.audio = apis.Audio(self)
         self.batches = apis.Batches(self)
         self.fine_tuning = apis.FineTuning(self)
+        self.vector_stores = apis.VectorStores(self)
+        self.responses = apis.Responses(self)
         self.admin = apis.Admin(self)
         self.uploads = apis.Uploads(self)
         self.configs = apis.Configs(self)
         self.api_keys = apis.ApiKeys(self)
         self.virtual_keys = apis.VirtualKeys(self)
         self.logs = apis.Logs(self)
+        self.labels = apis.Labels(self)
+        self.collections = apis.Collections(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -224,6 +229,7 @@ class Portkey(APIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> Portkey:
@@ -271,6 +277,7 @@ class Portkey(APIClient):
             aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id or self.fireworks_account_id,
             calculate_audio_duration=calculate_audio_duration
             or self.calculate_audio_duration,
             **self.kwargs,
@@ -297,24 +304,26 @@ class AsyncPortkey(AsyncAPIClient):
     audio: apis.AsyncAudio
     batches: apis.AsyncBatches
     fine_tuning: apis.AsyncFineTuning
+    vector_stores: apis.AsyncVectorStores
+    responses: apis.AsyncResponses
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
     configs: apis.AsyncConfigs
     api_keys: apis.AsyncApiKeys
     virtual_keys: apis.AsyncVirtualKeys
     logs: apis.AsyncLogs
+    labels: apis.AsyncLabels
+    collections: apis.AsyncCollections
 
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
-        vector_stores: apis.AsyncVectorStores
         chat: apis.AsyncBetaChat
         realtime: apis.AsyncBetaRealtime
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
-            self.vector_stores = apis.AsyncVectorStores(client)
             self.chat = apis.AsyncBetaChat(client)
             self.realtime = apis.AsyncBetaRealtime(client)
 
@@ -361,6 +370,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
@@ -405,6 +415,7 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_bucket=aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id,
             calculate_audio_duration=calculate_audio_duration,
             **kwargs,
         )
@@ -431,12 +442,16 @@ class AsyncPortkey(AsyncAPIClient):
         self.audio = apis.AsyncAudio(self)
         self.batches = apis.AsyncBatches(self)
         self.fine_tuning = apis.AsyncFineTuning(self)
+        self.vector_stores = apis.AsyncVectorStores(self)
+        self.responses = apis.AsyncResponses(self)
         self.admin = apis.AsyncAdmin(self)
         self.uploads = apis.AsyncUploads(self)
         self.configs = apis.AsyncConfigs(self)
         self.api_keys = apis.AsyncApiKeys(self)
         self.virtual_keys = apis.AsyncVirtualKeys(self)
         self.logs = apis.AsyncLogs(self)
+        self.labels = apis.AsyncLabels(self)
+        self.collections = apis.AsyncCollections(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -495,6 +510,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_bucket: Optional[str] = None,
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
+        fireworks_account_id: Optional[str] = None,
         calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> AsyncPortkey:
@@ -542,6 +558,7 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_bucket=aws_s3_bucket or self.aws_s3_bucket,
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
+            fireworks_account_id=fireworks_account_id or self.fireworks_account_id,
             calculate_audio_duration=calculate_audio_duration
             or self.calculate_audio_duration,
             **self.kwargs,

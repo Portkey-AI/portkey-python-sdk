@@ -40,6 +40,7 @@ class Transcriptions(APIResource):
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -48,29 +49,43 @@ class Transcriptions(APIResource):
             print(f"duration: {duration}")
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
-        response = self.openai_client.with_raw_response.audio.transcriptions.create(
-            file=file,
-            model=model,
-            language=language,
-            prompt=prompt,
-            response_format=response_format,
-            temperature=temperature,
-            timestamp_granularities=timestamp_granularities,
-            extra_headers=extra_headers,
-            extra_body=kwargs,
-        )
-
-        if response_format == "verbose_json":
-            data = TranscriptionVerbose(**json.loads(response.text))
-            data._headers = response.headers
-        elif response_format == "json":
-            data = Transcription(**json.loads(response.text))
-            data._headers = response.headers
+        if stream:
+            return self.openai_client.audio.transcriptions.create(
+                file=file,
+                model=model,
+                language=language,
+                prompt=prompt,
+                response_format=response_format,
+                temperature=temperature,
+                timestamp_granularities=timestamp_granularities,
+                stream=stream,
+                extra_headers=extra_headers,
+                extra_body=kwargs,
+            )
         else:
-            data = Transcription(**json.loads(response.text))
-            data._headers = response.headers
+            response = self.openai_client.with_raw_response.audio.transcriptions.create(
+                file=file,
+                model=model,
+                language=language,
+                prompt=prompt,
+                response_format=response_format,
+                temperature=temperature,
+                timestamp_granularities=timestamp_granularities,
+                extra_headers=extra_headers,
+                extra_body=kwargs,
+            )
 
-        return data
+            if response_format == "verbose_json":
+                data = TranscriptionVerbose(**json.loads(response.text))
+                data._headers = response.headers
+            elif response_format == "json":
+                data = Transcription(**json.loads(response.text))
+                data._headers = response.headers
+            else:
+                data = Transcription(**json.loads(response.text))
+                data._headers = response.headers
+
+            return data
 
 
 class Translations(APIResource):
@@ -164,6 +179,7 @@ class AsyncTranscriptions(AsyncAPIResource):
         response_format: Union[str, NotGiven] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
+        stream: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -171,8 +187,8 @@ class AsyncTranscriptions(AsyncAPIResource):
             duration = get_audio_file_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
-        response = (
-            await self.openai_client.with_raw_response.audio.transcriptions.create(
+        if stream:
+            return await self.openai_client.audio.transcriptions.create(
                 file=file,
                 model=model,
                 language=language,
@@ -180,22 +196,36 @@ class AsyncTranscriptions(AsyncAPIResource):
                 response_format=response_format,
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
+                stream=stream,
                 extra_headers=extra_headers,
                 extra_body=kwargs,
             )
-        )
-
-        if response_format == "verbose_json":
-            data = TranscriptionVerbose(**json.loads(response.text))
-            data._headers = response.headers
-        elif response_format == "json":
-            data = Transcription(**json.loads(response.text))
-            data._headers = response.headers
         else:
-            data = Transcription(**json.loads(response.text))
-            data._headers = response.headers
+            response = (
+                await self.openai_client.with_raw_response.audio.transcriptions.create(
+                    file=file,
+                    model=model,
+                    language=language,
+                    prompt=prompt,
+                    response_format=response_format,
+                    temperature=temperature,
+                    timestamp_granularities=timestamp_granularities,
+                    extra_headers=extra_headers,
+                    extra_body=kwargs,
+                )
+            )
 
-        return data
+            if response_format == "verbose_json":
+                data = TranscriptionVerbose(**json.loads(response.text))
+                data._headers = response.headers
+            elif response_format == "json":
+                data = Transcription(**json.loads(response.text))
+                data._headers = response.headers
+            else:
+                data = Transcription(**json.loads(response.text))
+                data._headers = response.headers
+
+            return data
 
 
 class AsyncTranslations(AsyncAPIResource):

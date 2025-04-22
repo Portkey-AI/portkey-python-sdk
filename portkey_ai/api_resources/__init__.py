@@ -83,6 +83,14 @@ from .apis import (
     AsyncBetaRealtime,
     BetaSessions,
     AsyncBetaSessions,
+    Responses,
+    InputItems,
+    AsyncResponses,
+    AsyncInputItems,
+    Labels,
+    AsyncLabels,
+    Collections,
+    AsyncCollections,
 )
 from .utils import (
     Modes,
@@ -201,4 +209,12 @@ __all__ = [
     "AsyncBetaRealtime",
     "BetaSessions",
     "AsyncBetaSessions",
+    "Responses",
+    "InputItems",
+    "AsyncResponses",
+    "AsyncInputItems",
+    "Labels",
+    "AsyncLabels",
+    "Collections",
+    "AsyncCollections",
 ]

@@ -95,6 +95,14 @@ from portkey_ai.api_resources import (
     AsyncBetaRealtime,
     BetaSessions,
     AsyncBetaSessions,
+    Responses,
+    InputItems,
+    AsyncResponses,
+    AsyncInputItems,
+    Labels,
+    AsyncLabels,
+    Collections,
+    AsyncCollections,
 )
 
 from portkey_ai.version import VERSION
@@ -209,4 +217,12 @@ __all__ = [
     "AsyncBetaRealtime",
     "BetaSessions",
     "AsyncBetaSessions",
+    "Responses",
+    "InputItems",
+    "AsyncResponses",
+    "AsyncInputItems",
+    "Labels",
+    "AsyncLabels",
+    "Collections",
+    "AsyncCollections",
 ]
