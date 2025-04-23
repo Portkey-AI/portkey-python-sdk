@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic import BaseModel
 
 
@@ -6,28 +6,28 @@ from pydantic import BaseModel
 
 
 class MethodConfig(BaseModel):
-    name: str | None = None
-    pattern: str | None = None
-    args: str | None = None
-    result: str | None = None
+    name: Union[str, None] = None
+    pattern: Union[str, None] = None
+    args: Union[str, None] = None
+    result: Union[str, None] = None
 
 
 class ClassConfig(BaseModel):
-    pattern: str | None = None
-    name: str | None = None
+    pattern: Union[str, None] = None
+    name: Union[str, None] = None
     methods: List[MethodConfig] = []
 
 
 # module name can be a specific file or directory, both cases are supported
 class ModuleConfig(BaseModel):
-    name: str
+    name: Union[str, None] = None
     classes: List[ClassConfig] = []
     methods: List[MethodConfig] = []
 
 
 class TracingConfig(BaseModel):
-    name: str
-    min_version: Optional[str] = None
+    name: Union[str, None] = None
+    min_version: Union[str, None] = None
     modules: List[ModuleConfig] = []
 
 
