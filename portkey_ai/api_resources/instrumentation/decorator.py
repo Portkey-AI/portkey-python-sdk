@@ -1,4 +1,5 @@
 from functools import wraps
+import inspect
 from typing import Any, Callable
 from opentelemetry import trace
 from opentelemetry.trace import (
@@ -36,6 +37,10 @@ def watch(input: bool = True, output: bool = True):
             tracer_provider = get_tracer_provider()
             tracer = get_tracer("portkey-instrumentor", "", tracer_provider)
 
+            sig = inspect.signature(func)
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+
             with tracer.start_as_current_span(
                 name=func.__name__, kind=SpanKind.CLIENT
             ) as span:
@@ -47,8 +52,9 @@ def watch(input: bool = True, output: bool = True):
                     span.set_attribute("module", module_name)
                     span.set_attribute("method", func.__name__)
                     if input:
-                        span.set_attribute("args", serialize_args(*args))
-                        span.set_attribute("kwargs", serialize_kwargs(**kwargs))
+                        span.set_attribute(
+                            "arguments", serialize_kwargs(".*", **bound_args.arguments)
+                        )
 
                     result = func(*args, **kwargs)
                     if isinstance(result, func.__class__):

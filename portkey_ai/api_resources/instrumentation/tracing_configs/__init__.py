@@ -11,6 +11,9 @@ from portkey_ai.api_resources.instrumentation.tracing_configs.langchain_communit
 from portkey_ai.api_resources.instrumentation.tracing_configs.langgraph import (
     langgraph_tracing_config,
 )
+from portkey_ai.api_resources.instrumentation.tracing_configs.langchain_core import (
+    langchain_core_tracing_config,
+)
 
 # from portkey_ai.api_resources.instrumentation.tracing_configs.litellm import (
 #     litellm_tracing_config,
@@ -23,6 +26,7 @@ tracing_configs = {
     "crewai": crewai_tracing_config,
     "langchain": langchain_tracing_config,
     "langchain_community": langchain_community_tracing_config,
+    "langchain_core": langchain_core_tracing_config,
     "langgraph": langgraph_tracing_config,
     # "litellm": litellm_tracing_config,
     # "openai": openai_tracing_config,

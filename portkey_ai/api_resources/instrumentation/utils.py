@@ -1,6 +1,7 @@
 from importlib.metadata import PackageNotFoundError, version
 import json
 import re
+import inspect
 from typing import Any, overload
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Status, StatusCode, Span
@@ -83,13 +84,17 @@ class Patcher:
                     module_name = instance.__module__
                     class_name = instance.__class__.__name__
 
+                    sig = inspect.signature(wrapped)
+                    bound_args = sig.bind(*args, **kwargs)
+                    bound_args.apply_defaults()
+
                     span.set_attribute("_source", self.source)
                     span.set_attribute("framework.version", self.version)
                     span.set_attribute("module", module_name)
                     span.set_attribute("method", operation_name)
-                    span.set_attribute("args", serialize_args(config.args, *args))
                     span.set_attribute(
-                        "kwargs", serialize_kwargs(config.args, **kwargs)
+                        "arguments",
+                        serialize_kwargs(config.args, **bound_args.arguments),
                     )
 
                     result = wrapped(*args, **kwargs)
