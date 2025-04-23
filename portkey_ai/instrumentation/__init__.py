@@ -2,15 +2,15 @@ from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-from portkey_ai.api_resources.instrumentation.PortkeyBaseInstrumentor import (
+from portkey_ai.instrumentation.PortkeyBaseInstrumentor import (
     PortkeyBaseInstrumentor,  # type: ignore [attr-defined]
 )
-from portkey_ai.api_resources.instrumentation.portkey_span_exporter import (
+from portkey_ai.instrumentation.portkey_span_exporter import (
     PortkeySpanExporter,
 )
-from portkey_ai.api_resources.instrumentation.tracing_configs import tracing_configs
-from portkey_ai.api_resources.instrumentation.utils import is_package_installed
-from portkey_ai.api_resources.instrumentation.decorator import watch
+from portkey_ai.instrumentation.tracing_configs import tracing_configs
+from portkey_ai.instrumentation.utils import is_package_installed
+from portkey_ai.instrumentation.decorator import watch
 
 
 def initialize_instrumentation(api_key: str, base_url: str):

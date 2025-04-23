@@ -6,8 +6,8 @@ from opentelemetry.instrumentation.instrumentor import BaseInstrumentor  # type:
 from opentelemetry.trace import get_tracer
 from wrapt import wrap_function_wrapper
 
-from portkey_ai.api_resources.instrumentation.utils import Patcher
-from portkey_ai.api_resources.instrumentation.models.tracing_config import (
+from portkey_ai.instrumentation.utils import Patcher
+from portkey_ai.instrumentation.models.tracing_config import (
     TracingConfig,
     ModuleConfig,
     MethodConfig,

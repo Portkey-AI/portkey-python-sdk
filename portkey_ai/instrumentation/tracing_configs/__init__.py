@@ -1,24 +1,24 @@
-from portkey_ai.api_resources.instrumentation.tracing_configs.crewai import (
+from portkey_ai.instrumentation.tracing_configs.crewai import (
     crewai_tracing_config,
 )
 
-from portkey_ai.api_resources.instrumentation.tracing_configs.langchain import (
+from portkey_ai.instrumentation.tracing_configs.langchain import (
     langchain_tracing_config,
 )
-from portkey_ai.api_resources.instrumentation.tracing_configs.langchain_community import (  # noqa: E501
+from portkey_ai.instrumentation.tracing_configs.langchain_community import (  # noqa: E501
     langchain_community_tracing_config,
 )
-from portkey_ai.api_resources.instrumentation.tracing_configs.langgraph import (
+from portkey_ai.instrumentation.tracing_configs.langgraph import (
     langgraph_tracing_config,
 )
-from portkey_ai.api_resources.instrumentation.tracing_configs.langchain_core import (
+from portkey_ai.instrumentation.tracing_configs.langchain_core import (
     langchain_core_tracing_config,
 )
 
-# from portkey_ai.api_resources.instrumentation.tracing_configs.litellm import (
+# from portkey_ai.instrumentation.tracing_configs.litellm import (
 #     litellm_tracing_config,
 # )
-# from portkey_ai.api_resources.instrumentation.tracing_configs.openai import (
+# from portkey_ai.instrumentation.tracing_configs.openai import (
 #     openai_tracing_config,
 # )
 

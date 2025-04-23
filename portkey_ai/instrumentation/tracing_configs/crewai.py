@@ -1,4 +1,4 @@
-from portkey_ai.api_resources.instrumentation.models.tracing_config import (
+from portkey_ai.instrumentation.models.tracing_config import (
     ClassConfig,
     ModuleConfig,
     TracingConfig,

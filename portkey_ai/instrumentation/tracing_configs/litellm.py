@@ -1,4 +1,4 @@
-# from portkey_ai.api_resources.instrumentation.models.tracing_config
+# from portkey_ai.instrumentation.models.tracing_config
 # import TracingConfig
 
 # litellm_tracing_config = TracingConfig(

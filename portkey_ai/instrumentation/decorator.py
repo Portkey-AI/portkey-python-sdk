@@ -9,7 +9,7 @@ from opentelemetry.trace import (
     get_tracer_provider,
 )
 
-from portkey_ai.api_resources.instrumentation.utils import (
+from portkey_ai.instrumentation.utils import (
     set_span_attribute,
 )
 from portkey_ai.utils.json_utils import serialize_kwargs

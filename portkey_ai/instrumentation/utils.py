@@ -6,7 +6,7 @@ from typing import Any
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Status, StatusCode, Span
 
-from portkey_ai.api_resources.instrumentation.models.tracing_config import MethodConfig
+from portkey_ai.instrumentation.models.tracing_config import MethodConfig
 from portkey_ai.utils.json_utils import serialize_kwargs
 
 
