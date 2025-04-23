@@ -1,7 +1,6 @@
 from functools import wraps
 import inspect
 from typing import Any, Callable
-from opentelemetry import trace
 from opentelemetry.trace import (
     get_tracer,
     SpanKind,
@@ -13,7 +12,7 @@ from opentelemetry.trace import (
 from portkey_ai.api_resources.instrumentation.utils import (
     set_span_attribute,
 )
-from portkey_ai.utils.json_utils import serialize_args, serialize_kwargs
+from portkey_ai.utils.json_utils import serialize_kwargs
 
 
 def watch(input: bool = True, output: bool = True):

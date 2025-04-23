@@ -2,12 +2,12 @@ from importlib.metadata import PackageNotFoundError, version
 import json
 import re
 import inspect
-from typing import Any, overload
+from typing import Any
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Status, StatusCode, Span
 
 from portkey_ai.api_resources.instrumentation.models.tracing_config import MethodConfig
-from portkey_ai.utils.json_utils import serialize_args, serialize_kwargs
+from portkey_ai.utils.json_utils import serialize_kwargs
 
 
 def is_package_installed(pkg_name):
@@ -59,14 +59,6 @@ def set_members(span: Span, instance: Any, module_name: str, class_name: str):
         return
     for key, value in instance.__dict__.items():
         set_span_attribute(span, f"{module_name}.{class_name}.{key}", value)
-
-
-@overload
-def set_members(span: Span, instance: Any, module_name: str):
-    if instance is None:
-        return
-    for key, value in instance.__dict__.items():
-        set_span_attribute(span, f"{module_name}.{key}", value)
 
 
 class Patcher:

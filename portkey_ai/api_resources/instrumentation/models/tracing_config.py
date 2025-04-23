@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 # we use regex if include_pattern is not empty
@@ -10,6 +10,7 @@ class MethodConfig(BaseModel):
     pattern: str | None = None
     args: str | None = None
     result: str | None = None
+
 
 class ClassConfig(BaseModel):
     pattern: str | None = None

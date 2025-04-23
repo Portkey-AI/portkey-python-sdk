@@ -5,7 +5,7 @@ from portkey_ai.api_resources.instrumentation.tracing_configs.crewai import (
 from portkey_ai.api_resources.instrumentation.tracing_configs.langchain import (
     langchain_tracing_config,
 )
-from portkey_ai.api_resources.instrumentation.tracing_configs.langchain_community import (
+from portkey_ai.api_resources.instrumentation.tracing_configs.langchain_community import (  # noqa: E501
     langchain_community_tracing_config,
 )
 from portkey_ai.api_resources.instrumentation.tracing_configs.langgraph import (

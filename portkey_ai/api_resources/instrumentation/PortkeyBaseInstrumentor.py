@@ -70,21 +70,20 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                             if class_to_instrument.pattern is not None:
                                 class_regex = re.compile(class_to_instrument.pattern)
                                 imported_module = importlib.import_module(module.name)
-                                if (
-                                    getattr(imported_module, "_module_lookup", None)
-                                    is not None
+                                module_lookup = getattr(
+                                    imported_module, "_module_lookup", None
+                                )
+                                if module_lookup is not None and isinstance(
+                                    module_lookup, dict
                                 ):
-                                    classes = [
-                                        [x, ""]
-                                        for x in getattr(
-                                            imported_module, "_module_lookup", []
-                                        ).keys()
+                                    classes: list[tuple[str, Any]] = [
+                                        (x, "") for x in module_lookup.keys()
                                     ]
                                 else:
                                     classes = inspect.getmembers(
                                         imported_module,
                                         lambda x: inspect.isclass(x)
-                                        and class_regex.match(x.__name__),
+                                        and class_regex.match(x.__name__) is not None,
                                     )
                                 for class_name, _ in classes:
                                     for (
@@ -110,24 +109,24 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                                             class_to_instrument.name,
                                         )
                                     )
-                        except Exception as e:
+                        except Exception:
                             pass  # TODO: report error to portkey
-                except Exception as e:
+                except Exception:
                     pass  # TODO: report error to portkey
-            for method_to_instrument in flattened_list:
+            for item in flattened_list:
                 try:
-                    method_name = method_to_instrument["method"]
+                    method_name = item["method"]
                     wrap_function_wrapper(
-                        module=method_to_instrument["module"],
+                        module=item["module"],
                         name=method_name,
                         wrapper=patcher.patch_operation(
                             method_name,
-                            method_to_instrument["config"],
+                            item["config"],
                         ),
                     )
-                except Exception as e:
+                except Exception:
                     pass
-        except Exception as e:
+        except Exception:
             pass
 
     def _uninstrument(self, **kwargs: Any) -> None:

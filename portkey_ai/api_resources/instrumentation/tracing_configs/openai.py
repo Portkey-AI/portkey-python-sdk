@@ -1,4 +1,5 @@
-# from portkey_ai.api_resources.instrumentation.models.tracing_config import TracingConfig
+# from portkey_ai.api_resources.instrumentation.models.tracing_config
+# import TracingConfig
 
 # openai_tracing_config = TracingConfig(
 #     name="openai",
@@ -14,7 +15,8 @@
 #         {
 #             "name": "openai.resources.images",
 #             "classes": [
-#                 {"name": "Images", "methods": [{"name": "generate"}, {"name": "edit"}]},
+#                 {"name": "Images", "methods":
+# [{"name": "generate"}, {"name": "edit"}]},
 #                 {"name": "AsyncImages", "methods": [{"name": "generate"}]},
 #             ],
 #         },

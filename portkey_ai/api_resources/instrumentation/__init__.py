@@ -1,10 +1,10 @@
-from importlib.metadata import version, PackageNotFoundError
-from typing import Dict, Any
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-from portkey_ai.api_resources.instrumentation.PortkeyBaseInstrumentor import PortkeyBaseInstrumentor  # type: ignore [attr-defined]
+from portkey_ai.api_resources.instrumentation.PortkeyBaseInstrumentor import (
+    PortkeyBaseInstrumentor,  # type: ignore [attr-defined]
+)
 from portkey_ai.api_resources.instrumentation.portkey_span_exporter import (
     PortkeySpanExporter,
 )
@@ -18,7 +18,7 @@ def initialize_instrumentation(api_key: str, base_url: str):
         tracer_provider = TracerProvider()
         trace.set_tracer_provider(tracer_provider)
     else:
-        tracer_provider = trace.get_tracer_provider()
+        tracer_provider = trace.get_tracer_provider()  # type: ignore
     exporter = PortkeySpanExporter(api_key=api_key, base_url=base_url)
     tracer_provider.add_span_processor(BatchSpanProcessor(exporter))
     for package, config in tracing_configs.items():
