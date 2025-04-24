@@ -1,7 +1,7 @@
 import importlib
 import inspect
 import re
-from typing import Any, Collection
+from typing import Any, Collection, Union
 from opentelemetry.instrumentation.instrumentor import BaseInstrumentor  # type: ignore [attr-defined]
 from opentelemetry.trace import get_tracer
 from wrapt import wrap_function_wrapper
@@ -25,7 +25,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
         self,
         method_to_instrument: MethodConfig,
         module: ModuleConfig,
-        imported_module: Any | None,
+        imported_module: Union[Any, None],
         class_name: str,
     ):
         flattened_list = []

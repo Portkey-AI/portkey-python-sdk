@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Union
 from pydantic import BaseModel
 
 
@@ -20,14 +20,14 @@ class ClassConfig(BaseModel):
 
 # module name can be a specific file or directory, both cases are supported
 class ModuleConfig(BaseModel):
-    name: Union[str, None] = None
+    name: str
     classes: List[ClassConfig] = []
     methods: List[MethodConfig] = []
 
 
 class TracingConfig(BaseModel):
-    name: Union[str, None] = None
-    min_version: Union[str, None] = None
+    name: str
+    min_version: str
     modules: List[ModuleConfig] = []
 
 
