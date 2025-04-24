@@ -1,7 +1,7 @@
 import importlib
 import inspect
 import re
-from typing import Any, Collection, Union
+from typing import Any, Collection, Union, List
 from opentelemetry.instrumentation.instrumentor import BaseInstrumentor  # type: ignore [attr-defined]
 from opentelemetry.trace import get_tracer
 from wrapt import wrap_function_wrapper
@@ -76,7 +76,7 @@ class PortkeyBaseInstrumentor(BaseInstrumentor):
                                 if module_lookup is not None and isinstance(
                                     module_lookup, dict
                                 ):
-                                    classes: list[tuple[str, Any]] = [
+                                    classes: List[tuple[str, Any]] = [
                                         (x, "") for x in module_lookup.keys()
                                     ]
                                 else:
