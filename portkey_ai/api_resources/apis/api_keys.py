@@ -28,6 +28,8 @@ class ApiKeys(APIResource):
         usage_limits: Optional[Dict[str, Any]] = None,
         scopes: List[str],
         defaults: Optional[Dict[str, Any]] = None,
+        expires_at: Optional[Any] = None,
+        **kwargs: Any,
     ) -> ApiKeyAddResponse:
         body = {
             "type": type,
@@ -40,6 +42,8 @@ class ApiKeys(APIResource):
             "usage_limits": usage_limits,
             "scopes": scopes,
             "defaults": defaults,
+            "expires_at": expires_at,
+            **kwargs,
         }
         return self._post(
             f"{PortkeyApiPaths.API_KEYS_API}/{type}/{sub_type}",
@@ -96,6 +100,8 @@ class ApiKeys(APIResource):
         usage_limits: Optional[Dict[str, Any]] = None,
         scopes: Optional[List[str]] = None,
         defaults: Optional[Dict[str, Any]] = None,
+        expires_at: Optional[Any] = None,
+        **kwargs: Any,
     ) -> Any:
         body = {
             "id": id,
@@ -105,6 +111,8 @@ class ApiKeys(APIResource):
             "usage_limits": usage_limits,
             "scopes": scopes,
             "defaults": defaults,
+            "expires_at": expires_at,
+            **kwargs,
         }
         return self._put(
             f"{PortkeyApiPaths.API_KEYS_API}/{id}",
@@ -149,6 +157,8 @@ class AsyncApiKeys(AsyncAPIResource):
         usage_limits: Optional[Dict[str, Any]] = None,
         scopes: List[str],
         defaults: Optional[Dict[str, Any]] = None,
+        expires_at: Optional[Any] = None,
+        **kwargs: Any,
     ) -> ApiKeyAddResponse:
         body = {
             "type": type,
@@ -161,6 +171,8 @@ class AsyncApiKeys(AsyncAPIResource):
             "usage_limits": usage_limits,
             "scopes": scopes,
             "defaults": defaults,
+            "expires_at": expires_at,
+            **kwargs,
         }
         return await self._post(
             f"{PortkeyApiPaths.API_KEYS_API}/{type}/{sub_type}",
@@ -217,6 +229,8 @@ class AsyncApiKeys(AsyncAPIResource):
         usage_limits: Optional[Dict[str, Any]] = None,
         scopes: Optional[List[str]] = None,
         defaults: Optional[Dict[str, Any]] = None,
+        expires_at: Optional[Any] = None,
+        **kwargs: Any,
     ) -> Any:
         body = {
             "id": id,
@@ -226,6 +240,8 @@ class AsyncApiKeys(AsyncAPIResource):
             "usage_limits": usage_limits,
             "scopes": scopes,
             "defaults": defaults,
+            "expires_at": expires_at,
+            **kwargs,
         }
         return await self._put(
             f"{PortkeyApiPaths.API_KEYS_API}/{id}",
