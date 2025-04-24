@@ -1,31 +1,55 @@
-# from portkey_ai.instrumentation.models.tracing_config
-# import TracingConfig
+from portkey_ai.instrumentation.models.tracing_config import (
+    ClassConfig,
+    ModuleConfig,
+    TracingConfig,
+    MethodConfig,
+)
 
-# openai_tracing_config = TracingConfig(
-#     name="openai",
-#     min_version="0.27.0",
-#     modules=[
-#         {
-#             "name": "openai.resources.chat.completions",
-#             "classes": [
-#                 {"name": "Completions", "methods": [{"name": "create"}]},
-#                 {"name": "AsyncCompletions", "methods": [{"name": "create"}]},
-#             ],
-#         },
-#         {
-#             "name": "openai.resources.images",
-#             "classes": [
-#                 {"name": "Images", "methods":
-# [{"name": "generate"}, {"name": "edit"}]},
-#                 {"name": "AsyncImages", "methods": [{"name": "generate"}]},
-#             ],
-#         },
-#         {
-#             "name": "openai.resources.embeddings",
-#             "classes": [
-#                 {"name": "Embeddings", "methods": [{"name": "create"}]},
-#                 {"name": "AsyncEmbeddings", "methods": [{"name": "create"}]},
-#             ],
-#         },
-#     ],
-# )
+openai_tracing_config = TracingConfig(
+    name="openai",
+    min_version="0.27.0",
+    modules=[
+        ModuleConfig(
+            name="openai.resources.chat.completions",
+            classes=[
+                ClassConfig(
+                    name="Completions",
+                    methods=[MethodConfig(name="create")],
+                ),
+                ClassConfig(
+                    name="AsyncCompletions",
+                    methods=[MethodConfig(name="create")],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="openai.resources.images",
+            classes=[
+                ClassConfig(
+                    name="Images",
+                    methods=[
+                        MethodConfig(name="generate"),
+                        MethodConfig(name="edit"),
+                    ],
+                ),
+                ClassConfig(
+                    name="AsyncImages",
+                    methods=[MethodConfig(name="generate")],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="openai.resources.embeddings",
+            classes=[
+                ClassConfig(
+                    name="Embeddings",
+                    methods=[MethodConfig(name="create")],
+                ),
+                ClassConfig(
+                    name="AsyncEmbeddings",
+                    methods=[MethodConfig(name="create")],
+                ),
+            ],
+        ),
+    ],
+)
