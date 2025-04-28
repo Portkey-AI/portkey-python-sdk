@@ -7,7 +7,15 @@ from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Status, StatusCode, Span
 
 from portkey_ai.instrumentation.models.tracing_config import MethodConfig
-from portkey_ai.utils.json_utils import serialize_kwargs
+
+
+# Function to check if a value is serializable
+def is_serializable(value):
+    try:
+        json.dumps(value)
+        return True
+    except (TypeError, ValueError):
+        return False
 
 
 def is_package_installed(pkg_name):
@@ -24,10 +32,12 @@ def set_span_attribute(
     value: Any,
     _processed=None,
     depth=0,
-    pattern: str = ".*",
+    pattern: str = "^(?!_)(?!.*\._).*",
 ):
     regex = re.compile(pattern)
-    if value is None or depth > 2 or regex and not regex.match(key):
+    if depth > 2 or not regex.match(key):
+        return
+    if value is None:
         return
 
     # Initialize processed set on first call
@@ -35,30 +45,47 @@ def set_span_attribute(
         _processed = set()
 
     # Get object id to track circular references
-    obj_id = id(value)
+    obj_id = id(key)
     if obj_id in _processed:
         return
 
     try:
-        if isinstance(value, (dict, list, tuple, set, str, int, float, bool)):
-            span.set_attribute(key, json.dumps(value))
+        if is_serializable(value):
+            span.set_attribute(key, value)
         else:
-            _processed.add(obj_id)
-            for child_key, child_value in value.__dict__.items():
-                if child_key.startswith("_") or child_value is None:
-                    continue
-                set_span_attribute(
-                    span, f"{key}.{child_key}", child_value, _processed, depth + 1
-                )
-    except Exception:
-        span.set_attribute(key, str(value))
+            str_value = str(value)
+            if re.match(r"<.*object at 0x[0-9a-f]+>", str_value):
+                return
+            span.set_attribute(key, str(value))
+    except Exception as e:
+        pass
 
+def get_value(value):
+    if is_serializable(value):
+        return value
+    str_value = str(value)
+    if re.match(r"<.*object at 0x[0-9a-f]+>", str_value):
+        return "OBJECT_OMITTED_FROM_TRACE"
+    return str(value)
 
 def set_members(span: Span, instance: Any, module_name: str, class_name: str):
     if instance is None:
         return
     for key, value in instance.__dict__.items():
         set_span_attribute(span, f"{module_name}.{class_name}.{key}", value)
+
+
+def serialize_kwargs(pattern: str = ".*", **kwargs):
+    # Filter out non-serializable items
+    regex = re.compile(pattern if pattern else ".*")
+    serializable_kwargs = {
+        k: get_value(v)
+        for k, v in kwargs.items()
+        if regex.match(k)
+    }
+
+    # Convert to string representation
+    return json.dumps(serializable_kwargs)
 
 
 class Patcher:
@@ -89,16 +116,6 @@ class Patcher:
                         serialize_kwargs(config.args, **bound_args.arguments),
                     )
 
-                    result = wrapped(*args, **kwargs)
-                    if isinstance(result, instance.__class__):
-                        pass
-                    elif config.result:
-                        set_span_attribute(
-                            span, "result", result, pattern=config.result
-                        )
-
-                    span.set_status(Status(StatusCode.OK))
-
                     try:
                         set_members(span, instance, module_name, class_name)
                     except Exception as e:
@@ -107,7 +124,26 @@ class Patcher:
                 except Exception as e:
                     span.record_exception(e)
                     span.set_status(Status(StatusCode.ERROR, str(e)))
+
+                try:
+                    result = wrapped(*args, **kwargs)
+                except Exception as e:
+                    span.record_exception(e)
+                    span.set_status(Status(StatusCode.ERROR, str(e)))
                     raise
+
+                try:
+                    if isinstance(result, instance.__class__):
+                        pass
+                    elif config.result:
+                        set_span_attribute(
+                            span, "result", result, pattern=config.result
+                        )
+
+                    span.set_status(Status(StatusCode.OK))
+                except Exception as e:
+                    span.record_exception(e)
+                    span.set_status(Status(StatusCode.ERROR, str(e)))
                 return result
 
         return traced_func

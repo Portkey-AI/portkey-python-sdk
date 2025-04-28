@@ -12,7 +12,7 @@ from opentelemetry.trace import (
 from portkey_ai.instrumentation.utils import (
     set_span_attribute,
 )
-from portkey_ai.utils.json_utils import serialize_kwargs
+from portkey_ai.instrumentation.utils import serialize_kwargs
 
 
 def watch(input: bool = True, output: bool = True):
