@@ -57,8 +57,9 @@ def set_span_attribute(
             if re.match(r"<.*object at 0x[0-9a-f]+>", str_value):
                 return
             span.set_attribute(key, str(value))
-    except Exception as e:
+    except Exception:
         pass
+
 
 def get_value(value):
     if is_serializable(value):
@@ -67,6 +68,7 @@ def get_value(value):
     if re.match(r"<.*object at 0x[0-9a-f]+>", str_value):
         return "OBJECT_OMITTED_FROM_TRACE"
     return str(value)
+
 
 def set_members(span: Span, instance: Any, module_name: str, class_name: str):
     if instance is None:
@@ -78,11 +80,7 @@ def set_members(span: Span, instance: Any, module_name: str, class_name: str):
 def serialize_kwargs(pattern: str = ".*", **kwargs):
     # Filter out non-serializable items
     regex = re.compile(pattern if pattern else ".*")
-    serializable_kwargs = {
-        k: get_value(v)
-        for k, v in kwargs.items()
-        if regex.match(k)
-    }
+    serializable_kwargs = {k: get_value(v) for k, v in kwargs.items() if regex.match(k)}
 
     # Convert to string representation
     return json.dumps(serializable_kwargs)
