@@ -175,7 +175,7 @@ class Portkey(APIClient):
 
         if self.instrumentation:
             try:
-                from portkey_ai.api_resources.instrumentation import (
+                from portkey_ai.instrumentation import (
                     initialize_instrumentation,
                 )
             except ImportError:
@@ -456,7 +456,7 @@ class AsyncPortkey(AsyncAPIClient):
 
         if self.instrumentation:
             try:
-                from portkey_ai.api_resources.instrumentation import (
+                from portkey_ai.instrumentation import (
                     initialize_instrumentation,
                 )
             except ImportError:
