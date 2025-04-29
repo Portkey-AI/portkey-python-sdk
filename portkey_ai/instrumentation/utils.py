@@ -50,24 +50,24 @@ def set_span_attribute(
         return
 
     try:
-        if is_serializable(value):
-            span.set_attribute(key, value)
-        else:
-            str_value = str(value)
-            if re.match(r"<.*object at 0x[0-9a-f]+>", str_value):
-                return
-            span.set_attribute(key, str(value))
+        span.set_attribute(key, get_value(value))
     except Exception:
         pass
 
 
 def get_value(value):
-    if is_serializable(value):
+    try:
+        json.dumps(value)
         return value
+    except Exception:
+        pass
+    if hasattr(value, "model_dump"):
+        return str(value.model_dump())
+
     str_value = str(value)
-    if re.match(r"<.*object at 0x[0-9a-f]+>", str_value):
+    if re.match(r"<.*object at 0x[0-9a-f]+>|<class '.*'>", str_value):
         return "OBJECT_OMITTED_FROM_TRACE"
-    return str(value)
+    return str_value
 
 
 def set_members(span: Span, instance: Any, module_name: str, class_name: str):
@@ -131,12 +131,11 @@ class Patcher:
                     raise
 
                 try:
-                    if isinstance(result, instance.__class__):
-                        pass
-                    elif config.result:
-                        set_span_attribute(
-                            span, "result", result, pattern=config.result
+                    if result is not None:
+                        pattern = (
+                            config.result if config.result else "^(?!_)(?!.*\._).*"
                         )
+                        set_span_attribute(span, "result", result, pattern=pattern)
 
                     span.set_status(Status(StatusCode.OK))
                 except Exception as e:
