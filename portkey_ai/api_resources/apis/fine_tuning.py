@@ -203,10 +203,13 @@ class Permissions(APIResource):
 
     def delete(
         self,
+        permission_id: str,
+        *,
         fine_tuned_model_checkpoint: str,
         **kwargs,
     ) -> PermissionDeleteResponse:
         response = self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.delete(  # noqa: E501
+            permission_id=permission_id,
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
             extra_body=kwargs,
         )
@@ -406,10 +409,13 @@ class AsyncPermissions(AsyncAPIResource):
 
     async def delete(
         self,
+        permission_id: str,
+        *,
         fine_tuned_model_checkpoint: str,
         **kwargs,
     ) -> PermissionDeleteResponse:
         response = await self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.delete(  # noqa: E501
+            permission_id=permission_id,
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
             extra_body=kwargs,
         )

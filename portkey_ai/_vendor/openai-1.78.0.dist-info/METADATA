@@ -1,6 +1,6 @@
 Metadata-Version: 2.3
 Name: openai
-Version: 1.74.0
+Version: 1.78.0
 Summary: The official Python library for the openai API
 Project-URL: Homepage, https://github.com/openai/openai-python
 Project-URL: Repository, https://github.com/openai/openai-python

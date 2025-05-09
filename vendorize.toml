@@ -1,4 +1,4 @@
 target = "portkey_ai/_vendor"
 packages = [
-    "openai==1.74.0"
+    "openai==1.78.0"
 ]

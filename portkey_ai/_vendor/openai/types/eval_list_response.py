@@ -6,20 +6,52 @@ from typing_extensions import Literal, Annotated, TypeAlias
 from .._utils import PropertyInfo
 from .._models import BaseModel
 from .shared.metadata import Metadata
-from .eval_label_model_grader import EvalLabelModelGrader
-from .eval_string_check_grader import EvalStringCheckGrader
-from .eval_text_similarity_grader import EvalTextSimilarityGrader
+from .graders.python_grader import PythonGrader
+from .graders.label_model_grader import LabelModelGrader
+from .graders.score_model_grader import ScoreModelGrader
+from .graders.string_check_grader import StringCheckGrader
 from .eval_custom_data_source_config import EvalCustomDataSourceConfig
+from .graders.text_similarity_grader import TextSimilarityGrader
 from .eval_stored_completions_data_source_config import EvalStoredCompletionsDataSourceConfig
 
-__all__ = ["EvalListResponse", "DataSourceConfig", "TestingCriterion"]
+__all__ = [
+    "EvalListResponse",
+    "DataSourceConfig",
+    "TestingCriterion",
+    "TestingCriterionEvalGraderTextSimilarity",
+    "TestingCriterionEvalGraderPython",
+    "TestingCriterionEvalGraderScoreModel",
+]
 
 DataSourceConfig: TypeAlias = Annotated[
     Union[EvalCustomDataSourceConfig, EvalStoredCompletionsDataSourceConfig], PropertyInfo(discriminator="type")
 ]
 
-TestingCriterion: TypeAlias = Annotated[
-    Union[EvalLabelModelGrader, EvalStringCheckGrader, EvalTextSimilarityGrader], PropertyInfo(discriminator="type")
+
+class TestingCriterionEvalGraderTextSimilarity(TextSimilarityGrader):
+    __test__ = False
+    pass_threshold: float
+    """The threshold for the score."""
+
+
+class TestingCriterionEvalGraderPython(PythonGrader):
+    __test__ = False
+    pass_threshold: Optional[float] = None
+    """The threshold for the score."""
+
+
+class TestingCriterionEvalGraderScoreModel(ScoreModelGrader):
+    __test__ = False
+    pass_threshold: Optional[float] = None
+    """The threshold for the score."""
+
+
+TestingCriterion: TypeAlias = Union[
+    LabelModelGrader,
+    StringCheckGrader,
+    TestingCriterionEvalGraderTextSimilarity,
+    TestingCriterionEvalGraderPython,
+    TestingCriterionEvalGraderScoreModel,
 ]
 
 
@@ -48,9 +80,6 @@ class EvalListResponse(BaseModel):
 
     object: Literal["eval"]
     """The object type."""
-
-    share_with_openai: bool
-    """Indicates whether the evaluation is shared with OpenAI."""
 
     testing_criteria: List[TestingCriterion]
     """A list of testing criteria."""

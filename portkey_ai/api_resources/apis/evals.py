@@ -37,7 +37,6 @@ class Evals(APIResource):
         testing_criteria: Any,
         metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
-        share_with_openai: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> EvalCreateResponse:
         response = self.openai_client.evals.create(
@@ -45,7 +44,6 @@ class Evals(APIResource):
             testing_criteria=testing_criteria,
             metadata=metadata,
             name=name,
-            share_with_openai=share_with_openai,
             extra_body=kwargs,
         )
         data = response
@@ -284,7 +282,6 @@ class AsyncEvals(AsyncAPIResource):
         testing_criteria: Any,
         metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
         name: Union[str, NotGiven] = NOT_GIVEN,
-        share_with_openai: Union[bool, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> EvalCreateResponse:
         response = await self.openai_client.evals.create(
@@ -292,7 +289,6 @@ class AsyncEvals(AsyncAPIResource):
             testing_criteria=testing_criteria,
             metadata=metadata,
             name=name,
-            share_with_openai=share_with_openai,
             extra_body=kwargs,
         )
         data = response
