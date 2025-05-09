@@ -1,7 +1,12 @@
 import json
 from typing import Iterable, List, Literal, Optional, Union
+from portkey_ai._vendor.openai.types.fine_tuning.alpha import grader_run_params
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.types.fine_tuning_alpha_grader_type import (
+    GraderRunResponse,
+    GraderValidateResponse,
+)
 from portkey_ai.api_resources.types.finetuning_checkpoint_permissions import (
     PermissionCreateResponse,
     PermissionDeleteResponse,
@@ -24,6 +29,7 @@ class FineTuning(APIResource):
         self.openai_client = client.openai_client
         self.jobs = Jobs(client)
         self.checkpoints = FineTuningCheckpoints(client)
+        self.alpha = Alpha(client)
 
 
 class Jobs(APIResource):
@@ -219,12 +225,62 @@ class Permissions(APIResource):
         return data
 
 
+class Alpha(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+        self.graders = Graders(client)
+
+
+class Graders(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    def run(
+        self,
+        *,
+        grader: grader_run_params.Grader,
+        model_sample: str,
+        reference_answer: Union[str, Iterable[object], float, object],
+        **kwargs,
+    ) -> GraderRunResponse:
+        response = self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
+            grader=grader,
+            model_sample=model_sample,
+            reference_answer=reference_answer,
+            extra_body=kwargs,
+        )
+        data = GraderRunResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def validate(
+        self,
+        *,
+        grader: grader_run_params.Grader,
+        **kwargs,
+    ) -> GraderValidateResponse:
+        response = (
+            self.openai_client.with_raw_response.fine_tuning.alpha.graders.validate(
+                grader=grader,
+                extra_body=kwargs,
+            )
+        )
+        data = GraderValidateResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+
 class AsyncFineTuning(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
         self.jobs = AsyncJobs(client)
         self.checkpoints = AsyncFineTuningCheckpoints(client)
+        self.alpha = AsyncAlpha(client)
 
 
 class AsyncJobs(AsyncAPIResource):
@@ -420,6 +476,59 @@ class AsyncPermissions(AsyncAPIResource):
             extra_body=kwargs,
         )
         data = PermissionDeleteResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+
+class AsyncAlpha(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+        self.graders = AsyncGraders(client)
+
+
+class AsyncGraders(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    async def run(
+        self,
+        *,
+        grader: grader_run_params.Grader,
+        model_sample: str,
+        reference_answer: Union[str, Iterable[object], float, object],
+        **kwargs,
+    ) -> GraderRunResponse:
+        response = (
+            await self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
+                grader=grader,
+                model_sample=model_sample,
+                reference_answer=reference_answer,
+                extra_body=kwargs,
+            )
+        )
+        data = GraderRunResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def validate(
+        self,
+        *,
+        grader: grader_run_params.Grader,
+        **kwargs,
+    ) -> GraderValidateResponse:
+        response = (
+            await (
+                self.openai_client.with_raw_response.fine_tuning.alpha.graders.validate(
+                    grader=grader,
+                    extra_body=kwargs,
+                )
+            )
+        )
+        data = GraderValidateResponse(**json.loads(response.text))
         data._headers = response.headers
 
         return data
