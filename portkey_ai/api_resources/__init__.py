@@ -97,6 +97,10 @@ from .apis import (
     AsyncEvalsRuns,
     OutputItems,
     AsyncOutputItems,
+    Alpha,
+    AsyncAlpha,
+    Graders,
+    AsyncGraders,
 )
 from .utils import (
     Modes,
@@ -229,4 +233,8 @@ __all__ = [
     "AsyncEvalsRuns",
     "OutputItems",
     "AsyncOutputItems",
+    "Alpha",
+    "AsyncAlpha",
+    "Graders",
+    "AsyncGraders",
 ]

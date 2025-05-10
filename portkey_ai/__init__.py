@@ -109,6 +109,10 @@ from portkey_ai.api_resources import (
     AsyncEvalsRuns,
     OutputItems,
     AsyncOutputItems,
+    Alpha,
+    AsyncAlpha,
+    Graders,
+    AsyncGraders,
 )
 
 from portkey_ai.version import VERSION
@@ -237,4 +241,8 @@ __all__ = [
     "AsyncEvalsRuns",
     "OutputItems",
     "AsyncOutputItems",
+    "Alpha",
+    "AsyncAlpha",
+    "Graders",
+    "AsyncGraders",
 ]

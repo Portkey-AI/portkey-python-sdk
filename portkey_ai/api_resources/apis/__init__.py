@@ -47,6 +47,8 @@ from .fine_tuning import (
     FineTuning,
     Jobs,
     Checkpoints,
+    Alpha,
+    Graders,
     AsyncFineTuning,
     AsyncJobs,
     AsyncCheckpoints,
@@ -54,6 +56,8 @@ from .fine_tuning import (
     Permissions,
     AsyncFineTuningCheckpoints,
     AsyncPermissions,
+    AsyncAlpha,
+    AsyncGraders,
 )
 from .vector_stores import (
     VectorStores,
@@ -223,4 +227,8 @@ __all__ = [
     "AsyncEvalsRuns",
     "OutputItems",
     "AsyncOutputItems",
+    "Alpha",
+    "AsyncAlpha",
+    "Graders",
+    "AsyncGraders",
 ]
