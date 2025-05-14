@@ -28,6 +28,11 @@ upload:
 	python -m twine upload dist/portkey_ai-*
 	rm -rf dist
 
+sandbox: 
+	python -m pip install twine
+	python -m twine upload --repository testpypi dist/portkey_ai-*
+	rm -rf dist
+
 dev: 
 	pip install -e ".[dev]"
 
