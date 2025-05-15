@@ -125,6 +125,10 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     VIRTUAL_KEYS_API = "/virtual-keys"
     LOGS_EXPORT_API = "/logs/exports"
     LOGS_API = "/logs"
+    LABELS_API = "/labels"
+    COLLECTIONS_API = "/collections"
+    PROMPTS_API = "/prompts"
+    PROMPTS_PARTIALS_API = "/prompts/partials"
 
     def __str__(self):
         return self.value

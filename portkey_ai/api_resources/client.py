@@ -32,6 +32,8 @@ class Portkey(APIClient):
     api_keys: apis.ApiKeys
     virtual_keys: apis.VirtualKeys
     logs: apis.Logs
+    labels: apis.Labels
+    collections: apis.Collections
 
     class beta:
         assistants: apis.Assistants
@@ -89,6 +91,7 @@ class Portkey(APIClient):
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
         fireworks_account_id: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -133,6 +136,7 @@ class Portkey(APIClient):
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
             fireworks_account_id=fireworks_account_id,
+            calculate_audio_duration=calculate_audio_duration,
             **kwargs,
         )
 
@@ -167,6 +171,8 @@ class Portkey(APIClient):
         self.api_keys = apis.ApiKeys(self)
         self.virtual_keys = apis.VirtualKeys(self)
         self.logs = apis.Logs(self)
+        self.labels = apis.Labels(self)
+        self.collections = apis.Collections(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -226,6 +232,7 @@ class Portkey(APIClient):
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
         fireworks_account_id: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> Portkey:
         return self.__class__(
@@ -273,6 +280,8 @@ class Portkey(APIClient):
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
             fireworks_account_id=fireworks_account_id or self.fireworks_account_id,
+            calculate_audio_duration=calculate_audio_duration
+            or self.calculate_audio_duration,
             **self.kwargs,
             **kwargs,
         )
@@ -306,6 +315,8 @@ class AsyncPortkey(AsyncAPIClient):
     api_keys: apis.AsyncApiKeys
     virtual_keys: apis.AsyncVirtualKeys
     logs: apis.AsyncLogs
+    labels: apis.AsyncLabels
+    collections: apis.AsyncCollections
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -363,6 +374,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
         fireworks_account_id: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -407,6 +419,7 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_object_key=aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model,
             fireworks_account_id=fireworks_account_id,
+            calculate_audio_duration=calculate_audio_duration,
             **kwargs,
         )
 
@@ -441,6 +454,8 @@ class AsyncPortkey(AsyncAPIClient):
         self.api_keys = apis.AsyncApiKeys(self)
         self.virtual_keys = apis.AsyncVirtualKeys(self)
         self.logs = apis.AsyncLogs(self)
+        self.labels = apis.AsyncLabels(self)
+        self.collections = apis.AsyncCollections(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -500,6 +515,7 @@ class AsyncPortkey(AsyncAPIClient):
         aws_s3_object_key: Optional[str] = None,
         aws_bedrock_model: Optional[str] = None,
         fireworks_account_id: Optional[str] = None,
+        calculate_audio_duration: Optional[bool] = True,
         **kwargs,
     ) -> AsyncPortkey:
         return self.__class__(
@@ -547,6 +563,8 @@ class AsyncPortkey(AsyncAPIClient):
             aws_s3_object_key=aws_s3_object_key or self.aws_s3_object_key,
             aws_bedrock_model=aws_bedrock_model or self.aws_bedrock_model,
             fireworks_account_id=fireworks_account_id or self.fireworks_account_id,
+            calculate_audio_duration=calculate_audio_duration
+            or self.calculate_audio_duration,
             **self.kwargs,
             **kwargs,
         )
