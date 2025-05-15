@@ -47,9 +47,17 @@ from .fine_tuning import (
     FineTuning,
     Jobs,
     Checkpoints,
+    Alpha,
+    Graders,
     AsyncFineTuning,
     AsyncJobs,
     AsyncCheckpoints,
+    FineTuningCheckpoints,
+    Permissions,
+    AsyncFineTuningCheckpoints,
+    AsyncPermissions,
+    AsyncAlpha,
+    AsyncGraders,
 )
 from .vector_stores import (
     VectorStores,
@@ -98,6 +106,15 @@ from .uploads import (
     Parts,
     AsyncUploads,
     AsyncParts,
+)
+
+from .evals import (
+    Evals,
+    AsyncEvals,
+    EvalsRuns,
+    AsyncEvalsRuns,
+    OutputItems,
+    AsyncOutputItems,
 )
 
 from .configs import Configs, AsyncConfigs
@@ -208,4 +225,18 @@ __all__ = [
     "AsyncLabels",
     "Collections",
     "AsyncCollections",
+    "FineTuningCheckpoints",
+    "AsyncFineTuningCheckpoints",
+    "Permissions",
+    "AsyncPermissions",
+    "Evals",
+    "AsyncEvals",
+    "EvalsRuns",
+    "AsyncEvalsRuns",
+    "OutputItems",
+    "AsyncOutputItems",
+    "Alpha",
+    "AsyncAlpha",
+    "Graders",
+    "AsyncGraders",
 ]

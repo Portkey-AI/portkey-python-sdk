@@ -38,18 +38,26 @@ from .model_deleted import ModelDeleted as ModelDeleted
 from .embedding_model import EmbeddingModel as EmbeddingModel
 from .images_response import ImagesResponse as ImagesResponse
 from .completion_usage import CompletionUsage as CompletionUsage
+from .eval_list_params import EvalListParams as EvalListParams
 from .file_list_params import FileListParams as FileListParams
 from .moderation_model import ModerationModel as ModerationModel
 from .batch_list_params import BatchListParams as BatchListParams
 from .completion_choice import CompletionChoice as CompletionChoice
 from .image_edit_params import ImageEditParams as ImageEditParams
+from .eval_create_params import EvalCreateParams as EvalCreateParams
+from .eval_list_response import EvalListResponse as EvalListResponse
+from .eval_update_params import EvalUpdateParams as EvalUpdateParams
 from .file_create_params import FileCreateParams as FileCreateParams
 from .batch_create_params import BatchCreateParams as BatchCreateParams
 from .batch_request_counts import BatchRequestCounts as BatchRequestCounts
+from .eval_create_response import EvalCreateResponse as EvalCreateResponse
+from .eval_delete_response import EvalDeleteResponse as EvalDeleteResponse
+from .eval_update_response import EvalUpdateResponse as EvalUpdateResponse
 from .upload_create_params import UploadCreateParams as UploadCreateParams
 from .vector_store_deleted import VectorStoreDeleted as VectorStoreDeleted
 from .audio_response_format import AudioResponseFormat as AudioResponseFormat
 from .image_generate_params import ImageGenerateParams as ImageGenerateParams
+from .eval_retrieve_response import EvalRetrieveResponse as EvalRetrieveResponse
 from .file_chunking_strategy import FileChunkingStrategy as FileChunkingStrategy
 from .upload_complete_params import UploadCompleteParams as UploadCompleteParams
 from .embedding_create_params import EmbeddingCreateParams as EmbeddingCreateParams
@@ -67,12 +75,16 @@ from .vector_store_search_response import VectorStoreSearchResponse as VectorSto
 from .websocket_connection_options import WebsocketConnectionOptions as WebsocketConnectionOptions
 from .image_create_variation_params import ImageCreateVariationParams as ImageCreateVariationParams
 from .static_file_chunking_strategy import StaticFileChunkingStrategy as StaticFileChunkingStrategy
+from .eval_custom_data_source_config import EvalCustomDataSourceConfig as EvalCustomDataSourceConfig
 from .moderation_image_url_input_param import ModerationImageURLInputParam as ModerationImageURLInputParam
 from .auto_file_chunking_strategy_param import AutoFileChunkingStrategyParam as AutoFileChunkingStrategyParam
 from .moderation_multi_modal_input_param import ModerationMultiModalInputParam as ModerationMultiModalInputParam
 from .other_file_chunking_strategy_object import OtherFileChunkingStrategyObject as OtherFileChunkingStrategyObject
 from .static_file_chunking_strategy_param import StaticFileChunkingStrategyParam as StaticFileChunkingStrategyParam
 from .static_file_chunking_strategy_object import StaticFileChunkingStrategyObject as StaticFileChunkingStrategyObject
+from .eval_stored_completions_data_source_config import (
+    EvalStoredCompletionsDataSourceConfig as EvalStoredCompletionsDataSourceConfig,
+)
 from .static_file_chunking_strategy_object_param import (
     StaticFileChunkingStrategyObjectParam as StaticFileChunkingStrategyObjectParam,
 )
