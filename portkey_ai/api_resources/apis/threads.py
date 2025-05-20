@@ -177,9 +177,7 @@ class Threads(APIResource):
         tool_resources: Union[
             Optional[thread_create_and_run_params.ToolResources], NotGiven
         ] = NOT_GIVEN,
-        tools: Union[
-            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
-        ] = NOT_GIVEN,
+        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
         truncation_strategy: Union[
             Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
@@ -230,9 +228,7 @@ class Threads(APIResource):
         tool_resources: Union[
             Optional[thread_create_and_run_params.ToolResources], NotGiven
         ] = NOT_GIVEN,
-        tools: Union[
-            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
-        ] = NOT_GIVEN,
+        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
         truncation_strategy: Union[
             Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
@@ -927,9 +923,7 @@ class AsyncThreads(AsyncAPIResource):
         tool_resources: Union[
             Optional[thread_create_and_run_params.ToolResources], NotGiven
         ] = NOT_GIVEN,
-        tools: Union[
-            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
-        ] = NOT_GIVEN,
+        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
         truncation_strategy: Union[
             Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
@@ -980,9 +974,7 @@ class AsyncThreads(AsyncAPIResource):
         tool_resources: Union[
             Optional[thread_create_and_run_params.ToolResources], NotGiven
         ] = NOT_GIVEN,
-        tools: Union[
-            Optional[Iterable[thread_create_and_run_params.Tool]], NotGiven
-        ] = NOT_GIVEN,
+        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
         top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
         truncation_strategy: Union[
             Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
