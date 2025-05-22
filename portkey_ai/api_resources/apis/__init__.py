@@ -16,6 +16,9 @@ from .generation import Generations, AsyncGenerations, Prompts, AsyncPrompts
 from .feedback import Feedback, AsyncFeedback
 from .create_headers import createHeaders
 from .post import Post, AsyncPost
+from .getMethod import GetMethod, AsyncGetMethod
+from .deleteMethod import DeleteMethod, AsyncDeleteMethod
+from .putMethod import PutMethod, AsyncPutMethod
 from .embeddings import Embeddings, AsyncEmbeddings
 from .images import Images, AsyncImages
 from .assistants import Assistants, AsyncAssistants
@@ -145,6 +148,12 @@ __all__ = [
     "createHeaders",
     "Post",
     "AsyncPost",
+    "GetMethod",
+    "AsyncGetMethod",
+    "DeleteMethod",
+    "AsyncDeleteMethod",
+    "PutMethod",
+    "AsyncPutMethod",
     "Embeddings",
     "AsyncEmbeddings",
     "Images",
