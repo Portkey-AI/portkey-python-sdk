@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, List, Mapping, Optional, Union
+from typing import Any, Dict, List, Mapping, Optional, Union
 import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
@@ -293,7 +293,7 @@ class Portkey(APIClient):
         self,
         *,
         path: str,
-        headers: Optional[dict[str, str]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return apis.GetMethod(self).create(path=path, headers=headers, cast_to=cast_to)
@@ -302,7 +302,7 @@ class Portkey(APIClient):
         self,
         *,
         path: str,
-        headers: Optional[dict[str, str]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return apis.DeleteMethod(self).create(
@@ -313,8 +313,8 @@ class Portkey(APIClient):
         self,
         *,
         path: str,
-        body: Optional[dict[str, Any]] = {},
-        headers: Optional[dict[str, str]] = {},
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return apis.PutMethod(self).create(
@@ -608,7 +608,7 @@ class AsyncPortkey(AsyncAPIClient):
         self,
         *,
         path: str,
-        headers: Optional[dict[str, str]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return await apis.AsyncGetMethod(self).create(
@@ -619,7 +619,7 @@ class AsyncPortkey(AsyncAPIClient):
         self,
         *,
         path: str,
-        headers: Optional[dict[str, str]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return await apis.AsyncDeleteMethod(self).create(
@@ -630,8 +630,8 @@ class AsyncPortkey(AsyncAPIClient):
         self,
         *,
         path: str,
-        body: Optional[dict[str, Any]] = {},
-        headers: Optional[dict[str, str]] = {},
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return await apis.AsyncPutMethod(self).create(

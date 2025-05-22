@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
@@ -10,8 +10,8 @@ class PutMethod(APIResource):
     def create(
         self,
         path: str,
-        body: Optional[dict[str, Any]] = {},
-        headers: Optional[dict[str, str]] = {},
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return self._put(
@@ -32,8 +32,8 @@ class AsyncPutMethod(AsyncAPIResource):
     async def create(
         self,
         path: str,
-        body: Optional[dict[str, Any]] = {},
-        headers: Optional[dict[str, str]] = {},
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
     ):
         return await self._put(
