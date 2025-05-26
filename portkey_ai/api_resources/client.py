@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Mapping, Optional, Union
+from typing import Any, Dict, List, Mapping, Optional, Union
 import httpx
 from portkey_ai.api_resources import apis
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
@@ -289,6 +289,38 @@ class Portkey(APIClient):
     def post(self, url: str, **kwargs):
         return apis.Post(self).create(url=url, **kwargs)
 
+    def get(
+        self,
+        *,
+        path: str,
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+    ):
+        return apis.GetMethod(self).create(path=path, headers=headers, cast_to=cast_to)
+
+    def delete(
+        self,
+        *,
+        path: str,
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+    ):
+        return apis.DeleteMethod(self).create(
+            path=path, headers=headers, cast_to=cast_to
+        )
+
+    def put(
+        self,
+        *,
+        path: str,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+    ):
+        return apis.PutMethod(self).create(
+            path=path, body=body, headers=headers, cast_to=cast_to
+        )
+
     with_options = copy
 
 
@@ -571,5 +603,39 @@ class AsyncPortkey(AsyncAPIClient):
 
     async def post(self, url: str, **kwargs):
         return await apis.AsyncPost(self).create(url=url, **kwargs)
+
+    async def get(
+        self,
+        *,
+        path: str,
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+    ):
+        return await apis.AsyncGetMethod(self).create(
+            path=path, headers=headers, cast_to=cast_to
+        )
+
+    async def delete(
+        self,
+        *,
+        path: str,
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+    ):
+        return await apis.AsyncDeleteMethod(self).create(
+            path=path, headers=headers, cast_to=cast_to
+        )
+
+    async def put(
+        self,
+        *,
+        path: str,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+    ):
+        return await apis.AsyncPutMethod(self).create(
+            path=path, body=body, headers=headers, cast_to=cast_to
+        )
 
     with_options = copy
