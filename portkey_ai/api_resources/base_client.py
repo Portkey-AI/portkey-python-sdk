@@ -182,13 +182,19 @@ class APIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
+
+        if self.request_timeout:
+            timeout = httpx.Timeout(self.request_timeout, connect=5.0)
+        else:
+            timeout = DEFAULT_TIMEOUT_CONFIG
+
         self._client = http_client or httpx.Client(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
             },
             limits=DEFAULT_CONNECTION_LIMITS,
-            timeout=DEFAULT_TIMEOUT_CONFIG,
+            timeout=timeout,
         )
 
         self.response_headers: httpx.Headers | None = None
@@ -896,13 +902,19 @@ class AsyncAPIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
+
+        if self.request_timeout:
+            timeout = httpx.Timeout(self.request_timeout, connect=5.0)
+        else:
+            timeout = DEFAULT_TIMEOUT_CONFIG
+
         self._client = http_client or AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
             },
             limits=DEFAULT_CONNECTION_LIMITS,
-            timeout=DEFAULT_TIMEOUT_CONFIG,
+            timeout=timeout,
         )
 
         self.response_headers: httpx.Headers | None = None
