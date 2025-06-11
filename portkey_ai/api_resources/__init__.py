@@ -107,6 +107,8 @@ from .apis import (
     AsyncGraders,
     Containers,
     AsyncContainers,
+    ContainersFiles,
+    AsyncContainersFiles,
 )
 from .utils import (
     Modes,
@@ -249,4 +251,6 @@ __all__ = [
     "AsyncGraders",
     "Containers",
     "AsyncContainers",
+    "ContainersFiles",
+    "AsyncContainersFiles",
 ]

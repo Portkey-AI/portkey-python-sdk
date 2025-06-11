@@ -1,30 +1,24 @@
 import json
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 import httpx
 from pydantic import BaseModel, PrivateAttr
 from .utils import parse_headers
 
-
 __all__ = [
-    "ExpiresAfter",
-    "ContainerCreateResponse",
-    "ContainerRetrieveResponse",
-    "ContainerListResponse",
+    "FileCreateResponse",
+    "FileRetrieveResponse",
+    "FileListResponse",
 ]
 
 
-class ExpiresAfter(BaseModel, extra="allow"):
-    anchor: Optional[Literal["last_active_at"]] = None
-    minutes: Optional[int] = None
-
-
-class ContainerCreateResponse(BaseModel, extra="allow"):
+class FileCreateResponse(BaseModel, extra="allow"):
     id: Optional[str] = None
+    bytes: Optional[int] = None
+    container_id: Optional[str] = None
     created_at: Optional[int] = None
-    name: Optional[str] = None
     object: Optional[str] = None
-    status: Optional[str] = None
-    expires_after: Optional[ExpiresAfter] = None
+    path: Optional[str] = None
+    source: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -41,13 +35,14 @@ class ContainerCreateResponse(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class ContainerRetrieveResponse(BaseModel, extra="allow"):
+class FileRetrieveResponse(BaseModel, extra="allow"):
     id: Optional[str] = None
+    bytes: Optional[int] = None
+    container_id: Optional[str] = None
     created_at: Optional[int] = None
-    name: Optional[str] = None
     object: Optional[str] = None
-    status: Optional[str] = None
-    expires_after: Optional[ExpiresAfter] = None
+    path: Optional[str] = None
+    source: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):
@@ -64,9 +59,9 @@ class ContainerRetrieveResponse(BaseModel, extra="allow"):
         return parse_headers(self._headers)
 
 
-class ContainerListResponse(BaseModel, extra="allow"):
+class FileListResponse(BaseModel, extra="allow"):
     object: Optional[str] = None
-    data: Optional[List[ContainerRetrieveResponse]] = None
+    data: Optional[List[FileRetrieveResponse]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def __str__(self):

@@ -123,6 +123,8 @@ from .evals import (
 from .containers import (
     Containers,
     AsyncContainers,
+    ContainersFiles,
+    AsyncContainersFiles,
 )
 
 from .configs import Configs, AsyncConfigs
@@ -255,4 +257,6 @@ __all__ = [
     "AsyncGraders",
     "Containers",
     "AsyncContainers",
+    "ContainersFiles",
+    "AsyncContainersFiles",
 ]

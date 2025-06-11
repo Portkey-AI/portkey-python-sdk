@@ -119,6 +119,8 @@ from portkey_ai.api_resources import (
     AsyncGraders,
     Containers,
     AsyncContainers,
+    ContainersFiles,
+    AsyncContainersFiles,
 )
 
 from portkey_ai.version import VERSION
@@ -257,4 +259,6 @@ __all__ = [
     "AsyncGraders",
     "Containers",
     "AsyncContainers",
+    "ContainersFiles",
+    "AsyncContainersFiles",
 ]
