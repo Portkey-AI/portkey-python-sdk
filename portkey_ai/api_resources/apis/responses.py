@@ -321,6 +321,23 @@ class Responses(APIResource):
             timeout=timeout,
         )
 
+    def cancel(
+        self,
+        response_id: str,
+        **kwargs,
+    ) -> Response:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        return self.openai_client.responses.cancel(
+            response_id=response_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
 
 class InputItems(APIResource):
     def __init__(self, client: Portkey) -> None:
@@ -636,6 +653,23 @@ class AsyncResponses(AsyncAPIResource):
             top_p=top_p,
             truncation=truncation,
             user=user,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+    async def cancel(
+        self,
+        response_id: str,
+        **kwargs,
+    ) -> Response:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        return await self.openai_client.responses.cancel(
+            response_id=response_id,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body=extra_body,

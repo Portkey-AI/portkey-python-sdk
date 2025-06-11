@@ -8,51 +8,54 @@ from pydantic import Field as FieldInfo
 from ..._utils import PropertyInfo
 from ..._models import BaseModel
 from .eval_api_error import EvalAPIError
+from ..responses.tool import Tool
 from ..shared.metadata import Metadata
 from ..shared.reasoning_effort import ReasoningEffort
 from ..responses.response_input_text import ResponseInputText
 from .create_eval_jsonl_run_data_source import CreateEvalJSONLRunDataSource
+from ..responses.response_format_text_config import ResponseFormatTextConfig
 from .create_eval_completions_run_data_source import CreateEvalCompletionsRunDataSource
 
 __all__ = [
     "RunListResponse",
     "DataSource",
-    "DataSourceCompletions",
-    "DataSourceCompletionsSource",
-    "DataSourceCompletionsSourceFileContent",
-    "DataSourceCompletionsSourceFileContentContent",
-    "DataSourceCompletionsSourceFileID",
-    "DataSourceCompletionsSourceResponses",
-    "DataSourceCompletionsInputMessages",
-    "DataSourceCompletionsInputMessagesTemplate",
-    "DataSourceCompletionsInputMessagesTemplateTemplate",
-    "DataSourceCompletionsInputMessagesTemplateTemplateChatMessage",
-    "DataSourceCompletionsInputMessagesTemplateTemplateEvalItem",
-    "DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContent",
-    "DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContentOutputText",
-    "DataSourceCompletionsInputMessagesItemReference",
-    "DataSourceCompletionsSamplingParams",
+    "DataSourceResponses",
+    "DataSourceResponsesSource",
+    "DataSourceResponsesSourceFileContent",
+    "DataSourceResponsesSourceFileContentContent",
+    "DataSourceResponsesSourceFileID",
+    "DataSourceResponsesSourceResponses",
+    "DataSourceResponsesInputMessages",
+    "DataSourceResponsesInputMessagesTemplate",
+    "DataSourceResponsesInputMessagesTemplateTemplate",
+    "DataSourceResponsesInputMessagesTemplateTemplateChatMessage",
+    "DataSourceResponsesInputMessagesTemplateTemplateEvalItem",
+    "DataSourceResponsesInputMessagesTemplateTemplateEvalItemContent",
+    "DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText",
+    "DataSourceResponsesInputMessagesItemReference",
+    "DataSourceResponsesSamplingParams",
+    "DataSourceResponsesSamplingParamsText",
     "PerModelUsage",
     "PerTestingCriteriaResult",
     "ResultCounts",
 ]
 
 
-class DataSourceCompletionsSourceFileContentContent(BaseModel):
+class DataSourceResponsesSourceFileContentContent(BaseModel):
     item: Dict[str, object]
 
     sample: Optional[Dict[str, object]] = None
 
 
-class DataSourceCompletionsSourceFileContent(BaseModel):
-    content: List[DataSourceCompletionsSourceFileContentContent]
+class DataSourceResponsesSourceFileContent(BaseModel):
+    content: List[DataSourceResponsesSourceFileContentContent]
     """The content of the jsonl file."""
 
     type: Literal["file_content"]
     """The type of jsonl source. Always `file_content`."""
 
 
-class DataSourceCompletionsSourceFileID(BaseModel):
+class DataSourceResponsesSourceFileID(BaseModel):
     id: str
     """The identifier of the file."""
 
@@ -60,15 +63,9 @@ class DataSourceCompletionsSourceFileID(BaseModel):
     """The type of jsonl source. Always `file_id`."""
 
 
-class DataSourceCompletionsSourceResponses(BaseModel):
+class DataSourceResponsesSourceResponses(BaseModel):
     type: Literal["responses"]
     """The type of run data source. Always `responses`."""
-
-    allow_parallel_tool_calls: Optional[bool] = None
-    """Whether to allow parallel tool calls.
-
-    This is a query parameter used to select responses.
-    """
 
     created_after: Optional[int] = None
     """Only include items created after this timestamp (inclusive).
@@ -82,14 +79,8 @@ class DataSourceCompletionsSourceResponses(BaseModel):
     This is a query parameter used to select responses.
     """
 
-    has_tool_calls: Optional[bool] = None
-    """Whether the response has tool calls.
-
-    This is a query parameter used to select responses.
-    """
-
     instructions_search: Optional[str] = None
-    """Optional search string for instructions.
+    """Optional string to search the 'instructions' field.
 
     This is a query parameter used to select responses.
     """
@@ -115,6 +106,9 @@ class DataSourceCompletionsSourceResponses(BaseModel):
     temperature: Optional[float] = None
     """Sampling temperature. This is a query parameter used to select responses."""
 
+    tools: Optional[List[str]] = None
+    """List of tool names. This is a query parameter used to select responses."""
+
     top_p: Optional[float] = None
     """Nucleus sampling parameter. This is a query parameter used to select responses."""
 
@@ -122,15 +116,13 @@ class DataSourceCompletionsSourceResponses(BaseModel):
     """List of user identifiers. This is a query parameter used to select responses."""
 
 
-DataSourceCompletionsSource: TypeAlias = Annotated[
-    Union[
-        DataSourceCompletionsSourceFileContent, DataSourceCompletionsSourceFileID, DataSourceCompletionsSourceResponses
-    ],
+DataSourceResponsesSource: TypeAlias = Annotated[
+    Union[DataSourceResponsesSourceFileContent, DataSourceResponsesSourceFileID, DataSourceResponsesSourceResponses],
     PropertyInfo(discriminator="type"),
 ]
 
 
-class DataSourceCompletionsInputMessagesTemplateTemplateChatMessage(BaseModel):
+class DataSourceResponsesInputMessagesTemplateTemplateChatMessage(BaseModel):
     content: str
     """The content of the message."""
 
@@ -138,7 +130,7 @@ class DataSourceCompletionsInputMessagesTemplateTemplateChatMessage(BaseModel):
     """The role of the message (e.g. "system", "assistant", "user")."""
 
 
-class DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContentOutputText(BaseModel):
+class DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText(BaseModel):
     text: str
     """The text output from the model."""
 
@@ -146,13 +138,13 @@ class DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContentOutputTex
     """The type of the output text. Always `output_text`."""
 
 
-DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContent: TypeAlias = Union[
-    str, ResponseInputText, DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContentOutputText
+DataSourceResponsesInputMessagesTemplateTemplateEvalItemContent: TypeAlias = Union[
+    str, ResponseInputText, DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText
 ]
 
 
-class DataSourceCompletionsInputMessagesTemplateTemplateEvalItem(BaseModel):
-    content: DataSourceCompletionsInputMessagesTemplateTemplateEvalItemContent
+class DataSourceResponsesInputMessagesTemplateTemplateEvalItem(BaseModel):
+    content: DataSourceResponsesInputMessagesTemplateTemplateEvalItemContent
     """Text inputs to the model - can contain template strings."""
 
     role: Literal["user", "assistant", "system", "developer"]
@@ -165,38 +157,56 @@ class DataSourceCompletionsInputMessagesTemplateTemplateEvalItem(BaseModel):
     """The type of the message input. Always `message`."""
 
 
-DataSourceCompletionsInputMessagesTemplateTemplate: TypeAlias = Union[
-    DataSourceCompletionsInputMessagesTemplateTemplateChatMessage,
-    DataSourceCompletionsInputMessagesTemplateTemplateEvalItem,
+DataSourceResponsesInputMessagesTemplateTemplate: TypeAlias = Union[
+    DataSourceResponsesInputMessagesTemplateTemplateChatMessage,
+    DataSourceResponsesInputMessagesTemplateTemplateEvalItem,
 ]
 
 
-class DataSourceCompletionsInputMessagesTemplate(BaseModel):
-    template: List[DataSourceCompletionsInputMessagesTemplateTemplate]
+class DataSourceResponsesInputMessagesTemplate(BaseModel):
+    template: List[DataSourceResponsesInputMessagesTemplateTemplate]
     """A list of chat messages forming the prompt or context.
 
-    May include variable references to the "item" namespace, ie {{item.name}}.
+    May include variable references to the `item` namespace, ie {{item.name}}.
     """
 
     type: Literal["template"]
     """The type of input messages. Always `template`."""
 
 
-class DataSourceCompletionsInputMessagesItemReference(BaseModel):
+class DataSourceResponsesInputMessagesItemReference(BaseModel):
     item_reference: str
-    """A reference to a variable in the "item" namespace. Ie, "item.name" """
+    """A reference to a variable in the `item` namespace. Ie, "item.name" """
 
     type: Literal["item_reference"]
     """The type of input messages. Always `item_reference`."""
 
 
-DataSourceCompletionsInputMessages: TypeAlias = Annotated[
-    Union[DataSourceCompletionsInputMessagesTemplate, DataSourceCompletionsInputMessagesItemReference],
+DataSourceResponsesInputMessages: TypeAlias = Annotated[
+    Union[DataSourceResponsesInputMessagesTemplate, DataSourceResponsesInputMessagesItemReference],
     PropertyInfo(discriminator="type"),
 ]
 
 
-class DataSourceCompletionsSamplingParams(BaseModel):
+class DataSourceResponsesSamplingParamsText(BaseModel):
+    format: Optional[ResponseFormatTextConfig] = None
+    """An object specifying the format that the model must output.
+
+    Configuring `{ "type": "json_schema" }` enables Structured Outputs, which
+    ensures the model will match your supplied JSON schema. Learn more in the
+    [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
+
+    The default format is `{ "type": "text" }` with no additional options.
+
+    **Not recommended for gpt-4o and newer models:**
+
+    Setting to `{ "type": "json_object" }` enables the older JSON mode, which
+    ensures the message the model generates is valid JSON. Using `json_schema` is
+    preferred for models that support it.
+    """
+
+
+class DataSourceResponsesSamplingParams(BaseModel):
     max_completion_tokens: Optional[int] = None
     """The maximum number of tokens in the generated output."""
 
@@ -206,27 +216,60 @@ class DataSourceCompletionsSamplingParams(BaseModel):
     temperature: Optional[float] = None
     """A higher temperature increases randomness in the outputs."""
 
+    text: Optional[DataSourceResponsesSamplingParamsText] = None
+    """Configuration options for a text response from the model.
+
+    Can be plain text or structured JSON data. Learn more:
+
+    - [Text inputs and outputs](https://platform.openai.com/docs/guides/text)
+    - [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+    """
+
+    tools: Optional[List[Tool]] = None
+    """An array of tools the model may call while generating a response.
+
+    You can specify which tool to use by setting the `tool_choice` parameter.
+
+    The two categories of tools you can provide the model are:
+
+    - **Built-in tools**: Tools that are provided by OpenAI that extend the model's
+      capabilities, like
+      [web search](https://platform.openai.com/docs/guides/tools-web-search) or
+      [file search](https://platform.openai.com/docs/guides/tools-file-search).
+      Learn more about
+      [built-in tools](https://platform.openai.com/docs/guides/tools).
+    - **Function calls (custom tools)**: Functions that are defined by you, enabling
+      the model to call your own code. Learn more about
+      [function calling](https://platform.openai.com/docs/guides/function-calling).
+    """
+
     top_p: Optional[float] = None
     """An alternative to temperature for nucleus sampling; 1.0 includes all tokens."""
 
 
-class DataSourceCompletions(BaseModel):
-    source: DataSourceCompletionsSource
-    """A EvalResponsesSource object describing a run data source configuration."""
+class DataSourceResponses(BaseModel):
+    source: DataSourceResponsesSource
+    """Determines what populates the `item` namespace in this run's data source."""
 
-    type: Literal["completions"]
-    """The type of run data source. Always `completions`."""
+    type: Literal["responses"]
+    """The type of run data source. Always `responses`."""
 
-    input_messages: Optional[DataSourceCompletionsInputMessages] = None
+    input_messages: Optional[DataSourceResponsesInputMessages] = None
+    """Used when sampling from a model.
+
+    Dictates the structure of the messages passed into the model. Can either be a
+    reference to a prebuilt trajectory (ie, `item.input_trajectory`), or a template
+    with variable references to the `item` namespace.
+    """
 
     model: Optional[str] = None
     """The name of the model to use for generating completions (e.g. "o3-mini")."""
 
-    sampling_params: Optional[DataSourceCompletionsSamplingParams] = None
+    sampling_params: Optional[DataSourceResponsesSamplingParams] = None
 
 
 DataSource: TypeAlias = Annotated[
-    Union[CreateEvalJSONLRunDataSource, CreateEvalCompletionsRunDataSource, DataSourceCompletions],
+    Union[CreateEvalJSONLRunDataSource, CreateEvalCompletionsRunDataSource, DataSourceResponses],
     PropertyInfo(discriminator="type"),
 ]
 

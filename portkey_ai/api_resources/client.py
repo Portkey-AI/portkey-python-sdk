@@ -26,6 +26,7 @@ class Portkey(APIClient):
     vector_stores: apis.VectorStores
     responses: apis.Responses
     evals: apis.Evals
+    containers: apis.Containers
     admin: apis.Admin
     uploads: apis.Uploads
     configs: apis.Configs
@@ -165,6 +166,7 @@ class Portkey(APIClient):
         self.vector_stores = apis.VectorStores(self)
         self.responses = apis.Responses(self)
         self.evals = apis.Evals(self)
+        self.containers = apis.Containers(self)
         self.admin = apis.Admin(self)
         self.uploads = apis.Uploads(self)
         self.configs = apis.Configs(self)
@@ -341,6 +343,7 @@ class AsyncPortkey(AsyncAPIClient):
     vector_stores: apis.AsyncVectorStores
     responses: apis.AsyncResponses
     evals: apis.AsyncEvals
+    containers: apis.AsyncContainers
     admin: apis.AsyncAdmin
     uploads: apis.AsyncUploads
     configs: apis.AsyncConfigs
@@ -480,6 +483,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.vector_stores = apis.AsyncVectorStores(self)
         self.responses = apis.AsyncResponses(self)
         self.evals = apis.AsyncEvals(self)
+        self.containers = apis.AsyncContainers(self)
         self.admin = apis.AsyncAdmin(self)
         self.uploads = apis.AsyncUploads(self)
         self.configs = apis.AsyncConfigs(self)

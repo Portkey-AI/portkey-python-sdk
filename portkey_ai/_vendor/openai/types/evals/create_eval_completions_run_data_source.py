@@ -6,8 +6,12 @@ from typing_extensions import Literal, Annotated, TypeAlias
 from ..._utils import PropertyInfo
 from ..._models import BaseModel
 from ..shared.metadata import Metadata
+from ..chat.chat_completion_tool import ChatCompletionTool
+from ..shared.response_format_text import ResponseFormatText
 from ..responses.easy_input_message import EasyInputMessage
 from ..responses.response_input_text import ResponseInputText
+from ..shared.response_format_json_object import ResponseFormatJSONObject
+from ..shared.response_format_json_schema import ResponseFormatJSONSchema
 
 __all__ = [
     "CreateEvalCompletionsRunDataSource",
@@ -24,6 +28,7 @@ __all__ = [
     "InputMessagesTemplateTemplateMessageContentOutputText",
     "InputMessagesItemReference",
     "SamplingParams",
+    "SamplingParamsResponseFormat",
 ]
 
 
@@ -117,7 +122,7 @@ class InputMessagesTemplate(BaseModel):
     template: List[InputMessagesTemplateTemplate]
     """A list of chat messages forming the prompt or context.
 
-    May include variable references to the "item" namespace, ie {{item.name}}.
+    May include variable references to the `item` namespace, ie {{item.name}}.
     """
 
     type: Literal["template"]
@@ -126,7 +131,7 @@ class InputMessagesTemplate(BaseModel):
 
 class InputMessagesItemReference(BaseModel):
     item_reference: str
-    """A reference to a variable in the "item" namespace. Ie, "item.name" """
+    """A reference to a variable in the `item` namespace. Ie, "item.input_trajectory" """
 
     type: Literal["item_reference"]
     """The type of input messages. Always `item_reference`."""
@@ -136,10 +141,25 @@ InputMessages: TypeAlias = Annotated[
     Union[InputMessagesTemplate, InputMessagesItemReference], PropertyInfo(discriminator="type")
 ]
 
+SamplingParamsResponseFormat: TypeAlias = Union[ResponseFormatText, ResponseFormatJSONSchema, ResponseFormatJSONObject]
+
 
 class SamplingParams(BaseModel):
     max_completion_tokens: Optional[int] = None
     """The maximum number of tokens in the generated output."""
+
+    response_format: Optional[SamplingParamsResponseFormat] = None
+    """An object specifying the format that the model must output.
+
+    Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured
+    Outputs which ensures the model will match your supplied JSON schema. Learn more
+    in the
+    [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
+
+    Setting to `{ "type": "json_object" }` enables the older JSON mode, which
+    ensures the message the model generates is valid JSON. Using `json_schema` is
+    preferred for models that support it.
+    """
 
     seed: Optional[int] = None
     """A seed value to initialize the randomness, during sampling."""
@@ -147,18 +167,32 @@ class SamplingParams(BaseModel):
     temperature: Optional[float] = None
     """A higher temperature increases randomness in the outputs."""
 
+    tools: Optional[List[ChatCompletionTool]] = None
+    """A list of tools the model may call.
+
+    Currently, only functions are supported as a tool. Use this to provide a list of
+    functions the model may generate JSON inputs for. A max of 128 functions are
+    supported.
+    """
+
     top_p: Optional[float] = None
     """An alternative to temperature for nucleus sampling; 1.0 includes all tokens."""
 
 
 class CreateEvalCompletionsRunDataSource(BaseModel):
     source: Source
-    """A StoredCompletionsRunDataSource configuration describing a set of filters"""
+    """Determines what populates the `item` namespace in this run's data source."""
 
     type: Literal["completions"]
     """The type of run data source. Always `completions`."""
 
     input_messages: Optional[InputMessages] = None
+    """Used when sampling from a model.
+
+    Dictates the structure of the messages passed into the model. Can either be a
+    reference to a prebuilt trajectory (ie, `item.input_trajectory`), or a template
+    with variable references to the `item` namespace.
+    """
 
     model: Optional[str] = None
     """The name of the model to use for generating completions (e.g. "o3-mini")."""

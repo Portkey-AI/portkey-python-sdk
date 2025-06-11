@@ -120,6 +120,15 @@ from .evals import (
     AsyncOutputItems,
 )
 
+from .containers import (
+    Containers,
+    AsyncContainers,
+    ContainersFiles,
+    AsyncContainersFiles,
+    Content,
+    AsyncContent,
+)
+
 from .configs import Configs, AsyncConfigs
 
 from .api_keys import ApiKeys, AsyncApiKeys
@@ -248,4 +257,10 @@ __all__ = [
     "AsyncAlpha",
     "Graders",
     "AsyncGraders",
+    "Containers",
+    "AsyncContainers",
+    "ContainersFiles",
+    "AsyncContainersFiles",
+    "Content",
+    "AsyncContent",
 ]

@@ -242,13 +242,13 @@ class Graders(APIResource):
         *,
         grader: grader_run_params.Grader,
         model_sample: str,
-        reference_answer: Union[str, Iterable[object], float, object],
+        item: Union[object, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> GraderRunResponse:
         response = self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
             grader=grader,
             model_sample=model_sample,
-            reference_answer=reference_answer,
+            item=item,
             extra_body=kwargs,
         )
         data = GraderRunResponse(**json.loads(response.text))
@@ -498,14 +498,14 @@ class AsyncGraders(AsyncAPIResource):
         *,
         grader: grader_run_params.Grader,
         model_sample: str,
-        reference_answer: Union[str, Iterable[object], float, object],
+        item: Union[object, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> GraderRunResponse:
         response = (
             await self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
                 grader=grader,
                 model_sample=model_sample,
-                reference_answer=reference_answer,
+                item=item,
                 extra_body=kwargs,
             )
         )

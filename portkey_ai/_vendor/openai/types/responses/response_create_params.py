@@ -46,6 +46,12 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     available models.
     """
 
+    background: Optional[bool]
+    """Whether to run the model response in the background.
+
+    [Learn more](https://platform.openai.com/docs/guides/background).
+    """
+
     include: Optional[List[ResponseIncludable]]
     """Specify additional output data to include in the model response.
 
@@ -61,6 +67,8 @@ class ResponseCreateParamsBase(TypedDict, total=False):
       multi-turn conversations when using the Responses API statelessly (like when
       the `store` parameter is set to `false`, or when an organization is enrolled
       in the zero data retention program).
+    - `code_interpreter_call.outputs`: Includes the outputs of python code execution
+      in code interpreter tool call items.
     """
 
     instructions: Optional[str]
@@ -116,9 +124,9 @@ class ResponseCreateParamsBase(TypedDict, total=False):
       utilize scale tier credits until they are exhausted.
     - If set to 'auto', and the Project is not Scale tier enabled, the request will
       be processed using the default service tier with a lower uptime SLA and no
-      latency guarentee.
+      latency guarantee.
     - If set to 'default', the request will be processed using the default service
-      tier with a lower uptime SLA and no latency guarentee.
+      tier with a lower uptime SLA and no latency guarantee.
     - If set to 'flex', the request will be processed with the Flex Processing
       service tier.
       [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -193,9 +201,10 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     """
 
     user: str
-    """
-    A unique identifier representing your end-user, which can help OpenAI to monitor
-    and detect abuse.
+    """A stable identifier for your end-users.
+
+    Used to boost cache hit rates by better bucketing similar requests and to help
+    OpenAI detect and prevent abuse.
     [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
     """
 

@@ -128,6 +128,12 @@ class Response(BaseModel):
     We generally recommend altering this or `temperature` but not both.
     """
 
+    background: Optional[bool] = None
+    """Whether to run the model response in the background.
+
+    [Learn more](https://platform.openai.com/docs/guides/background).
+    """
+
     max_output_tokens: Optional[int] = None
     """
     An upper bound for the number of tokens that can be generated for a response,
@@ -158,9 +164,9 @@ class Response(BaseModel):
       utilize scale tier credits until they are exhausted.
     - If set to 'auto', and the Project is not Scale tier enabled, the request will
       be processed using the default service tier with a lower uptime SLA and no
-      latency guarentee.
+      latency guarantee.
     - If set to 'default', the request will be processed using the default service
-      tier with a lower uptime SLA and no latency guarentee.
+      tier with a lower uptime SLA and no latency guarantee.
     - If set to 'flex', the request will be processed with the Flex Processing
       service tier.
       [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -173,7 +179,8 @@ class Response(BaseModel):
     status: Optional[ResponseStatus] = None
     """The status of the response generation.
 
-    One of `completed`, `failed`, `in_progress`, or `incomplete`.
+    One of `completed`, `failed`, `in_progress`, `cancelled`, `queued`, or
+    `incomplete`.
     """
 
     text: Optional[ResponseTextConfig] = None
@@ -202,9 +209,10 @@ class Response(BaseModel):
     """
 
     user: Optional[str] = None
-    """
-    A unique identifier representing your end-user, which can help OpenAI to monitor
-    and detect abuse.
+    """A stable identifier for your end-users.
+
+    Used to boost cache hit rates by better bucketing similar requests and to help
+    OpenAI detect and prevent abuse.
     [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
     """
 

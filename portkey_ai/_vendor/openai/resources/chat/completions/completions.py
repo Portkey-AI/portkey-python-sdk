@@ -263,9 +263,9 @@ class Completions(SyncAPIResource):
                 utilize scale tier credits until they are exhausted.
               - If set to 'auto', and the Project is not Scale tier enabled, the request will
                 be processed using the default service tier with a lower uptime SLA and no
-                latency guarentee.
+                latency guarantee.
               - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarentee.
+                tier with a lower uptime SLA and no latency guarantee.
               - If set to 'flex', the request will be processed with the Flex Processing
                 service tier.
                 [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -323,8 +323,8 @@ class Completions(SyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A unique identifier representing your end-user, which can help OpenAI to monitor
-              and detect abuse.
+          user: A stable identifier for your end-users. Used to boost cache hit rates by better
+              bucketing similar requests and to help OpenAI detect and prevent abuse.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
@@ -541,9 +541,9 @@ class Completions(SyncAPIResource):
                 utilize scale tier credits until they are exhausted.
               - If set to 'auto', and the Project is not Scale tier enabled, the request will
                 be processed using the default service tier with a lower uptime SLA and no
-                latency guarentee.
+                latency guarantee.
               - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarentee.
+                tier with a lower uptime SLA and no latency guarantee.
               - If set to 'flex', the request will be processed with the Flex Processing
                 service tier.
                 [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -592,8 +592,8 @@ class Completions(SyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A unique identifier representing your end-user, which can help OpenAI to monitor
-              and detect abuse.
+          user: A stable identifier for your end-users. Used to boost cache hit rates by better
+              bucketing similar requests and to help OpenAI detect and prevent abuse.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
@@ -810,9 +810,9 @@ class Completions(SyncAPIResource):
                 utilize scale tier credits until they are exhausted.
               - If set to 'auto', and the Project is not Scale tier enabled, the request will
                 be processed using the default service tier with a lower uptime SLA and no
-                latency guarentee.
+                latency guarantee.
               - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarentee.
+                tier with a lower uptime SLA and no latency guarantee.
               - If set to 'flex', the request will be processed with the Flex Processing
                 service tier.
                 [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -861,8 +861,8 @@ class Completions(SyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A unique identifier representing your end-user, which can help OpenAI to monitor
-              and detect abuse.
+          user: A stable identifier for your end-users. Used to boost cache hit rates by better
+              bucketing similar requests and to help OpenAI detect and prevent abuse.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
@@ -1366,9 +1366,9 @@ class AsyncCompletions(AsyncAPIResource):
                 utilize scale tier credits until they are exhausted.
               - If set to 'auto', and the Project is not Scale tier enabled, the request will
                 be processed using the default service tier with a lower uptime SLA and no
-                latency guarentee.
+                latency guarantee.
               - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarentee.
+                tier with a lower uptime SLA and no latency guarantee.
               - If set to 'flex', the request will be processed with the Flex Processing
                 service tier.
                 [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -1426,8 +1426,8 @@ class AsyncCompletions(AsyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A unique identifier representing your end-user, which can help OpenAI to monitor
-              and detect abuse.
+          user: A stable identifier for your end-users. Used to boost cache hit rates by better
+              bucketing similar requests and to help OpenAI detect and prevent abuse.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
@@ -1644,9 +1644,9 @@ class AsyncCompletions(AsyncAPIResource):
                 utilize scale tier credits until they are exhausted.
               - If set to 'auto', and the Project is not Scale tier enabled, the request will
                 be processed using the default service tier with a lower uptime SLA and no
-                latency guarentee.
+                latency guarantee.
               - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarentee.
+                tier with a lower uptime SLA and no latency guarantee.
               - If set to 'flex', the request will be processed with the Flex Processing
                 service tier.
                 [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -1695,8 +1695,8 @@ class AsyncCompletions(AsyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A unique identifier representing your end-user, which can help OpenAI to monitor
-              and detect abuse.
+          user: A stable identifier for your end-users. Used to boost cache hit rates by better
+              bucketing similar requests and to help OpenAI detect and prevent abuse.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
@@ -1913,9 +1913,9 @@ class AsyncCompletions(AsyncAPIResource):
                 utilize scale tier credits until they are exhausted.
               - If set to 'auto', and the Project is not Scale tier enabled, the request will
                 be processed using the default service tier with a lower uptime SLA and no
-                latency guarentee.
+                latency guarantee.
               - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarentee.
+                tier with a lower uptime SLA and no latency guarantee.
               - If set to 'flex', the request will be processed with the Flex Processing
                 service tier.
                 [Learn more](https://platform.openai.com/docs/guides/flex-processing).
@@ -1964,8 +1964,8 @@ class AsyncCompletions(AsyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A unique identifier representing your end-user, which can help OpenAI to monitor
-              and detect abuse.
+          user: A stable identifier for your end-users. Used to boost cache hit rates by better
+              bucketing similar requests and to help OpenAI detect and prevent abuse.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
