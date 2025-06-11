@@ -117,6 +117,8 @@ from portkey_ai.api_resources import (
     AsyncAlpha,
     Graders,
     AsyncGraders,
+    Containers,
+    AsyncContainers,
 )
 
 from portkey_ai.version import VERSION
@@ -253,4 +255,6 @@ __all__ = [
     "AsyncAlpha",
     "Graders",
     "AsyncGraders",
+    "Containers",
+    "AsyncContainers",
 ]

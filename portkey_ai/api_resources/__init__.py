@@ -105,6 +105,8 @@ from .apis import (
     AsyncAlpha,
     Graders,
     AsyncGraders,
+    Containers,
+    AsyncContainers,
 )
 from .utils import (
     Modes,
@@ -245,4 +247,6 @@ __all__ = [
     "AsyncAlpha",
     "Graders",
     "AsyncGraders",
+    "Containers",
+    "AsyncContainers",
 ]
