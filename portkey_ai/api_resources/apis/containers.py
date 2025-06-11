@@ -1,5 +1,5 @@
 import json
-from typing import List, Literal, Union
+from typing import Any, List, Literal, Union
 from portkey_ai._vendor.openai.types import container_create_params
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -96,7 +96,7 @@ class ContainersFiles(APIResource):
     def __init__(self, client: Portkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
-        # self.content = Content(client)
+        self.content = Content(client)
 
     def create(
         self,
@@ -173,6 +173,32 @@ class ContainersFiles(APIResource):
             container_id=container_id,
             **kwargs,
         )
+
+
+class Content(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    def retrieve(
+        self,
+        file_id: str,
+        *,
+        container_id: str,
+        **kwargs,
+    ) -> Any:
+        if kwargs:
+            response = self.openai_client.containers.files.content.retrieve(
+                file_id=file_id,
+                container_id=container_id,
+                extra_body=kwargs,
+            )
+        else:
+            response = self.openai_client.containers.files.content.retrieve(
+                file_id=file_id,
+                container_id=container_id,
+            )
+        return response
 
 
 class AsyncContainers(AsyncAPIResource):
@@ -255,7 +281,7 @@ class AsyncContainersFiles(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
-        # self.content = AsyncContent(client)
+        self.content = AsyncContent(client)
 
     async def create(
         self,
@@ -336,3 +362,29 @@ class AsyncContainersFiles(AsyncAPIResource):
             container_id=container_id,
             **kwargs,
         )
+
+
+class AsyncContent(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    async def retrieve(
+        self,
+        file_id: str,
+        *,
+        container_id: str,
+        **kwargs,
+    ) -> Any:
+        if kwargs:
+            response = await self.openai_client.containers.files.content.retrieve(
+                file_id=file_id,
+                container_id=container_id,
+                extra_body=kwargs,
+            )
+        else:
+            response = await self.openai_client.containers.files.content.retrieve(
+                file_id=file_id,
+                container_id=container_id,
+            )
+        return response

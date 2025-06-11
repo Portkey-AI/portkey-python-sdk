@@ -125,6 +125,8 @@ from .containers import (
     AsyncContainers,
     ContainersFiles,
     AsyncContainersFiles,
+    Content,
+    AsyncContent,
 )
 
 from .configs import Configs, AsyncConfigs
@@ -259,4 +261,6 @@ __all__ = [
     "AsyncContainers",
     "ContainersFiles",
     "AsyncContainersFiles",
+    "Content",
+    "AsyncContent",
 ]
