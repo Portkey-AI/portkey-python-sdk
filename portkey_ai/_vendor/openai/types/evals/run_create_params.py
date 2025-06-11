@@ -5,10 +5,12 @@ from __future__ import annotations
 from typing import Dict, List, Union, Iterable, Optional
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from ..responses.tool_param import ToolParam
 from ..shared_params.metadata import Metadata
 from ..shared.reasoning_effort import ReasoningEffort
 from ..responses.response_input_text_param import ResponseInputTextParam
 from .create_eval_jsonl_run_data_source_param import CreateEvalJSONLRunDataSourceParam
+from ..responses.response_format_text_config_param import ResponseFormatTextConfigParam
 from .create_eval_completions_run_data_source_param import CreateEvalCompletionsRunDataSourceParam
 
 __all__ = [
@@ -29,6 +31,7 @@ __all__ = [
     "DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContentOutputText",
     "DataSourceCreateEvalResponsesRunDataSourceInputMessagesItemReference",
     "DataSourceCreateEvalResponsesRunDataSourceSamplingParams",
+    "DataSourceCreateEvalResponsesRunDataSourceSamplingParamsText",
 ]
 
 
@@ -76,12 +79,6 @@ class DataSourceCreateEvalResponsesRunDataSourceSourceResponses(TypedDict, total
     type: Required[Literal["responses"]]
     """The type of run data source. Always `responses`."""
 
-    allow_parallel_tool_calls: Optional[bool]
-    """Whether to allow parallel tool calls.
-
-    This is a query parameter used to select responses.
-    """
-
     created_after: Optional[int]
     """Only include items created after this timestamp (inclusive).
 
@@ -94,14 +91,8 @@ class DataSourceCreateEvalResponsesRunDataSourceSourceResponses(TypedDict, total
     This is a query parameter used to select responses.
     """
 
-    has_tool_calls: Optional[bool]
-    """Whether the response has tool calls.
-
-    This is a query parameter used to select responses.
-    """
-
     instructions_search: Optional[str]
-    """Optional search string for instructions.
+    """Optional string to search the 'instructions' field.
 
     This is a query parameter used to select responses.
     """
@@ -126,6 +117,9 @@ class DataSourceCreateEvalResponsesRunDataSourceSourceResponses(TypedDict, total
 
     temperature: Optional[float]
     """Sampling temperature. This is a query parameter used to select responses."""
+
+    tools: Optional[List[str]]
+    """List of tool names. This is a query parameter used to select responses."""
 
     top_p: Optional[float]
     """Nucleus sampling parameter. This is a query parameter used to select responses."""
@@ -190,7 +184,7 @@ class DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplate(TypedDict,
     template: Required[Iterable[DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplate]]
     """A list of chat messages forming the prompt or context.
 
-    May include variable references to the "item" namespace, ie {{item.name}}.
+    May include variable references to the `item` namespace, ie {{item.name}}.
     """
 
     type: Required[Literal["template"]]
@@ -199,7 +193,7 @@ class DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplate(TypedDict,
 
 class DataSourceCreateEvalResponsesRunDataSourceInputMessagesItemReference(TypedDict, total=False):
     item_reference: Required[str]
-    """A reference to a variable in the "item" namespace. Ie, "item.name" """
+    """A reference to a variable in the `item` namespace. Ie, "item.name" """
 
     type: Required[Literal["item_reference"]]
     """The type of input messages. Always `item_reference`."""
@@ -209,6 +203,24 @@ DataSourceCreateEvalResponsesRunDataSourceInputMessages: TypeAlias = Union[
     DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplate,
     DataSourceCreateEvalResponsesRunDataSourceInputMessagesItemReference,
 ]
+
+
+class DataSourceCreateEvalResponsesRunDataSourceSamplingParamsText(TypedDict, total=False):
+    format: ResponseFormatTextConfigParam
+    """An object specifying the format that the model must output.
+
+    Configuring `{ "type": "json_schema" }` enables Structured Outputs, which
+    ensures the model will match your supplied JSON schema. Learn more in the
+    [Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
+
+    The default format is `{ "type": "text" }` with no additional options.
+
+    **Not recommended for gpt-4o and newer models:**
+
+    Setting to `{ "type": "json_object" }` enables the older JSON mode, which
+    ensures the message the model generates is valid JSON. Using `json_schema` is
+    preferred for models that support it.
+    """
 
 
 class DataSourceCreateEvalResponsesRunDataSourceSamplingParams(TypedDict, total=False):
@@ -221,18 +233,51 @@ class DataSourceCreateEvalResponsesRunDataSourceSamplingParams(TypedDict, total=
     temperature: float
     """A higher temperature increases randomness in the outputs."""
 
+    text: DataSourceCreateEvalResponsesRunDataSourceSamplingParamsText
+    """Configuration options for a text response from the model.
+
+    Can be plain text or structured JSON data. Learn more:
+
+    - [Text inputs and outputs](https://platform.openai.com/docs/guides/text)
+    - [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+    """
+
+    tools: Iterable[ToolParam]
+    """An array of tools the model may call while generating a response.
+
+    You can specify which tool to use by setting the `tool_choice` parameter.
+
+    The two categories of tools you can provide the model are:
+
+    - **Built-in tools**: Tools that are provided by OpenAI that extend the model's
+      capabilities, like
+      [web search](https://platform.openai.com/docs/guides/tools-web-search) or
+      [file search](https://platform.openai.com/docs/guides/tools-file-search).
+      Learn more about
+      [built-in tools](https://platform.openai.com/docs/guides/tools).
+    - **Function calls (custom tools)**: Functions that are defined by you, enabling
+      the model to call your own code. Learn more about
+      [function calling](https://platform.openai.com/docs/guides/function-calling).
+    """
+
     top_p: float
     """An alternative to temperature for nucleus sampling; 1.0 includes all tokens."""
 
 
 class DataSourceCreateEvalResponsesRunDataSource(TypedDict, total=False):
     source: Required[DataSourceCreateEvalResponsesRunDataSourceSource]
-    """A EvalResponsesSource object describing a run data source configuration."""
+    """Determines what populates the `item` namespace in this run's data source."""
 
-    type: Required[Literal["completions"]]
-    """The type of run data source. Always `completions`."""
+    type: Required[Literal["responses"]]
+    """The type of run data source. Always `responses`."""
 
     input_messages: DataSourceCreateEvalResponsesRunDataSourceInputMessages
+    """Used when sampling from a model.
+
+    Dictates the structure of the messages passed into the model. Can either be a
+    reference to a prebuilt trajectory (ie, `item.input_trajectory`), or a template
+    with variable references to the `item` namespace.
+    """
 
     model: str
     """The name of the model to use for generating completions (e.g. "o3-mini")."""
