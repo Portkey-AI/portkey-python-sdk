@@ -20,7 +20,11 @@ import httpx
 import platform
 
 from portkey_ai.api_resources.apis.create_headers import createHeaders
-from .global_constants import PORTKEY_HEADER_PREFIX, DEFAULT_CONNECTION_LIMITS
+from .global_constants import (
+    DEFAULT_TIMEOUT_CONFIG,
+    PORTKEY_HEADER_PREFIX,
+    DEFAULT_CONNECTION_LIMITS,
+)
 from .utils import remove_empty_values, Options, set_base_url
 from .exceptions import (
     APIStatusError,
@@ -178,12 +182,19 @@ class APIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
+
+        if self.request_timeout:
+            timeout = httpx.Timeout(self.request_timeout, connect=5.0)
+        else:
+            timeout = DEFAULT_TIMEOUT_CONFIG
+
         self._client = http_client or httpx.Client(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
             },
             limits=DEFAULT_CONNECTION_LIMITS,
+            timeout=timeout,
         )
 
         self.response_headers: httpx.Headers | None = None
@@ -891,12 +902,19 @@ class AsyncAPIClient:
         )
 
         self.allHeaders = self._build_headers(Options.construct())
+
+        if self.request_timeout:
+            timeout = httpx.Timeout(self.request_timeout, connect=5.0)
+        else:
+            timeout = DEFAULT_TIMEOUT_CONFIG
+
         self._client = http_client or AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
                 "Accept": "application/json",
             },
             limits=DEFAULT_CONNECTION_LIMITS,
+            timeout=timeout,
         )
 
         self.response_headers: httpx.Headers | None = None
