@@ -1,0 +1,48 @@
+from portkey_ai.instrumentation.models.tracing_config import (
+    TracingConfig,
+    ModuleConfig,
+    ClassConfig,
+    MethodConfig,
+)
+
+langchain_tracing_config = TracingConfig(
+    name="langchain",
+    min_version="0.2.0",
+    modules=[
+        ModuleConfig(
+            name="langchain.agents.agent",
+            classes=[
+                ClassConfig(
+                    name="RunnableAgent",
+                    methods=[
+                        MethodConfig(name="plan"),
+                        MethodConfig(name="aplan"),
+                    ],
+                ),
+                ClassConfig(
+                    name="RunnableMultiActionAgent",
+                    methods=[
+                        MethodConfig(name="plan"),
+                        MethodConfig(name="aplan"),
+                    ],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="langchain.chains.base",
+            classes=[
+                ClassConfig(
+                    name="Chain",
+                    methods=[
+                        MethodConfig(name="invoke"),
+                        MethodConfig(name="ainvoke"),
+                        MethodConfig(name="prep_outputs"),
+                        MethodConfig(name="aprep_inputs"),
+                        MethodConfig(name="prep_inputs"),
+                        MethodConfig(name="aprep_inputs"),
+                    ],
+                )
+            ],
+        ),
+    ],
+)

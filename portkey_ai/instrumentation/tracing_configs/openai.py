@@ -1,0 +1,55 @@
+from portkey_ai.instrumentation.models.tracing_config import (
+    ClassConfig,
+    ModuleConfig,
+    TracingConfig,
+    MethodConfig,
+)
+
+openai_tracing_config = TracingConfig(
+    name="openai",
+    min_version="0.27.0",
+    modules=[
+        ModuleConfig(
+            name="openai.resources.chat.completions",
+            classes=[
+                ClassConfig(
+                    name="Completions",
+                    methods=[MethodConfig(name="create")],
+                ),
+                ClassConfig(
+                    name="AsyncCompletions",
+                    methods=[MethodConfig(name="create")],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="openai.resources.images",
+            classes=[
+                ClassConfig(
+                    name="Images",
+                    methods=[
+                        MethodConfig(name="generate"),
+                        MethodConfig(name="edit"),
+                    ],
+                ),
+                ClassConfig(
+                    name="AsyncImages",
+                    methods=[MethodConfig(name="generate")],
+                ),
+            ],
+        ),
+        ModuleConfig(
+            name="openai.resources.embeddings",
+            classes=[
+                ClassConfig(
+                    name="Embeddings",
+                    methods=[MethodConfig(name="create")],
+                ),
+                ClassConfig(
+                    name="AsyncEmbeddings",
+                    methods=[MethodConfig(name="create")],
+                ),
+            ],
+        ),
+    ],
+)
