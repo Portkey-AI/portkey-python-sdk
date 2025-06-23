@@ -111,6 +111,8 @@ from .apis import (
     AsyncContainersFiles,
     Content,
     AsyncContent,
+    Integrations,
+    AsyncIntegrations,
 )
 from .utils import (
     Modes,
@@ -257,4 +259,6 @@ __all__ = [
     "AsyncContainersFiles",
     "Content",
     "AsyncContent",
+    "Integrations",
+    "AsyncIntegrations",
 ]
