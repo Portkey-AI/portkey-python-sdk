@@ -115,6 +115,8 @@ from .apis import (
     AsyncIntegrations,
     IntegrationsWorkspaces,
     AsyncIntegrationsWorkspaces,
+    IntegrationsModels,
+    AsyncIntegrationsModels,
 )
 from .utils import (
     Modes,
@@ -265,4 +267,6 @@ __all__ = [
     "AsyncIntegrations",
     "IntegrationsWorkspaces",
     "AsyncIntegrationsWorkspaces",
+    "IntegrationsModels",
+    "AsyncIntegrationsModels",
 ]

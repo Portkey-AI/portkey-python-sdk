@@ -10,6 +10,7 @@ class Integrations(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
         self.workspaces = IntegrationsWorkspaces(client)
+        self.models = IntegrationsModels(client)
 
     def create(
         self,
@@ -174,10 +175,54 @@ class IntegrationsWorkspaces(APIResource):
         )
 
 
+class IntegrationsModels(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
+    def list(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+    ) -> GenericResponse:
+        return self._get(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def update(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+        allow_all_models: Optional[bool] = None,
+        models: Optional[List[Dict[str, Any]]] = None,
+        **kwargs: Any,
+    ) -> GenericResponse:
+        body = {
+            "allow_all_models": allow_all_models,
+            "models": models,
+            **kwargs,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
 class AsyncIntegrations(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
         self.workspaces = AsyncIntegrationsWorkspaces(client)
+        self.models = AsyncIntegrationsModels(client)
 
     async def create(
         self,
@@ -333,6 +378,49 @@ class AsyncIntegrationsWorkspaces(AsyncAPIResource):
         }
         return await self._put(
             f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class AsyncIntegrationsModels(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+
+    async def list(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+    ) -> GenericResponse:
+        return await self._get(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def update(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+        allow_all_models: Optional[bool] = None,
+        models: Optional[List[Dict[str, Any]]] = None,
+        **kwargs: Any,
+    ) -> GenericResponse:
+        body = {
+            "allow_all_models": allow_all_models,
+            "models": models,
+            **kwargs,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
             body=body,
             params=None,
             cast_to=GenericResponse,

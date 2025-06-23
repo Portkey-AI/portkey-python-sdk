@@ -144,6 +144,8 @@ from .integrations import (
     AsyncIntegrations,
     IntegrationsWorkspaces,
     AsyncIntegrationsWorkspaces,
+    IntegrationsModels,
+    AsyncIntegrationsModels,
 )
 
 sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
@@ -274,4 +276,6 @@ __all__ = [
     "AsyncIntegrations",
     "IntegrationsWorkspaces",
     "AsyncIntegrationsWorkspaces",
+    "IntegrationsModels",
+    "AsyncIntegrationsModels",
 ]
