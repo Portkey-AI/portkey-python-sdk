@@ -139,7 +139,12 @@ from .labels import Labels, AsyncLabels
 
 from .collections import Collections, AsyncCollections
 
-from .integrations import Integrations, AsyncIntegrations
+from .integrations import (
+    Integrations,
+    AsyncIntegrations,
+    IntegrationsWorkspaces,
+    AsyncIntegrationsWorkspaces,
+)
 
 sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
 
@@ -267,4 +272,6 @@ __all__ = [
     "AsyncContent",
     "Integrations",
     "AsyncIntegrations",
+    "IntegrationsWorkspaces",
+    "AsyncIntegrationsWorkspaces",
 ]

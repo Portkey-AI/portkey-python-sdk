@@ -125,6 +125,8 @@ from portkey_ai.api_resources import (
     AsyncContent,
     Integrations,
     AsyncIntegrations,
+    IntegrationsWorkspaces,
+    AsyncIntegrationsWorkspaces,
 )
 
 from portkey_ai.version import VERSION
@@ -269,4 +271,6 @@ __all__ = [
     "AsyncContent",
     "Integrations",
     "AsyncIntegrations",
+    "IntegrationsWorkspaces",
+    "AsyncIntegrationsWorkspaces",
 ]

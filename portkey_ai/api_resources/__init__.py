@@ -113,6 +113,8 @@ from .apis import (
     AsyncContent,
     Integrations,
     AsyncIntegrations,
+    IntegrationsWorkspaces,
+    AsyncIntegrationsWorkspaces,
 )
 from .utils import (
     Modes,
@@ -261,4 +263,6 @@ __all__ = [
     "AsyncContent",
     "Integrations",
     "AsyncIntegrations",
+    "IntegrationsWorkspaces",
+    "AsyncIntegrationsWorkspaces",
 ]

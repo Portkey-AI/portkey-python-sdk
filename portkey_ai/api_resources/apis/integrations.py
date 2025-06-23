@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -9,6 +9,7 @@ from portkey_ai.api_resources.utils import PortkeyApiPaths
 class Integrations(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
+        self.workspaces = IntegrationsWorkspaces(client)
 
     def create(
         self,
@@ -126,9 +127,57 @@ class Integrations(APIResource):
         )
 
 
+class IntegrationsWorkspaces(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
+    def list(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+    ) -> GenericResponse:
+        return self._get(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def update(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+        global_workspace_access: Optional[Dict[str, Any]] = None,
+        workspace_ids: Optional[List[str]] = None,
+        override_existing_workspaces_access: Optional[bool] = None,
+        workspaces: Optional[List[Dict[str, Any]]] = None,
+        **kwargs: Any,
+    ) -> GenericResponse:
+        body = {
+            "global_workspace_access": global_workspace_access,
+            "workspace_ids": workspace_ids,
+            "override_existing_workspaces_access": override_existing_workspaces_access,
+            "workspaces": workspaces,
+            **kwargs,
+        }
+        return self._put(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            body=body,
+            params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
 class AsyncIntegrations(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
+        self.workspaces = AsyncIntegrationsWorkspaces(client)
 
     async def create(
         self,
@@ -239,6 +288,53 @@ class AsyncIntegrations(AsyncAPIResource):
             f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
             params=None,
             body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+
+class AsyncIntegrationsWorkspaces(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+
+    async def list(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+    ) -> GenericResponse:
+        return await self._get(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def update(
+        self,
+        *,
+        provider_integration_id: Optional[str] = None,
+        global_workspace_access: Optional[Dict[str, Any]] = None,
+        workspace_ids: Optional[List[str]] = None,
+        override_existing_workspaces_access: Optional[bool] = None,
+        workspaces: Optional[List[Dict[str, Any]]] = None,
+        **kwargs: Any,
+    ) -> GenericResponse:
+        body = {
+            "global_workspace_access": global_workspace_access,
+            "workspace_ids": workspace_ids,
+            "override_existing_workspaces_access": override_existing_workspaces_access,
+            "workspaces": workspaces,
+            **kwargs,
+        }
+        return await self._put(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            body=body,
+            params=None,
             cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
