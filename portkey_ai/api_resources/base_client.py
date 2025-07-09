@@ -589,10 +589,8 @@ class APIClient:
 
     def _build_request(self, options: Options) -> httpx.Request:
         headers = self._build_headers(options)
-        print("headers", headers)
         params = options.params
         json_body = options.json_body
-        print("json_body", json_body)
         request = self._client.build_request(
             method=options.method,
             url=options.url,
@@ -667,7 +665,6 @@ class APIClient:
         stream_cls: Type[StreamT],
     ) -> Union[ResponseT, StreamT]:
         request = self._build_request(options)
-        print(request)
         try:
             res = self._client.send(request, auth=self.custom_auth, stream=stream)
             res.raise_for_status()
