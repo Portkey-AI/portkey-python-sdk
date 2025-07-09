@@ -288,8 +288,20 @@ class Portkey(APIClient):
             **kwargs,
         )
 
-    def post(self, url: str, **kwargs):
-        return apis.Post(self).create(url=url, **kwargs)
+    def post(
+        self,
+        *,
+        path: Optional[str] = None,
+        url: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        **kwargs,
+    ):
+        path = path or url
+        return apis.PostMethod(self).create(
+            path=path, body=body, headers=headers, cast_to=cast_to, **kwargs
+        )
 
     def get(
         self,
@@ -605,8 +617,20 @@ class AsyncPortkey(AsyncAPIClient):
             **kwargs,
         )
 
-    async def post(self, url: str, **kwargs):
-        return await apis.AsyncPost(self).create(url=url, **kwargs)
+    async def post(
+        self,
+        *,
+        path: Optional[str] = None,
+        url: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        **kwargs,
+    ):
+        path = path or url
+        return await apis.AsyncPostMethod(self).create(
+            path=path, body=body, headers=headers, cast_to=cast_to, **kwargs
+        )
 
     async def get(
         self,
