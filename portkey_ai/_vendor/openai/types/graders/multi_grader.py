@@ -1,6 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Dict, Union
+from typing import Union
 from typing_extensions import Literal, TypeAlias
 
 from ..._models import BaseModel
@@ -19,10 +19,14 @@ class MultiGrader(BaseModel):
     calculate_output: str
     """A formula to calculate the output based on grader results."""
 
-    graders: Dict[str, Graders]
+    graders: Graders
+    """
+    A StringCheckGrader object that performs a string comparison between input and
+    reference using a specified operation.
+    """
 
     name: str
     """The name of the grader."""
 
     type: Literal["multi"]
-    """The type of grader."""
+    """The object type, which is always `multi`."""
