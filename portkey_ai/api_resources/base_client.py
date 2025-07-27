@@ -21,7 +21,7 @@ import platform
 
 from portkey_ai.api_resources.apis.create_headers import createHeaders
 from .global_constants import PORTKEY_HEADER_PREFIX, DEFAULT_CONNECTION_LIMITS
-from .utils import remove_empty_values, Options, set_base_url
+from .utils import remove_empty_values, Options, set_base_url, create_model_instance
 from .exceptions import (
     APIStatusError,
     APITimeoutError,
@@ -177,7 +177,7 @@ class APIClient:
             **kwargs,
         )
 
-        self.allHeaders = self._build_headers(Options.construct())
+        self.allHeaders = self._build_headers(create_model_instance(Options))
         self._client = http_client or httpx.Client(
             base_url=self.base_url,
             headers={
@@ -508,7 +508,7 @@ class APIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Options:
-        opts = Options.construct()
+        opts = create_model_instance(Options)
         opts.method = method
         opts.url = url
         json_body = body
@@ -528,7 +528,7 @@ class APIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Options:
-        opts = Options.construct()
+        opts = create_model_instance(Options)
         opts.method = method
         opts.url = url
         opts.files = files
@@ -890,7 +890,7 @@ class AsyncAPIClient:
             **kwargs,
         )
 
-        self.allHeaders = self._build_headers(Options.construct())
+        self.allHeaders = self._build_headers(create_model_instance(Options))
         self._client = http_client or AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
@@ -1221,7 +1221,7 @@ class AsyncAPIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Options:
-        opts = Options.construct()
+        opts = create_model_instance(Options)
         opts.method = method
         opts.url = url
         json_body = body
@@ -1241,7 +1241,7 @@ class AsyncAPIClient:
         params: Mapping[str, str],
         headers: Mapping[str, str],
     ) -> Options:
-        opts = Options.construct()
+        opts = create_model_instance(Options)
         opts.method = method
         opts.url = url
         opts.files = files
