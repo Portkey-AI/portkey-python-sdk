@@ -229,7 +229,9 @@ class VectorFiles(APIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        attributes: Union[Optional[Dict[str, Union[str, float, bool]]], NotGiven] = NOT_GIVEN,
+        attributes: Union[
+            Optional[Dict[str, Union[str, float, bool]]], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
@@ -286,7 +288,9 @@ class VectorFiles(APIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        attributes: Union[Optional[Dict[str, Union[str, float, bool]]], NotGiven] = NOT_GIVEN,
+        attributes: Union[
+            Optional[Dict[str, Union[str, float, bool]]], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
