@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import inspect
-from typing import Dict, List, Union, Iterable, Optional
+from typing import Dict, List, Type, Union, Iterable, Optional, cast
+from functools import partial
 from typing_extensions import Literal, overload
 
 import httpx
@@ -32,15 +33,23 @@ from ....types.chat import (
     completion_update_params,
 )
 from ...._base_client import AsyncPaginator, make_request_options
+from ....lib._parsing import (
+    ResponseFormatT,
+    validate_input_tools as _validate_input_tools,
+    parse_chat_completion as _parse_chat_completion,
+    type_to_response_format_param as _type_to_response_format,
+)
+from ....lib.streaming.chat import ChatCompletionStreamManager, AsyncChatCompletionStreamManager
 from ....types.shared.chat_model import ChatModel
 from ....types.chat.chat_completion import ChatCompletion
 from ....types.shared_params.metadata import Metadata
 from ....types.shared.reasoning_effort import ReasoningEffort
 from ....types.chat.chat_completion_chunk import ChatCompletionChunk
+from ....types.chat.parsed_chat_completion import ParsedChatCompletion
 from ....types.chat.chat_completion_deleted import ChatCompletionDeleted
-from ....types.chat.chat_completion_tool_param import ChatCompletionToolParam
 from ....types.chat.chat_completion_audio_param import ChatCompletionAudioParam
 from ....types.chat.chat_completion_message_param import ChatCompletionMessageParam
+from ....types.chat.chat_completion_tool_union_param import ChatCompletionToolUnionParam
 from ....types.chat.chat_completion_stream_options_param import ChatCompletionStreamOptionsParam
 from ....types.chat.chat_completion_prediction_content_param import ChatCompletionPredictionContentParam
 from ....types.chat.chat_completion_tool_choice_option_param import ChatCompletionToolChoiceOptionParam
@@ -72,6 +81,159 @@ class Completions(SyncAPIResource):
         """
         return CompletionsWithStreamingResponse(self)
 
+    def parse(
+        self,
+        *,
+        messages: Iterable[ChatCompletionMessageParam],
+        model: Union[str, ChatModel],
+        audio: Optional[ChatCompletionAudioParam] | NotGiven = NOT_GIVEN,
+        response_format: type[ResponseFormatT] | NotGiven = NOT_GIVEN,
+        frequency_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        function_call: completion_create_params.FunctionCall | NotGiven = NOT_GIVEN,
+        functions: Iterable[completion_create_params.Function] | NotGiven = NOT_GIVEN,
+        logit_bias: Optional[Dict[str, int]] | NotGiven = NOT_GIVEN,
+        logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
+        max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        metadata: Optional[Metadata] | NotGiven = NOT_GIVEN,
+        modalities: Optional[List[Literal["text", "audio"]]] | NotGiven = NOT_GIVEN,
+        n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
+        presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
+        reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
+        seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        store: Optional[bool] | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
+        temperature: Optional[float] | NotGiven = NOT_GIVEN,
+        tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
+        top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
+        top_p: Optional[float] | NotGiven = NOT_GIVEN,
+        user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
+        web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+    ) -> ParsedChatCompletion[ResponseFormatT]:
+        """Wrapper over the `client.chat.completions.create()` method that provides richer integrations with Python specific types
+        & returns a `ParsedChatCompletion` object, which is a subclass of the standard `ChatCompletion` class.
+
+        You can pass a pydantic model to this method and it will automatically convert the model
+        into a JSON schema, send it to the API and parse the response content back into the given model.
+
+        This method will also automatically parse `function` tool calls if:
+        - You use the `openai.pydantic_function_tool()` helper method
+        - You mark your tool schema with `"strict": True`
+
+        Example usage:
+        ```py
+        from pydantic import BaseModel
+        from openai import OpenAI
+
+
+        class Step(BaseModel):
+            explanation: str
+            output: str
+
+
+        class MathResponse(BaseModel):
+            steps: List[Step]
+            final_answer: str
+
+
+        client = OpenAI()
+        completion = client.chat.completions.parse(
+            model="gpt-4o-2024-08-06",
+            messages=[
+                {"role": "system", "content": "You are a helpful math tutor."},
+                {"role": "user", "content": "solve 8x + 31 = 2"},
+            ],
+            response_format=MathResponse,
+        )
+
+        message = completion.choices[0].message
+        if message.parsed:
+            print(message.parsed.steps)
+            print("answer: ", message.parsed.final_answer)
+        ```
+        """
+        chat_completion_tools = _validate_input_tools(tools)
+
+        extra_headers = {
+            "X-Stainless-Helper-Method": "chat.completions.parse",
+            **(extra_headers or {}),
+        }
+
+        def parser(raw_completion: ChatCompletion) -> ParsedChatCompletion[ResponseFormatT]:
+            return _parse_chat_completion(
+                response_format=response_format,
+                chat_completion=raw_completion,
+                input_tools=chat_completion_tools,
+            )
+
+        return self._post(
+            "/chat/completions",
+            body=maybe_transform(
+                {
+                    "messages": messages,
+                    "model": model,
+                    "audio": audio,
+                    "frequency_penalty": frequency_penalty,
+                    "function_call": function_call,
+                    "functions": functions,
+                    "logit_bias": logit_bias,
+                    "logprobs": logprobs,
+                    "max_completion_tokens": max_completion_tokens,
+                    "max_tokens": max_tokens,
+                    "metadata": metadata,
+                    "modalities": modalities,
+                    "n": n,
+                    "parallel_tool_calls": parallel_tool_calls,
+                    "prediction": prediction,
+                    "presence_penalty": presence_penalty,
+                    "prompt_cache_key": prompt_cache_key,
+                    "reasoning_effort": reasoning_effort,
+                    "response_format": _type_to_response_format(response_format),
+                    "safety_identifier": safety_identifier,
+                    "seed": seed,
+                    "service_tier": service_tier,
+                    "stop": stop,
+                    "store": store,
+                    "stream": False,
+                    "stream_options": stream_options,
+                    "temperature": temperature,
+                    "tool_choice": tool_choice,
+                    "tools": tools,
+                    "top_logprobs": top_logprobs,
+                    "top_p": top_p,
+                    "user": user,
+                    "verbosity": verbosity,
+                    "web_search_options": web_search_options,
+                },
+                completion_create_params.CompletionCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                post_parser=parser,
+            ),
+            # we turn the `ChatCompletion` instance into a `ParsedChatCompletion`
+            # in the `parser` function above
+            cast_to=cast(Type[ParsedChatCompletion[ResponseFormatT]], ChatCompletion),
+            stream=False,
+        )
+
     @overload
     def create(
         self,
@@ -92,20 +254,23 @@ class Completions(SyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -232,12 +397,15 @@ class Completions(SyncAPIResource):
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
 
-          reasoning_effort: **o-series models only**
+          prompt_cache_key: Used by OpenAI to cache responses for similar requests to optimize your cache
+              hit rates. Replaces the `user` field.
+              [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
 
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: An object specifying the format that the model must output.
 
@@ -250,29 +418,35 @@ class Completions(SyncAPIResource):
               ensures the message the model generates is valid JSON. Using `json_schema` is
               preferred for models that support it.
 
+          safety_identifier: A stable identifier used to help detect users of your application that may be
+              violating OpenAI's usage policies. The IDs should be a string that uniquely
+              identifies each user. We recommend hashing their username or email address, in
+              order to avoid sending us any identifying information.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
           seed: This feature is in Beta. If specified, our system will make a best effort to
               sample deterministically, such that repeated requests with the same `seed` and
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
 
-          service_tier: Specifies the latency tier to use for processing the request. This parameter is
-              relevant for customers subscribed to the scale tier service:
+          service_tier: Specifies the processing type used for serving the request.
 
-              - If set to 'auto', and the Project is Scale tier enabled, the system will
-                utilize scale tier credits until they are exhausted.
-              - If set to 'auto', and the Project is not Scale tier enabled, the request will
-                be processed using the default service tier with a lower uptime SLA and no
-                latency guarantee.
-              - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarantee.
-              - If set to 'flex', the request will be processed with the Flex Processing
-                service tier.
-                [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+              - If set to 'auto', then the request will be processed with the service tier
+                configured in the Project settings. Unless otherwise configured, the Project
+                will use 'default'.
+              - If set to 'default', then the request will be processed with the standard
+                pricing and performance for the selected model.
+              - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+                'priority', then the request will be processed with the corresponding service
+                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+                Priority processing.
               - When not set, the default behavior is 'auto'.
 
-              When this parameter is set, the response body will include the `service_tier`
-              utilized.
+              When the `service_tier` parameter is set, the response body will include the
+              `service_tier` value based on the processing mode actually used to serve the
+              request. This response value may be different from the value set in the
+              parameter.
 
           stop: Not supported with latest reasoning models `o3` and `o4-mini`.
 
@@ -282,6 +456,8 @@ class Completions(SyncAPIResource):
           store: Whether or not to store the output of this chat completion request for use in
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
+
+              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
 
           stream: If set to true, the model response data will be streamed to the client as it is
               generated using
@@ -309,9 +485,9 @@ class Completions(SyncAPIResource):
               `none` is the default when no tools are present. `auto` is the default if tools
               are present.
 
-          tools: A list of tools the model may call. Currently, only functions are supported as a
-              tool. Use this to provide a list of functions the model may generate JSON inputs
-              for. A max of 128 functions are supported.
+          tools: A list of tools the model may call. You can provide either
+              [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
+              or [function tools](https://platform.openai.com/docs/guides/function-calling).
 
           top_logprobs: An integer between 0 and 20 specifying the number of most likely tokens to
               return at each token position, each with an associated log probability.
@@ -323,9 +499,15 @@ class Completions(SyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A stable identifier for your end-users. Used to boost cache hit rates by better
-              bucketing similar requests and to help OpenAI detect and prevent abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+          user: This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use
+              `prompt_cache_key` instead to maintain caching optimizations. A stable
+              identifier for your end-users. Used to boost cache hit rates by better bucketing
+              similar requests and to help OpenAI detect and prevent abuse.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
+          verbosity: Constrains the verbosity of the model's response. Lower values will result in
+              more concise responses, while higher values will result in more verbose
+              responses. Currently supported values are `low`, `medium`, and `high`.
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
               about the
@@ -362,19 +544,22 @@ class Completions(SyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -510,12 +695,15 @@ class Completions(SyncAPIResource):
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
 
-          reasoning_effort: **o-series models only**
+          prompt_cache_key: Used by OpenAI to cache responses for similar requests to optimize your cache
+              hit rates. Replaces the `user` field.
+              [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
 
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: An object specifying the format that the model must output.
 
@@ -528,29 +716,35 @@ class Completions(SyncAPIResource):
               ensures the message the model generates is valid JSON. Using `json_schema` is
               preferred for models that support it.
 
+          safety_identifier: A stable identifier used to help detect users of your application that may be
+              violating OpenAI's usage policies. The IDs should be a string that uniquely
+              identifies each user. We recommend hashing their username or email address, in
+              order to avoid sending us any identifying information.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
           seed: This feature is in Beta. If specified, our system will make a best effort to
               sample deterministically, such that repeated requests with the same `seed` and
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
 
-          service_tier: Specifies the latency tier to use for processing the request. This parameter is
-              relevant for customers subscribed to the scale tier service:
+          service_tier: Specifies the processing type used for serving the request.
 
-              - If set to 'auto', and the Project is Scale tier enabled, the system will
-                utilize scale tier credits until they are exhausted.
-              - If set to 'auto', and the Project is not Scale tier enabled, the request will
-                be processed using the default service tier with a lower uptime SLA and no
-                latency guarantee.
-              - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarantee.
-              - If set to 'flex', the request will be processed with the Flex Processing
-                service tier.
-                [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+              - If set to 'auto', then the request will be processed with the service tier
+                configured in the Project settings. Unless otherwise configured, the Project
+                will use 'default'.
+              - If set to 'default', then the request will be processed with the standard
+                pricing and performance for the selected model.
+              - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+                'priority', then the request will be processed with the corresponding service
+                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+                Priority processing.
               - When not set, the default behavior is 'auto'.
 
-              When this parameter is set, the response body will include the `service_tier`
-              utilized.
+              When the `service_tier` parameter is set, the response body will include the
+              `service_tier` value based on the processing mode actually used to serve the
+              request. This response value may be different from the value set in the
+              parameter.
 
           stop: Not supported with latest reasoning models `o3` and `o4-mini`.
 
@@ -560,6 +754,8 @@ class Completions(SyncAPIResource):
           store: Whether or not to store the output of this chat completion request for use in
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
+
+              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -578,9 +774,9 @@ class Completions(SyncAPIResource):
               `none` is the default when no tools are present. `auto` is the default if tools
               are present.
 
-          tools: A list of tools the model may call. Currently, only functions are supported as a
-              tool. Use this to provide a list of functions the model may generate JSON inputs
-              for. A max of 128 functions are supported.
+          tools: A list of tools the model may call. You can provide either
+              [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
+              or [function tools](https://platform.openai.com/docs/guides/function-calling).
 
           top_logprobs: An integer between 0 and 20 specifying the number of most likely tokens to
               return at each token position, each with an associated log probability.
@@ -592,9 +788,15 @@ class Completions(SyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A stable identifier for your end-users. Used to boost cache hit rates by better
-              bucketing similar requests and to help OpenAI detect and prevent abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+          user: This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use
+              `prompt_cache_key` instead to maintain caching optimizations. A stable
+              identifier for your end-users. Used to boost cache hit rates by better bucketing
+              similar requests and to help OpenAI detect and prevent abuse.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
+          verbosity: Constrains the verbosity of the model's response. Lower values will result in
+              more concise responses, while higher values will result in more verbose
+              responses. Currently supported values are `low`, `medium`, and `high`.
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
               about the
@@ -631,19 +833,22 @@ class Completions(SyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -779,12 +984,15 @@ class Completions(SyncAPIResource):
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
 
-          reasoning_effort: **o-series models only**
+          prompt_cache_key: Used by OpenAI to cache responses for similar requests to optimize your cache
+              hit rates. Replaces the `user` field.
+              [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
 
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: An object specifying the format that the model must output.
 
@@ -797,29 +1005,35 @@ class Completions(SyncAPIResource):
               ensures the message the model generates is valid JSON. Using `json_schema` is
               preferred for models that support it.
 
+          safety_identifier: A stable identifier used to help detect users of your application that may be
+              violating OpenAI's usage policies. The IDs should be a string that uniquely
+              identifies each user. We recommend hashing their username or email address, in
+              order to avoid sending us any identifying information.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
           seed: This feature is in Beta. If specified, our system will make a best effort to
               sample deterministically, such that repeated requests with the same `seed` and
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
 
-          service_tier: Specifies the latency tier to use for processing the request. This parameter is
-              relevant for customers subscribed to the scale tier service:
+          service_tier: Specifies the processing type used for serving the request.
 
-              - If set to 'auto', and the Project is Scale tier enabled, the system will
-                utilize scale tier credits until they are exhausted.
-              - If set to 'auto', and the Project is not Scale tier enabled, the request will
-                be processed using the default service tier with a lower uptime SLA and no
-                latency guarantee.
-              - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarantee.
-              - If set to 'flex', the request will be processed with the Flex Processing
-                service tier.
-                [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+              - If set to 'auto', then the request will be processed with the service tier
+                configured in the Project settings. Unless otherwise configured, the Project
+                will use 'default'.
+              - If set to 'default', then the request will be processed with the standard
+                pricing and performance for the selected model.
+              - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+                'priority', then the request will be processed with the corresponding service
+                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+                Priority processing.
               - When not set, the default behavior is 'auto'.
 
-              When this parameter is set, the response body will include the `service_tier`
-              utilized.
+              When the `service_tier` parameter is set, the response body will include the
+              `service_tier` value based on the processing mode actually used to serve the
+              request. This response value may be different from the value set in the
+              parameter.
 
           stop: Not supported with latest reasoning models `o3` and `o4-mini`.
 
@@ -829,6 +1043,8 @@ class Completions(SyncAPIResource):
           store: Whether or not to store the output of this chat completion request for use in
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
+
+              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -847,9 +1063,9 @@ class Completions(SyncAPIResource):
               `none` is the default when no tools are present. `auto` is the default if tools
               are present.
 
-          tools: A list of tools the model may call. Currently, only functions are supported as a
-              tool. Use this to provide a list of functions the model may generate JSON inputs
-              for. A max of 128 functions are supported.
+          tools: A list of tools the model may call. You can provide either
+              [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
+              or [function tools](https://platform.openai.com/docs/guides/function-calling).
 
           top_logprobs: An integer between 0 and 20 specifying the number of most likely tokens to
               return at each token position, each with an associated log probability.
@@ -861,9 +1077,15 @@ class Completions(SyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A stable identifier for your end-users. Used to boost cache hit rates by better
-              bucketing similar requests and to help OpenAI detect and prevent abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+          user: This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use
+              `prompt_cache_key` instead to maintain caching optimizations. A stable
+              identifier for your end-users. Used to boost cache hit rates by better bucketing
+              similar requests and to help OpenAI detect and prevent abuse.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
+          verbosity: Constrains the verbosity of the model's response. Lower values will result in
+              more concise responses, while higher values will result in more verbose
+              responses. Currently supported values are `low`, `medium`, and `high`.
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
               about the
@@ -899,20 +1121,23 @@ class Completions(SyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -942,8 +1167,10 @@ class Completions(SyncAPIResource):
                     "parallel_tool_calls": parallel_tool_calls,
                     "prediction": prediction,
                     "presence_penalty": presence_penalty,
+                    "prompt_cache_key": prompt_cache_key,
                     "reasoning_effort": reasoning_effort,
                     "response_format": response_format,
+                    "safety_identifier": safety_identifier,
                     "seed": seed,
                     "service_tier": service_tier,
                     "stop": stop,
@@ -956,6 +1183,7 @@ class Completions(SyncAPIResource):
                     "top_logprobs": top_logprobs,
                     "top_p": top_p,
                     "user": user,
+                    "verbosity": verbosity,
                     "web_search_options": web_search_options,
                 },
                 completion_create_params.CompletionCreateParamsStreaming
@@ -1150,6 +1378,123 @@ class Completions(SyncAPIResource):
             cast_to=ChatCompletionDeleted,
         )
 
+    def stream(
+        self,
+        *,
+        messages: Iterable[ChatCompletionMessageParam],
+        model: Union[str, ChatModel],
+        audio: Optional[ChatCompletionAudioParam] | NotGiven = NOT_GIVEN,
+        response_format: completion_create_params.ResponseFormat | type[ResponseFormatT] | NotGiven = NOT_GIVEN,
+        frequency_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        function_call: completion_create_params.FunctionCall | NotGiven = NOT_GIVEN,
+        functions: Iterable[completion_create_params.Function] | NotGiven = NOT_GIVEN,
+        logit_bias: Optional[Dict[str, int]] | NotGiven = NOT_GIVEN,
+        logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
+        max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        metadata: Optional[Metadata] | NotGiven = NOT_GIVEN,
+        modalities: Optional[List[Literal["text", "audio"]]] | NotGiven = NOT_GIVEN,
+        n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
+        presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
+        reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
+        seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        store: Optional[bool] | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
+        temperature: Optional[float] | NotGiven = NOT_GIVEN,
+        tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
+        top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
+        top_p: Optional[float] | NotGiven = NOT_GIVEN,
+        user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
+        web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+    ) -> ChatCompletionStreamManager[ResponseFormatT]:
+        """Wrapper over the `client.chat.completions.create(stream=True)` method that provides a more granular event API
+        and automatic accumulation of each delta.
+
+        This also supports all of the parsing utilities that `.parse()` does.
+
+        Unlike `.create(stream=True)`, the `.stream()` method requires usage within a context manager to prevent accidental leakage of the response:
+
+        ```py
+        with client.chat.completions.stream(
+            model="gpt-4o-2024-08-06",
+            messages=[...],
+        ) as stream:
+            for event in stream:
+                if event.type == "content.delta":
+                    print(event.delta, flush=True, end="")
+        ```
+
+        When the context manager is entered, a `ChatCompletionStream` instance is returned which, like `.create(stream=True)` is an iterator. The full list of events that are yielded by the iterator are outlined in [these docs](https://github.com/openai/openai-python/blob/main/helpers.md#chat-completions-events).
+
+        When the context manager exits, the response will be closed, however the `stream` instance is still available outside
+        the context manager.
+        """
+        extra_headers = {
+            "X-Stainless-Helper-Method": "chat.completions.stream",
+            **(extra_headers or {}),
+        }
+
+        api_request: partial[Stream[ChatCompletionChunk]] = partial(
+            self.create,
+            messages=messages,
+            model=model,
+            audio=audio,
+            stream=True,
+            response_format=_type_to_response_format(response_format),
+            frequency_penalty=frequency_penalty,
+            function_call=function_call,
+            functions=functions,
+            logit_bias=logit_bias,
+            logprobs=logprobs,
+            max_completion_tokens=max_completion_tokens,
+            max_tokens=max_tokens,
+            metadata=metadata,
+            modalities=modalities,
+            n=n,
+            parallel_tool_calls=parallel_tool_calls,
+            prediction=prediction,
+            presence_penalty=presence_penalty,
+            prompt_cache_key=prompt_cache_key,
+            reasoning_effort=reasoning_effort,
+            safety_identifier=safety_identifier,
+            seed=seed,
+            service_tier=service_tier,
+            store=store,
+            stop=stop,
+            stream_options=stream_options,
+            temperature=temperature,
+            tool_choice=tool_choice,
+            tools=tools,
+            top_logprobs=top_logprobs,
+            top_p=top_p,
+            user=user,
+            verbosity=verbosity,
+            web_search_options=web_search_options,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        return ChatCompletionStreamManager(
+            api_request,
+            response_format=response_format,
+            input_tools=tools,
+        )
+
 
 class AsyncCompletions(AsyncAPIResource):
     @cached_property
@@ -1175,6 +1520,159 @@ class AsyncCompletions(AsyncAPIResource):
         """
         return AsyncCompletionsWithStreamingResponse(self)
 
+    async def parse(
+        self,
+        *,
+        messages: Iterable[ChatCompletionMessageParam],
+        model: Union[str, ChatModel],
+        audio: Optional[ChatCompletionAudioParam] | NotGiven = NOT_GIVEN,
+        response_format: type[ResponseFormatT] | NotGiven = NOT_GIVEN,
+        frequency_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        function_call: completion_create_params.FunctionCall | NotGiven = NOT_GIVEN,
+        functions: Iterable[completion_create_params.Function] | NotGiven = NOT_GIVEN,
+        logit_bias: Optional[Dict[str, int]] | NotGiven = NOT_GIVEN,
+        logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
+        max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        metadata: Optional[Metadata] | NotGiven = NOT_GIVEN,
+        modalities: Optional[List[Literal["text", "audio"]]] | NotGiven = NOT_GIVEN,
+        n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
+        presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
+        reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
+        seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        store: Optional[bool] | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
+        temperature: Optional[float] | NotGiven = NOT_GIVEN,
+        tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
+        top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
+        top_p: Optional[float] | NotGiven = NOT_GIVEN,
+        user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
+        web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+    ) -> ParsedChatCompletion[ResponseFormatT]:
+        """Wrapper over the `client.chat.completions.create()` method that provides richer integrations with Python specific types
+        & returns a `ParsedChatCompletion` object, which is a subclass of the standard `ChatCompletion` class.
+
+        You can pass a pydantic model to this method and it will automatically convert the model
+        into a JSON schema, send it to the API and parse the response content back into the given model.
+
+        This method will also automatically parse `function` tool calls if:
+        - You use the `openai.pydantic_function_tool()` helper method
+        - You mark your tool schema with `"strict": True`
+
+        Example usage:
+        ```py
+        from pydantic import BaseModel
+        from openai import AsyncOpenAI
+
+
+        class Step(BaseModel):
+            explanation: str
+            output: str
+
+
+        class MathResponse(BaseModel):
+            steps: List[Step]
+            final_answer: str
+
+
+        client = AsyncOpenAI()
+        completion = await client.chat.completions.parse(
+            model="gpt-4o-2024-08-06",
+            messages=[
+                {"role": "system", "content": "You are a helpful math tutor."},
+                {"role": "user", "content": "solve 8x + 31 = 2"},
+            ],
+            response_format=MathResponse,
+        )
+
+        message = completion.choices[0].message
+        if message.parsed:
+            print(message.parsed.steps)
+            print("answer: ", message.parsed.final_answer)
+        ```
+        """
+        _validate_input_tools(tools)
+
+        extra_headers = {
+            "X-Stainless-Helper-Method": "chat.completions.parse",
+            **(extra_headers or {}),
+        }
+
+        def parser(raw_completion: ChatCompletion) -> ParsedChatCompletion[ResponseFormatT]:
+            return _parse_chat_completion(
+                response_format=response_format,
+                chat_completion=raw_completion,
+                input_tools=tools,
+            )
+
+        return await self._post(
+            "/chat/completions",
+            body=await async_maybe_transform(
+                {
+                    "messages": messages,
+                    "model": model,
+                    "audio": audio,
+                    "frequency_penalty": frequency_penalty,
+                    "function_call": function_call,
+                    "functions": functions,
+                    "logit_bias": logit_bias,
+                    "logprobs": logprobs,
+                    "max_completion_tokens": max_completion_tokens,
+                    "max_tokens": max_tokens,
+                    "metadata": metadata,
+                    "modalities": modalities,
+                    "n": n,
+                    "parallel_tool_calls": parallel_tool_calls,
+                    "prediction": prediction,
+                    "presence_penalty": presence_penalty,
+                    "prompt_cache_key": prompt_cache_key,
+                    "reasoning_effort": reasoning_effort,
+                    "response_format": _type_to_response_format(response_format),
+                    "safety_identifier": safety_identifier,
+                    "seed": seed,
+                    "service_tier": service_tier,
+                    "store": store,
+                    "stop": stop,
+                    "stream": False,
+                    "stream_options": stream_options,
+                    "temperature": temperature,
+                    "tool_choice": tool_choice,
+                    "tools": tools,
+                    "top_logprobs": top_logprobs,
+                    "top_p": top_p,
+                    "user": user,
+                    "verbosity": verbosity,
+                    "web_search_options": web_search_options,
+                },
+                completion_create_params.CompletionCreateParams,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                post_parser=parser,
+            ),
+            # we turn the `ChatCompletion` instance into a `ParsedChatCompletion`
+            # in the `parser` function above
+            cast_to=cast(Type[ParsedChatCompletion[ResponseFormatT]], ChatCompletion),
+            stream=False,
+        )
+
     @overload
     async def create(
         self,
@@ -1195,20 +1693,23 @@ class AsyncCompletions(AsyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1335,12 +1836,15 @@ class AsyncCompletions(AsyncAPIResource):
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
 
-          reasoning_effort: **o-series models only**
+          prompt_cache_key: Used by OpenAI to cache responses for similar requests to optimize your cache
+              hit rates. Replaces the `user` field.
+              [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
 
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: An object specifying the format that the model must output.
 
@@ -1353,29 +1857,35 @@ class AsyncCompletions(AsyncAPIResource):
               ensures the message the model generates is valid JSON. Using `json_schema` is
               preferred for models that support it.
 
+          safety_identifier: A stable identifier used to help detect users of your application that may be
+              violating OpenAI's usage policies. The IDs should be a string that uniquely
+              identifies each user. We recommend hashing their username or email address, in
+              order to avoid sending us any identifying information.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
           seed: This feature is in Beta. If specified, our system will make a best effort to
               sample deterministically, such that repeated requests with the same `seed` and
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
 
-          service_tier: Specifies the latency tier to use for processing the request. This parameter is
-              relevant for customers subscribed to the scale tier service:
+          service_tier: Specifies the processing type used for serving the request.
 
-              - If set to 'auto', and the Project is Scale tier enabled, the system will
-                utilize scale tier credits until they are exhausted.
-              - If set to 'auto', and the Project is not Scale tier enabled, the request will
-                be processed using the default service tier with a lower uptime SLA and no
-                latency guarantee.
-              - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarantee.
-              - If set to 'flex', the request will be processed with the Flex Processing
-                service tier.
-                [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+              - If set to 'auto', then the request will be processed with the service tier
+                configured in the Project settings. Unless otherwise configured, the Project
+                will use 'default'.
+              - If set to 'default', then the request will be processed with the standard
+                pricing and performance for the selected model.
+              - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+                'priority', then the request will be processed with the corresponding service
+                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+                Priority processing.
               - When not set, the default behavior is 'auto'.
 
-              When this parameter is set, the response body will include the `service_tier`
-              utilized.
+              When the `service_tier` parameter is set, the response body will include the
+              `service_tier` value based on the processing mode actually used to serve the
+              request. This response value may be different from the value set in the
+              parameter.
 
           stop: Not supported with latest reasoning models `o3` and `o4-mini`.
 
@@ -1385,6 +1895,8 @@ class AsyncCompletions(AsyncAPIResource):
           store: Whether or not to store the output of this chat completion request for use in
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
+
+              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
 
           stream: If set to true, the model response data will be streamed to the client as it is
               generated using
@@ -1412,9 +1924,9 @@ class AsyncCompletions(AsyncAPIResource):
               `none` is the default when no tools are present. `auto` is the default if tools
               are present.
 
-          tools: A list of tools the model may call. Currently, only functions are supported as a
-              tool. Use this to provide a list of functions the model may generate JSON inputs
-              for. A max of 128 functions are supported.
+          tools: A list of tools the model may call. You can provide either
+              [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
+              or [function tools](https://platform.openai.com/docs/guides/function-calling).
 
           top_logprobs: An integer between 0 and 20 specifying the number of most likely tokens to
               return at each token position, each with an associated log probability.
@@ -1426,9 +1938,15 @@ class AsyncCompletions(AsyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A stable identifier for your end-users. Used to boost cache hit rates by better
-              bucketing similar requests and to help OpenAI detect and prevent abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+          user: This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use
+              `prompt_cache_key` instead to maintain caching optimizations. A stable
+              identifier for your end-users. Used to boost cache hit rates by better bucketing
+              similar requests and to help OpenAI detect and prevent abuse.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
+          verbosity: Constrains the verbosity of the model's response. Lower values will result in
+              more concise responses, while higher values will result in more verbose
+              responses. Currently supported values are `low`, `medium`, and `high`.
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
               about the
@@ -1465,19 +1983,22 @@ class AsyncCompletions(AsyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1613,12 +2134,15 @@ class AsyncCompletions(AsyncAPIResource):
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
 
-          reasoning_effort: **o-series models only**
+          prompt_cache_key: Used by OpenAI to cache responses for similar requests to optimize your cache
+              hit rates. Replaces the `user` field.
+              [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
 
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: An object specifying the format that the model must output.
 
@@ -1631,29 +2155,35 @@ class AsyncCompletions(AsyncAPIResource):
               ensures the message the model generates is valid JSON. Using `json_schema` is
               preferred for models that support it.
 
+          safety_identifier: A stable identifier used to help detect users of your application that may be
+              violating OpenAI's usage policies. The IDs should be a string that uniquely
+              identifies each user. We recommend hashing their username or email address, in
+              order to avoid sending us any identifying information.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
           seed: This feature is in Beta. If specified, our system will make a best effort to
               sample deterministically, such that repeated requests with the same `seed` and
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
 
-          service_tier: Specifies the latency tier to use for processing the request. This parameter is
-              relevant for customers subscribed to the scale tier service:
+          service_tier: Specifies the processing type used for serving the request.
 
-              - If set to 'auto', and the Project is Scale tier enabled, the system will
-                utilize scale tier credits until they are exhausted.
-              - If set to 'auto', and the Project is not Scale tier enabled, the request will
-                be processed using the default service tier with a lower uptime SLA and no
-                latency guarantee.
-              - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarantee.
-              - If set to 'flex', the request will be processed with the Flex Processing
-                service tier.
-                [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+              - If set to 'auto', then the request will be processed with the service tier
+                configured in the Project settings. Unless otherwise configured, the Project
+                will use 'default'.
+              - If set to 'default', then the request will be processed with the standard
+                pricing and performance for the selected model.
+              - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+                'priority', then the request will be processed with the corresponding service
+                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+                Priority processing.
               - When not set, the default behavior is 'auto'.
 
-              When this parameter is set, the response body will include the `service_tier`
-              utilized.
+              When the `service_tier` parameter is set, the response body will include the
+              `service_tier` value based on the processing mode actually used to serve the
+              request. This response value may be different from the value set in the
+              parameter.
 
           stop: Not supported with latest reasoning models `o3` and `o4-mini`.
 
@@ -1663,6 +2193,8 @@ class AsyncCompletions(AsyncAPIResource):
           store: Whether or not to store the output of this chat completion request for use in
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
+
+              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -1681,9 +2213,9 @@ class AsyncCompletions(AsyncAPIResource):
               `none` is the default when no tools are present. `auto` is the default if tools
               are present.
 
-          tools: A list of tools the model may call. Currently, only functions are supported as a
-              tool. Use this to provide a list of functions the model may generate JSON inputs
-              for. A max of 128 functions are supported.
+          tools: A list of tools the model may call. You can provide either
+              [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
+              or [function tools](https://platform.openai.com/docs/guides/function-calling).
 
           top_logprobs: An integer between 0 and 20 specifying the number of most likely tokens to
               return at each token position, each with an associated log probability.
@@ -1695,9 +2227,15 @@ class AsyncCompletions(AsyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A stable identifier for your end-users. Used to boost cache hit rates by better
-              bucketing similar requests and to help OpenAI detect and prevent abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+          user: This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use
+              `prompt_cache_key` instead to maintain caching optimizations. A stable
+              identifier for your end-users. Used to boost cache hit rates by better bucketing
+              similar requests and to help OpenAI detect and prevent abuse.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
+          verbosity: Constrains the verbosity of the model's response. Lower values will result in
+              more concise responses, while higher values will result in more verbose
+              responses. Currently supported values are `low`, `medium`, and `high`.
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
               about the
@@ -1734,19 +2272,22 @@ class AsyncCompletions(AsyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1882,12 +2423,15 @@ class AsyncCompletions(AsyncAPIResource):
               whether they appear in the text so far, increasing the model's likelihood to
               talk about new topics.
 
-          reasoning_effort: **o-series models only**
+          prompt_cache_key: Used by OpenAI to cache responses for similar requests to optimize your cache
+              hit rates. Replaces the `user` field.
+              [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
 
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: An object specifying the format that the model must output.
 
@@ -1900,29 +2444,35 @@ class AsyncCompletions(AsyncAPIResource):
               ensures the message the model generates is valid JSON. Using `json_schema` is
               preferred for models that support it.
 
+          safety_identifier: A stable identifier used to help detect users of your application that may be
+              violating OpenAI's usage policies. The IDs should be a string that uniquely
+              identifies each user. We recommend hashing their username or email address, in
+              order to avoid sending us any identifying information.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
           seed: This feature is in Beta. If specified, our system will make a best effort to
               sample deterministically, such that repeated requests with the same `seed` and
               parameters should return the same result. Determinism is not guaranteed, and you
               should refer to the `system_fingerprint` response parameter to monitor changes
               in the backend.
 
-          service_tier: Specifies the latency tier to use for processing the request. This parameter is
-              relevant for customers subscribed to the scale tier service:
+          service_tier: Specifies the processing type used for serving the request.
 
-              - If set to 'auto', and the Project is Scale tier enabled, the system will
-                utilize scale tier credits until they are exhausted.
-              - If set to 'auto', and the Project is not Scale tier enabled, the request will
-                be processed using the default service tier with a lower uptime SLA and no
-                latency guarantee.
-              - If set to 'default', the request will be processed using the default service
-                tier with a lower uptime SLA and no latency guarantee.
-              - If set to 'flex', the request will be processed with the Flex Processing
-                service tier.
-                [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+              - If set to 'auto', then the request will be processed with the service tier
+                configured in the Project settings. Unless otherwise configured, the Project
+                will use 'default'.
+              - If set to 'default', then the request will be processed with the standard
+                pricing and performance for the selected model.
+              - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+                'priority', then the request will be processed with the corresponding service
+                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+                Priority processing.
               - When not set, the default behavior is 'auto'.
 
-              When this parameter is set, the response body will include the `service_tier`
-              utilized.
+              When the `service_tier` parameter is set, the response body will include the
+              `service_tier` value based on the processing mode actually used to serve the
+              request. This response value may be different from the value set in the
+              parameter.
 
           stop: Not supported with latest reasoning models `o3` and `o4-mini`.
 
@@ -1932,6 +2482,8 @@ class AsyncCompletions(AsyncAPIResource):
           store: Whether or not to store the output of this chat completion request for use in
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
+
+              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -1950,9 +2502,9 @@ class AsyncCompletions(AsyncAPIResource):
               `none` is the default when no tools are present. `auto` is the default if tools
               are present.
 
-          tools: A list of tools the model may call. Currently, only functions are supported as a
-              tool. Use this to provide a list of functions the model may generate JSON inputs
-              for. A max of 128 functions are supported.
+          tools: A list of tools the model may call. You can provide either
+              [custom tools](https://platform.openai.com/docs/guides/function-calling#custom-tools)
+              or [function tools](https://platform.openai.com/docs/guides/function-calling).
 
           top_logprobs: An integer between 0 and 20 specifying the number of most likely tokens to
               return at each token position, each with an associated log probability.
@@ -1964,9 +2516,15 @@ class AsyncCompletions(AsyncAPIResource):
 
               We generally recommend altering this or `temperature` but not both.
 
-          user: A stable identifier for your end-users. Used to boost cache hit rates by better
-              bucketing similar requests and to help OpenAI detect and prevent abuse.
-              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+          user: This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use
+              `prompt_cache_key` instead to maintain caching optimizations. A stable
+              identifier for your end-users. Used to boost cache hit rates by better bucketing
+              similar requests and to help OpenAI detect and prevent abuse.
+              [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+
+          verbosity: Constrains the verbosity of the model's response. Lower values will result in
+              more concise responses, while higher values will result in more verbose
+              responses. Currently supported values are `low`, `medium`, and `high`.
 
           web_search_options: This tool searches the web for relevant results to use in a response. Learn more
               about the
@@ -2002,20 +2560,23 @@ class AsyncCompletions(AsyncAPIResource):
         parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
         prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
         presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
         reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
-        service_tier: Optional[Literal["auto", "default", "flex"]] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
         stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
         tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
-        tools: Iterable[ChatCompletionToolParam] | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
         top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
         top_p: Optional[float] | NotGiven = NOT_GIVEN,
         user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
         web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -2045,8 +2606,10 @@ class AsyncCompletions(AsyncAPIResource):
                     "parallel_tool_calls": parallel_tool_calls,
                     "prediction": prediction,
                     "presence_penalty": presence_penalty,
+                    "prompt_cache_key": prompt_cache_key,
                     "reasoning_effort": reasoning_effort,
                     "response_format": response_format,
+                    "safety_identifier": safety_identifier,
                     "seed": seed,
                     "service_tier": service_tier,
                     "stop": stop,
@@ -2059,6 +2622,7 @@ class AsyncCompletions(AsyncAPIResource):
                     "top_logprobs": top_logprobs,
                     "top_p": top_p,
                     "user": user,
+                    "verbosity": verbosity,
                     "web_search_options": web_search_options,
                 },
                 completion_create_params.CompletionCreateParamsStreaming
@@ -2253,11 +2817,132 @@ class AsyncCompletions(AsyncAPIResource):
             cast_to=ChatCompletionDeleted,
         )
 
+    def stream(
+        self,
+        *,
+        messages: Iterable[ChatCompletionMessageParam],
+        model: Union[str, ChatModel],
+        audio: Optional[ChatCompletionAudioParam] | NotGiven = NOT_GIVEN,
+        response_format: completion_create_params.ResponseFormat | type[ResponseFormatT] | NotGiven = NOT_GIVEN,
+        frequency_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        function_call: completion_create_params.FunctionCall | NotGiven = NOT_GIVEN,
+        functions: Iterable[completion_create_params.Function] | NotGiven = NOT_GIVEN,
+        logit_bias: Optional[Dict[str, int]] | NotGiven = NOT_GIVEN,
+        logprobs: Optional[bool] | NotGiven = NOT_GIVEN,
+        max_completion_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        max_tokens: Optional[int] | NotGiven = NOT_GIVEN,
+        metadata: Optional[Metadata] | NotGiven = NOT_GIVEN,
+        modalities: Optional[List[Literal["text", "audio"]]] | NotGiven = NOT_GIVEN,
+        n: Optional[int] | NotGiven = NOT_GIVEN,
+        parallel_tool_calls: bool | NotGiven = NOT_GIVEN,
+        prediction: Optional[ChatCompletionPredictionContentParam] | NotGiven = NOT_GIVEN,
+        presence_penalty: Optional[float] | NotGiven = NOT_GIVEN,
+        prompt_cache_key: str | NotGiven = NOT_GIVEN,
+        reasoning_effort: Optional[ReasoningEffort] | NotGiven = NOT_GIVEN,
+        safety_identifier: str | NotGiven = NOT_GIVEN,
+        seed: Optional[int] | NotGiven = NOT_GIVEN,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        store: Optional[bool] | NotGiven = NOT_GIVEN,
+        stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
+        temperature: Optional[float] | NotGiven = NOT_GIVEN,
+        tool_choice: ChatCompletionToolChoiceOptionParam | NotGiven = NOT_GIVEN,
+        tools: Iterable[ChatCompletionToolUnionParam] | NotGiven = NOT_GIVEN,
+        top_logprobs: Optional[int] | NotGiven = NOT_GIVEN,
+        top_p: Optional[float] | NotGiven = NOT_GIVEN,
+        user: str | NotGiven = NOT_GIVEN,
+        verbosity: Optional[Literal["low", "medium", "high"]] | NotGiven = NOT_GIVEN,
+        web_search_options: completion_create_params.WebSearchOptions | NotGiven = NOT_GIVEN,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+    ) -> AsyncChatCompletionStreamManager[ResponseFormatT]:
+        """Wrapper over the `client.chat.completions.create(stream=True)` method that provides a more granular event API
+        and automatic accumulation of each delta.
+
+        This also supports all of the parsing utilities that `.parse()` does.
+
+        Unlike `.create(stream=True)`, the `.stream()` method requires usage within a context manager to prevent accidental leakage of the response:
+
+        ```py
+        async with client.chat.completions.stream(
+            model="gpt-4o-2024-08-06",
+            messages=[...],
+        ) as stream:
+            async for event in stream:
+                if event.type == "content.delta":
+                    print(event.delta, flush=True, end="")
+        ```
+
+        When the context manager is entered, an `AsyncChatCompletionStream` instance is returned which, like `.create(stream=True)` is an async iterator. The full list of events that are yielded by the iterator are outlined in [these docs](https://github.com/openai/openai-python/blob/main/helpers.md#chat-completions-events).
+
+        When the context manager exits, the response will be closed, however the `stream` instance is still available outside
+        the context manager.
+        """
+        _validate_input_tools(tools)
+
+        extra_headers = {
+            "X-Stainless-Helper-Method": "chat.completions.stream",
+            **(extra_headers or {}),
+        }
+
+        api_request = self.create(
+            messages=messages,
+            model=model,
+            audio=audio,
+            stream=True,
+            response_format=_type_to_response_format(response_format),
+            frequency_penalty=frequency_penalty,
+            function_call=function_call,
+            functions=functions,
+            logit_bias=logit_bias,
+            logprobs=logprobs,
+            max_completion_tokens=max_completion_tokens,
+            max_tokens=max_tokens,
+            metadata=metadata,
+            modalities=modalities,
+            n=n,
+            parallel_tool_calls=parallel_tool_calls,
+            prediction=prediction,
+            presence_penalty=presence_penalty,
+            prompt_cache_key=prompt_cache_key,
+            reasoning_effort=reasoning_effort,
+            safety_identifier=safety_identifier,
+            seed=seed,
+            service_tier=service_tier,
+            stop=stop,
+            store=store,
+            stream_options=stream_options,
+            temperature=temperature,
+            tool_choice=tool_choice,
+            tools=tools,
+            top_logprobs=top_logprobs,
+            top_p=top_p,
+            user=user,
+            verbosity=verbosity,
+            web_search_options=web_search_options,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+        return AsyncChatCompletionStreamManager(
+            api_request,
+            response_format=response_format,
+            input_tools=tools,
+        )
+
 
 class CompletionsWithRawResponse:
     def __init__(self, completions: Completions) -> None:
         self._completions = completions
 
+        self.parse = _legacy_response.to_raw_response_wrapper(
+            completions.parse,
+        )
         self.create = _legacy_response.to_raw_response_wrapper(
             completions.create,
         )
@@ -2283,6 +2968,9 @@ class AsyncCompletionsWithRawResponse:
     def __init__(self, completions: AsyncCompletions) -> None:
         self._completions = completions
 
+        self.parse = _legacy_response.async_to_raw_response_wrapper(
+            completions.parse,
+        )
         self.create = _legacy_response.async_to_raw_response_wrapper(
             completions.create,
         )
@@ -2308,6 +2996,9 @@ class CompletionsWithStreamingResponse:
     def __init__(self, completions: Completions) -> None:
         self._completions = completions
 
+        self.parse = to_streamed_response_wrapper(
+            completions.parse,
+        )
         self.create = to_streamed_response_wrapper(
             completions.create,
         )
@@ -2333,6 +3024,9 @@ class AsyncCompletionsWithStreamingResponse:
     def __init__(self, completions: AsyncCompletions) -> None:
         self._completions = completions
 
+        self.parse = async_to_streamed_response_wrapper(
+            completions.parse,
+        )
         self.create = async_to_streamed_response_wrapper(
             completions.create,
         )
@@ -2357,5 +3051,5 @@ class AsyncCompletionsWithStreamingResponse:
 def validate_response_format(response_format: object) -> None:
     if inspect.isclass(response_format) and issubclass(response_format, pydantic.BaseModel):
         raise TypeError(
-            "You tried to pass a `BaseModel` class to `chat.completions.create()`; You must use `beta.chat.completions.parse()` instead"
+            "You tried to pass a `BaseModel` class to `chat.completions.create()`; You must use `chat.completions.parse()` instead"
         )

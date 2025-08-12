@@ -9,15 +9,20 @@ from .tool_param import ToolParam
 from .response_includable import ResponseIncludable
 from .tool_choice_options import ToolChoiceOptions
 from .response_input_param import ResponseInputParam
+from .response_prompt_param import ResponsePromptParam
+from .tool_choice_mcp_param import ToolChoiceMcpParam
 from ..shared_params.metadata import Metadata
 from .tool_choice_types_param import ToolChoiceTypesParam
 from ..shared_params.reasoning import Reasoning
+from .tool_choice_custom_param import ToolChoiceCustomParam
+from .tool_choice_allowed_param import ToolChoiceAllowedParam
 from .response_text_config_param import ResponseTextConfigParam
 from .tool_choice_function_param import ToolChoiceFunctionParam
 from ..shared_params.responses_model import ResponsesModel
 
 __all__ = [
     "ResponseCreateParamsBase",
+    "StreamOptions",
     "ToolChoice",
     "ResponseCreateParamsNonStreaming",
     "ResponseCreateParamsStreaming",
@@ -25,7 +30,33 @@ __all__ = [
 
 
 class ResponseCreateParamsBase(TypedDict, total=False):
-    input: Required[Union[str, ResponseInputParam]]
+    background: Optional[bool]
+    """
+    Whether to run the model response in the background.
+    [Learn more](https://platform.openai.com/docs/guides/background).
+    """
+
+    include: Optional[List[ResponseIncludable]]
+    """Specify additional output data to include in the model response.
+
+    Currently supported values are:
+
+    - `code_interpreter_call.outputs`: Includes the outputs of python code execution
+      in code interpreter tool call items.
+    - `computer_call_output.output.image_url`: Include image urls from the computer
+      call output.
+    - `file_search_call.results`: Include the search results of the file search tool
+      call.
+    - `message.input_image.image_url`: Include image urls from the input message.
+    - `message.output_text.logprobs`: Include logprobs with assistant messages.
+    - `reasoning.encrypted_content`: Includes an encrypted version of reasoning
+      tokens in reasoning item outputs. This enables reasoning items to be used in
+      multi-turn conversations when using the Responses API statelessly (like when
+      the `store` parameter is set to `false`, or when an organization is enrolled
+      in the zero data retention program).
+    """
+
+    input: Union[str, ResponseInputParam]
     """Text, image, or file inputs to the model, used to generate a response.
 
     Learn more:
@@ -37,44 +68,8 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     - [Function calling](https://platform.openai.com/docs/guides/function-calling)
     """
 
-    model: Required[ResponsesModel]
-    """Model ID used to generate the response, like `gpt-4o` or `o3`.
-
-    OpenAI offers a wide range of models with different capabilities, performance
-    characteristics, and price points. Refer to the
-    [model guide](https://platform.openai.com/docs/models) to browse and compare
-    available models.
-    """
-
-    background: Optional[bool]
-    """Whether to run the model response in the background.
-
-    [Learn more](https://platform.openai.com/docs/guides/background).
-    """
-
-    include: Optional[List[ResponseIncludable]]
-    """Specify additional output data to include in the model response.
-
-    Currently supported values are:
-
-    - `file_search_call.results`: Include the search results of the file search tool
-      call.
-    - `message.input_image.image_url`: Include image urls from the input message.
-    - `computer_call_output.output.image_url`: Include image urls from the computer
-      call output.
-    - `reasoning.encrypted_content`: Includes an encrypted version of reasoning
-      tokens in reasoning item outputs. This enables reasoning items to be used in
-      multi-turn conversations when using the Responses API statelessly (like when
-      the `store` parameter is set to `false`, or when an organization is enrolled
-      in the zero data retention program).
-    - `code_interpreter_call.outputs`: Includes the outputs of python code execution
-      in code interpreter tool call items.
-    """
-
     instructions: Optional[str]
-    """
-    Inserts a system (or developer) message as the first item in the model's
-    context.
+    """A system (or developer) message inserted into the model's context.
 
     When using along with `previous_response_id`, the instructions from a previous
     response will not be carried over to the next response. This makes it simple to
@@ -88,6 +83,14 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     [reasoning tokens](https://platform.openai.com/docs/guides/reasoning).
     """
 
+    max_tool_calls: Optional[int]
+    """
+    The maximum number of total calls to built-in tools that can be processed in a
+    response. This maximum number applies across all built-in tool calls, not per
+    individual tool. Any further attempts to call a tool by the model will be
+    ignored.
+    """
+
     metadata: Optional[Metadata]
     """Set of 16 key-value pairs that can be attached to an object.
 
@@ -96,6 +99,15 @@ class ResponseCreateParamsBase(TypedDict, total=False):
 
     Keys are strings with a maximum length of 64 characters. Values are strings with
     a maximum length of 512 characters.
+    """
+
+    model: ResponsesModel
+    """Model ID used to generate the response, like `gpt-4o` or `o3`.
+
+    OpenAI offers a wide range of models with different capabilities, performance
+    characteristics, and price points. Refer to the
+    [model guide](https://platform.openai.com/docs/models) to browse and compare
+    available models.
     """
 
     parallel_tool_calls: Optional[bool]
@@ -108,6 +120,19 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     [conversation state](https://platform.openai.com/docs/guides/conversation-state).
     """
 
+    prompt: Optional[ResponsePromptParam]
+    """Reference to a prompt template and its variables.
+
+    [Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).
+    """
+
+    prompt_cache_key: str
+    """
+    Used by OpenAI to cache responses for similar requests to optimize your cache
+    hit rates. Replaces the `user` field.
+    [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
+    """
+
     reasoning: Optional[Reasoning]
     """**o-series models only**
 
@@ -115,29 +140,40 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
     """
 
-    service_tier: Optional[Literal["auto", "default", "flex"]]
-    """Specifies the latency tier to use for processing the request.
+    safety_identifier: str
+    """
+    A stable identifier used to help detect users of your application that may be
+    violating OpenAI's usage policies. The IDs should be a string that uniquely
+    identifies each user. We recommend hashing their username or email address, in
+    order to avoid sending us any identifying information.
+    [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+    """
 
-    This parameter is relevant for customers subscribed to the scale tier service:
+    service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]]
+    """Specifies the processing type used for serving the request.
 
-    - If set to 'auto', and the Project is Scale tier enabled, the system will
-      utilize scale tier credits until they are exhausted.
-    - If set to 'auto', and the Project is not Scale tier enabled, the request will
-      be processed using the default service tier with a lower uptime SLA and no
-      latency guarantee.
-    - If set to 'default', the request will be processed using the default service
-      tier with a lower uptime SLA and no latency guarantee.
-    - If set to 'flex', the request will be processed with the Flex Processing
-      service tier.
-      [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+    - If set to 'auto', then the request will be processed with the service tier
+      configured in the Project settings. Unless otherwise configured, the Project
+      will use 'default'.
+    - If set to 'default', then the request will be processed with the standard
+      pricing and performance for the selected model.
+    - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+      'priority', then the request will be processed with the corresponding service
+      tier. [Contact sales](https://openai.com/contact-sales) to learn more about
+      Priority processing.
     - When not set, the default behavior is 'auto'.
 
-    When this parameter is set, the response body will include the `service_tier`
-    utilized.
+    When the `service_tier` parameter is set, the response body will include the
+    `service_tier` value based on the processing mode actually used to serve the
+    request. This response value may be different from the value set in the
+    parameter.
     """
 
     store: Optional[bool]
     """Whether to store the generated model response for later retrieval via API."""
+
+    stream_options: Optional[StreamOptions]
+    """Options for streaming responses. Only set this when you set `stream: true`."""
 
     temperature: Optional[float]
     """What sampling temperature to use, between 0 and 2.
@@ -177,8 +213,16 @@ class ResponseCreateParamsBase(TypedDict, total=False):
       Learn more about
       [built-in tools](https://platform.openai.com/docs/guides/tools).
     - **Function calls (custom tools)**: Functions that are defined by you, enabling
-      the model to call your own code. Learn more about
+      the model to call your own code with strongly typed arguments and outputs.
+      Learn more about
       [function calling](https://platform.openai.com/docs/guides/function-calling).
+      You can also use custom tools to call your own code.
+    """
+
+    top_logprobs: Optional[int]
+    """
+    An integer between 0 and 20 specifying the number of most likely tokens to
+    return at each token position, each with an associated log probability.
     """
 
     top_p: Optional[float]
@@ -201,15 +245,36 @@ class ResponseCreateParamsBase(TypedDict, total=False):
     """
 
     user: str
-    """A stable identifier for your end-users.
+    """This field is being replaced by `safety_identifier` and `prompt_cache_key`.
 
-    Used to boost cache hit rates by better bucketing similar requests and to help
-    OpenAI detect and prevent abuse.
-    [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+    Use `prompt_cache_key` instead to maintain caching optimizations. A stable
+    identifier for your end-users. Used to boost cache hit rates by better bucketing
+    similar requests and to help OpenAI detect and prevent abuse.
+    [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
     """
 
 
-ToolChoice: TypeAlias = Union[ToolChoiceOptions, ToolChoiceTypesParam, ToolChoiceFunctionParam]
+class StreamOptions(TypedDict, total=False):
+    include_obfuscation: bool
+    """When true, stream obfuscation will be enabled.
+
+    Stream obfuscation adds random characters to an `obfuscation` field on streaming
+    delta events to normalize payload sizes as a mitigation to certain side-channel
+    attacks. These obfuscation fields are included by default, but add a small
+    amount of overhead to the data stream. You can set `include_obfuscation` to
+    false to optimize for bandwidth if you trust the network links between your
+    application and the OpenAI API.
+    """
+
+
+ToolChoice: TypeAlias = Union[
+    ToolChoiceOptions,
+    ToolChoiceAllowedParam,
+    ToolChoiceTypesParam,
+    ToolChoiceFunctionParam,
+    ToolChoiceMcpParam,
+    ToolChoiceCustomParam,
+]
 
 
 class ResponseCreateParamsNonStreaming(ResponseCreateParamsBase, total=False):

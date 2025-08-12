@@ -6,10 +6,10 @@ from typing import Dict, Union, Iterable, Optional
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
 from ..shared_params.metadata import Metadata
-from ..chat.chat_completion_tool_param import ChatCompletionToolParam
 from ..responses.easy_input_message_param import EasyInputMessageParam
 from ..shared_params.response_format_text import ResponseFormatText
 from ..responses.response_input_text_param import ResponseInputTextParam
+from ..chat.chat_completion_function_tool_param import ChatCompletionFunctionToolParam
 from ..shared_params.response_format_json_object import ResponseFormatJSONObject
 from ..shared_params.response_format_json_schema import ResponseFormatJSONSchema
 
@@ -26,6 +26,7 @@ __all__ = [
     "InputMessagesTemplateTemplateMessage",
     "InputMessagesTemplateTemplateMessageContent",
     "InputMessagesTemplateTemplateMessageContentOutputText",
+    "InputMessagesTemplateTemplateMessageContentInputImage",
     "InputMessagesItemReference",
     "SamplingParams",
     "SamplingParamsResponseFormat",
@@ -92,14 +93,32 @@ class InputMessagesTemplateTemplateMessageContentOutputText(TypedDict, total=Fal
     """The type of the output text. Always `output_text`."""
 
 
+class InputMessagesTemplateTemplateMessageContentInputImage(TypedDict, total=False):
+    image_url: Required[str]
+    """The URL of the image input."""
+
+    type: Required[Literal["input_image"]]
+    """The type of the image input. Always `input_image`."""
+
+    detail: str
+    """The detail level of the image to be sent to the model.
+
+    One of `high`, `low`, or `auto`. Defaults to `auto`.
+    """
+
+
 InputMessagesTemplateTemplateMessageContent: TypeAlias = Union[
-    str, ResponseInputTextParam, InputMessagesTemplateTemplateMessageContentOutputText
+    str,
+    ResponseInputTextParam,
+    InputMessagesTemplateTemplateMessageContentOutputText,
+    InputMessagesTemplateTemplateMessageContentInputImage,
+    Iterable[object],
 ]
 
 
 class InputMessagesTemplateTemplateMessage(TypedDict, total=False):
     content: Required[InputMessagesTemplateTemplateMessageContent]
-    """Text inputs to the model - can contain template strings."""
+    """Inputs to the model - can contain template strings."""
 
     role: Required[Literal["user", "assistant", "system", "developer"]]
     """The role of the message input.
@@ -161,7 +180,7 @@ class SamplingParams(TypedDict, total=False):
     temperature: float
     """A higher temperature increases randomness in the outputs."""
 
-    tools: Iterable[ChatCompletionToolParam]
+    tools: Iterable[ChatCompletionFunctionToolParam]
     """A list of tools the model may call.
 
     Currently, only functions are supported as a tool. Use this to provide a list of

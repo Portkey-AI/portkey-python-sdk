@@ -5,11 +5,12 @@ from __future__ import annotations
 from typing import Dict, List, Union, Optional
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from ..chat import ChatCompletionFunctionToolParam
+from .custom_tool_param import CustomToolParam
 from .computer_tool_param import ComputerToolParam
 from .function_tool_param import FunctionToolParam
 from .web_search_tool_param import WebSearchToolParam
 from .file_search_tool_param import FileSearchToolParam
-from ..chat.chat_completion_tool_param import ChatCompletionToolParam
 
 __all__ = [
     "ToolParam",
@@ -80,6 +81,9 @@ class Mcp(TypedDict, total=False):
     require_approval: Optional[McpRequireApproval]
     """Specify which of the MCP server's tools require approval."""
 
+    server_description: str
+    """Optional description of the MCP server, used to provide more context."""
+
 
 class CodeInterpreterContainerCodeInterpreterToolAuto(TypedDict, total=False):
     type: Required[Literal["auto"]]
@@ -120,6 +124,13 @@ class ImageGeneration(TypedDict, total=False):
     """Background type for the generated image.
 
     One of `transparent`, `opaque`, or `auto`. Default: `auto`.
+    """
+
+    input_fidelity: Optional[Literal["high", "low"]]
+    """
+    Control how much effort the model will exert to match the style and features,
+    especially facial features, of input images. This parameter is only supported
+    for `gpt-image-1`. Supports `high` and `low`. Defaults to `low`.
     """
 
     input_image_mask: ImageGenerationInputImageMask
@@ -176,7 +187,8 @@ ToolParam: TypeAlias = Union[
     CodeInterpreter,
     ImageGeneration,
     LocalShell,
+    CustomToolParam,
 ]
 
 
-ParseableToolParam: TypeAlias = Union[ToolParam, ChatCompletionToolParam]
+ParseableToolParam: TypeAlias = Union[ToolParam, ChatCompletionFunctionToolParam]
