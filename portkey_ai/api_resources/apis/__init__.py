@@ -129,6 +129,8 @@ from .containers import (
     AsyncContent,
 )
 
+from .webhooks import Webhooks, AsyncWebhooks
+
 from .configs import Configs, AsyncConfigs
 
 from .api_keys import ApiKeys, AsyncApiKeys
@@ -263,4 +265,6 @@ __all__ = [
     "AsyncContainersFiles",
     "Content",
     "AsyncContent",
+    "Webhooks",
+    "AsyncWebhooks",
 ]
