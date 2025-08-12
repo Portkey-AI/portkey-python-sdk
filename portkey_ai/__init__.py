@@ -123,6 +123,8 @@ from portkey_ai.api_resources import (
     AsyncContainersFiles,
     Content,
     AsyncContent,
+    Webhooks,
+    AsyncWebhooks,
 )
 
 from portkey_ai.version import VERSION
@@ -265,4 +267,6 @@ __all__ = [
     "AsyncContainersFiles",
     "Content",
     "AsyncContent",
+    "Webhooks",
+    "AsyncWebhooks",
 ]
