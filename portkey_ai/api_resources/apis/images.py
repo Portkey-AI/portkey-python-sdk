@@ -1,7 +1,8 @@
 import json
-from typing import Literal, Optional, Union, Any
+from typing import List, Literal, Optional, Union
 import typing
 from portkey_ai._vendor.openai._streaming import AsyncStream, Stream
+from portkey_ai._vendor.openai.types.image_edit_stream_event import ImageEditStreamEvent
 from portkey_ai._vendor.openai.types.image_gen_stream_event import ImageGenStreamEvent
 from portkey_ai._vendor.openai.types.images_response import (
     ImagesResponse as OpenAIImagesResponse,
@@ -9,7 +10,7 @@ from portkey_ai._vendor.openai.types.images_response import (
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.image_type import ImagesResponse
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import FileTypes, NotGiven, NOT_GIVEN
 from typing_extensions import overload
 
 
@@ -44,35 +45,121 @@ class Images(APIResource):
 
         return data
 
-    @typing.no_type_check
+    @overload
     def edit(
         self,
         *,
+        image: Union[FileTypes, List[FileTypes]],
         prompt: str,
-        image,
-        mask: Union[Any, NotGiven] = NOT_GIVEN,
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
         model: Union[str, NotGiven] = NOT_GIVEN,
-        n: Union[int, NotGiven] = NOT_GIVEN,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
-        size: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        stream: Union[Optional[Literal[False]], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> ImagesResponse:
-        response = self.openai_client.with_raw_response.images.edit(
-            prompt=prompt,
+    ) -> OpenAIImagesResponse:
+        ...
+
+    @overload
+    def edit(
+        self,
+        *,
+        image: Union[FileTypes, List[FileTypes]],
+        prompt: str,
+        stream: Literal[True],
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs
+    ) -> Stream[ImageEditStreamEvent]:
+        ...
+
+    @overload
+    def edit(
+        self,
+        *,
+        image: Union[FileTypes, List[FileTypes]],
+        prompt: str,
+        stream: bool,
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs
+    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent]]:
+        ...
+
+    def edit(
+        self,
+        *,
+        image: Union[FileTypes, List[FileTypes]],
+        prompt: str,
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        stream: Union[Optional[Literal[False]], Literal[True], NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs
+    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent]]:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        return self.openai_client.images.edit(  # type: ignore[misc]
             image=image,
+            prompt=prompt,
+            background=background,  # type: ignore[arg-type]
+            input_fidelity=input_fidelity,  # type: ignore[arg-type]
             mask=mask,
             model=model,
             n=n,
-            response_format=response_format,
-            size=size,
+            output_compression=output_compression,
+            output_format=output_format,  # type: ignore[arg-type]
+            partial_images=partial_images,
+            quality=quality,  # type: ignore[arg-type]
+            response_format=response_format,  # type: ignore[arg-type]
+            size=size,  # type: ignore[arg-type]
+            stream=stream,  # type: ignore[arg-type]
             user=user,
-            extra_body=kwargs,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
-        data = ImagesResponse(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
 
     @overload
     def generate(
@@ -217,35 +304,121 @@ class AsyncImages(AsyncAPIResource):
 
         return data
 
-    @typing.no_type_check
+    @overload
     async def edit(
         self,
         *,
+        image: Union[FileTypes, List[FileTypes]],
         prompt: str,
-        image,
-        mask: Union[Any, NotGiven] = NOT_GIVEN,
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
         model: Union[str, NotGiven] = NOT_GIVEN,
-        n: Union[int, NotGiven] = NOT_GIVEN,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
-        size: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        stream: Union[Optional[Literal[False]], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> ImagesResponse:
-        response = await self.openai_client.with_raw_response.images.edit(
-            prompt=prompt,
+    ) -> OpenAIImagesResponse:
+        ...
+
+    @overload
+    async def edit(
+        self,
+        *,
+        image: Union[FileTypes, List[FileTypes]],
+        prompt: str,
+        stream: Literal[True],
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs
+    ) -> AsyncStream[ImageEditStreamEvent]:
+        ...
+
+    @overload
+    async def edit(
+        self,
+        *,
+        image: Union[FileTypes, List[FileTypes]],
+        prompt: str,
+        stream: bool,
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs
+    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent]]:
+        ...
+
+    async def edit(
+        self,
+        *,
+        image: Union[FileTypes, List[FileTypes]],
+        prompt: str,
+        background: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        input_fidelity: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        mask: Union[FileTypes, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        n: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_compression: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        output_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        partial_images: Union[Optional[int], NotGiven] = NOT_GIVEN,
+        quality: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        response_format: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        size: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        stream: Union[Optional[Literal[False]], Literal[True], NotGiven] = NOT_GIVEN,
+        user: Union[str, NotGiven] = NOT_GIVEN,
+        **kwargs
+    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent]]:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        return await self.openai_client.images.edit(  # type: ignore[misc]
             image=image,
+            prompt=prompt,
+            background=background,  # type: ignore[arg-type]
+            input_fidelity=input_fidelity,  # type: ignore[arg-type]
             mask=mask,
             model=model,
             n=n,
-            response_format=response_format,
-            size=size,
+            output_compression=output_compression,
+            output_format=output_format,  # type: ignore[arg-type]
+            partial_images=partial_images,
+            quality=quality,  # type: ignore[arg-type]
+            response_format=response_format,  # type: ignore[arg-type]
+            size=size,  # type: ignore[arg-type]
+            stream=stream,  # type: ignore[arg-type]
             user=user,
-            extra_body=kwargs,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
-        data = ImagesResponse(**json.loads(response.text))
-        data._headers = response.headers
-
-        return data
 
     @overload
     async def generate(
