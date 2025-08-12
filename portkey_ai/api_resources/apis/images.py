@@ -65,7 +65,7 @@ class Images(APIResource):
         stream: Union[Optional[Literal[False]], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> OpenAIImagesResponse:
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
         ...
 
     @overload
@@ -111,7 +111,7 @@ class Images(APIResource):
         size: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent], ImagesResponse]:
         ...
 
     def edit(
@@ -133,33 +133,59 @@ class Images(APIResource):
         stream: Union[Optional[Literal[False]], Literal[True], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
         extra_body = kwargs.pop("extra_body", None)
         timeout = kwargs.pop("timeout", None)
 
-        return self.openai_client.images.edit(  # type: ignore[misc]
-            image=image,
-            prompt=prompt,
-            background=background,  # type: ignore[arg-type]
-            input_fidelity=input_fidelity,  # type: ignore[arg-type]
-            mask=mask,
-            model=model,
-            n=n,
-            output_compression=output_compression,
-            output_format=output_format,  # type: ignore[arg-type]
-            partial_images=partial_images,
-            quality=quality,  # type: ignore[arg-type]
-            response_format=response_format,  # type: ignore[arg-type]
-            size=size,  # type: ignore[arg-type]
-            stream=stream,  # type: ignore[arg-type]
-            user=user,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=extra_body,
-            timeout=timeout,
-        )
+        if stream:
+            return self.openai_client.images.edit(  # type: ignore[misc]
+                image=image,
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                input_fidelity=input_fidelity,  # type: ignore[arg-type]
+                mask=mask,
+                model=model,
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                stream=stream,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+        else:
+            response = self.openai_client.with_raw_response.images.edit(  # type: ignore[misc]
+                image=image,
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                input_fidelity=input_fidelity,  # type: ignore[arg-type]
+                mask=mask,
+                model=model,
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+            data = ImagesResponse(**json.loads(response.text))
+            data._headers = response.headers
+
+            return data
 
     @overload
     def generate(
@@ -180,7 +206,7 @@ class Images(APIResource):
         style: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> OpenAIImagesResponse:
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
         ...
 
     @overload
@@ -224,7 +250,7 @@ class Images(APIResource):
         style: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent], ImagesResponse]:
         ...
 
     def generate(
@@ -247,32 +273,57 @@ class Images(APIResource):
         style: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
         extra_body = kwargs.pop("extra_body", None)
         timeout = kwargs.pop("timeout", None)
 
-        return self.openai_client.images.generate(  # type: ignore[misc]
-            prompt=prompt,
-            background=background,  # type: ignore[arg-type]
-            model=model,
-            moderation=moderation,  # type: ignore[arg-type]
-            n=n,
-            output_compression=output_compression,
-            output_format=output_format,  # type: ignore[arg-type]
-            partial_images=partial_images,
-            quality=quality,  # type: ignore[arg-type]
-            response_format=response_format,  # type: ignore[arg-type]
-            size=size,  # type: ignore[arg-type]
-            stream=stream,  # type: ignore[arg-type]
-            style=style,  # type: ignore[arg-type]
-            user=user,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=extra_body,
-            timeout=timeout,
-        )
+        if stream:
+            return self.openai_client.images.generate(  # type: ignore[misc]
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                model=model,
+                moderation=moderation,  # type: ignore[arg-type]
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                stream=stream,  # type: ignore[arg-type]
+                style=style,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+        else:
+            response = self.openai_client.with_raw_response.images.generate(  # type: ignore[misc]
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                model=model,
+                moderation=moderation,  # type: ignore[arg-type]
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                style=style,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+            data = ImagesResponse(**json.loads(response.text))
+            data._headers = response.headers
+
+            return data
 
 
 class AsyncImages(AsyncAPIResource):
@@ -324,7 +375,7 @@ class AsyncImages(AsyncAPIResource):
         stream: Union[Optional[Literal[False]], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> OpenAIImagesResponse:
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
         ...
 
     @overload
@@ -370,7 +421,7 @@ class AsyncImages(AsyncAPIResource):
         size: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent], ImagesResponse]:
         ...
 
     async def edit(
@@ -392,33 +443,59 @@ class AsyncImages(AsyncAPIResource):
         stream: Union[Optional[Literal[False]], Literal[True], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
         extra_body = kwargs.pop("extra_body", None)
         timeout = kwargs.pop("timeout", None)
 
-        return await self.openai_client.images.edit(  # type: ignore[misc]
-            image=image,
-            prompt=prompt,
-            background=background,  # type: ignore[arg-type]
-            input_fidelity=input_fidelity,  # type: ignore[arg-type]
-            mask=mask,
-            model=model,
-            n=n,
-            output_compression=output_compression,
-            output_format=output_format,  # type: ignore[arg-type]
-            partial_images=partial_images,
-            quality=quality,  # type: ignore[arg-type]
-            response_format=response_format,  # type: ignore[arg-type]
-            size=size,  # type: ignore[arg-type]
-            stream=stream,  # type: ignore[arg-type]
-            user=user,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=extra_body,
-            timeout=timeout,
-        )
+        if stream:
+            return await self.openai_client.images.edit(  # type: ignore[misc]
+                image=image,
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                input_fidelity=input_fidelity,  # type: ignore[arg-type]
+                mask=mask,
+                model=model,
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                stream=stream,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+        else:
+            response = await self.openai_client.with_raw_response.images.edit(  # type: ignore[misc]
+                image=image,
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                input_fidelity=input_fidelity,  # type: ignore[arg-type]
+                mask=mask,
+                model=model,
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+            data = ImagesResponse(**json.loads(response.text))
+            data._headers = response.headers
+
+            return data
 
     @overload
     async def generate(
@@ -439,7 +516,7 @@ class AsyncImages(AsyncAPIResource):
         style: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> OpenAIImagesResponse:
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
         ...
 
     @overload
@@ -483,7 +560,7 @@ class AsyncImages(AsyncAPIResource):
         style: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent], ImagesResponse]:
         ...
 
     async def generate(
@@ -506,29 +583,54 @@ class AsyncImages(AsyncAPIResource):
         style: Union[Optional[str], NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
-    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent]]:
+    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
         extra_body = kwargs.pop("extra_body", None)
         timeout = kwargs.pop("timeout", None)
 
-        return await self.openai_client.images.generate(  # type: ignore[misc]
-            prompt=prompt,
-            background=background,  # type: ignore[arg-type]
-            model=model,
-            moderation=moderation,  # type: ignore[arg-type]
-            n=n,
-            output_compression=output_compression,
-            output_format=output_format,  # type: ignore[arg-type]
-            partial_images=partial_images,
-            quality=quality,  # type: ignore[arg-type]
-            response_format=response_format,  # type: ignore[arg-type]
-            size=size,  # type: ignore[arg-type]
-            stream=stream,  # type: ignore[arg-type]
-            style=style,  # type: ignore[arg-type]
-            user=user,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=extra_body,
-            timeout=timeout,
-        )
+        if stream:
+            return await self.openai_client.images.generate(  # type: ignore[misc]
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                model=model,
+                moderation=moderation,  # type: ignore[arg-type]
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                stream=stream,  # type: ignore[arg-type]
+                style=style,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+        else:
+            response = await self.openai_client.with_raw_response.images.generate(  # type: ignore[misc]
+                prompt=prompt,
+                background=background,  # type: ignore[arg-type]
+                model=model,
+                moderation=moderation,  # type: ignore[arg-type]
+                n=n,
+                output_compression=output_compression,
+                output_format=output_format,  # type: ignore[arg-type]
+                partial_images=partial_images,
+                quality=quality,  # type: ignore[arg-type]
+                response_format=response_format,  # type: ignore[arg-type]
+                size=size,  # type: ignore[arg-type]
+                style=style,  # type: ignore[arg-type]
+                user=user,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+            )
+            data = ImagesResponse(**json.loads(response.text))
+            data._headers = response.headers
+
+            return data
