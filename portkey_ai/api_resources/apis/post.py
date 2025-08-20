@@ -155,10 +155,16 @@ class AsyncPostMethod(AsyncAPIResource):
         body: Optional[Dict[str, Any]] = {},
         headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
+        **kwargs,
     ):
+        files = kwargs.pop("files", None)
+        headers = headers or kwargs.pop("headers", {})
+        body = body or kwargs
+
         return await self._post(
             path=path,
             body=body,
+            files=files,
             params={},
             headers=headers,
             cast_to=cast_to,
