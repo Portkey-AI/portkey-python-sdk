@@ -121,14 +121,51 @@ class PostMethod(APIResource):
     def __init__(self, client: APIClient) -> None:
         super().__init__(client)
 
+    @overload
     def create(
         self,
         path: Optional[str] = None,
         body: Optional[Dict[str, Any]] = {},
         headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
+        stream: Literal[True] = True,
         **kwargs,
-    ):
+    ) -> Stream[GenericResponse]:
+        ...
+
+    @overload
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: Literal[False] = False,
+        **kwargs,
+    ) -> GenericResponse:
+        ...
+
+    @overload
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        ...
+
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
         files = kwargs.pop("files", None)
         headers = headers or kwargs.pop("headers", {})
         body = body or kwargs
@@ -140,8 +177,8 @@ class PostMethod(APIResource):
             params={},
             headers=headers,
             cast_to=cast_to,
-            stream=False,
-            stream_cls=None,
+            stream=stream,
+            stream_cls=Stream[GenericResponse],
         )
 
 
@@ -149,14 +186,51 @@ class AsyncPostMethod(AsyncAPIResource):
     def __init__(self, client: AsyncAPIClient) -> None:
         super().__init__(client)
 
+    @overload
     async def create(
         self,
         path: Optional[str] = None,
         body: Optional[Dict[str, Any]] = {},
         headers: Optional[Dict[str, str]] = {},
         cast_to: Optional[Any] = None,
+        stream: Literal[True] = True,
         **kwargs,
-    ):
+    ) -> Stream[GenericResponse]:
+        ...
+
+    @overload
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: Literal[False] = False,
+        **kwargs,
+    ) -> GenericResponse:
+        ...
+
+    @overload
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        ...
+
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
         files = kwargs.pop("files", None)
         headers = headers or kwargs.pop("headers", {})
         body = body or kwargs
@@ -168,6 +242,6 @@ class AsyncPostMethod(AsyncAPIResource):
             params={},
             headers=headers,
             cast_to=cast_to,
-            stream=False,
-            stream_cls=None,
+            stream=stream,
+            stream_cls=Stream[GenericResponse],
         )
