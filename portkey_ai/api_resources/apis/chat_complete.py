@@ -94,6 +94,8 @@ class Completions(APIResource):
                 json_string = json_string.strip().rstrip("\n")
                 if json_string == "":
                     continue
+                if json_string.startswith(":"):
+                    continue
                 elif json_string == "[DONE]":
                     break
                 elif json_string != "":
@@ -341,6 +343,8 @@ class AsyncCompletions(AsyncAPIResource):
                 json_string = line.replace("data: ", "")
                 json_string = json_string.strip().rstrip("\n")
                 if json_string == "":
+                    continue
+                if json_string.startswith(":"):
                     continue
                 elif json_string == "[DONE]":
                     break

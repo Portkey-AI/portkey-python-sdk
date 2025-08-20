@@ -1,5 +1,7 @@
-import os
+from __future__ import annotations
+
 import json
+import os
 from typing import List, Dict, Any, Optional, Union, Mapping, Literal, TypeVar, cast
 from enum import Enum, EnumMeta
 from typing_extensions import TypedDict, NotRequired
@@ -511,3 +513,19 @@ def set_base_url(base_url, api_key):
         return env_base_url
     api_key = api_key or os.environ.get(PORTKEY_API_KEY_ENV)
     return PORTKEY_BASE_URL if api_key else LOCAL_BASE_URL
+
+
+def create_model_instance(model_class):
+    """
+    Create a model instance that's compatible with both Pydantic v1 and v2.
+
+    This function provides backward compatibility for the transition from Pydantic v1
+    to Pydantic v2. In Pydantic v1, the method was called `construct()`, while in
+    Pydantic v2, it was renamed to `model_construct()`.
+    """
+    try:
+        # Try Pydantic v2 method first
+        return model_class.model_construct()
+    except AttributeError:
+        # Fall back to Pydantic v1 method
+        return model_class.construct()
