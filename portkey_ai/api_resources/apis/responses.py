@@ -179,6 +179,8 @@ class Responses(APIResource):
         response_id: str,
         *,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        include_obfuscation: Union[bool, NotGiven] = NOT_GIVEN,
+        starting_after: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ResponseType:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -189,6 +191,8 @@ class Responses(APIResource):
         response = self.openai_client.with_raw_response.responses.retrieve(
             response_id=response_id,
             include=include,
+            include_obfuscation=include_obfuscation,
+            starting_after=starting_after,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body={**(extra_body or {}), **kwargs},
@@ -229,6 +233,9 @@ class Responses(APIResource):
         previous_response_id: Union[str, NotGiven] = NOT_GIVEN,
         reasoning: Union[Reasoning, NotGiven] = NOT_GIVEN,
         store: Union[bool, NotGiven] = NOT_GIVEN,
+        stream_options: Union[
+            response_create_params.StreamOptions, NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         text: Union[ResponseTextConfigParam, NotGiven] = NOT_GIVEN,
         tool_choice: Union[response_create_params.ToolChoice, NotGiven] = NOT_GIVEN,
@@ -254,6 +261,7 @@ class Responses(APIResource):
             previous_response_id=previous_response_id,
             reasoning=reasoning,
             store=store,
+            stream_options=stream_options,
             temperature=temperature,
             text=text,
             tool_choice=tool_choice,
@@ -517,6 +525,8 @@ class AsyncResponses(AsyncAPIResource):
         response_id: str,
         *,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        include_obfuscation: Union[bool, NotGiven] = NOT_GIVEN,
+        starting_after: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ResponseType:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -527,6 +537,8 @@ class AsyncResponses(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.responses.retrieve(
             response_id=response_id,
             include=include,
+            include_obfuscation=include_obfuscation,
+            starting_after=starting_after,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body={**(extra_body or {}), **kwargs},
@@ -567,6 +579,9 @@ class AsyncResponses(AsyncAPIResource):
         previous_response_id: Union[str, NotGiven] = NOT_GIVEN,
         reasoning: Union[Reasoning, NotGiven] = NOT_GIVEN,
         store: Union[bool, NotGiven] = NOT_GIVEN,
+        stream_options: Union[
+            response_create_params.StreamOptions, NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         text: Union[ResponseTextConfigParam, NotGiven] = NOT_GIVEN,
         tool_choice: Union[response_create_params.ToolChoice, NotGiven] = NOT_GIVEN,
@@ -592,6 +607,7 @@ class AsyncResponses(AsyncAPIResource):
             previous_response_id=previous_response_id,
             reasoning=reasoning,
             store=store,
+            stream_options=stream_options,
             temperature=temperature,
             text=text,
             tool_choice=tool_choice,
