@@ -26,7 +26,9 @@ class Logger:
         log_object,
     ):
         response = requests.post(
-            url=self.url, data=json.dumps(log_object), headers=self.headers
+            url=self.url,
+            data=json.dumps(log_object, default=vars),
+            headers=self.headers,
         )
 
         return response
