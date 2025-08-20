@@ -1,4 +1,4 @@
-from typing import Union, overload, Literal
+from typing import Any, Dict, Optional, Union, overload, Literal
 
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 
@@ -114,4 +114,134 @@ class AsyncPost(AsyncAPIResource):
             stream_cls=AsyncStream[GenericResponse],
             stream=stream,
             headers=headers,
+        )
+
+
+class PostMethod(APIResource):
+    def __init__(self, client: APIClient) -> None:
+        super().__init__(client)
+
+    @overload
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: Literal[True] = True,
+        **kwargs,
+    ) -> Stream[GenericResponse]:
+        ...
+
+    @overload
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: Literal[False] = False,
+        **kwargs,
+    ) -> GenericResponse:
+        ...
+
+    @overload
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        ...
+
+    def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        files = kwargs.pop("files", None)
+        headers = headers or kwargs.pop("headers", {})
+        body = body or kwargs
+
+        return self._post(
+            path=path,
+            body=body,
+            files=files,
+            params={},
+            headers=headers,
+            cast_to=cast_to,
+            stream=stream,
+            stream_cls=Stream[GenericResponse],
+        )
+
+
+class AsyncPostMethod(AsyncAPIResource):
+    def __init__(self, client: AsyncAPIClient) -> None:
+        super().__init__(client)
+
+    @overload
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: Literal[True] = True,
+        **kwargs,
+    ) -> Stream[GenericResponse]:
+        ...
+
+    @overload
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: Literal[False] = False,
+        **kwargs,
+    ) -> GenericResponse:
+        ...
+
+    @overload
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        ...
+
+    async def create(
+        self,
+        path: Optional[str] = None,
+        body: Optional[Dict[str, Any]] = {},
+        headers: Optional[Dict[str, str]] = {},
+        cast_to: Optional[Any] = None,
+        stream: bool = False,
+        **kwargs,
+    ) -> Union[GenericResponse, Stream[GenericResponse]]:
+        files = kwargs.pop("files", None)
+        headers = headers or kwargs.pop("headers", {})
+        body = body or kwargs
+
+        return await self._post(
+            path=path,
+            body=body,
+            files=files,
+            params={},
+            headers=headers,
+            cast_to=cast_to,
+            stream=stream,
+            stream_cls=Stream[GenericResponse],
         )
