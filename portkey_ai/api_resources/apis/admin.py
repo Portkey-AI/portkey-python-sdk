@@ -225,10 +225,12 @@ class Workspaces(APIResource):
     def list(
         self,
         *,
+        name: Optional[str] = None,
         page_size: Optional[Union[int, str]] = None,
         current_page: Optional[int] = 0,
     ) -> WorkspacesListResponse:
         query = {
+            "name": name,
             "pageSize": page_size,
             "currentPage": current_page,
         }
@@ -599,10 +601,12 @@ class AsyncWorkspaces(AsyncAPIResource):
     async def list(
         self,
         *,
+        name: Optional[str] = None,
         page_size: Optional[Union[int, str]] = None,
         current_page: Optional[int] = 0,
     ) -> WorkspacesListResponse:
         query = {
+            "name": name,
             "pageSize": page_size,
             "currentPage": current_page,
         }
