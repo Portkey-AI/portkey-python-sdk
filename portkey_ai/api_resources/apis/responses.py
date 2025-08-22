@@ -47,8 +47,8 @@ class Responses(APIResource):
     def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_output_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
@@ -73,8 +73,8 @@ class Responses(APIResource):
     def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         stream: Literal[True],
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
@@ -99,8 +99,8 @@ class Responses(APIResource):
     def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         stream: bool,
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
@@ -124,8 +124,8 @@ class Responses(APIResource):
     def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_output_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
@@ -170,7 +170,7 @@ class Responses(APIResource):
             user=user,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -179,6 +179,8 @@ class Responses(APIResource):
         response_id: str,
         *,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        include_obfuscation: Union[bool, NotGiven] = NOT_GIVEN,
+        starting_after: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ResponseType:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -189,9 +191,11 @@ class Responses(APIResource):
         response = self.openai_client.with_raw_response.responses.retrieve(
             response_id=response_id,
             include=include,
+            include_obfuscation=include_obfuscation,
+            starting_after=starting_after,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -210,7 +214,7 @@ class Responses(APIResource):
             response_id=response_id,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -229,6 +233,9 @@ class Responses(APIResource):
         previous_response_id: Union[str, NotGiven] = NOT_GIVEN,
         reasoning: Union[Reasoning, NotGiven] = NOT_GIVEN,
         store: Union[bool, NotGiven] = NOT_GIVEN,
+        stream_options: Union[
+            response_create_params.StreamOptions, NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         text: Union[ResponseTextConfigParam, NotGiven] = NOT_GIVEN,
         tool_choice: Union[response_create_params.ToolChoice, NotGiven] = NOT_GIVEN,
@@ -254,6 +261,7 @@ class Responses(APIResource):
             previous_response_id=previous_response_id,
             reasoning=reasoning,
             store=store,
+            stream_options=stream_options,
             temperature=temperature,
             text=text,
             tool_choice=tool_choice,
@@ -262,15 +270,15 @@ class Responses(APIResource):
             user=user,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
     def parse(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: Union[str, ChatModel],
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[str, ChatModel, NotGiven] = NOT_GIVEN,
         text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,  # type: ignore[type-arg]
         tools: Union[Iterable[ParseableToolParam], NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
@@ -317,7 +325,7 @@ class Responses(APIResource):
             user=user,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -334,7 +342,7 @@ class Responses(APIResource):
             response_id=response_id,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -368,7 +376,7 @@ class InputItems(APIResource):
             order=order,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -385,8 +393,8 @@ class AsyncResponses(AsyncAPIResource):
     async def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_output_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
@@ -411,8 +419,8 @@ class AsyncResponses(AsyncAPIResource):
     async def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         stream: Literal[True],
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
@@ -437,8 +445,8 @@ class AsyncResponses(AsyncAPIResource):
     async def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         stream: bool,
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
@@ -462,8 +470,8 @@ class AsyncResponses(AsyncAPIResource):
     async def create(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: ResponsesModel,
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[ResponsesModel, NotGiven] = NOT_GIVEN,
         include: Union[Optional[List[ResponseIncludable]], NotGiven] = NOT_GIVEN,
         instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
         max_output_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
@@ -508,7 +516,7 @@ class AsyncResponses(AsyncAPIResource):
             user=user,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -517,6 +525,8 @@ class AsyncResponses(AsyncAPIResource):
         response_id: str,
         *,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        include_obfuscation: Union[bool, NotGiven] = NOT_GIVEN,
+        starting_after: Union[int, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> ResponseType:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -527,9 +537,11 @@ class AsyncResponses(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.responses.retrieve(
             response_id=response_id,
             include=include,
+            include_obfuscation=include_obfuscation,
+            starting_after=starting_after,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -548,7 +560,7 @@ class AsyncResponses(AsyncAPIResource):
             response_id=response_id,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -567,6 +579,9 @@ class AsyncResponses(AsyncAPIResource):
         previous_response_id: Union[str, NotGiven] = NOT_GIVEN,
         reasoning: Union[Reasoning, NotGiven] = NOT_GIVEN,
         store: Union[bool, NotGiven] = NOT_GIVEN,
+        stream_options: Union[
+            response_create_params.StreamOptions, NotGiven
+        ] = NOT_GIVEN,
         temperature: Union[float, NotGiven] = NOT_GIVEN,
         text: Union[ResponseTextConfigParam, NotGiven] = NOT_GIVEN,
         tool_choice: Union[response_create_params.ToolChoice, NotGiven] = NOT_GIVEN,
@@ -592,6 +607,7 @@ class AsyncResponses(AsyncAPIResource):
             previous_response_id=previous_response_id,
             reasoning=reasoning,
             store=store,
+            stream_options=stream_options,
             temperature=temperature,
             text=text,
             tool_choice=tool_choice,
@@ -600,15 +616,15 @@ class AsyncResponses(AsyncAPIResource):
             user=user,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
     async def parse(
         self,
         *,
-        input: Union[str, ResponseInputParam],
-        model: Union[str, ChatModel],
+        input: Union[str, ResponseInputParam, NotGiven] = NOT_GIVEN,
+        model: Union[str, ChatModel, NotGiven] = NOT_GIVEN,
         text_format: Union[type[TextFormatT], NotGiven] = NOT_GIVEN,  # type: ignore[type-arg]
         tools: Union[Iterable[ParseableToolParam], NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
@@ -655,7 +671,7 @@ class AsyncResponses(AsyncAPIResource):
             user=user,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -672,7 +688,7 @@ class AsyncResponses(AsyncAPIResource):
             response_id=response_id,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 
@@ -706,7 +722,7 @@ class AsyncInputItems(AsyncAPIResource):
             order=order,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=extra_body,
+            extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
 

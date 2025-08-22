@@ -25,6 +25,7 @@ class Portkey(APIClient):
     fine_tuning: apis.FineTuning
     vector_stores: apis.VectorStores
     responses: apis.Responses
+    webhooks: apis.Webhooks
     evals: apis.Evals
     containers: apis.Containers
     admin: apis.Admin
@@ -55,6 +56,7 @@ class Portkey(APIClient):
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
         websocket_base_url: Optional[Union[str, httpx.URL]] = None,
+        webhook_secret: Optional[str] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -100,6 +102,7 @@ class Portkey(APIClient):
             base_url=base_url,
             virtual_key=virtual_key,
             websocket_base_url=websocket_base_url,
+            webhook_secret=webhook_secret,
             config=config,
             provider=provider,
             trace_id=trace_id,
@@ -148,6 +151,7 @@ class Portkey(APIClient):
             http_client=http_client,
             max_retries=1,
             websocket_base_url=self.websocket_base_url,
+            webhook_secret=self.webhook_secret,
         )
 
         self.completions = apis.Completion(self)
@@ -165,6 +169,7 @@ class Portkey(APIClient):
         self.fine_tuning = apis.FineTuning(self)
         self.vector_stores = apis.VectorStores(self)
         self.responses = apis.Responses(self)
+        self.webhooks = apis.Webhooks(self)
         self.evals = apis.Evals(self)
         self.containers = apis.Containers(self)
         self.admin = apis.Admin(self)
@@ -197,6 +202,7 @@ class Portkey(APIClient):
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
         websocket_base_url: Optional[Union[str, httpx.URL]] = None,
+        webhook_secret: Optional[str] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -242,6 +248,7 @@ class Portkey(APIClient):
             base_url=base_url or self.base_url,
             virtual_key=virtual_key or self.virtual_key,
             websocket_base_url=websocket_base_url or self.websocket_base_url,
+            webhook_secret=webhook_secret or self.webhook_secret,
             config=config or self.config,
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
@@ -342,6 +349,7 @@ class AsyncPortkey(AsyncAPIClient):
     fine_tuning: apis.AsyncFineTuning
     vector_stores: apis.AsyncVectorStores
     responses: apis.AsyncResponses
+    webhooks: apis.AsyncWebhooks
     evals: apis.AsyncEvals
     containers: apis.AsyncContainers
     admin: apis.AsyncAdmin
@@ -372,6 +380,7 @@ class AsyncPortkey(AsyncAPIClient):
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
         websocket_base_url: Optional[Union[str, httpx.URL]] = None,
+        webhook_secret: Optional[str] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -417,6 +426,7 @@ class AsyncPortkey(AsyncAPIClient):
             base_url=base_url,
             virtual_key=virtual_key,
             websocket_base_url=websocket_base_url,
+            webhook_secret=webhook_secret,
             config=config,
             provider=provider,
             trace_id=trace_id,
@@ -465,6 +475,7 @@ class AsyncPortkey(AsyncAPIClient):
             http_client=http_client,
             max_retries=1,
             websocket_base_url=self.websocket_base_url,
+            webhook_secret=self.webhook_secret,
         )
 
         self.completions = apis.AsyncCompletion(self)
@@ -482,6 +493,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.fine_tuning = apis.AsyncFineTuning(self)
         self.vector_stores = apis.AsyncVectorStores(self)
         self.responses = apis.AsyncResponses(self)
+        self.webhooks = apis.AsyncWebhooks(self)
         self.evals = apis.AsyncEvals(self)
         self.containers = apis.AsyncContainers(self)
         self.admin = apis.AsyncAdmin(self)
@@ -514,6 +526,7 @@ class AsyncPortkey(AsyncAPIClient):
         base_url: Optional[str] = None,
         virtual_key: Optional[str] = None,
         websocket_base_url: Optional[Union[str, httpx.URL]] = None,
+        webhook_secret: Optional[str] = None,
         config: Optional[Union[Mapping, str]] = None,
         provider: Optional[str] = None,
         trace_id: Optional[str] = None,
@@ -559,6 +572,7 @@ class AsyncPortkey(AsyncAPIClient):
             base_url=base_url or self.base_url,
             virtual_key=virtual_key or self.virtual_key,
             websocket_base_url=websocket_base_url or self.websocket_base_url,
+            webhook_secret=webhook_secret or self.webhook_secret,
             config=config or self.config,
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
