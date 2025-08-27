@@ -61,7 +61,7 @@ class Integrations(APIResource):
         current_page: Optional[int] = 0,
         page_size: Optional[int] = 100,
         workspace_id: Optional[str] = None,
-        type: Optional[Literal["workspace", "organisation", "all"]] = "all",
+        type: Optional[Literal["workspace", "organisation", "all"]] = None,
     ) -> IntegrationListResponse:
         query = {
             "current_page": current_page,
@@ -296,7 +296,7 @@ class AsyncIntegrations(AsyncAPIResource):
         current_page: Optional[int] = 0,
         page_size: Optional[int] = 100,
         workspace_id: Optional[str] = None,
-        type: Optional[Literal["workspace", "organisation", "all"]] = "all",
+        type: Optional[Literal["workspace", "organisation", "all"]] = None,
     ) -> IntegrationListResponse:
         query = {
             "current_page": current_page,
