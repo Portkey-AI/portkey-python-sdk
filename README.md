@@ -119,7 +119,6 @@ model = PortkeyStrands(
     virtual_key="VIRTUAL_KEY",  # optional if using Portkey Virtual Keys
     base_url="https://api.portkey.ai/v1",  # optional; defaults via env
     model_id="gpt-4o-mini",
-    provider="openai",  # enables tool-use mapping for OpenAI-compatible models
 )
 
 agent = Agent(model=model)
