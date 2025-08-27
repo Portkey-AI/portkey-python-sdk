@@ -225,7 +225,7 @@ def _format_chunk_to_stream_event(
     return cast("StreamEvent", {})
 
 
-class PortkeyModel(_StrandsModel):  # type: ignore[misc]
+class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
     """Strands `Model` adapter backed by Portkey Async client."""
 
     def __init__(self, **config: dict[str, Any]) -> None:  # type: ignore[override]
@@ -301,9 +301,6 @@ class PortkeyModel(_StrandsModel):  # type: ignore[misc]
         state["tool_use_id"] = None
         state["tool_name"] = None
 
-# Friendly alias to avoid confusion with core Portkey client names
-PortkeyStrands = PortkeyModel
-
-__all__ = ["PortkeyModel", "PortkeyStrands"]
+__all__ = ["PortkeyStrands"]
 
 

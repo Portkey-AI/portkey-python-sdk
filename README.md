@@ -112,9 +112,9 @@ Usage with Strands:
 
 ```python
 from strands.agent import Agent
-from portkey_ai.integrations.strands import PortkeyModel
+from portkey_ai.integrations.strands import PortkeyStrands
 
-model = PortkeyModel(
+model = PortkeyStrands(
     api_key="PORTKEY_API_KEY",
     virtual_key="VIRTUAL_KEY",  # optional if using Portkey Virtual Keys
     base_url="https://api.portkey.ai/v1",  # optional; defaults via env
