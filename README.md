@@ -100,6 +100,33 @@ async def main():
 asyncio.run(main())
 ```
 
+### Strands Agents Integration (optional)
+
+Install the optional extra and use the thin adapter included in this SDK.
+
+```bash
+pip install 'portkey-ai[strands]'
+```
+
+Usage with Strands:
+
+```python
+from strands.agent import Agent
+from portkey_ai.integrations.strands import PortkeyModel
+
+model = PortkeyModel(
+    api_key="PORTKEY_API_KEY",
+    virtual_key="VIRTUAL_KEY",  # optional if using Portkey Virtual Keys
+    base_url="https://api.portkey.ai/v1",  # optional; defaults via env
+    model_id="gpt-4o-mini",
+    provider="openai",  # enables tool-use mapping for OpenAI-compatible models
+)
+
+agent = Agent(model=model)
+
+# now use your agent as usual
+```
+
 ## Compatibility with OpenAI SDK
 
 Portkey currently supports all the OpenAI methods, including the legacy ones.
