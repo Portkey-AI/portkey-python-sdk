@@ -301,4 +301,9 @@ class PortkeyModel(_StrandsModel):  # type: ignore[misc]
         state["tool_use_id"] = None
         state["tool_name"] = None
 
+# Friendly alias to avoid confusion with core Portkey client names
+PortkeyStrands = PortkeyModel
+
+__all__ = ["PortkeyModel", "PortkeyStrands"]
+
 
