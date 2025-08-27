@@ -1,7 +1,14 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
+from portkey_ai.api_resources.types.integrations_type import (
+    IntegrationListResponse,
+    IntegrationDetailResponse,
+    IntegrationCreateResponse,
+    IntegrationModelsResponse,
+    IntegrationWorkspacesResponse,
+)
 from portkey_ai.api_resources.utils import GenericResponse
 from portkey_ai.api_resources.utils import PortkeyApiPaths
 
@@ -25,7 +32,7 @@ class Integrations(APIResource):
         note: Optional[str] = None,
         configuration: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
-    ) -> GenericResponse:
+    ) -> IntegrationCreateResponse:
         body = {
             "name": name,
             "description": description,
@@ -42,7 +49,7 @@ class Integrations(APIResource):
             f"{PortkeyApiPaths.INTEGRATIONS_API}",
             body=body,
             params=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationCreateResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -51,16 +58,16 @@ class Integrations(APIResource):
     def list(
         self,
         *,
-        organisation_id: Optional[str] = None,
+        current_page: Optional[int] = 0,
+        page_size: Optional[int] = 100,
         workspace_id: Optional[str] = None,
-        current_page: Optional[int] = None,
-        page_size: Optional[int] = None,
-    ) -> GenericResponse:
+        type: Optional[Literal["workspace", "organisation", "all"]] = "all",
+    ) -> IntegrationListResponse:
         query = {
-            "organisation_id": organisation_id,
-            "workspace_id": workspace_id,
             "current_page": current_page,
             "page_size": page_size,
+            "workspace_id": workspace_id,
+            "type": type,
         }
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
@@ -68,18 +75,18 @@ class Integrations(APIResource):
             f"{PortkeyApiPaths.INTEGRATIONS_API}?{query_string}",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationListResponse,
             stream=False,
             stream_cls=None,
             headers={},
         )
 
-    def retrieve(self, *, integration_id: Optional[str]) -> Any:
+    def retrieve(self, *, slug: str) -> IntegrationDetailResponse:
         return self._get(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationDetailResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -88,11 +95,12 @@ class Integrations(APIResource):
     def update(
         self,
         *,
-        integration_id: Optional[str] = None,
+        slug: str,
         name: Optional[str] = None,
         description: Optional[str] = None,
         key: Optional[str] = None,
         configuration: Optional[Dict[str, Any]] = None,
+        note: Optional[str] = None,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -100,10 +108,11 @@ class Integrations(APIResource):
             "description": description,
             "key": key,
             "configuration": configuration,
+            "note": note,
             **kwargs,
         }
         return self._put(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}",
             body=body,
             params=None,
             cast_to=GenericResponse,
@@ -115,10 +124,10 @@ class Integrations(APIResource):
     def delete(
         self,
         *,
-        integration_id: Optional[str],
-    ) -> Any:
+        slug: str,
+    ) -> GenericResponse:
         return self._delete(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}",
             params=None,
             body=None,
             cast_to=GenericResponse,
@@ -135,13 +144,13 @@ class IntegrationsWorkspaces(APIResource):
     def list(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
-    ) -> GenericResponse:
+        slug: str,
+    ) -> IntegrationWorkspacesResponse:
         return self._get(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/workspaces",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationWorkspacesResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -150,7 +159,7 @@ class IntegrationsWorkspaces(APIResource):
     def update(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
+        slug: str,
         global_workspace_access: Optional[Dict[str, Any]] = None,
         workspace_ids: Optional[List[str]] = None,
         override_existing_workspaces_access: Optional[bool] = None,
@@ -165,7 +174,7 @@ class IntegrationsWorkspaces(APIResource):
             **kwargs,
         }
         return self._put(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/workspaces",
             body=body,
             params=None,
             cast_to=GenericResponse,
@@ -182,13 +191,13 @@ class IntegrationsModels(APIResource):
     def list(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
-    ) -> GenericResponse:
+        slug: str,
+    ) -> IntegrationModelsResponse:
         return self._get(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationModelsResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -197,7 +206,7 @@ class IntegrationsModels(APIResource):
     def update(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
+        slug: str,
         allow_all_models: Optional[bool] = None,
         models: Optional[List[Dict[str, Any]]] = None,
         **kwargs: Any,
@@ -208,9 +217,30 @@ class IntegrationsModels(APIResource):
             **kwargs,
         }
         return self._put(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models",
             body=body,
             params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    def delete(
+        self,
+        *,
+        slug: str,
+        slugs: str,
+    ) -> GenericResponse:
+        query = {
+            "slugs": slugs,
+        }
+        filtered_query = {k: v for k, v in query.items() if v is not None}
+        query_string = urlencode(filtered_query)
+        return self._delete(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models?{query_string}",
+            params=None,
+            body=None,
             cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
@@ -237,7 +267,7 @@ class AsyncIntegrations(AsyncAPIResource):
         note: Optional[str] = None,
         configuration: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
-    ) -> GenericResponse:
+    ) -> IntegrationCreateResponse:
         body = {
             "name": name,
             "description": description,
@@ -254,7 +284,7 @@ class AsyncIntegrations(AsyncAPIResource):
             f"{PortkeyApiPaths.INTEGRATIONS_API}",
             body=body,
             params=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationCreateResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -263,16 +293,16 @@ class AsyncIntegrations(AsyncAPIResource):
     async def list(
         self,
         *,
-        organisation_id: Optional[str] = None,
+        current_page: Optional[int] = 0,
+        page_size: Optional[int] = 100,
         workspace_id: Optional[str] = None,
-        current_page: Optional[int] = None,
-        page_size: Optional[int] = None,
-    ) -> GenericResponse:
+        type: Optional[Literal["workspace", "organisation", "all"]] = "all",
+    ) -> IntegrationListResponse:
         query = {
-            "organisation_id": organisation_id,
-            "workspace_id": workspace_id,
             "current_page": current_page,
             "page_size": page_size,
+            "workspace_id": workspace_id,
+            "type": type,
         }
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
@@ -280,18 +310,18 @@ class AsyncIntegrations(AsyncAPIResource):
             f"{PortkeyApiPaths.INTEGRATIONS_API}?{query_string}",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationListResponse,
             stream=False,
             stream_cls=None,
             headers={},
         )
 
-    async def retrieve(self, *, integration_id: Optional[str]) -> Any:
+    async def retrieve(self, *, slug: str) -> IntegrationDetailResponse:
         return await self._get(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationDetailResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -300,11 +330,12 @@ class AsyncIntegrations(AsyncAPIResource):
     async def update(
         self,
         *,
-        integration_id: Optional[str] = None,
+        slug: str,
         name: Optional[str] = None,
         description: Optional[str] = None,
         key: Optional[str] = None,
         configuration: Optional[Dict[str, Any]] = None,
+        note: Optional[str] = None,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -312,10 +343,11 @@ class AsyncIntegrations(AsyncAPIResource):
             "description": description,
             "key": key,
             "configuration": configuration,
+            "note": note,
             **kwargs,
         }
         return await self._put(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}",
             body=body,
             params=None,
             cast_to=GenericResponse,
@@ -327,10 +359,10 @@ class AsyncIntegrations(AsyncAPIResource):
     async def delete(
         self,
         *,
-        integration_id: Optional[str],
-    ) -> Any:
+        slug: str,
+    ) -> GenericResponse:
         return await self._delete(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{integration_id}",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}",
             params=None,
             body=None,
             cast_to=GenericResponse,
@@ -347,13 +379,13 @@ class AsyncIntegrationsWorkspaces(AsyncAPIResource):
     async def list(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
-    ) -> GenericResponse:
+        slug: str,
+    ) -> IntegrationWorkspacesResponse:
         return await self._get(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/workspaces",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationWorkspacesResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -362,7 +394,7 @@ class AsyncIntegrationsWorkspaces(AsyncAPIResource):
     async def update(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
+        slug: str,
         global_workspace_access: Optional[Dict[str, Any]] = None,
         workspace_ids: Optional[List[str]] = None,
         override_existing_workspaces_access: Optional[bool] = None,
@@ -377,7 +409,7 @@ class AsyncIntegrationsWorkspaces(AsyncAPIResource):
             **kwargs,
         }
         return await self._put(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/workspaces",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/workspaces",
             body=body,
             params=None,
             cast_to=GenericResponse,
@@ -394,13 +426,13 @@ class AsyncIntegrationsModels(AsyncAPIResource):
     async def list(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
-    ) -> GenericResponse:
+        slug: str,
+    ) -> IntegrationModelsResponse:
         return await self._get(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models",
             params=None,
             body=None,
-            cast_to=GenericResponse,
+            cast_to=IntegrationModelsResponse,
             stream=False,
             stream_cls=None,
             headers={},
@@ -409,7 +441,7 @@ class AsyncIntegrationsModels(AsyncAPIResource):
     async def update(
         self,
         *,
-        provider_integration_id: Optional[str] = None,
+        slug: str,
         allow_all_models: Optional[bool] = None,
         models: Optional[List[Dict[str, Any]]] = None,
         **kwargs: Any,
@@ -420,9 +452,30 @@ class AsyncIntegrationsModels(AsyncAPIResource):
             **kwargs,
         }
         return await self._put(
-            f"{PortkeyApiPaths.INTEGRATIONS_API}/{provider_integration_id}/models",
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models",
             body=body,
             params=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
+    async def delete(
+        self,
+        *,
+        slug: str,
+        slugs: str,
+    ) -> GenericResponse:
+        query = {
+            "slugs": slugs,
+        }
+        filtered_query = {k: v for k, v in query.items() if v is not None}
+        query_string = urlencode(filtered_query)
+        return await self._delete(
+            f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models?{query_string}",
+            params=None,
+            body=None,
             cast_to=GenericResponse,
             stream=False,
             stream_cls=None,
