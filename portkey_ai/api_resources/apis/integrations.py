@@ -28,8 +28,7 @@ class Integrations(APIResource):
         ai_provider_id: Optional[str] = None,
         workspace_id: Optional[str] = None,
         slug: Optional[str] = None,
-        note: Optional[str] = None,
-        configuration: Optional[Dict[str, Any]] = None,
+        configurations: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> IntegrationCreateResponse:
         body = {
@@ -39,8 +38,7 @@ class Integrations(APIResource):
             "ai_provider_id": ai_provider_id,
             "workspace_id": workspace_id,
             "slug": slug,
-            "note": note,
-            "configuration": configuration,
+            "configurations": configurations,
             **kwargs,
         }
         return self._post(
@@ -97,16 +95,14 @@ class Integrations(APIResource):
         name: Optional[str] = None,
         description: Optional[str] = None,
         key: Optional[str] = None,
-        configuration: Optional[Dict[str, Any]] = None,
-        note: Optional[str] = None,
+        configurations: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
             "name": name,
             "description": description,
             "key": key,
-            "configuration": configuration,
-            "note": note,
+            "configurations": configurations,
             **kwargs,
         }
         return self._put(
@@ -159,14 +155,12 @@ class IntegrationsWorkspaces(APIResource):
         *,
         slug: str,
         global_workspace_access: Optional[Dict[str, Any]] = None,
-        workspace_ids: Optional[List[str]] = None,
         override_existing_workspaces_access: Optional[bool] = None,
         workspaces: Optional[List[Dict[str, Any]]] = None,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
             "global_workspace_access": global_workspace_access,
-            "workspace_ids": workspace_ids,
             "override_existing_workspaces_access": override_existing_workspaces_access,
             "workspaces": workspaces,
             **kwargs,
@@ -261,8 +255,7 @@ class AsyncIntegrations(AsyncAPIResource):
         ai_provider_id: Optional[str] = None,
         workspace_id: Optional[str] = None,
         slug: Optional[str] = None,
-        note: Optional[str] = None,
-        configuration: Optional[Dict[str, Any]] = None,
+        configurations: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> IntegrationCreateResponse:
         body = {
@@ -272,8 +265,7 @@ class AsyncIntegrations(AsyncAPIResource):
             "ai_provider_id": ai_provider_id,
             "workspace_id": workspace_id,
             "slug": slug,
-            "note": note,
-            "configuration": configuration,
+            "configurations": configurations,
             **kwargs,
         }
         return await self._post(
@@ -330,16 +322,14 @@ class AsyncIntegrations(AsyncAPIResource):
         name: Optional[str] = None,
         description: Optional[str] = None,
         key: Optional[str] = None,
-        configuration: Optional[Dict[str, Any]] = None,
-        note: Optional[str] = None,
+        configurations: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
             "name": name,
             "description": description,
             "key": key,
-            "configuration": configuration,
-            "note": note,
+            "configurations": configurations,
             **kwargs,
         }
         return await self._put(
@@ -392,14 +382,12 @@ class AsyncIntegrationsWorkspaces(AsyncAPIResource):
         *,
         slug: str,
         global_workspace_access: Optional[Dict[str, Any]] = None,
-        workspace_ids: Optional[List[str]] = None,
         override_existing_workspaces_access: Optional[bool] = None,
         workspaces: Optional[List[Dict[str, Any]]] = None,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
             "global_workspace_access": global_workspace_access,
-            "workspace_ids": workspace_ids,
             "override_existing_workspaces_access": override_existing_workspaces_access,
             "workspaces": workspaces,
             **kwargs,
