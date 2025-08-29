@@ -59,7 +59,6 @@ class IntegrationDetailResponse(BaseModel, extra="allow"):
     description: Optional[str] = None
     ai_provider_id: Optional[str] = None
     workspace_id: Optional[str] = None
-    organisation_id: Optional[str] = None
     note: Optional[str] = None
     configuration: Optional[Dict[str, Any]] = None
     created_at: Optional[str] = None
