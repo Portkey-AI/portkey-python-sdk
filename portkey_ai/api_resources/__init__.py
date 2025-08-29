@@ -111,6 +111,14 @@ from .apis import (
     AsyncContainersFiles,
     Content,
     AsyncContent,
+    Integrations,
+    AsyncIntegrations,
+    IntegrationsWorkspaces,
+    AsyncIntegrationsWorkspaces,
+    IntegrationsModels,
+    AsyncIntegrationsModels,
+    Providers,
+    AsyncProviders,
 )
 from .utils import (
     Modes,
@@ -257,4 +265,12 @@ __all__ = [
     "AsyncContainersFiles",
     "Content",
     "AsyncContent",
+    "Integrations",
+    "AsyncIntegrations",
+    "IntegrationsWorkspaces",
+    "AsyncIntegrationsWorkspaces",
+    "IntegrationsModels",
+    "AsyncIntegrationsModels",
+    "Providers",
+    "AsyncProviders",
 ]
