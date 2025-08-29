@@ -61,7 +61,13 @@ class IntegrationDetailResponse(BaseModel, extra="allow"):
     configurations: Optional[Dict[str, Any]] = None
     created_at: Optional[str] = None
     last_updated_at: Optional[str] = None
+    allow_all_models: Optional[bool] = None
+    type: Optional[str] = None
+    global_workspace_access: Optional[Dict[str, Any]] = None
     object: Optional[str] = None
+    owner_id: Optional[str] = None
+    status: Optional[str] = None
+    masked_key: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -97,13 +103,11 @@ class IntegrationCreateResponse(BaseModel, extra="allow"):
 
 class IntegrationModel(BaseModel, extra="allow"):
     slug: Optional[str] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    provider: Optional[str] = None
-    context_length: Optional[int] = None
-    pricing: Optional[Dict[str, Any]] = None
-    is_enabled: Optional[bool] = None
+    pricing_config: Optional[Dict[str, Any]] = None
+    enabled: Optional[bool] = None
     is_custom: Optional[bool] = None
+    is_finetune: Optional[bool] = None
+    base_model_slug: Optional[str] = None
     created_at: Optional[str] = None
     last_updated_at: Optional[str] = None
     object: Optional[str] = None
