@@ -142,15 +142,12 @@ class IntegrationModelsResponse(BaseModel, extra="allow"):
 
 
 class IntegrationWorkspace(BaseModel, extra="allow"):
-    workspace_id: Optional[str] = None
-    workspace_name: Optional[str] = None
-    workspace_slug: Optional[str] = None
-    is_enabled: Optional[bool] = None
+    id: Optional[str] = None
+    enabled: Optional[bool] = None
     usage_limits: Optional[Dict[str, Any]] = None
     rate_limits: Optional[Dict[str, Any]] = None
     created_at: Optional[str] = None
     last_updated_at: Optional[str] = None
-    object: Optional[str] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
@@ -171,6 +168,7 @@ class IntegrationWorkspacesResponse(BaseModel, extra="allow"):
     total: Optional[int] = None
     data: Optional[List[IntegrationWorkspace]] = None
     global_workspace_access: Optional[Dict[str, Any]] = None
+    workspaces: Optional[List[IntegrationWorkspace]] = None
     _headers: Optional[httpx.Headers] = PrivateAttr()
 
     def get_headers(self) -> Optional[Dict[str, str]]:
