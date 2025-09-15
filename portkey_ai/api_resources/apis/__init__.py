@@ -95,6 +95,8 @@ from .beta_realtime import (
     AsyncBetaRealtime,
     BetaSessions,
     AsyncBetaSessions,
+    BetaTranscriptionSessions,
+    AsyncBetaTranscriptionSessions,
 )
 
 from .responses import (
@@ -251,6 +253,8 @@ __all__ = [
     "AsyncBetaRealtime",
     "BetaSessions",
     "AsyncBetaSessions",
+    "BetaTranscriptionSessions",
+    "AsyncBetaTranscriptionSessions",
     "Responses",
     "InputItems",
     "AsyncResponses",
