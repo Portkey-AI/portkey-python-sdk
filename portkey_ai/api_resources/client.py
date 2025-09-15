@@ -39,6 +39,7 @@ class Portkey(APIClient):
     integrations: apis.Integrations
     providers: apis.Providers
     realtime: apis.MainRealtime
+    conversations: apis.Conversations
 
     class beta:
         assistants: apis.Assistants
@@ -186,6 +187,7 @@ class Portkey(APIClient):
         self.integrations = apis.Integrations(self)
         self.providers = apis.Providers(self)
         self.realtime = apis.MainRealtime(self)
+        self.conversations = apis.Conversations(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -369,6 +371,7 @@ class AsyncPortkey(AsyncAPIClient):
     integrations: apis.AsyncIntegrations
     providers: apis.AsyncProviders
     realtime: apis.AsyncMainRealtime
+    conversations: apis.AsyncConversations
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -516,6 +519,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.integrations = apis.AsyncIntegrations(self)
         self.providers = apis.AsyncProviders(self)
         self.realtime = apis.AsyncMainRealtime(self)
+        self.conversations = apis.AsyncConversations(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:

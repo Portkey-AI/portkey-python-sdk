@@ -139,6 +139,8 @@ from portkey_ai.api_resources import (
     AsyncMainRealtime,
     ClientSecrets,
     AsyncClientSecrets,
+    Conversations,
+    AsyncConversations,
 )
 
 from portkey_ai.version import VERSION
@@ -297,4 +299,6 @@ __all__ = [
     "AsyncMainRealtime",
     "ClientSecrets",
     "AsyncClientSecrets",
+    "Conversations",
+    "AsyncConversations",
 ]

@@ -164,6 +164,11 @@ from .main_realtime import (
     AsyncClientSecrets,
 )
 
+from .conversations import (
+    Conversations,
+    AsyncConversations,
+)
+
 sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
 
 __all__ = [
@@ -304,4 +309,6 @@ __all__ = [
     "AsyncMainRealtime",
     "ClientSecrets",
     "AsyncClientSecrets",
+    "Conversations",
+    "AsyncConversations",
 ]
