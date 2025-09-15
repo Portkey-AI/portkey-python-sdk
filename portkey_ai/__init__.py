@@ -137,6 +137,8 @@ from portkey_ai.api_resources import (
     AsyncWebhooks,
     MainRealtime,
     AsyncMainRealtime,
+    ClientSecrets,
+    AsyncClientSecrets,
 )
 
 from portkey_ai.version import VERSION
@@ -293,4 +295,6 @@ __all__ = [
     "AsyncWebhooks",
     "MainRealtime",
     "AsyncMainRealtime",
+    "ClientSecrets",
+    "AsyncClientSecrets",
 ]

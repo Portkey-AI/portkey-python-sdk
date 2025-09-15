@@ -125,6 +125,8 @@ from .apis import (
     AsyncWebhooks,
     MainRealtime,
     AsyncMainRealtime,
+    ClientSecrets,
+    AsyncClientSecrets,
 )
 from .utils import (
     Modes,
@@ -285,4 +287,6 @@ __all__ = [
     "AsyncWebhooks",
     "MainRealtime",
     "AsyncMainRealtime",
+    "ClientSecrets",
+    "AsyncClientSecrets",
 ]
