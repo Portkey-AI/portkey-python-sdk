@@ -129,6 +129,8 @@ from .apis import (
     AsyncClientSecrets,
     Conversations,
     AsyncConversations,
+    ConversationsItems,
+    AsyncConversationsItems,
 )
 from .utils import (
     Modes,
@@ -293,4 +295,6 @@ __all__ = [
     "AsyncClientSecrets",
     "Conversations",
     "AsyncConversations",
+    "ConversationsItems",
+    "AsyncConversationsItems",
 ]

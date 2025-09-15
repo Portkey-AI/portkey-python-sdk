@@ -1,5 +1,8 @@
 import json
-from typing import Iterable, Optional, Union
+from typing import Any, Iterable, List, Literal, Optional, Union
+from portkey_ai._vendor.openai.types.responses.response_includable import (
+    ResponseIncludable,
+)
 from portkey_ai._vendor.openai.types.responses.response_input_item_param import (
     ResponseInputItemParam,
 )
@@ -18,6 +21,7 @@ class Conversations(APIResource):
     def __init__(self, client: Portkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
+        self.items = ConversationsItems(client)
 
     def create(
         self,
@@ -112,6 +116,7 @@ class AsyncConversations(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
+        self.items = AsyncConversationsItems(client)
 
     async def create(
         self,
@@ -200,3 +205,203 @@ class AsyncConversations(AsyncAPIResource):
         data._headers = response.headers
 
         return data
+
+
+class ConversationsItems(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    def create(
+        self,
+        conversation_id: str,
+        *,
+        items: Iterable[ResponseInputItemParam],
+        include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = self.openai_client.conversations.items.create(
+            conversation_id=conversation_id,
+            items=items,
+            include=include,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+    def retrieve(
+        self,
+        item_id: str,
+        *,
+        conversation_id: str,
+        include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = self.openai_client.conversations.items.retrieve(
+            item_id=item_id,
+            conversation_id=conversation_id,
+            include=include,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+    def list(
+        self,
+        conversation_id: str,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = self.openai_client.conversations.items.list(
+            conversation_id=conversation_id,
+            after=after,
+            include=include,
+            limit=limit,
+            order=order,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+    def delete(
+        self,
+        item_id: str,
+        *,
+        conversation_id: str,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = self.openai_client.conversations.items.delete(
+            item_id=item_id,
+            conversation_id=conversation_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+
+class AsyncConversationsItems(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    async def create(
+        self,
+        conversation_id: str,
+        *,
+        items: Iterable[ResponseInputItemParam],
+        include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = await self.openai_client.conversations.items.create(
+            conversation_id=conversation_id,
+            items=items,
+            include=include,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+    async def retrieve(
+        self,
+        item_id: str,
+        *,
+        conversation_id: str,
+        include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = await self.openai_client.conversations.items.retrieve(
+            item_id=item_id,
+            conversation_id=conversation_id,
+            include=include,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+    async def list(
+        self,
+        conversation_id: str,
+        *,
+        after: Union[str, NotGiven] = NOT_GIVEN,
+        include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
+        limit: Union[int, NotGiven] = NOT_GIVEN,
+        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = await self.openai_client.conversations.items.list(
+            conversation_id=conversation_id,
+            after=after,
+            include=include,
+            limit=limit,
+            order=order,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
+
+    async def delete(
+        self,
+        item_id: str,
+        *,
+        conversation_id: str,
+        extra_headers: Optional[Headers] = None,
+        extra_query: Optional[Query] = None,
+        extra_body: Optional[Body] = None,
+        timeout: Union[float, httpx.Timeout, NotGiven] = NOT_GIVEN,
+    ) -> Any:
+        response = await self.openai_client.conversations.items.delete(
+            item_id=item_id,
+            conversation_id=conversation_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
+        )
+
+        return response
