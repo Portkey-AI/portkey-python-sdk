@@ -135,6 +135,8 @@ from portkey_ai.api_resources import (
     AsyncProviders,
     Webhooks,
     AsyncWebhooks,
+    MainRealtime,
+    AsyncMainRealtime,
 )
 
 from portkey_ai.version import VERSION
@@ -289,4 +291,6 @@ __all__ = [
     "AsyncProviders",
     "Webhooks",
     "AsyncWebhooks",
+    "MainRealtime",
+    "AsyncMainRealtime",
 ]

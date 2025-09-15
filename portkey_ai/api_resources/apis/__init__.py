@@ -157,6 +157,11 @@ from .providers import (
     AsyncProviders,
 )
 
+from .main_realtime import (
+    MainRealtime,
+    AsyncMainRealtime,
+)
+
 sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
 
 __all__ = [
@@ -293,4 +298,6 @@ __all__ = [
     "AsyncProviders",
     "Webhooks",
     "AsyncWebhooks",
+    "MainRealtime",
+    "AsyncMainRealtime",
 ]

@@ -123,6 +123,8 @@ from .apis import (
     AsyncProviders,
     Webhooks,
     AsyncWebhooks,
+    MainRealtime,
+    AsyncMainRealtime,
 )
 from .utils import (
     Modes,
@@ -281,4 +283,6 @@ __all__ = [
     "AsyncProviders",
     "Webhooks",
     "AsyncWebhooks",
+    "MainRealtime",
+    "AsyncMainRealtime",
 ]
