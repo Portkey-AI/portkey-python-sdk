@@ -1,4 +1,3 @@
-import json
 from typing import Any, Iterable, List, Union
 from portkey_ai._vendor.openai.resources.beta.realtime.realtime import (
     AsyncRealtimeConnectionManager,
@@ -75,8 +74,13 @@ class BetaSessions(APIResource):
         tools: Union[Iterable[Any], NotGiven] = NOT_GIVEN,
         turn_detection: Union[Any, NotGiven] = NOT_GIVEN,
         voice: Union[Any, NotGiven] = NOT_GIVEN,
+        **kwargs,
     ) -> SessionCreateResponse:
-        response = self.openai_client.with_raw_response.beta.realtime.sessions.create(
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = self.openai_client.beta.realtime.sessions.create(
             model=model,
             input_audio_format=input_audio_format,
             input_audio_transcription=input_audio_transcription,
@@ -89,10 +93,13 @@ class BetaSessions(APIResource):
             tools=tools,
             turn_detection=turn_detection,
             voice=voice,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
         )
-        data = SessionCreateResponse(**json.loads(response.text))
-        data._headers = response.headers
-        return data
+
+        return response  # type: ignore[return-value]
 
 
 class AsyncBetaSessions(AsyncAPIResource):
@@ -115,23 +122,29 @@ class AsyncBetaSessions(AsyncAPIResource):
         tools: Union[Iterable[Any], NotGiven] = NOT_GIVEN,
         turn_detection: Union[Any, NotGiven] = NOT_GIVEN,
         voice: Union[Any, NotGiven] = NOT_GIVEN,
+        **kwargs,
     ) -> SessionCreateResponse:
-        response = (
-            await self.openai_client.with_raw_response.beta.realtime.sessions.create(
-                model=model,
-                input_audio_format=input_audio_format,
-                input_audio_transcription=input_audio_transcription,
-                instructions=instructions,
-                max_response_output_tokens=max_response_output_tokens,
-                modalities=modalities,
-                output_audio_format=output_audio_format,
-                temperature=temperature,
-                tool_choice=tool_choice,
-                tools=tools,
-                turn_detection=turn_detection,
-                voice=voice,
-            )
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = await self.openai_client.beta.realtime.sessions.create(
+            model=model,
+            input_audio_format=input_audio_format,
+            input_audio_transcription=input_audio_transcription,
+            instructions=instructions,
+            max_response_output_tokens=max_response_output_tokens,
+            modalities=modalities,
+            output_audio_format=output_audio_format,
+            temperature=temperature,
+            tool_choice=tool_choice,
+            tools=tools,
+            turn_detection=turn_detection,
+            voice=voice,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
         )
-        data = SessionCreateResponse(**json.loads(response.text))
-        data._headers = response.headers
-        return data
+
+        return response  # type: ignore[return-value]

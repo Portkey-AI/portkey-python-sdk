@@ -357,7 +357,6 @@ class InputItems(APIResource):
         response_id: str,
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
         order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
@@ -370,7 +369,6 @@ class InputItems(APIResource):
         response = self.openai_client.responses.input_items.list(
             response_id=response_id,
             after=after,
-            before=before,
             include=include,
             limit=limit,
             order=order,
@@ -703,7 +701,6 @@ class AsyncInputItems(AsyncAPIResource):
         response_id: str,
         *,
         after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
         include: Union[List[ResponseIncludable], NotGiven] = NOT_GIVEN,
         limit: Union[int, NotGiven] = NOT_GIVEN,
         order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
@@ -716,7 +713,6 @@ class AsyncInputItems(AsyncAPIResource):
         response = await self.openai_client.responses.input_items.list(
             response_id=response_id,
             after=after,
-            before=before,
             include=include,
             limit=limit,
             order=order,
