@@ -132,6 +132,20 @@ from .labels import Labels, AsyncLabels
 
 from .collections import Collections, AsyncCollections
 
+from .integrations import (
+    Integrations,
+    AsyncIntegrations,
+    IntegrationsWorkspaces,
+    AsyncIntegrationsWorkspaces,
+    IntegrationsModels,
+    AsyncIntegrationsModels,
+)
+
+from .providers import (
+    Providers,
+    AsyncProviders,
+)
+
 __all__ = [
     "Completion",
     "AsyncCompletion",
@@ -254,4 +268,12 @@ __all__ = [
     "AsyncContainersFiles",
     "Content",
     "AsyncContent",
+    "Integrations",
+    "AsyncIntegrations",
+    "IntegrationsWorkspaces",
+    "AsyncIntegrationsWorkspaces",
+    "IntegrationsModels",
+    "AsyncIntegrationsModels",
+    "Providers",
+    "AsyncProviders",
 ]
