@@ -19,7 +19,7 @@ from .messages import (
     MessagesWithStreamingResponse,
     AsyncMessagesWithStreamingResponse,
 )
-from ...._types import NOT_GIVEN, Body, Query, Headers, NotGiven
+from ...._types import NOT_GIVEN, Body, Query, Headers, NotGiven, SequenceNotStr
 from ...._utils import required_args, maybe_transform, async_maybe_transform
 from ...._compat import cached_property
 from ...._resource import SyncAPIResource, AsyncAPIResource
@@ -106,7 +106,7 @@ class Completions(SyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -260,7 +260,7 @@ class Completions(SyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
@@ -438,9 +438,8 @@ class Completions(SyncAPIResource):
               - If set to 'default', then the request will be processed with the standard
                 pricing and performance for the selected model.
               - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-                'priority', then the request will be processed with the corresponding service
-                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-                Priority processing.
+                '[priority](https://openai.com/api-priority-processing/)', then the request
+                will be processed with the corresponding service tier.
               - When not set, the default behavior is 'auto'.
 
               When the `service_tier` parameter is set, the response body will include the
@@ -457,7 +456,7 @@ class Completions(SyncAPIResource):
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+              Supports text and image inputs. Note: image inputs over 8MB will be dropped.
 
           stream: If set to true, the model response data will be streamed to the client as it is
               generated using
@@ -550,7 +549,7 @@ class Completions(SyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -736,9 +735,8 @@ class Completions(SyncAPIResource):
               - If set to 'default', then the request will be processed with the standard
                 pricing and performance for the selected model.
               - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-                'priority', then the request will be processed with the corresponding service
-                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-                Priority processing.
+                '[priority](https://openai.com/api-priority-processing/)', then the request
+                will be processed with the corresponding service tier.
               - When not set, the default behavior is 'auto'.
 
               When the `service_tier` parameter is set, the response body will include the
@@ -755,7 +753,7 @@ class Completions(SyncAPIResource):
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+              Supports text and image inputs. Note: image inputs over 8MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -839,7 +837,7 @@ class Completions(SyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -1025,9 +1023,8 @@ class Completions(SyncAPIResource):
               - If set to 'default', then the request will be processed with the standard
                 pricing and performance for the selected model.
               - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-                'priority', then the request will be processed with the corresponding service
-                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-                Priority processing.
+                '[priority](https://openai.com/api-priority-processing/)', then the request
+                will be processed with the corresponding service tier.
               - When not set, the default behavior is 'auto'.
 
               When the `service_tier` parameter is set, the response body will include the
@@ -1044,7 +1041,7 @@ class Completions(SyncAPIResource):
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+              Supports text and image inputs. Note: image inputs over 8MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -1127,7 +1124,7 @@ class Completions(SyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
@@ -1403,7 +1400,7 @@ class Completions(SyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -1545,7 +1542,7 @@ class AsyncCompletions(AsyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -1699,7 +1696,7 @@ class AsyncCompletions(AsyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
@@ -1877,9 +1874,8 @@ class AsyncCompletions(AsyncAPIResource):
               - If set to 'default', then the request will be processed with the standard
                 pricing and performance for the selected model.
               - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-                'priority', then the request will be processed with the corresponding service
-                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-                Priority processing.
+                '[priority](https://openai.com/api-priority-processing/)', then the request
+                will be processed with the corresponding service tier.
               - When not set, the default behavior is 'auto'.
 
               When the `service_tier` parameter is set, the response body will include the
@@ -1896,7 +1892,7 @@ class AsyncCompletions(AsyncAPIResource):
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+              Supports text and image inputs. Note: image inputs over 8MB will be dropped.
 
           stream: If set to true, the model response data will be streamed to the client as it is
               generated using
@@ -1989,7 +1985,7 @@ class AsyncCompletions(AsyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -2175,9 +2171,8 @@ class AsyncCompletions(AsyncAPIResource):
               - If set to 'default', then the request will be processed with the standard
                 pricing and performance for the selected model.
               - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-                'priority', then the request will be processed with the corresponding service
-                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-                Priority processing.
+                '[priority](https://openai.com/api-priority-processing/)', then the request
+                will be processed with the corresponding service tier.
               - When not set, the default behavior is 'auto'.
 
               When the `service_tier` parameter is set, the response body will include the
@@ -2194,7 +2189,7 @@ class AsyncCompletions(AsyncAPIResource):
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+              Supports text and image inputs. Note: image inputs over 8MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -2278,7 +2273,7 @@ class AsyncCompletions(AsyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,
@@ -2464,9 +2459,8 @@ class AsyncCompletions(AsyncAPIResource):
               - If set to 'default', then the request will be processed with the standard
                 pricing and performance for the selected model.
               - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-                'priority', then the request will be processed with the corresponding service
-                tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-                Priority processing.
+                '[priority](https://openai.com/api-priority-processing/)', then the request
+                will be processed with the corresponding service tier.
               - When not set, the default behavior is 'auto'.
 
               When the `service_tier` parameter is set, the response body will include the
@@ -2483,7 +2477,7 @@ class AsyncCompletions(AsyncAPIResource):
               our [model distillation](https://platform.openai.com/docs/guides/distillation)
               or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-              Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+              Supports text and image inputs. Note: image inputs over 8MB will be dropped.
 
           stream_options: Options for streaming response. Only set this when you set `stream: true`.
 
@@ -2566,7 +2560,7 @@ class AsyncCompletions(AsyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream: Optional[Literal[False]] | Literal[True] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
@@ -2842,7 +2836,7 @@ class AsyncCompletions(AsyncAPIResource):
         safety_identifier: str | NotGiven = NOT_GIVEN,
         seed: Optional[int] | NotGiven = NOT_GIVEN,
         service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | NotGiven = NOT_GIVEN,
-        stop: Union[Optional[str], List[str], None] | NotGiven = NOT_GIVEN,
+        stop: Union[Optional[str], SequenceNotStr[str], None] | NotGiven = NOT_GIVEN,
         store: Optional[bool] | NotGiven = NOT_GIVEN,
         stream_options: Optional[ChatCompletionStreamOptionsParam] | NotGiven = NOT_GIVEN,
         temperature: Optional[float] | NotGiven = NOT_GIVEN,

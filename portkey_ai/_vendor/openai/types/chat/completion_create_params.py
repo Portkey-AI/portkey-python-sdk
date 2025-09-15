@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Dict, List, Union, Iterable, Optional
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from ..._types import SequenceNotStr
 from ..shared.chat_model import ChatModel
 from ..shared_params.metadata import Metadata
 from ..shared.reasoning_effort import ReasoningEffort
@@ -233,9 +234,8 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     - If set to 'default', then the request will be processed with the standard
       pricing and performance for the selected model.
     - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
-      'priority', then the request will be processed with the corresponding service
-      tier. [Contact sales](https://openai.com/contact-sales) to learn more about
-      Priority processing.
+      '[priority](https://openai.com/api-priority-processing/)', then the request
+      will be processed with the corresponding service tier.
     - When not set, the default behavior is 'auto'.
 
     When the `service_tier` parameter is set, the response body will include the
@@ -244,7 +244,7 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     parameter.
     """
 
-    stop: Union[Optional[str], List[str], None]
+    stop: Union[Optional[str], SequenceNotStr[str], None]
     """Not supported with latest reasoning models `o3` and `o4-mini`.
 
     Up to 4 sequences where the API will stop generating further tokens. The
@@ -257,7 +257,7 @@ class CompletionCreateParamsBase(TypedDict, total=False):
     our [model distillation](https://platform.openai.com/docs/guides/distillation)
     or [evals](https://platform.openai.com/docs/guides/evals) products.
 
-    Supports text and image inputs. Note: image inputs over 10MB will be dropped.
+    Supports text and image inputs. Note: image inputs over 8MB will be dropped.
     """
 
     stream_options: Optional[ChatCompletionStreamOptionsParam]

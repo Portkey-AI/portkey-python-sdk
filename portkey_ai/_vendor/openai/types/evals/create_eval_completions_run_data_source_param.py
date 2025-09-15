@@ -9,6 +9,7 @@ from ..shared_params.metadata import Metadata
 from ..responses.easy_input_message_param import EasyInputMessageParam
 from ..shared_params.response_format_text import ResponseFormatText
 from ..responses.response_input_text_param import ResponseInputTextParam
+from ..responses.response_input_audio_param import ResponseInputAudioParam
 from ..chat.chat_completion_function_tool_param import ChatCompletionFunctionToolParam
 from ..shared_params.response_format_json_object import ResponseFormatJSONObject
 from ..shared_params.response_format_json_schema import ResponseFormatJSONSchema
@@ -23,10 +24,10 @@ __all__ = [
     "InputMessages",
     "InputMessagesTemplate",
     "InputMessagesTemplateTemplate",
-    "InputMessagesTemplateTemplateMessage",
-    "InputMessagesTemplateTemplateMessageContent",
-    "InputMessagesTemplateTemplateMessageContentOutputText",
-    "InputMessagesTemplateTemplateMessageContentInputImage",
+    "InputMessagesTemplateTemplateEvalItem",
+    "InputMessagesTemplateTemplateEvalItemContent",
+    "InputMessagesTemplateTemplateEvalItemContentOutputText",
+    "InputMessagesTemplateTemplateEvalItemContentInputImage",
     "InputMessagesItemReference",
     "SamplingParams",
     "SamplingParamsResponseFormat",
@@ -85,7 +86,7 @@ class SourceStoredCompletions(TypedDict, total=False):
 Source: TypeAlias = Union[SourceFileContent, SourceFileID, SourceStoredCompletions]
 
 
-class InputMessagesTemplateTemplateMessageContentOutputText(TypedDict, total=False):
+class InputMessagesTemplateTemplateEvalItemContentOutputText(TypedDict, total=False):
     text: Required[str]
     """The text output from the model."""
 
@@ -93,7 +94,7 @@ class InputMessagesTemplateTemplateMessageContentOutputText(TypedDict, total=Fal
     """The type of the output text. Always `output_text`."""
 
 
-class InputMessagesTemplateTemplateMessageContentInputImage(TypedDict, total=False):
+class InputMessagesTemplateTemplateEvalItemContentInputImage(TypedDict, total=False):
     image_url: Required[str]
     """The URL of the image input."""
 
@@ -107,17 +108,18 @@ class InputMessagesTemplateTemplateMessageContentInputImage(TypedDict, total=Fal
     """
 
 
-InputMessagesTemplateTemplateMessageContent: TypeAlias = Union[
+InputMessagesTemplateTemplateEvalItemContent: TypeAlias = Union[
     str,
     ResponseInputTextParam,
-    InputMessagesTemplateTemplateMessageContentOutputText,
-    InputMessagesTemplateTemplateMessageContentInputImage,
+    InputMessagesTemplateTemplateEvalItemContentOutputText,
+    InputMessagesTemplateTemplateEvalItemContentInputImage,
+    ResponseInputAudioParam,
     Iterable[object],
 ]
 
 
-class InputMessagesTemplateTemplateMessage(TypedDict, total=False):
-    content: Required[InputMessagesTemplateTemplateMessageContent]
+class InputMessagesTemplateTemplateEvalItem(TypedDict, total=False):
+    content: Required[InputMessagesTemplateTemplateEvalItemContent]
     """Inputs to the model - can contain template strings."""
 
     role: Required[Literal["user", "assistant", "system", "developer"]]
@@ -130,7 +132,7 @@ class InputMessagesTemplateTemplateMessage(TypedDict, total=False):
     """The type of the message input. Always `message`."""
 
 
-InputMessagesTemplateTemplate: TypeAlias = Union[EasyInputMessageParam, InputMessagesTemplateTemplateMessage]
+InputMessagesTemplateTemplate: TypeAlias = Union[EasyInputMessageParam, InputMessagesTemplateTemplateEvalItem]
 
 
 class InputMessagesTemplate(TypedDict, total=False):
