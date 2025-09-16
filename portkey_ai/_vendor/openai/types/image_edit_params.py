@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from typing import List, Union, Optional
+from typing import Union, Optional
 from typing_extensions import Literal, Required, TypedDict
 
-from .._types import FileTypes
+from .._types import FileTypes, SequenceNotStr
 from .image_model import ImageModel
 
-__all__ = ["ImageEditParams"]
+__all__ = ["ImageEditParamsBase", "ImageEditParamsNonStreaming", "ImageEditParamsStreaming"]
 
 
-class ImageEditParams(TypedDict, total=False):
-    image: Required[Union[FileTypes, List[FileTypes]]]
+class ImageEditParamsBase(TypedDict, total=False):
+    image: Required[Union[FileTypes, SequenceNotStr[FileTypes]]]
     """The image(s) to edit. Must be a supported image file or an array of images.
 
     For `gpt-image-1`, each image should be a `png`, `webp`, or `jpg` file less than
@@ -40,6 +40,13 @@ class ImageEditParams(TypedDict, total=False):
     be set to either `png` (default value) or `webp`.
     """
 
+    input_fidelity: Optional[Literal["high", "low"]]
+    """
+    Control how much effort the model will exert to match the style and features,
+    especially facial features, of input images. This parameter is only supported
+    for `gpt-image-1`. Supports `high` and `low`. Defaults to `low`.
+    """
+
     mask: FileTypes
     """An additional image whose fully transparent areas (e.g.
 
@@ -57,6 +64,31 @@ class ImageEditParams(TypedDict, total=False):
 
     n: Optional[int]
     """The number of images to generate. Must be between 1 and 10."""
+
+    output_compression: Optional[int]
+    """The compression level (0-100%) for the generated images.
+
+    This parameter is only supported for `gpt-image-1` with the `webp` or `jpeg`
+    output formats, and defaults to 100.
+    """
+
+    output_format: Optional[Literal["png", "jpeg", "webp"]]
+    """The format in which the generated images are returned.
+
+    This parameter is only supported for `gpt-image-1`. Must be one of `png`,
+    `jpeg`, or `webp`. The default value is `png`.
+    """
+
+    partial_images: Optional[int]
+    """The number of partial images to generate.
+
+    This parameter is used for streaming responses that return partial images. Value
+    must be between 0 and 3. When set to 0, the response will be a single image sent
+    in one streaming event.
+
+    Note that the final image may be sent before the full number of partial images
+    are generated if the full image is generated more quickly.
+    """
 
     quality: Optional[Literal["standard", "low", "medium", "high", "auto"]]
     """The quality of the image that will be generated.
@@ -87,3 +119,26 @@ class ImageEditParams(TypedDict, total=False):
     and detect abuse.
     [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
     """
+
+
+class ImageEditParamsNonStreaming(ImageEditParamsBase, total=False):
+    stream: Optional[Literal[False]]
+    """Edit the image in streaming mode.
+
+    Defaults to `false`. See the
+    [Image generation guide](https://platform.openai.com/docs/guides/image-generation)
+    for more information.
+    """
+
+
+class ImageEditParamsStreaming(ImageEditParamsBase):
+    stream: Required[Literal[True]]
+    """Edit the image in streaming mode.
+
+    Defaults to `false`. See the
+    [Image generation guide](https://platform.openai.com/docs/guides/image-generation)
+    for more information.
+    """
+
+
+ImageEditParams = Union[ImageEditParamsNonStreaming, ImageEditParamsStreaming]

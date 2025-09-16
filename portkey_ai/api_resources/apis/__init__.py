@@ -88,6 +88,8 @@ from .beta_realtime import (
     AsyncBetaRealtime,
     BetaSessions,
     AsyncBetaSessions,
+    BetaTranscriptionSessions,
+    AsyncBetaTranscriptionSessions,
 )
 
 from .responses import (
@@ -122,6 +124,8 @@ from .containers import (
     AsyncContent,
 )
 
+from .webhooks import Webhooks, AsyncWebhooks
+
 from .configs import Configs, AsyncConfigs
 
 from .api_keys import ApiKeys, AsyncApiKeys
@@ -144,6 +148,20 @@ from .integrations import (
 from .providers import (
     Providers,
     AsyncProviders,
+)
+
+from .main_realtime import (
+    MainRealtime,
+    AsyncMainRealtime,
+    ClientSecrets,
+    AsyncClientSecrets,
+)
+
+from .conversations import (
+    Conversations,
+    AsyncConversations,
+    ConversationsItems,
+    AsyncConversationsItems,
 )
 
 __all__ = [
@@ -240,6 +258,8 @@ __all__ = [
     "AsyncBetaRealtime",
     "BetaSessions",
     "AsyncBetaSessions",
+    "BetaTranscriptionSessions",
+    "AsyncBetaTranscriptionSessions",
     "Responses",
     "InputItems",
     "AsyncResponses",
@@ -276,4 +296,14 @@ __all__ = [
     "AsyncIntegrationsModels",
     "Providers",
     "AsyncProviders",
+    "Webhooks",
+    "AsyncWebhooks",
+    "MainRealtime",
+    "AsyncMainRealtime",
+    "ClientSecrets",
+    "AsyncClientSecrets",
+    "Conversations",
+    "AsyncConversations",
+    "ConversationsItems",
+    "AsyncConversationsItems",
 ]

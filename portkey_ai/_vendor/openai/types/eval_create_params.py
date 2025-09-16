@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Union, Iterable, Optional
+from typing import Dict, Union, Iterable, Optional
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from .._types import SequenceNotStr
 from .shared_params.metadata import Metadata
 from .graders.python_grader_param import PythonGraderParam
 from .graders.score_model_grader_param import ScoreModelGraderParam
 from .graders.string_check_grader_param import StringCheckGraderParam
 from .responses.response_input_text_param import ResponseInputTextParam
 from .graders.text_similarity_grader_param import TextSimilarityGraderParam
+from .responses.response_input_audio_param import ResponseInputAudioParam
 
 __all__ = [
     "EvalCreateParams",
@@ -25,6 +27,7 @@ __all__ = [
     "TestingCriterionLabelModelInputEvalItem",
     "TestingCriterionLabelModelInputEvalItemContent",
     "TestingCriterionLabelModelInputEvalItemContentOutputText",
+    "TestingCriterionLabelModelInputEvalItemContentInputImage",
     "TestingCriterionTextSimilarity",
     "TestingCriterionPython",
     "TestingCriterionScoreModel",
@@ -109,14 +112,33 @@ class TestingCriterionLabelModelInputEvalItemContentOutputText(TypedDict, total=
     """The type of the output text. Always `output_text`."""
 
 
+class TestingCriterionLabelModelInputEvalItemContentInputImage(TypedDict, total=False):
+    image_url: Required[str]
+    """The URL of the image input."""
+
+    type: Required[Literal["input_image"]]
+    """The type of the image input. Always `input_image`."""
+
+    detail: str
+    """The detail level of the image to be sent to the model.
+
+    One of `high`, `low`, or `auto`. Defaults to `auto`.
+    """
+
+
 TestingCriterionLabelModelInputEvalItemContent: TypeAlias = Union[
-    str, ResponseInputTextParam, TestingCriterionLabelModelInputEvalItemContentOutputText
+    str,
+    ResponseInputTextParam,
+    TestingCriterionLabelModelInputEvalItemContentOutputText,
+    TestingCriterionLabelModelInputEvalItemContentInputImage,
+    ResponseInputAudioParam,
+    Iterable[object],
 ]
 
 
 class TestingCriterionLabelModelInputEvalItem(TypedDict, total=False):
     content: Required[TestingCriterionLabelModelInputEvalItemContent]
-    """Text inputs to the model - can contain template strings."""
+    """Inputs to the model - can contain template strings."""
 
     role: Required[Literal["user", "assistant", "system", "developer"]]
     """The role of the message input.
@@ -140,7 +162,7 @@ class TestingCriterionLabelModel(TypedDict, total=False):
     May include variable references to the `item` namespace, ie {{item.name}}.
     """
 
-    labels: Required[List[str]]
+    labels: Required[SequenceNotStr[str]]
     """The labels to classify to each item in the evaluation."""
 
     model: Required[str]
@@ -149,7 +171,7 @@ class TestingCriterionLabelModel(TypedDict, total=False):
     name: Required[str]
     """The name of the grader."""
 
-    passing_labels: Required[List[str]]
+    passing_labels: Required[SequenceNotStr[str]]
     """The labels that indicate a passing result. Must be a subset of labels."""
 
     type: Required[Literal["label_model"]]

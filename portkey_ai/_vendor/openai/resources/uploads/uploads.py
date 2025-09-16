@@ -6,7 +6,7 @@ import io
 import os
 import logging
 import builtins
-from typing import List, overload
+from typing import overload
 from pathlib import Path
 
 import anyio
@@ -22,7 +22,7 @@ from .parts import (
     AsyncPartsWithStreamingResponse,
 )
 from ...types import FilePurpose, upload_create_params, upload_complete_params
-from ..._types import NOT_GIVEN, Body, Query, Headers, NotGiven
+from ..._types import NOT_GIVEN, Body, Query, Headers, NotGiven, SequenceNotStr
 from ..._utils import maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
@@ -170,6 +170,7 @@ class Uploads(SyncAPIResource):
         filename: str,
         mime_type: str,
         purpose: FilePurpose,
+        expires_after: upload_create_params.ExpiresAfter | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -213,6 +214,9 @@ class Uploads(SyncAPIResource):
               See the
               [documentation on File purposes](https://platform.openai.com/docs/api-reference/files/create#files-create-purpose).
 
+          expires_after: The expiration policy for a file. By default, files with `purpose=batch` expire
+              after 30 days and all other files are persisted until they are manually deleted.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -229,6 +233,7 @@ class Uploads(SyncAPIResource):
                     "filename": filename,
                     "mime_type": mime_type,
                     "purpose": purpose,
+                    "expires_after": expires_after,
                 },
                 upload_create_params.UploadCreateParams,
             ),
@@ -276,7 +281,7 @@ class Uploads(SyncAPIResource):
         self,
         upload_id: str,
         *,
-        part_ids: List[str],
+        part_ids: SequenceNotStr[str],
         md5: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -473,6 +478,7 @@ class AsyncUploads(AsyncAPIResource):
         filename: str,
         mime_type: str,
         purpose: FilePurpose,
+        expires_after: upload_create_params.ExpiresAfter | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -516,6 +522,9 @@ class AsyncUploads(AsyncAPIResource):
               See the
               [documentation on File purposes](https://platform.openai.com/docs/api-reference/files/create#files-create-purpose).
 
+          expires_after: The expiration policy for a file. By default, files with `purpose=batch` expire
+              after 30 days and all other files are persisted until they are manually deleted.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -532,6 +541,7 @@ class AsyncUploads(AsyncAPIResource):
                     "filename": filename,
                     "mime_type": mime_type,
                     "purpose": purpose,
+                    "expires_after": expires_after,
                 },
                 upload_create_params.UploadCreateParams,
             ),
@@ -579,7 +589,7 @@ class AsyncUploads(AsyncAPIResource):
         self,
         upload_id: str,
         *,
-        part_ids: List[str],
+        part_ids: SequenceNotStr[str],
         md5: str | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.

@@ -16,9 +16,7 @@ class ChatCompletionAudioParam(TypedDict, total=False):
     """
 
     voice: Required[
-        Union[
-            str, Literal["alloy", "ash", "ballad", "coral", "echo", "fable", "onyx", "nova", "sage", "shimmer", "verse"]
-        ]
+        Union[str, Literal["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"]]
     ]
     """The voice the model uses to respond.
 
