@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Union, Iterable, Optional
+from typing import Dict, Union, Iterable, Optional
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from ..._types import SequenceNotStr
 from ..responses.tool_param import ToolParam
 from ..shared_params.metadata import Metadata
 from ..shared.reasoning_effort import ReasoningEffort
 from ..responses.response_input_text_param import ResponseInputTextParam
+from ..responses.response_input_audio_param import ResponseInputAudioParam
 from .create_eval_jsonl_run_data_source_param import CreateEvalJSONLRunDataSourceParam
 from ..responses.response_format_text_config_param import ResponseFormatTextConfigParam
 from .create_eval_completions_run_data_source_param import CreateEvalCompletionsRunDataSourceParam
@@ -29,6 +31,7 @@ __all__ = [
     "DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItem",
     "DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContent",
     "DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContentOutputText",
+    "DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContentInputImage",
     "DataSourceCreateEvalResponsesRunDataSourceInputMessagesItemReference",
     "DataSourceCreateEvalResponsesRunDataSourceSamplingParams",
     "DataSourceCreateEvalResponsesRunDataSourceSamplingParamsText",
@@ -118,13 +121,13 @@ class DataSourceCreateEvalResponsesRunDataSourceSourceResponses(TypedDict, total
     temperature: Optional[float]
     """Sampling temperature. This is a query parameter used to select responses."""
 
-    tools: Optional[List[str]]
+    tools: Optional[SequenceNotStr[str]]
     """List of tool names. This is a query parameter used to select responses."""
 
     top_p: Optional[float]
     """Nucleus sampling parameter. This is a query parameter used to select responses."""
 
-    users: Optional[List[str]]
+    users: Optional[SequenceNotStr[str]]
     """List of user identifiers. This is a query parameter used to select responses."""
 
 
@@ -153,16 +156,35 @@ class DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEva
     """The type of the output text. Always `output_text`."""
 
 
+class DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContentInputImage(
+    TypedDict, total=False
+):
+    image_url: Required[str]
+    """The URL of the image input."""
+
+    type: Required[Literal["input_image"]]
+    """The type of the image input. Always `input_image`."""
+
+    detail: str
+    """The detail level of the image to be sent to the model.
+
+    One of `high`, `low`, or `auto`. Defaults to `auto`.
+    """
+
+
 DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContent: TypeAlias = Union[
     str,
     ResponseInputTextParam,
     DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContentOutputText,
+    DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContentInputImage,
+    ResponseInputAudioParam,
+    Iterable[object],
 ]
 
 
 class DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItem(TypedDict, total=False):
     content: Required[DataSourceCreateEvalResponsesRunDataSourceInputMessagesTemplateTemplateEvalItemContent]
-    """Text inputs to the model - can contain template strings."""
+    """Inputs to the model - can contain template strings."""
 
     role: Required[Literal["user", "assistant", "system", "developer"]]
     """The role of the message input.

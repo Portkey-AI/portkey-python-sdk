@@ -21,9 +21,7 @@ class SpeechCreateParams(TypedDict, total=False):
     """
 
     voice: Required[
-        Union[
-            str, Literal["alloy", "ash", "ballad", "coral", "echo", "fable", "onyx", "nova", "sage", "shimmer", "verse"]
-        ]
+        Union[str, Literal["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse", "marin", "cedar"]]
     ]
     """The voice to use when generating the audio.
 
@@ -48,6 +46,12 @@ class SpeechCreateParams(TypedDict, total=False):
     speed: float
     """The speed of the generated audio.
 
-    Select a value from `0.25` to `4.0`. `1.0` is the default. Does not work with
-    `gpt-4o-mini-tts`.
+    Select a value from `0.25` to `4.0`. `1.0` is the default.
+    """
+
+    stream_format: Literal["sse", "audio"]
+    """The format to stream the audio in.
+
+    Supported formats are `sse` and `audio`. `sse` is not supported for `tts-1` or
+    `tts-1-hd`.
     """
