@@ -1,10 +1,3 @@
-"""
-The following change is brought to handle the cases for pydantic v1 and v2
-Including (import sys) and
-sys.modules["openai"] = vendored_openai
-"""
-import sys
-from ..._vendor import openai as vendored_openai
 from .chat_complete import (
     ChatCompletion,
     AsyncChatCompletion,
@@ -170,8 +163,6 @@ from .conversations import (
     ConversationsItems,
     AsyncConversationsItems,
 )
-
-sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
 
 __all__ = [
     "Completion",
