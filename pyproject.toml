@@ -17,3 +17,5 @@ force-exclude = '''(portkey_ai/_vendor)/'''
 
 [tool.ruff]
 exclude =  ["portkey_ai/_vendor", "tests"]
+ignore = ["E501"]
+line-length = 88
