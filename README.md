@@ -152,7 +152,7 @@ req = LlmRequest(
     contents=[
         types.Content(
             role="user",
-            parts=[types.Part.from_text("Tell me a short programming joke.")],
+            parts=[types.Part.from_text(text="Tell me a short programming joke.")],
         )
     ],
 )
@@ -170,11 +170,11 @@ asyncio.run(main())
 
 Configuration notes:
 
-- **system_role**: By default, the adapter sends the system instruction as a `developer` role message to align with ADK/LiteLLM. If your provider expects a strict `system` role, pass `system_role="system"` when constructing `PortkeyAdk`.
+- **system_role**: By default, the adapter sends the system instruction as a `developer` role message to align with ADK. If your provider expects a strict `system` role, pass `system_role="system"` when constructing `PortkeyAdk`.
   
   ```python
   llm = PortkeyAdk(
-      model="gpt-4o-mini",
+      model="@openai/gpt-4o-mini",
       api_key="PORTKEY_API_KEY",
       system_role="system",  # switch from default "developer"
   )

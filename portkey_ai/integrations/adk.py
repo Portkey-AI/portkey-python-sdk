@@ -352,10 +352,10 @@ def _message_to_generate_content_response(message: Any, is_partial: bool = False
                         getattr(getattr(tool_call, "function", None), "arguments", "{}")
                         or "{}"
                     ),
-                )
+                )  # type: ignore[arg-type]
                 # Attach tool_call id if present
                 try:
-                    part.function_call.id = getattr(tool_call, "id", None)
+                    part.function_call.id = getattr(tool_call, "id", None)  # type: ignore[union-attr]
                 except Exception:
                     pass
                 parts.append(part)
