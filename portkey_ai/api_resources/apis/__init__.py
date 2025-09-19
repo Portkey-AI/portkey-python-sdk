@@ -1,10 +1,3 @@
-"""
-The following change is brought to handle the cases for pydantic v1 and v2
-Including (import sys) and
-sys.modules["openai"] = vendored_openai
-"""
-import sys
-from ..._vendor import openai as vendored_openai
 from .chat_complete import (
     ChatCompletion,
     AsyncChatCompletion,
@@ -95,6 +88,8 @@ from .beta_realtime import (
     AsyncBetaRealtime,
     BetaSessions,
     AsyncBetaSessions,
+    BetaTranscriptionSessions,
+    AsyncBetaTranscriptionSessions,
 )
 
 from .responses import (
@@ -129,6 +124,8 @@ from .containers import (
     AsyncContent,
 )
 
+from .webhooks import Webhooks, AsyncWebhooks
+
 from .configs import Configs, AsyncConfigs
 
 from .api_keys import ApiKeys, AsyncApiKeys
@@ -139,7 +136,33 @@ from .labels import Labels, AsyncLabels
 
 from .collections import Collections, AsyncCollections
 
-sys.modules["openai"] = vendored_openai  # For pydantic v1 and v2 compatibility
+from .integrations import (
+    Integrations,
+    AsyncIntegrations,
+    IntegrationsWorkspaces,
+    AsyncIntegrationsWorkspaces,
+    IntegrationsModels,
+    AsyncIntegrationsModels,
+)
+
+from .providers import (
+    Providers,
+    AsyncProviders,
+)
+
+from .main_realtime import (
+    MainRealtime,
+    AsyncMainRealtime,
+    ClientSecrets,
+    AsyncClientSecrets,
+)
+
+from .conversations import (
+    Conversations,
+    AsyncConversations,
+    ConversationsItems,
+    AsyncConversationsItems,
+)
 
 __all__ = [
     "Completion",
@@ -235,6 +258,8 @@ __all__ = [
     "AsyncBetaRealtime",
     "BetaSessions",
     "AsyncBetaSessions",
+    "BetaTranscriptionSessions",
+    "AsyncBetaTranscriptionSessions",
     "Responses",
     "InputItems",
     "AsyncResponses",
@@ -263,4 +288,22 @@ __all__ = [
     "AsyncContainersFiles",
     "Content",
     "AsyncContent",
+    "Integrations",
+    "AsyncIntegrations",
+    "IntegrationsWorkspaces",
+    "AsyncIntegrationsWorkspaces",
+    "IntegrationsModels",
+    "AsyncIntegrationsModels",
+    "Providers",
+    "AsyncProviders",
+    "Webhooks",
+    "AsyncWebhooks",
+    "MainRealtime",
+    "AsyncMainRealtime",
+    "ClientSecrets",
+    "AsyncClientSecrets",
+    "Conversations",
+    "AsyncConversations",
+    "ConversationsItems",
+    "AsyncConversationsItems",
 ]

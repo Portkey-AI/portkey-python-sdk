@@ -167,12 +167,11 @@ class Runs(SyncAPIResource):
               [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
-          reasoning_effort: **o-series models only**
-
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: Specifies the format that the model must output. Compatible with
               [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
@@ -221,7 +220,7 @@ class Runs(SyncAPIResource):
               We generally recommend altering this or temperature but not both.
 
           truncation_strategy: Controls for how a thread will be truncated prior to the run. Use this to
-              control the intial context window of the run.
+              control the initial context window of the run.
 
           extra_headers: Send extra headers
 
@@ -322,12 +321,11 @@ class Runs(SyncAPIResource):
               [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
-          reasoning_effort: **o-series models only**
-
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: Specifies the format that the model must output. Compatible with
               [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
@@ -372,7 +370,7 @@ class Runs(SyncAPIResource):
               We generally recommend altering this or temperature but not both.
 
           truncation_strategy: Controls for how a thread will be truncated prior to the run. Use this to
-              control the intial context window of the run.
+              control the initial context window of the run.
 
           extra_headers: Send extra headers
 
@@ -473,12 +471,11 @@ class Runs(SyncAPIResource):
               [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
-          reasoning_effort: **o-series models only**
-
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: Specifies the format that the model must output. Compatible with
               [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
@@ -523,7 +520,7 @@ class Runs(SyncAPIResource):
               We generally recommend altering this or temperature but not both.
 
           truncation_strategy: Controls for how a thread will be truncated prior to the run. Use this to
-              control the intial context window of the run.
+              control the initial context window of the run.
 
           extra_headers: Send extra headers
 
@@ -1600,12 +1597,11 @@ class AsyncRuns(AsyncAPIResource):
               [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
-          reasoning_effort: **o-series models only**
-
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: Specifies the format that the model must output. Compatible with
               [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
@@ -1654,7 +1650,7 @@ class AsyncRuns(AsyncAPIResource):
               We generally recommend altering this or temperature but not both.
 
           truncation_strategy: Controls for how a thread will be truncated prior to the run. Use this to
-              control the intial context window of the run.
+              control the initial context window of the run.
 
           extra_headers: Send extra headers
 
@@ -1755,12 +1751,11 @@ class AsyncRuns(AsyncAPIResource):
               [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
-          reasoning_effort: **o-series models only**
-
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: Specifies the format that the model must output. Compatible with
               [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
@@ -1805,7 +1800,7 @@ class AsyncRuns(AsyncAPIResource):
               We generally recommend altering this or temperature but not both.
 
           truncation_strategy: Controls for how a thread will be truncated prior to the run. Use this to
-              control the intial context window of the run.
+              control the initial context window of the run.
 
           extra_headers: Send extra headers
 
@@ -1906,12 +1901,11 @@ class AsyncRuns(AsyncAPIResource):
               [parallel function calling](https://platform.openai.com/docs/guides/function-calling#configuring-parallel-function-calling)
               during tool use.
 
-          reasoning_effort: **o-series models only**
-
-              Constrains effort on reasoning for
+          reasoning_effort: Constrains effort on reasoning for
               [reasoning models](https://platform.openai.com/docs/guides/reasoning). Currently
-              supported values are `low`, `medium`, and `high`. Reducing reasoning effort can
-              result in faster responses and fewer tokens used on reasoning in a response.
+              supported values are `minimal`, `low`, `medium`, and `high`. Reducing reasoning
+              effort can result in faster responses and fewer tokens used on reasoning in a
+              response.
 
           response_format: Specifies the format that the model must output. Compatible with
               [GPT-4o](https://platform.openai.com/docs/models#gpt-4o),
@@ -1956,7 +1950,7 @@ class AsyncRuns(AsyncAPIResource):
               We generally recommend altering this or temperature but not both.
 
           truncation_strategy: Controls for how a thread will be truncated prior to the run. Use this to
-              control the intial context window of the run.
+              control the initial context window of the run.
 
           extra_headers: Send extra headers
 
@@ -2932,32 +2926,32 @@ class RunsWithRawResponse:
 
         self.create = (  # pyright: ignore[reportDeprecated]
             _legacy_response.to_raw_response_wrapper(
-                runs.create  # pyright: ignore[reportDeprecated],
+                runs.create,  # pyright: ignore[reportDeprecated],
             )
         )
         self.retrieve = (  # pyright: ignore[reportDeprecated]
             _legacy_response.to_raw_response_wrapper(
-                runs.retrieve  # pyright: ignore[reportDeprecated],
+                runs.retrieve,  # pyright: ignore[reportDeprecated],
             )
         )
         self.update = (  # pyright: ignore[reportDeprecated]
             _legacy_response.to_raw_response_wrapper(
-                runs.update  # pyright: ignore[reportDeprecated],
+                runs.update,  # pyright: ignore[reportDeprecated],
             )
         )
         self.list = (  # pyright: ignore[reportDeprecated]
             _legacy_response.to_raw_response_wrapper(
-                runs.list  # pyright: ignore[reportDeprecated],
+                runs.list,  # pyright: ignore[reportDeprecated],
             )
         )
         self.cancel = (  # pyright: ignore[reportDeprecated]
             _legacy_response.to_raw_response_wrapper(
-                runs.cancel  # pyright: ignore[reportDeprecated],
+                runs.cancel,  # pyright: ignore[reportDeprecated],
             )
         )
         self.submit_tool_outputs = (  # pyright: ignore[reportDeprecated]
             _legacy_response.to_raw_response_wrapper(
-                runs.submit_tool_outputs  # pyright: ignore[reportDeprecated],
+                runs.submit_tool_outputs,  # pyright: ignore[reportDeprecated],
             )
         )
 
@@ -2972,32 +2966,32 @@ class AsyncRunsWithRawResponse:
 
         self.create = (  # pyright: ignore[reportDeprecated]
             _legacy_response.async_to_raw_response_wrapper(
-                runs.create  # pyright: ignore[reportDeprecated],
+                runs.create,  # pyright: ignore[reportDeprecated],
             )
         )
         self.retrieve = (  # pyright: ignore[reportDeprecated]
             _legacy_response.async_to_raw_response_wrapper(
-                runs.retrieve  # pyright: ignore[reportDeprecated],
+                runs.retrieve,  # pyright: ignore[reportDeprecated],
             )
         )
         self.update = (  # pyright: ignore[reportDeprecated]
             _legacy_response.async_to_raw_response_wrapper(
-                runs.update  # pyright: ignore[reportDeprecated],
+                runs.update,  # pyright: ignore[reportDeprecated],
             )
         )
         self.list = (  # pyright: ignore[reportDeprecated]
             _legacy_response.async_to_raw_response_wrapper(
-                runs.list  # pyright: ignore[reportDeprecated],
+                runs.list,  # pyright: ignore[reportDeprecated],
             )
         )
         self.cancel = (  # pyright: ignore[reportDeprecated]
             _legacy_response.async_to_raw_response_wrapper(
-                runs.cancel  # pyright: ignore[reportDeprecated],
+                runs.cancel,  # pyright: ignore[reportDeprecated],
             )
         )
         self.submit_tool_outputs = (  # pyright: ignore[reportDeprecated]
             _legacy_response.async_to_raw_response_wrapper(
-                runs.submit_tool_outputs  # pyright: ignore[reportDeprecated],
+                runs.submit_tool_outputs,  # pyright: ignore[reportDeprecated],
             )
         )
 
@@ -3012,32 +3006,32 @@ class RunsWithStreamingResponse:
 
         self.create = (  # pyright: ignore[reportDeprecated]
             to_streamed_response_wrapper(
-                runs.create  # pyright: ignore[reportDeprecated],
+                runs.create,  # pyright: ignore[reportDeprecated],
             )
         )
         self.retrieve = (  # pyright: ignore[reportDeprecated]
             to_streamed_response_wrapper(
-                runs.retrieve  # pyright: ignore[reportDeprecated],
+                runs.retrieve,  # pyright: ignore[reportDeprecated],
             )
         )
         self.update = (  # pyright: ignore[reportDeprecated]
             to_streamed_response_wrapper(
-                runs.update  # pyright: ignore[reportDeprecated],
+                runs.update,  # pyright: ignore[reportDeprecated],
             )
         )
         self.list = (  # pyright: ignore[reportDeprecated]
             to_streamed_response_wrapper(
-                runs.list  # pyright: ignore[reportDeprecated],
+                runs.list,  # pyright: ignore[reportDeprecated],
             )
         )
         self.cancel = (  # pyright: ignore[reportDeprecated]
             to_streamed_response_wrapper(
-                runs.cancel  # pyright: ignore[reportDeprecated],
+                runs.cancel,  # pyright: ignore[reportDeprecated],
             )
         )
         self.submit_tool_outputs = (  # pyright: ignore[reportDeprecated]
             to_streamed_response_wrapper(
-                runs.submit_tool_outputs  # pyright: ignore[reportDeprecated],
+                runs.submit_tool_outputs,  # pyright: ignore[reportDeprecated],
             )
         )
 
@@ -3052,32 +3046,32 @@ class AsyncRunsWithStreamingResponse:
 
         self.create = (  # pyright: ignore[reportDeprecated]
             async_to_streamed_response_wrapper(
-                runs.create  # pyright: ignore[reportDeprecated],
+                runs.create,  # pyright: ignore[reportDeprecated],
             )
         )
         self.retrieve = (  # pyright: ignore[reportDeprecated]
             async_to_streamed_response_wrapper(
-                runs.retrieve  # pyright: ignore[reportDeprecated],
+                runs.retrieve,  # pyright: ignore[reportDeprecated],
             )
         )
         self.update = (  # pyright: ignore[reportDeprecated]
             async_to_streamed_response_wrapper(
-                runs.update  # pyright: ignore[reportDeprecated],
+                runs.update,  # pyright: ignore[reportDeprecated],
             )
         )
         self.list = (  # pyright: ignore[reportDeprecated]
             async_to_streamed_response_wrapper(
-                runs.list  # pyright: ignore[reportDeprecated],
+                runs.list,  # pyright: ignore[reportDeprecated],
             )
         )
         self.cancel = (  # pyright: ignore[reportDeprecated]
             async_to_streamed_response_wrapper(
-                runs.cancel  # pyright: ignore[reportDeprecated],
+                runs.cancel,  # pyright: ignore[reportDeprecated],
             )
         )
         self.submit_tool_outputs = (  # pyright: ignore[reportDeprecated]
             async_to_streamed_response_wrapper(
-                runs.submit_tool_outputs  # pyright: ignore[reportDeprecated],
+                runs.submit_tool_outputs,  # pyright: ignore[reportDeprecated],
             )
         )
 

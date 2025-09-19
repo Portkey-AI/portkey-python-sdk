@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from typing import List, Union, Iterable
-from typing_extensions import Literal, TypeAlias, TypedDict
+from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
 __all__ = [
     "SessionCreateParams",
     "ClientSecret",
-    "ClientSecretExpiresAt",
+    "ClientSecretExpiresAfter",
     "InputAudioNoiseReduction",
     "InputAudioTranscription",
     "Tool",
@@ -137,7 +137,7 @@ class SessionCreateParams(TypedDict, total=False):
     This can be set to `null` to turn off, in which case the client must manually
     trigger model response. Server VAD means that the model will detect the start
     and end of speech based on audio volume and respond at the end of user speech.
-    Semantic VAD is more advanced and uses a turn detection model (in conjuction
+    Semantic VAD is more advanced and uses a turn detection model (in conjunction
     with VAD) to semantically estimate whether the user has finished speaking, then
     dynamically sets a timeout based on this probability. For example, if user audio
     trails off with "uhhm", the model will score a low probability of turn end and
@@ -145,19 +145,17 @@ class SessionCreateParams(TypedDict, total=False):
     natural conversations, but may have a higher latency.
     """
 
-    voice: Union[
-        str, Literal["alloy", "ash", "ballad", "coral", "echo", "fable", "onyx", "nova", "sage", "shimmer", "verse"]
-    ]
+    voice: Union[str, Literal["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse"]]
     """The voice the model uses to respond.
 
     Voice cannot be changed during the session once the model has responded with
     audio at least once. Current voice options are `alloy`, `ash`, `ballad`,
-    `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, and `verse`.
+    `coral`, `echo`, `sage`, `shimmer`, and `verse`.
     """
 
 
-class ClientSecretExpiresAt(TypedDict, total=False):
-    anchor: Literal["created_at"]
+class ClientSecretExpiresAfter(TypedDict, total=False):
+    anchor: Required[Literal["created_at"]]
     """The anchor point for the ephemeral token expiration.
 
     Only `created_at` is currently supported.
@@ -171,7 +169,7 @@ class ClientSecretExpiresAt(TypedDict, total=False):
 
 
 class ClientSecret(TypedDict, total=False):
-    expires_at: ClientSecretExpiresAt
+    expires_after: ClientSecretExpiresAfter
     """Configuration for the ephemeral token expiration."""
 
 

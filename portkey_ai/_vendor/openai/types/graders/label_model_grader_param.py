@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-from typing import List, Union, Iterable
+from typing import Union, Iterable
 from typing_extensions import Literal, Required, TypeAlias, TypedDict
 
+from ..._types import SequenceNotStr
 from ..responses.response_input_text_param import ResponseInputTextParam
+from ..responses.response_input_audio_param import ResponseInputAudioParam
 
-__all__ = ["LabelModelGraderParam", "Input", "InputContent", "InputContentOutputText"]
+__all__ = ["LabelModelGraderParam", "Input", "InputContent", "InputContentOutputText", "InputContentInputImage"]
 
 
 class InputContentOutputText(TypedDict, total=False):
@@ -18,12 +20,33 @@ class InputContentOutputText(TypedDict, total=False):
     """The type of the output text. Always `output_text`."""
 
 
-InputContent: TypeAlias = Union[str, ResponseInputTextParam, InputContentOutputText]
+class InputContentInputImage(TypedDict, total=False):
+    image_url: Required[str]
+    """The URL of the image input."""
+
+    type: Required[Literal["input_image"]]
+    """The type of the image input. Always `input_image`."""
+
+    detail: str
+    """The detail level of the image to be sent to the model.
+
+    One of `high`, `low`, or `auto`. Defaults to `auto`.
+    """
+
+
+InputContent: TypeAlias = Union[
+    str,
+    ResponseInputTextParam,
+    InputContentOutputText,
+    InputContentInputImage,
+    ResponseInputAudioParam,
+    Iterable[object],
+]
 
 
 class Input(TypedDict, total=False):
     content: Required[InputContent]
-    """Text inputs to the model - can contain template strings."""
+    """Inputs to the model - can contain template strings."""
 
     role: Required[Literal["user", "assistant", "system", "developer"]]
     """The role of the message input.
@@ -38,7 +61,7 @@ class Input(TypedDict, total=False):
 class LabelModelGraderParam(TypedDict, total=False):
     input: Required[Iterable[Input]]
 
-    labels: Required[List[str]]
+    labels: Required[SequenceNotStr[str]]
     """The labels to assign to each item in the evaluation."""
 
     model: Required[str]
@@ -47,7 +70,7 @@ class LabelModelGraderParam(TypedDict, total=False):
     name: Required[str]
     """The name of the grader."""
 
-    passing_labels: Required[List[str]]
+    passing_labels: Required[SequenceNotStr[str]]
     """The labels that indicate a passing result. Must be a subset of labels."""
 
     type: Required[Literal["label_model"]]

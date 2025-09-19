@@ -9,7 +9,7 @@ import pydantic
 from .._tools import ResponsesPydanticFunctionTool
 from ..._types import NotGiven
 from ..._utils import is_given
-from ..._compat import PYDANTIC_V2, model_parse_json
+from ..._compat import PYDANTIC_V1, model_parse_json
 from ..._models import construct_type_unchecked
 from .._pydantic import is_basemodel_type, is_dataclass_like_type
 from ._completions import solve_response_format_t, type_to_response_format_param
@@ -110,6 +110,7 @@ def parse_response(
             or output.type == "local_shell_call"
             or output.type == "mcp_list_tools"
             or output.type == "exec"
+            or output.type == "custom_tool_call"
         ):
             output_list.append(output)
         elif TYPE_CHECKING:  # type: ignore
@@ -137,7 +138,7 @@ def parse_text(text: str, text_format: type[TextFormatT] | NotGiven) -> TextForm
         return cast(TextFormatT, model_parse_json(text_format, text))
 
     if is_dataclass_like_type(text_format):
-        if not PYDANTIC_V2:
+        if PYDANTIC_V1:
             raise TypeError(f"Non BaseModel types are only supported with Pydantic v2 - {text_format}")
 
         return pydantic.TypeAdapter(text_format).validate_json(text)

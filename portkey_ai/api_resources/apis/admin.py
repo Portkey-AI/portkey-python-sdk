@@ -225,12 +225,18 @@ class Workspaces(APIResource):
     def list(
         self,
         *,
+        name: Optional[str] = None,
         page_size: Optional[Union[int, str]] = None,
         current_page: Optional[int] = 0,
+        exact_name: Optional[str] = None,
+        **kwargs: Any,
     ) -> WorkspacesListResponse:
         query = {
+            "name": name,
             "pageSize": page_size,
             "currentPage": current_page,
+            "exact_name": exact_name,
+            **kwargs,
         }
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
@@ -599,12 +605,18 @@ class AsyncWorkspaces(AsyncAPIResource):
     async def list(
         self,
         *,
+        name: Optional[str] = None,
         page_size: Optional[Union[int, str]] = None,
         current_page: Optional[int] = 0,
+        exact_name: Optional[str] = None,
+        **kwargs: Any,
     ) -> WorkspacesListResponse:
         query = {
+            "name": name,
             "pageSize": page_size,
             "currentPage": current_page,
+            "exact_name": exact_name,
+            **kwargs,
         }
         filtered_query = {k: v for k, v in query.items() if v is not None}
         query_string = urlencode(filtered_query)
