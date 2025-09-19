@@ -131,6 +131,8 @@ class PortkeyApiPaths(str, Enum, metaclass=MetaEnum):
     COLLECTIONS_API = "/collections"
     PROMPTS_API = "/prompts"
     PROMPTS_PARTIALS_API = "/prompts/partials"
+    INTEGRATIONS_API = "/integrations"
+    PROVIDERS_API = "/providers"
 
     def __str__(self):
         return self.value

@@ -7,17 +7,22 @@ from .tool import Tool
 from ..._models import BaseModel
 from .response_error import ResponseError
 from .response_usage import ResponseUsage
+from .response_prompt import ResponsePrompt
 from .response_status import ResponseStatus
+from .tool_choice_mcp import ToolChoiceMcp
 from ..shared.metadata import Metadata
 from ..shared.reasoning import Reasoning
 from .tool_choice_types import ToolChoiceTypes
+from .tool_choice_custom import ToolChoiceCustom
+from .response_input_item import ResponseInputItem
+from .tool_choice_allowed import ToolChoiceAllowed
 from .tool_choice_options import ToolChoiceOptions
 from .response_output_item import ResponseOutputItem
 from .response_text_config import ResponseTextConfig
 from .tool_choice_function import ToolChoiceFunction
 from ..shared.responses_model import ResponsesModel
 
-__all__ = ["Response", "IncompleteDetails", "ToolChoice"]
+__all__ = ["Response", "IncompleteDetails", "ToolChoice", "Conversation"]
 
 
 class IncompleteDetails(BaseModel):
@@ -25,7 +30,14 @@ class IncompleteDetails(BaseModel):
     """The reason why the response is incomplete."""
 
 
-ToolChoice: TypeAlias = Union[ToolChoiceOptions, ToolChoiceTypes, ToolChoiceFunction]
+ToolChoice: TypeAlias = Union[
+    ToolChoiceOptions, ToolChoiceAllowed, ToolChoiceTypes, ToolChoiceFunction, ToolChoiceMcp, ToolChoiceCustom
+]
+
+
+class Conversation(BaseModel):
+    id: str
+    """The unique ID of the conversation."""
 
 
 class Response(BaseModel):
@@ -41,10 +53,8 @@ class Response(BaseModel):
     incomplete_details: Optional[IncompleteDetails] = None
     """Details about why the response is incomplete."""
 
-    instructions: Optional[str] = None
-    """
-    Inserts a system (or developer) message as the first item in the model's
-    context.
+    instructions: Union[str, List[ResponseInputItem], None] = None
+    """A system (or developer) message inserted into the model's context.
 
     When using along with `previous_response_id`, the instructions from a previous
     response will not be carried over to the next response. This makes it simple to
@@ -106,7 +116,7 @@ class Response(BaseModel):
 
     You can specify which tool to use by setting the `tool_choice` parameter.
 
-    The two categories of tools you can provide the model are:
+    We support the following categories of tools:
 
     - **Built-in tools**: Tools that are provided by OpenAI that extend the model's
       capabilities, like
@@ -114,9 +124,14 @@ class Response(BaseModel):
       [file search](https://platform.openai.com/docs/guides/tools-file-search).
       Learn more about
       [built-in tools](https://platform.openai.com/docs/guides/tools).
+    - **MCP Tools**: Integrations with third-party systems via custom MCP servers or
+      predefined connectors such as Google Drive and SharePoint. Learn more about
+      [MCP Tools](https://platform.openai.com/docs/guides/tools-connectors-mcp).
     - **Function calls (custom tools)**: Functions that are defined by you, enabling
-      the model to call your own code. Learn more about
+      the model to call your own code with strongly typed arguments and outputs.
+      Learn more about
       [function calling](https://platform.openai.com/docs/guides/function-calling).
+      You can also use custom tools to call your own code.
     """
 
     top_p: Optional[float] = None
@@ -129,9 +144,16 @@ class Response(BaseModel):
     """
 
     background: Optional[bool] = None
-    """Whether to run the model response in the background.
-
+    """
+    Whether to run the model response in the background.
     [Learn more](https://platform.openai.com/docs/guides/background).
+    """
+
+    conversation: Optional[Conversation] = None
+    """The conversation that this response belongs to.
+
+    Input items and output items from this response are automatically added to this
+    conversation.
     """
 
     max_output_tokens: Optional[int] = None
@@ -141,39 +163,68 @@ class Response(BaseModel):
     [reasoning tokens](https://platform.openai.com/docs/guides/reasoning).
     """
 
+    max_tool_calls: Optional[int] = None
+    """
+    The maximum number of total calls to built-in tools that can be processed in a
+    response. This maximum number applies across all built-in tool calls, not per
+    individual tool. Any further attempts to call a tool by the model will be
+    ignored.
+    """
+
     previous_response_id: Optional[str] = None
     """The unique ID of the previous response to the model.
 
     Use this to create multi-turn conversations. Learn more about
     [conversation state](https://platform.openai.com/docs/guides/conversation-state).
+    Cannot be used in conjunction with `conversation`.
+    """
+
+    prompt: Optional[ResponsePrompt] = None
+    """Reference to a prompt template and its variables.
+
+    [Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).
+    """
+
+    prompt_cache_key: Optional[str] = None
+    """
+    Used by OpenAI to cache responses for similar requests to optimize your cache
+    hit rates. Replaces the `user` field.
+    [Learn more](https://platform.openai.com/docs/guides/prompt-caching).
     """
 
     reasoning: Optional[Reasoning] = None
-    """**o-series models only**
+    """**gpt-5 and o-series models only**
 
     Configuration options for
     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
     """
 
-    service_tier: Optional[Literal["auto", "default", "flex"]] = None
-    """Specifies the latency tier to use for processing the request.
+    safety_identifier: Optional[str] = None
+    """
+    A stable identifier used to help detect users of your application that may be
+    violating OpenAI's usage policies. The IDs should be a string that uniquely
+    identifies each user. We recommend hashing their username or email address, in
+    order to avoid sending us any identifying information.
+    [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
+    """
 
-    This parameter is relevant for customers subscribed to the scale tier service:
+    service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] = None
+    """Specifies the processing type used for serving the request.
 
-    - If set to 'auto', and the Project is Scale tier enabled, the system will
-      utilize scale tier credits until they are exhausted.
-    - If set to 'auto', and the Project is not Scale tier enabled, the request will
-      be processed using the default service tier with a lower uptime SLA and no
-      latency guarantee.
-    - If set to 'default', the request will be processed using the default service
-      tier with a lower uptime SLA and no latency guarantee.
-    - If set to 'flex', the request will be processed with the Flex Processing
-      service tier.
-      [Learn more](https://platform.openai.com/docs/guides/flex-processing).
+    - If set to 'auto', then the request will be processed with the service tier
+      configured in the Project settings. Unless otherwise configured, the Project
+      will use 'default'.
+    - If set to 'default', then the request will be processed with the standard
+      pricing and performance for the selected model.
+    - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or
+      '[priority](https://openai.com/api-priority-processing/)', then the request
+      will be processed with the corresponding service tier.
     - When not set, the default behavior is 'auto'.
 
-    When this parameter is set, the response body will include the `service_tier`
-    utilized.
+    When the `service_tier` parameter is set, the response body will include the
+    `service_tier` value based on the processing mode actually used to serve the
+    request. This response value may be different from the value set in the
+    parameter.
     """
 
     status: Optional[ResponseStatus] = None
@@ -192,13 +243,19 @@ class Response(BaseModel):
     - [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
     """
 
+    top_logprobs: Optional[int] = None
+    """
+    An integer between 0 and 20 specifying the number of most likely tokens to
+    return at each token position, each with an associated log probability.
+    """
+
     truncation: Optional[Literal["auto", "disabled"]] = None
     """The truncation strategy to use for the model response.
 
-    - `auto`: If the context of this response and previous ones exceeds the model's
-      context window size, the model will truncate the response to fit the context
-      window by dropping input items in the middle of the conversation.
-    - `disabled` (default): If a model response will exceed the context window size
+    - `auto`: If the input to this Response exceeds the model's context window size,
+      the model will truncate the response to fit the context window by dropping
+      items from the beginning of the conversation.
+    - `disabled` (default): If the input size will exceed the context window size
       for a model, the request will fail with a 400 error.
     """
 
@@ -209,17 +266,17 @@ class Response(BaseModel):
     """
 
     user: Optional[str] = None
-    """A stable identifier for your end-users.
+    """This field is being replaced by `safety_identifier` and `prompt_cache_key`.
 
-    Used to boost cache hit rates by better bucketing similar requests and to help
-    OpenAI detect and prevent abuse.
-    [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#end-user-ids).
+    Use `prompt_cache_key` instead to maintain caching optimizations. A stable
+    identifier for your end-users. Used to boost cache hit rates by better bucketing
+    similar requests and to help OpenAI detect and prevent abuse.
+    [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
     """
 
     @property
     def output_text(self) -> str:
-        """Convenience property that aggregates all `output_text` items from the `output`
-        list.
+        """Convenience property that aggregates all `output_text` items from the `output` list.
 
         If no `output_text` content blocks exist, then an empty string is returned.
         """

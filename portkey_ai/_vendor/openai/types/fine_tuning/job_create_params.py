@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import List, Union, Iterable, Optional
+from typing import Union, Iterable, Optional
 from typing_extensions import Literal, Required, TypedDict
 
+from ..._types import SequenceNotStr
 from .dpo_method_param import DpoMethodParam
 from ..shared_params.metadata import Metadata
 from .supervised_method_param import SupervisedMethodParam
@@ -37,7 +38,8 @@ class JobCreateParams(TypedDict, total=False):
     [preference](https://platform.openai.com/docs/api-reference/fine-tuning/preference-input)
     format.
 
-    See the [fine-tuning guide](https://platform.openai.com/docs/guides/fine-tuning)
+    See the
+    [fine-tuning guide](https://platform.openai.com/docs/guides/model-optimization)
     for more details.
     """
 
@@ -91,7 +93,8 @@ class JobCreateParams(TypedDict, total=False):
     Your dataset must be formatted as a JSONL file. You must upload your file with
     the purpose `fine-tune`.
 
-    See the [fine-tuning guide](https://platform.openai.com/docs/guides/fine-tuning)
+    See the
+    [fine-tuning guide](https://platform.openai.com/docs/guides/model-optimization)
     for more details.
     """
 
@@ -135,7 +138,7 @@ class IntegrationWandb(TypedDict, total=False):
     If not set, we will use the Job ID as the name.
     """
 
-    tags: List[str]
+    tags: SequenceNotStr[str]
     """A list of tags to be attached to the newly created run.
 
     These tags are passed through directly to WandB. Some default tags are generated

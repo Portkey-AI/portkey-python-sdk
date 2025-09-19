@@ -12,6 +12,7 @@ from ..responses.tool import Tool
 from ..shared.metadata import Metadata
 from ..shared.reasoning_effort import ReasoningEffort
 from ..responses.response_input_text import ResponseInputText
+from ..responses.response_input_audio import ResponseInputAudio
 from .create_eval_jsonl_run_data_source import CreateEvalJSONLRunDataSource
 from ..responses.response_format_text_config import ResponseFormatTextConfig
 from .create_eval_completions_run_data_source import CreateEvalCompletionsRunDataSource
@@ -32,6 +33,7 @@ __all__ = [
     "DataSourceResponsesInputMessagesTemplateTemplateEvalItem",
     "DataSourceResponsesInputMessagesTemplateTemplateEvalItemContent",
     "DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText",
+    "DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentInputImage",
     "DataSourceResponsesInputMessagesItemReference",
     "DataSourceResponsesSamplingParams",
     "DataSourceResponsesSamplingParamsText",
@@ -138,14 +140,33 @@ class DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText(
     """The type of the output text. Always `output_text`."""
 
 
+class DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentInputImage(BaseModel):
+    image_url: str
+    """The URL of the image input."""
+
+    type: Literal["input_image"]
+    """The type of the image input. Always `input_image`."""
+
+    detail: Optional[str] = None
+    """The detail level of the image to be sent to the model.
+
+    One of `high`, `low`, or `auto`. Defaults to `auto`.
+    """
+
+
 DataSourceResponsesInputMessagesTemplateTemplateEvalItemContent: TypeAlias = Union[
-    str, ResponseInputText, DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText
+    str,
+    ResponseInputText,
+    DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentOutputText,
+    DataSourceResponsesInputMessagesTemplateTemplateEvalItemContentInputImage,
+    ResponseInputAudio,
+    List[object],
 ]
 
 
 class DataSourceResponsesInputMessagesTemplateTemplateEvalItem(BaseModel):
     content: DataSourceResponsesInputMessagesTemplateTemplateEvalItemContent
-    """Text inputs to the model - can contain template strings."""
+    """Inputs to the model - can contain template strings."""
 
     role: Literal["user", "assistant", "system", "developer"]
     """The role of the message input.

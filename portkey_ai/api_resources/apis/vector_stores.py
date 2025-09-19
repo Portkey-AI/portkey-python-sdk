@@ -1,5 +1,5 @@
 import json
-from typing import Any, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -229,6 +229,9 @@ class VectorFiles(APIResource):
         file_id: str,
         *,
         vector_store_id: str,
+        attributes: Union[
+            Optional[Dict[str, Union[str, float, bool]]], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
@@ -236,6 +239,7 @@ class VectorFiles(APIResource):
         response = self.openai_client.vector_stores.files.create_and_poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
+            attributes=attributes,
             poll_interval_ms=poll_interval_ms,
             chunking_strategy=chunking_strategy,
             **kwargs,
@@ -284,6 +288,9 @@ class VectorFiles(APIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
+        attributes: Union[
+            Optional[Dict[str, Union[str, float, bool]]], NotGiven
+        ] = NOT_GIVEN,
         poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
         chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs,
@@ -291,6 +298,7 @@ class VectorFiles(APIResource):
         response = self.openai_client.vector_stores.files.upload_and_poll(
             vector_store_id=vector_store_id,
             file=file,
+            attributes=attributes,
             poll_interval_ms=poll_interval_ms,
             chunking_strategy=chunking_strategy,
             **kwargs,
