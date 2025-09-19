@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import Any, AsyncGenerator, Optional, TYPE_CHECKING, cast
+from typing import Any, AsyncGenerator, AsyncIterator, Optional, TYPE_CHECKING, cast
 
 from portkey_ai import AsyncPortkey
 
@@ -31,6 +31,7 @@ if TYPE_CHECKING:  # Only used for static typing; no runtime import of Strands
 
 try:
     from strands.models.model import Model as _StrandsModel  # type: ignore
+
     _HAS_STRANDS = True
 except Exception:
     _HAS_STRANDS = False
@@ -39,7 +40,9 @@ except Exception:
         pass
 
 
-def _map_tools_to_openai(tool_specs: Optional[list[ToolSpec]]) -> Optional[list[dict[str, Any]]]:
+def _map_tools_to_openai(
+    tool_specs: Optional[list[ToolSpec]],
+) -> Optional[list[dict[str, Any]]]:
     if not tool_specs:
         return None
     tools: list[dict[str, Any]] = []
@@ -48,7 +51,11 @@ def _map_tools_to_openai(tool_specs: Optional[list[ToolSpec]]) -> Optional[list[
         properties = json_schema.get("properties", {})
         # Drop default=None fields for OpenAI compatibility
         cleaned_properties = {
-            key: {k: v for k, v in definition.items() if not (k == "default" and v is None)}
+            key: {
+                k: v
+                for k, v in definition.items()
+                if not (k == "default" and v is None)
+            }
             for key, definition in properties.items()
         }
         tools.append(
@@ -77,7 +84,9 @@ class _MessageFormatter:
     def __init__(self) -> None:
         self._current_tool_use_id: Optional[str] = None
 
-    def format_messages(self, messages: "Messages", system_prompt: Optional[str]) -> list[dict[str, Any]]:
+    def format_messages(
+        self, messages: "Messages", system_prompt: Optional[str]
+    ) -> list[dict[str, Any]]:
         formatted: list[dict[str, Any]] = []
 
         if system_prompt:
@@ -95,7 +104,11 @@ class _MessageFormatter:
 
             if isinstance(content, list):
                 for part in content:
-                    if isinstance(part, dict) and "text" in part and isinstance(part["text"], str):
+                    if (
+                        isinstance(part, dict)
+                        and "text" in part
+                        and isinstance(part["text"], str)
+                    ):
                         formatted.append({"role": role, "content": part["text"]})
                     elif isinstance(part, dict) and "toolUse" in part:
                         formatted.append(self._format_tool_use_part(part))
@@ -130,7 +143,11 @@ class _MessageFormatter:
     def _format_tool_result_part(self, part: dict[str, Any]) -> dict[str, Any]:
         # Strands toolResult content is an array of blocks; concatenate text blocks
         content_blocks = part["toolResult"].get("content", [])
-        text_parts = [blk["text"] for blk in content_blocks if isinstance(blk, dict) and "text" in blk]
+        text_parts = [
+            blk["text"]
+            for blk in content_blocks
+            if isinstance(blk, dict) and "text" in blk
+        ]
         result_text = " ".join(text_parts)
         return {
             "role": "tool",
@@ -187,7 +204,11 @@ def _format_chunk_to_stream_event(
         if arguments_chunk:
             return cast(
                 "StreamEvent",
-                {"contentBlockDelta": {"delta": {"toolUse": {"input": arguments_chunk}}}},
+                {
+                    "contentBlockDelta": {
+                        "delta": {"toolUse": {"input": arguments_chunk}}
+                    }
+                },
             )
 
     finish_reason = str(_get_attr(choice0, "finish_reason", "") or "").lower()
@@ -204,7 +225,9 @@ def _format_chunk_to_stream_event(
 
     content_text = _get_attr(delta, "content")
     if content_text:
-        return cast("StreamEvent", {"contentBlockDelta": {"delta": {"text": content_text}}})
+        return cast(
+            "StreamEvent", {"contentBlockDelta": {"delta": {"text": content_text}}}
+        )
 
     usage = _get_attr(event, "usage")
     if usage:
@@ -283,8 +306,10 @@ class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
         state: dict[str, Optional[str]] = {"tool_use_id": None, "tool_name": None}
 
         yield cast("StreamEvent", {"messageStart": {"role": "assistant"}})
-
-        async for chunk in self._client.chat.completions.create(**request):  # type: ignore[arg-type]
+        # Await the creation to obtain an async iterator for streaming and cast for mypy
+        stream_obj = await self._client.chat.completions.create(**request)  # type: ignore[arg-type]
+        stream_iter = cast(AsyncIterator[Any], stream_obj)
+        async for chunk in stream_iter:
             event = _format_chunk_to_stream_event(chunk, state)
             if event:
                 yield event
@@ -301,6 +326,5 @@ class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
         state["tool_use_id"] = None
         state["tool_name"] = None
 
+
 __all__ = ["PortkeyStrands"]
-
-

@@ -102,7 +102,7 @@ asyncio.run(main())
 
 ### Strands Agents Integration (optional)
 
-Install the optional extra and use the thin adapter included in this SDK.
+Installation:
 
 ```bash
 pip install 'portkey-ai[strands]'
@@ -116,15 +116,71 @@ from portkey_ai.integrations.strands import PortkeyStrands
 
 model = PortkeyStrands(
     api_key="PORTKEY_API_KEY",
-    virtual_key="VIRTUAL_KEY",  # optional if using Portkey Virtual Keys
-    base_url="https://api.portkey.ai/v1",  # optional; defaults via env
-    model_id="gpt-4o-mini",
+    model_id="@openai/gpt-4o-mini",
+#   base_url="https://api.portkey.ai/v1",  ## Optional    
 )
 
 agent = Agent(model=model)
 
-# now use your agent as usual
+## Now, use your agent as usual
 ```
+
+### Google ADK Integration (optional)
+
+Installation:
+
+```bash
+pip install 'portkey-ai[adk]'
+```
+
+Usage with ADK:
+
+```python
+import asyncio
+from google.adk.models.llm_request import LlmRequest
+from google.genai import types
+from portkey_ai.integrations.adk import PortkeyAdk
+
+llm = PortkeyAdk(
+    api_key="PORTKEY_API_KEY",
+    model="@openai/gpt-4o-mini",
+#   base_url="https://api.portkey.ai/v1",  ## Optional    
+)
+
+req = LlmRequest(
+    model="@openai/gpt-4o-mini",
+    contents=[
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text("Tell me a short programming joke.")],
+        )
+    ],
+)
+
+async def main():
+    async for resp in llm.generate_content_async(req, stream=True):
+        if resp.content and resp.content.parts:
+            for p in resp.content.parts:
+                if getattr(p, "text", None):
+                    print(p.text, end="")
+    print()
+
+asyncio.run(main())
+```
+
+Configuration notes:
+
+- **system_role**: By default, the adapter sends the system instruction as a `developer` role message to align with ADK/LiteLLM. If your provider expects a strict `system` role, pass `system_role="system"` when constructing `PortkeyAdk`.
+  
+  ```python
+  llm = PortkeyAdk(
+      model="gpt-4o-mini",
+      api_key="PORTKEY_API_KEY",
+      system_role="system",  # switch from default "developer"
+  )
+  ```
+
+- **Tools**: When tools are present in the ADK request, the adapter sets `tool_choice="auto"` to enable function calling by default (mirrors the Strands adapter behavior).
 
 ## Compatibility with OpenAI SDK
 
