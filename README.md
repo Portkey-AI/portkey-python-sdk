@@ -158,12 +158,48 @@ req = LlmRequest(
 )
 
 async def main():
+    # Print only partial chunks to avoid duplicate final output
     async for resp in llm.generate_content_async(req, stream=True):
-        if resp.content and resp.content.parts:
+        if getattr(resp, "partial", False) and resp.content and resp.content.parts:
             for p in resp.content.parts:
                 if getattr(p, "text", None):
                     print(p.text, end="")
     print()
+
+asyncio.run(main())
+```
+
+Non-streaming example (single final response):
+
+```python
+import asyncio
+from google.adk.models.llm_request import LlmRequest
+from google.genai import types
+from portkey_ai.integrations.adk import PortkeyAdk
+
+llm = PortkeyAdk(
+    api_key="PORTKEY_API_KEY",
+    model="@openai/gpt-4o-mini",
+)
+
+req = LlmRequest(
+    model="@openai/gpt-4o-mini",
+    contents=[
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(text="Give me a one-line programming joke (final only).")],
+        )
+    ],
+)
+
+async def main():
+    final_text = []
+    async for resp in llm.generate_content_async(req, stream=False):
+        if resp.content and resp.content.parts:
+            for p in resp.content.parts:
+                if getattr(p, "text", None):
+                    final_text.append(p.text)
+    print("".join(final_text))
 
 asyncio.run(main())
 ```
