@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import Any, AsyncGenerator, AsyncIterator, Optional, TYPE_CHECKING, cast
+from typing import Any, AsyncGenerator, AsyncIterator, Optional, TYPE_CHECKING, cast, List, Type, TypeVar, Union
 
 from portkey_ai import AsyncPortkey
 
@@ -28,6 +28,8 @@ if TYPE_CHECKING:  # Only used for static typing; no runtime import of Strands
     from strands.types.content import Messages
     from strands.types.tools import ToolSpec
     from strands.types.streaming import StreamEvent
+
+T = TypeVar("T")
 
 try:
     from strands.models.model import Model as _StrandsModel  # type: ignore
@@ -325,6 +327,24 @@ class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
         # Reset internal state per call
         state["tool_use_id"] = None
         state["tool_name"] = None
+
+    async def structured_output(
+        self,
+        output_model: "Type[T]",
+        prompt: List[dict[str, Any]],
+        system_prompt: Optional[str] = None,
+        **kwargs: Any,
+    ) -> AsyncGenerator[dict[str, Union["T", Any]], None]:  # type: ignore[override]
+        """Placeholder to satisfy Strands Model abstract requirements.
+
+        Note: PortkeyStrands currently focuses on streaming text/tool events via `stream`.
+        Structured output is not yet implemented. This method exists to allow the
+        class to be instantiated by Strands without raising an abstract class error.
+        """
+        raise NotImplementedError(
+            "PortkeyStrands.structured_output is not implemented yet. "
+            "Use model.stream(...) for streaming responses."
+        )
 
 
 __all__ = ["PortkeyStrands"]

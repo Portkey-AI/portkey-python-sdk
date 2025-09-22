@@ -122,7 +122,13 @@ model = PortkeyStrands(
 
 agent = Agent(model=model)
 
-## Now, use your agent as usual
+import asyncio
+
+async def main():
+    result = await agent.invoke_async("Tell me a short programming joke.")
+    print(getattr(result, "text", result))
+
+asyncio.run(main())
 ```
 
 ### Google ADK Integration (optional)
