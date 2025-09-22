@@ -5,7 +5,10 @@ import sys
 try:
     from portkey_ai.integrations.strands import PortkeyStrands
 except Exception:
-    print("This example requires the 'strands' extra: pip install 'portkey-ai[strands]'", file=sys.stderr)
+    print(
+        "This example requires the 'strands' extra: pip install 'portkey-ai[strands]'",
+        file=sys.stderr,
+    )
     raise
 
 
@@ -18,8 +21,8 @@ async def main() -> None:
         sys.exit(1)
 
     model = PortkeyStrands(
-        api_key=api_key,
-        model_id=model_id,
+        api_key=api_key,  # type: ignore[arg-type]
+        model_id=model_id,  # type: ignore[arg-type]
     )
 
     # Minimal Strands-compatible message list (no Agent required)

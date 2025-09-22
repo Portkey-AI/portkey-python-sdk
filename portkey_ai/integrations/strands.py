@@ -20,7 +20,18 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import Any, AsyncGenerator, AsyncIterator, Optional, TYPE_CHECKING, cast, List, Type, TypeVar, Union
+from typing import (
+    Any,
+    AsyncGenerator,
+    AsyncIterator,
+    Optional,
+    TYPE_CHECKING,
+    cast,
+    List,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from portkey_ai import AsyncPortkey
 
