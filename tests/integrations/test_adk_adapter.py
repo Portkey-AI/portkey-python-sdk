@@ -24,7 +24,12 @@ class _FakeMessage:
 
 
 class _FakeChoice:
-    def __init__(self, delta: Optional[_FakeDelta] = None, message: Optional[_FakeMessage] = None, finish_reason: Optional[str] = None):
+    def __init__(
+        self,
+        delta: Optional[_FakeDelta] = None,
+        message: Optional[_FakeMessage] = None,
+        finish_reason: Optional[str] = None,
+    ):
         self.delta = delta
         self.message = message
         self.finish_reason = finish_reason
@@ -32,8 +37,12 @@ class _FakeChoice:
 
 class _FakeResponse:
     def __init__(self, message_text: str):
-        self.choices = [_FakeChoice(message=_FakeMessage(message_text), finish_reason="stop")]
-        self.usage = type("Usage", (), {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3})()
+        self.choices = [
+            _FakeChoice(message=_FakeMessage(message_text), finish_reason="stop")
+        ]
+        self.usage = type(
+            "Usage", (), {"prompt_tokens": 1, "completion_tokens": 2, "total_tokens": 3}
+        )()
 
 
 def _build_request(model: str, text: str = "Hello") -> LlmRequest:
@@ -76,7 +85,11 @@ async def test_streaming_accumulates_and_final(monkeypatch: pytest.MonkeyPatch) 
 
     part1 = type("Chunk", (), {"choices": [_FakeChoice(delta=_FakeDelta("Hello "))]})()
     part2 = type("Chunk", (), {"choices": [_FakeChoice(delta=_FakeDelta("world!"))]})()
-    part3 = type("Chunk", (), {"choices": [_FakeChoice(message=_FakeMessage(None), finish_reason="stop")]})()
+    part3 = type(
+        "Chunk",
+        (),
+        {"choices": [_FakeChoice(message=_FakeMessage(None), finish_reason="stop")]},
+    )()
 
     async def fake_stream_gen() -> AsyncIterator[Any]:
         yield part1

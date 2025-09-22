@@ -6,7 +6,7 @@ try:
     from google.adk.models.llm_request import LlmRequest
     from google.genai import types
     from portkey_ai.integrations.adk import PortkeyAdk
-except Exception as e:  # pragma: no cover - example script
+except Exception:  # pragma: no cover - example script
     print("This example requires the 'adk' extra: pip install 'portkey-ai[adk]'")
     raise
 
@@ -17,7 +17,11 @@ def build_request(model: str) -> "LlmRequest":  # type: ignore[name-defined]
         contents=[
             types.Content(
                 role="user",
-                parts=[types.Part.from_text(text="Give me a one-line programming joke (final only).")],
+                parts=[
+                    types.Part.from_text(
+                        text="Give me a one-line programming joke (final only)."
+                    )
+                ],
             )
         ],
     )
