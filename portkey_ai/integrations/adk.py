@@ -347,12 +347,12 @@ def _message_to_generate_content_response(message: Any, is_partial: bool = False
         for tool_call in message.tool_calls:
             if getattr(tool_call, "type", None) == "function":
                 part = genai_types.Part.from_function_call(
-                    name=getattr(getattr(tool_call, "function", None), "name", None),
+                    name=getattr(getattr(tool_call, "function", None), "name", None),  # type: ignore[arg-type]
                     args=json.loads(
                         getattr(getattr(tool_call, "function", None), "arguments", "{}")
                         or "{}"
                     ),
-                )  # type: ignore[arg-type]
+                )
                 # Attach tool_call id if present
                 try:
                     part.function_call.id = getattr(tool_call, "id", None)  # type: ignore[union-attr]

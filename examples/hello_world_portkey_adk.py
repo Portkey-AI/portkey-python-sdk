@@ -1,12 +1,13 @@
 import asyncio
 import os
 import sys
+from typing import List
 
 try:
     from google.adk.models.llm_request import LlmRequest
     from google.genai import types
     from portkey_ai.integrations.adk import PortkeyAdk
-except Exception as e:  # pragma: no cover - example script
+except Exception:  # pragma: no cover - example script
     print("This example requires the 'adk' extra: pip install 'portkey-ai[adk]'")
     raise
 
@@ -17,7 +18,11 @@ def build_request(model: str) -> "LlmRequest":  # type: ignore[name-defined]
         contents=[
             types.Content(
                 role="user",
-                parts=[types.Part.from_text(text="Give me a one-line programming joke (final only).")],
+                parts=[
+                    types.Part.from_text(
+                        text="Give me a one-line programming joke (final only)."
+                    )
+                ],
             )
         ],
     )
@@ -35,7 +40,7 @@ async def main() -> None:
 
     # Non-streaming: returns a single final response
     req = build_request(model)
-    final_text: list[str] = []
+    final_text: List[str] = []
     async for resp in llm.generate_content_async(req, stream=False):
         if resp.content and getattr(resp.content, "parts", None):
             for p in resp.content.parts:
