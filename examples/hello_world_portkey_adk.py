@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+from typing import List
 
 try:
     from google.adk.models.llm_request import LlmRequest
@@ -39,7 +40,7 @@ async def main() -> None:
 
     # Non-streaming: returns a single final response
     req = build_request(model)
-    final_text: list[str] = []
+    final_text: List[str] = []
     async for resp in llm.generate_content_async(req, stream=False):
         if resp.content and getattr(resp.content, "parts", None):
             for p in resp.content.parts:
