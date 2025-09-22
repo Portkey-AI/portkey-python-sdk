@@ -100,6 +100,130 @@ async def main():
 asyncio.run(main())
 ```
 
+### Strands Agents Integration (optional)
+
+Installation:
+
+```bash
+pip install 'portkey-ai[strands]'
+```
+
+Usage with Strands:
+
+```python
+from strands.agent import Agent
+from portkey_ai.integrations.strands import PortkeyStrands
+
+model = PortkeyStrands(
+    api_key="PORTKEY_API_KEY",
+    model_id="@openai/gpt-4o-mini",
+#   base_url="https://api.portkey.ai/v1",  ## Optional    
+)
+
+agent = Agent(model=model)
+
+import asyncio
+
+async def main():
+    result = await agent.invoke_async("Tell me a short programming joke.")
+    print(getattr(result, "text", result))
+
+asyncio.run(main())
+```
+
+### Google ADK Integration (optional)
+
+Installation:
+
+```bash
+pip install 'portkey-ai[adk]'
+```
+
+Usage with ADK:
+
+```python
+import asyncio
+from google.adk.models.llm_request import LlmRequest
+from google.genai import types
+from portkey_ai.integrations.adk import PortkeyAdk
+
+llm = PortkeyAdk(
+    api_key="PORTKEY_API_KEY",
+    model="@openai/gpt-4o-mini",
+#   base_url="https://api.portkey.ai/v1",  ## Optional    
+)
+
+req = LlmRequest(
+    model="@openai/gpt-4o-mini",
+    contents=[
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(text="Tell me a short programming joke.")],
+        )
+    ],
+)
+
+async def main():
+    # Print only partial chunks to avoid duplicate final output
+    async for resp in llm.generate_content_async(req, stream=True):
+        if getattr(resp, "partial", False) and resp.content and resp.content.parts:
+            for p in resp.content.parts:
+                if getattr(p, "text", None):
+                    print(p.text, end="")
+    print()
+
+asyncio.run(main())
+```
+
+Non-streaming example (single final response):
+
+```python
+import asyncio
+from google.adk.models.llm_request import LlmRequest
+from google.genai import types
+from portkey_ai.integrations.adk import PortkeyAdk
+
+llm = PortkeyAdk(
+    api_key="PORTKEY_API_KEY",
+    model="@openai/gpt-4o-mini",
+)
+
+req = LlmRequest(
+    model="@openai/gpt-4o-mini",
+    contents=[
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(text="Give me a one-line programming joke (final only).")],
+        )
+    ],
+)
+
+async def main():
+    final_text = []
+    async for resp in llm.generate_content_async(req, stream=False):
+        if resp.content and resp.content.parts:
+            for p in resp.content.parts:
+                if getattr(p, "text", None):
+                    final_text.append(p.text)
+    print("".join(final_text))
+
+asyncio.run(main())
+```
+
+Configuration notes:
+
+- **system_role**: By default, the adapter sends the system instruction as a `developer` role message to align with ADK. If your provider expects a strict `system` role, pass `system_role="system"` when constructing `PortkeyAdk`.
+  
+  ```python
+  llm = PortkeyAdk(
+      model="@openai/gpt-4o-mini",
+      api_key="PORTKEY_API_KEY",
+      system_role="system",  # switch from default "developer"
+  )
+  ```
+
+- **Tools**: When tools are present in the ADK request, the adapter sets `tool_choice="auto"` to enable function calling by default (mirrors the Strands adapter behavior).
+
 ## Compatibility with OpenAI SDK
 
 Portkey currently supports all the OpenAI methods, including the legacy ones.
