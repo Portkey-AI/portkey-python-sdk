@@ -47,12 +47,14 @@ class Portkey(APIClient):
         threads: apis.Threads
         chat: apis.BetaChat
         realtime: apis.BetaRealtime
+        chatkit: apis.ChatKit
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
             self.chat = apis.BetaChat(client)
             self.realtime = apis.BetaRealtime(client)
+            self.chatkit = apis.ChatKit(client)
 
     def __init__(
         self,
@@ -381,12 +383,14 @@ class AsyncPortkey(AsyncAPIClient):
         threads: apis.AsyncThreads
         chat: apis.AsyncBetaChat
         realtime: apis.AsyncBetaRealtime
+        chatkit: apis.AsyncChatKit
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
             self.chat = apis.AsyncBetaChat(client)
             self.realtime = apis.AsyncBetaRealtime(client)
+            self.chatkit = apis.AsyncChatKit(client)
 
     def __init__(
         self,

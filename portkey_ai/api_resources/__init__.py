@@ -133,6 +133,12 @@ from .apis import (
     AsyncConversationsItems,
     Videos,
     AsyncVideos,
+    ChatKit,
+    AsyncChatKit,
+    ChatKitSessions,
+    AsyncChatKitSessions,
+    ChatKitThreads,
+    AsyncChatKitThreads,
 )
 from .utils import (
     Modes,
@@ -301,4 +307,10 @@ __all__ = [
     "AsyncConversationsItems",
     "Videos",
     "AsyncVideos",
+    "ChatKit",
+    "AsyncChatKit",
+    "ChatKitSessions",
+    "AsyncChatKitSessions",
+    "ChatKitThreads",
+    "AsyncChatKitThreads",
 ]

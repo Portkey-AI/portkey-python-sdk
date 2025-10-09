@@ -166,6 +166,15 @@ from .conversations import (
 
 from .videos import Videos, AsyncVideos
 
+from .chatkit import (
+    ChatKit,
+    AsyncChatKit,
+    ChatKitSessions,
+    AsyncChatKitSessions,
+    ChatKitThreads,
+    AsyncChatKitThreads,
+)
+
 __all__ = [
     "Completion",
     "AsyncCompletion",
@@ -310,4 +319,10 @@ __all__ = [
     "AsyncConversationsItems",
     "Videos",
     "AsyncVideos",
+    "ChatKit",
+    "AsyncChatKit",
+    "ChatKitSessions",
+    "AsyncChatKitSessions",
+    "ChatKitThreads",
+    "AsyncChatKitThreads",
 ]
