@@ -143,6 +143,8 @@ from portkey_ai.api_resources import (
     AsyncConversations,
     ConversationsItems,
     AsyncConversationsItems,
+    Videos,
+    AsyncVideos,
 )
 
 from portkey_ai.version import VERSION
@@ -305,4 +307,6 @@ __all__ = [
     "AsyncConversations",
     "ConversationsItems",
     "AsyncConversationsItems",
+    "Videos",
+    "AsyncVideos",
 ]

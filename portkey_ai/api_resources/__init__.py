@@ -131,6 +131,8 @@ from .apis import (
     AsyncConversations,
     ConversationsItems,
     AsyncConversationsItems,
+    Videos,
+    AsyncVideos,
 )
 from .utils import (
     Modes,
@@ -297,4 +299,6 @@ __all__ = [
     "AsyncConversations",
     "ConversationsItems",
     "AsyncConversationsItems",
+    "Videos",
+    "AsyncVideos",
 ]

@@ -164,6 +164,8 @@ from .conversations import (
     AsyncConversationsItems,
 )
 
+from .videos import Videos, AsyncVideos
+
 __all__ = [
     "Completion",
     "AsyncCompletion",
@@ -306,4 +308,6 @@ __all__ = [
     "AsyncConversations",
     "ConversationsItems",
     "AsyncConversationsItems",
+    "Videos",
+    "AsyncVideos",
 ]
