@@ -2,7 +2,7 @@ import json
 from typing import Any, Iterable, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import Omit, omit
 from portkey_ai.api_resources.types.moderations_type import ModerationCreateResponse
 
 
@@ -15,7 +15,7 @@ class Moderations(APIResource):
         self,
         *,
         input: Union[str, List[str], Iterable[Any]],
-        model: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, Omit] = omit,
         **kwargs
     ) -> ModerationCreateResponse:
         response = self.openai_client.with_raw_response.moderations.create(
@@ -36,7 +36,7 @@ class AsyncModerations(AsyncAPIResource):
         self,
         *,
         input: Union[str, List[str], Iterable[Any]],
-        model: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, Omit] = omit,
         **kwargs
     ) -> ModerationCreateResponse:
         response = await self.openai_client.with_raw_response.moderations.create(

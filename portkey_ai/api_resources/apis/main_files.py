@@ -1,7 +1,7 @@
 import json
 from typing import Any, Union
 import typing_extensions
-from portkey_ai._vendor.openai._types import NOT_GIVEN, NotGiven
+from portkey_ai._vendor.openai._types import omit, Omit
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.main_file_type import (
@@ -43,10 +43,10 @@ class MainFiles(APIResource):
     def list(
         self,
         *,
-        purpose: Union[str, NotGiven] = NOT_GIVEN,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Any, NotGiven] = NOT_GIVEN,
+        purpose: Union[str, Omit] = omit,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Any, Omit] = omit,
         **kwargs,
     ) -> FileList:
         response = self.openai_client.with_raw_response.files.list(
@@ -136,10 +136,10 @@ class AsyncMainFiles(AsyncAPIResource):
     async def list(
         self,
         *,
-        purpose: Union[str, NotGiven] = NOT_GIVEN,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Any, NotGiven] = NOT_GIVEN,
+        purpose: Union[str, Omit] = omit,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Any, Omit] = omit,
         **kwargs,
     ) -> FileList:
         response = await self.openai_client.with_raw_response.files.list(

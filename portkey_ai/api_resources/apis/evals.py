@@ -1,6 +1,6 @@
 import json
 from typing import Any, Literal, Optional, Union
-from portkey_ai._vendor.openai._types import NOT_GIVEN, NotGiven
+from portkey_ai._vendor.openai._types import omit, Omit
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.evals_runs_output_items_type import (
@@ -35,8 +35,8 @@ class Evals(APIResource):
         *,
         data_source_config: Any,
         testing_criteria: Any,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalCreateResponse:
         response = self.openai_client.evals.create(
@@ -67,8 +67,8 @@ class Evals(APIResource):
         self,
         eval_id: str,
         *,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalUpdateResponse:
         response = self.openai_client.with_raw_response.evals.update(
@@ -86,10 +86,10 @@ class Evals(APIResource):
     def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
-        order_by: Union[Literal["created_at", "updated_at"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
+        order_by: Union[Literal["created_at", "updated_at"], Omit] = omit,
         **kwargs,
     ) -> EvalListResponseList:
         response = self.openai_client.with_raw_response.evals.list(
@@ -131,8 +131,8 @@ class EvalsRuns(APIResource):
         eval_id: str,
         *,
         data_source: Any,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> RunCreateResponse:
         response = self.openai_client.with_raw_response.evals.runs.create(
@@ -166,13 +166,13 @@ class EvalsRuns(APIResource):
         self,
         eval_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
         status: Union[
             Literal["queued", "in_progress", "completed", "canceled", "failed"],
-            NotGiven,
-        ] = NOT_GIVEN,
+            Omit,
+        ] = omit,
     ) -> RunListResponseList:
         response = self.openai_client.with_raw_response.evals.runs.list(
             eval_id=eval_id,
@@ -250,10 +250,10 @@ class OutputItems(APIResource):
         run_id: str,
         *,
         eval_id: str,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
-        status: Union[Literal["fail", "pass"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
+        status: Union[Literal["fail", "pass"], Omit] = omit,
     ) -> OutputItemListResponseList:
         response = self.openai_client.with_raw_response.evals.runs.output_items.list(
             run_id=run_id,
@@ -280,8 +280,8 @@ class AsyncEvals(AsyncAPIResource):
         *,
         data_source_config: Any,
         testing_criteria: Any,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalCreateResponse:
         response = await self.openai_client.evals.create(
@@ -312,8 +312,8 @@ class AsyncEvals(AsyncAPIResource):
         self,
         eval_id: str,
         *,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalUpdateResponse:
         response = await self.openai_client.with_raw_response.evals.update(
@@ -331,10 +331,10 @@ class AsyncEvals(AsyncAPIResource):
     async def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
-        order_by: Union[Literal["created_at", "updated_at"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
+        order_by: Union[Literal["created_at", "updated_at"], Omit] = omit,
         **kwargs,
     ) -> EvalListResponseList:
         response = await self.openai_client.with_raw_response.evals.list(
@@ -376,8 +376,8 @@ class AsyncEvalsRuns(AsyncAPIResource):
         eval_id: str,
         *,
         data_source: Any,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> RunCreateResponse:
         response = await self.openai_client.with_raw_response.evals.runs.create(
@@ -411,13 +411,13 @@ class AsyncEvalsRuns(AsyncAPIResource):
         self,
         eval_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
         status: Union[
             Literal["queued", "in_progress", "completed", "canceled", "failed"],
-            NotGiven,
-        ] = NOT_GIVEN,
+            Omit,
+        ] = omit,
     ) -> RunListResponseList:
         response = await self.openai_client.with_raw_response.evals.runs.list(
             eval_id=eval_id,
@@ -495,10 +495,10 @@ class AsyncOutputItems(AsyncAPIResource):
         run_id: str,
         *,
         eval_id: str,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
-        status: Union[Literal["fail", "pass"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
+        status: Union[Literal["fail", "pass"], Omit] = omit,
     ) -> OutputItemListResponseList:
         response = (
             await self.openai_client.with_raw_response.evals.runs.output_items.list(

@@ -5,7 +5,7 @@ import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.upload_types import Upload, UploadPart
-from ..._vendor.openai._types import FileTypes, NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import FileTypes, Omit, omit
 
 
 class Uploads(APIResource):
@@ -24,7 +24,7 @@ class Uploads(APIResource):
         filename: Union[str, None] = None,
         bytes: Union[int, None] = None,
         part_size: Union[int, None] = None,
-        md5: Union[str, NotGiven] = NOT_GIVEN,
+        md5: Union[str, Omit] = omit,
     ) -> Any:
         response = self.openai_client.uploads.upload_file_chunked(
             file=file,
@@ -69,7 +69,7 @@ class Uploads(APIResource):
         upload_id: str,
         *,
         part_ids: List[str],
-        md5: Union[str, NotGiven] = NOT_GIVEN,
+        md5: Union[str, Omit] = omit,
         **kwargs,
     ) -> Upload:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -121,7 +121,7 @@ class AsyncUploads(AsyncAPIResource):
         filename: Union[str, None] = None,
         bytes: Union[int, None] = None,
         part_size: Union[int, None] = None,
-        md5: Union[str, NotGiven] = NOT_GIVEN,
+        md5: Union[str, Omit] = omit,
     ) -> Any:
         response = await self.openai_client.uploads.upload_file_chunked(
             file=file,
@@ -166,7 +166,7 @@ class AsyncUploads(AsyncAPIResource):
         upload_id: str,
         *,
         part_ids: List[str],
-        md5: Union[str, NotGiven] = NOT_GIVEN,
+        md5: Union[str, Omit] = omit,
         **kwargs,
     ) -> Upload:
         extra_headers = kwargs.pop("extra_headers", {})

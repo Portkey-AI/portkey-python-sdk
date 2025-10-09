@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import Omit, omit
 
 from portkey_ai.api_resources.types.batches_type import Batch, BatchList
 
@@ -20,7 +20,7 @@ class Batches(APIResource):
         completion_window: str,
         endpoint: str,
         input_file_id: str,
-        metadata: Union[Optional[Dict[str, str]], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Dict[str, str]], Omit] = omit,
         **kwargs,
     ) -> Batch:
         response = self.openai_client.with_raw_response.batches.create(
@@ -52,8 +52,8 @@ class Batches(APIResource):
     def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> BatchList:
         response = self.openai_client.with_raw_response.batches.list(
@@ -99,7 +99,7 @@ class AsyncBatches(AsyncAPIResource):
         completion_window: str,
         endpoint: str,
         input_file_id: str,
-        metadata: Union[Optional[Dict[str, str]], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Dict[str, str]], Omit] = omit,
         **kwargs,
     ) -> Batch:
         response = await self.openai_client.with_raw_response.batches.create(
@@ -131,8 +131,8 @@ class AsyncBatches(AsyncAPIResource):
     async def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> BatchList:
         response = await self.openai_client.with_raw_response.batches.list(

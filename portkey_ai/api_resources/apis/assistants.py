@@ -1,6 +1,6 @@
 import json
 from typing import Any, Literal, Optional, Union
-from portkey_ai._vendor.openai._types import NotGiven, NOT_GIVEN
+from portkey_ai._vendor.openai._types import Omit, omit
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.assistant_type import (
@@ -19,15 +19,15 @@ class Assistants(APIResource):
     def create(
         self,
         model: Union[str, Any] = "portkey-default",
-        description: Union[str, NotGiven] = NOT_GIVEN,
-        instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        top_p: Union[float, NotGiven] = NOT_GIVEN,
+        description: Union[str, Omit] = omit,
+        instructions: Union[str, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
+        response_format: Union[Any, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        top_p: Union[float, Omit] = omit,
         **kwargs
     ) -> Assistant:
         response = self.openai_client.with_raw_response.beta.assistants.create(
@@ -66,16 +66,16 @@ class Assistants(APIResource):
         self,
         assistant_id,
         *,
-        description: Union[str, NotGiven] = NOT_GIVEN,
-        instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        model: Union[str, NotGiven] = "portkey-default",
-        name: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        top_p: Union[float, NotGiven] = NOT_GIVEN,
+        description: Union[str, Omit] = omit,
+        instructions: Union[str, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        model: Union[str, Omit] = "portkey-default",
+        name: Union[str, Omit] = omit,
+        response_format: Union[Any, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        top_p: Union[float, Omit] = omit,
         **kwargs
     ) -> Assistant:
         response = self.openai_client.with_raw_response.beta.assistants.update(
@@ -100,10 +100,10 @@ class Assistants(APIResource):
     def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Omit, Literal["asc", "desc"]] = omit,
         **kwargs
     ) -> AssistantList:
         response = self.openai_client.with_raw_response.beta.assistants.list(
@@ -132,15 +132,15 @@ class AsyncAssistants(AsyncAPIResource):
     async def create(
         self,
         model: Union[str, Any] = "portkey-default",
-        description: Union[str, NotGiven] = NOT_GIVEN,
-        instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        top_p: Union[float, NotGiven] = NOT_GIVEN,
+        description: Union[str, Omit] = omit,
+        instructions: Union[str, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
+        response_format: Union[Any, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        top_p: Union[float, Omit] = omit,
         **kwargs
     ) -> Assistant:
         response = await self.openai_client.with_raw_response.beta.assistants.create(
@@ -183,16 +183,16 @@ class AsyncAssistants(AsyncAPIResource):
         self,
         assistant_id,
         *,
-        description: Union[str, NotGiven] = NOT_GIVEN,
-        instructions: Union[str, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        model: Union[str, NotGiven] = "portkey-default",
-        name: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        top_p: Union[float, NotGiven] = NOT_GIVEN,
+        description: Union[str, Omit] = omit,
+        instructions: Union[str, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        model: Union[str, Omit] = "portkey-default",
+        name: Union[str, Omit] = omit,
+        response_format: Union[Any, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        top_p: Union[float, Omit] = omit,
         **kwargs
     ) -> Assistant:
         response = await self.openai_client.with_raw_response.beta.assistants.update(
@@ -217,10 +217,10 @@ class AsyncAssistants(AsyncAPIResource):
     async def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Omit, Literal["asc", "desc"]] = omit,
         **kwargs
     ) -> AssistantList:
         response = await self.openai_client.with_raw_response.beta.assistants.list(

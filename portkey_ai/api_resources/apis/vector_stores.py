@@ -4,7 +4,7 @@ import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.shared_types import Metadata
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
+from ..._vendor.openai._types import Omit, omit, FileTypes
 from ..._vendor.openai.types import (
     vector_store_create_params,
     vector_store_update_params,
@@ -31,13 +31,11 @@ class VectorStores(APIResource):
     def create(
         self,
         *,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
-        expires_after: Union[
-            vector_store_create_params.ExpiresAfter, NotGiven
-        ] = NOT_GIVEN,
-        file_ids: Union[List[str], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
+        expires_after: Union[vector_store_create_params.ExpiresAfter, Omit] = omit,
+        file_ids: Union[List[str], Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
     ) -> VectorStore:
         response = self.openai_client.with_raw_response.vector_stores.create(
             chunking_strategy=chunking_strategy,
@@ -74,11 +72,9 @@ class VectorStores(APIResource):
         self,
         vector_store_id: str,
         *,
-        expires_after: Union[
-            vector_store_update_params.ExpiresAfter, NotGiven
-        ] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        expires_after: Union[vector_store_update_params.ExpiresAfter, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStore:
         response = self.openai_client.with_raw_response.vector_stores.update(
@@ -97,10 +93,10 @@ class VectorStores(APIResource):
     def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreList:
         response = self.openai_client.with_raw_response.vector_stores.list(
@@ -140,7 +136,7 @@ class VectorFiles(APIResource):
         vector_store_id: str,
         *,
         file_id: str,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.with_raw_response.vector_stores.files.create(
@@ -186,11 +182,11 @@ class VectorFiles(APIResource):
         self,
         vector_store_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        filter: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        filter: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileList:
         response = self.openai_client.with_raw_response.vector_stores.files.list(
@@ -229,11 +225,9 @@ class VectorFiles(APIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        attributes: Union[
-            Optional[Dict[str, Union[str, float, bool]]], NotGiven
-        ] = NOT_GIVEN,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        attributes: Union[Optional[Dict[str, Union[str, float, bool]]], Omit] = omit,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.vector_stores.files.create_and_poll(
@@ -253,7 +247,7 @@ class VectorFiles(APIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.vector_stores.files.poll(
@@ -271,7 +265,7 @@ class VectorFiles(APIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.vector_stores.files.upload(
@@ -288,11 +282,9 @@ class VectorFiles(APIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        attributes: Union[
-            Optional[Dict[str, Union[str, float, bool]]], NotGiven
-        ] = NOT_GIVEN,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        attributes: Union[Optional[Dict[str, Union[str, float, bool]]], Omit] = omit,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = self.openai_client.vector_stores.files.upload_and_poll(
@@ -317,7 +309,7 @@ class VectorFileBatches(APIResource):
         vector_store_id: str,
         *,
         file_ids: List[str],
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = (
@@ -372,8 +364,8 @@ class VectorFileBatches(APIResource):
         vector_store_id: str,
         *,
         file_ids: List[str],
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = self.openai_client.vector_stores.file_batches.create_and_poll(
@@ -392,11 +384,11 @@ class VectorFileBatches(APIResource):
         batch_id: str,
         *,
         vector_store_id: str,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        filter: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        filter: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileList:
         response = self.openai_client.with_raw_response.vector_stores.file_batches.list_files(  # noqa: E501
@@ -419,7 +411,7 @@ class VectorFileBatches(APIResource):
         batch_id: str,
         *,
         vector_store_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = self.openai_client.vector_stores.file_batches.poll(
@@ -439,8 +431,8 @@ class VectorFileBatches(APIResource):
         files: Iterable[FileTypes],
         max_concurrency: int = 5,
         file_ids: List[str] = [],
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = self.openai_client.vector_stores.file_batches.upload_and_poll(
@@ -467,13 +459,11 @@ class AsyncVectorStores(AsyncAPIResource):
     async def create(
         self,
         *,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
-        expires_after: Union[
-            vector_store_create_params.ExpiresAfter, NotGiven
-        ] = NOT_GIVEN,
-        file_ids: Union[List[str], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
+        expires_after: Union[vector_store_create_params.ExpiresAfter, Omit] = omit,
+        file_ids: Union[List[str], Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
     ) -> VectorStore:
         response = await self.openai_client.with_raw_response.vector_stores.create(
             chunking_strategy=chunking_strategy,
@@ -514,11 +504,9 @@ class AsyncVectorStores(AsyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        expires_after: Union[
-            vector_store_update_params.ExpiresAfter, NotGiven
-        ] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        name: Union[str, NotGiven] = NOT_GIVEN,
+        expires_after: Union[vector_store_update_params.ExpiresAfter, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        name: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStore:
         response = await self.openai_client.with_raw_response.vector_stores.update(
@@ -537,10 +525,10 @@ class AsyncVectorStores(AsyncAPIResource):
     async def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreList:
         response = await self.openai_client.with_raw_response.vector_stores.list(
@@ -580,7 +568,7 @@ class AsyncVectorFiles(AsyncAPIResource):
         vector_store_id: str,
         *,
         file_id: str,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = (
@@ -624,11 +612,11 @@ class AsyncVectorFiles(AsyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        filter: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        filter: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileList:
         response = await self.openai_client.with_raw_response.vector_stores.files.list(
@@ -669,8 +657,8 @@ class AsyncVectorFiles(AsyncAPIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.vector_stores.files.create_and_poll(
@@ -689,7 +677,7 @@ class AsyncVectorFiles(AsyncAPIResource):
         file_id: str,
         *,
         vector_store_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.vector_stores.files.poll(
@@ -707,7 +695,7 @@ class AsyncVectorFiles(AsyncAPIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.vector_stores.files.upload(
@@ -724,8 +712,8 @@ class AsyncVectorFiles(AsyncAPIResource):
         *,
         vector_store_id: str,
         file: FileTypes,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
         response = await self.openai_client.vector_stores.files.upload_and_poll(
@@ -749,7 +737,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         vector_store_id: str,
         *,
         file_ids: List[str],
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.with_raw_response.vector_stores.file_batches.create(  # noqa: E501
@@ -800,8 +788,8 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         vector_store_id: str,
         *,
         file_ids: List[str],
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.vector_stores.file_batches.create_and_poll(
@@ -821,11 +809,11 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         batch_id: str,
         *,
         vector_store_id: str,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        filter: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        filter: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileList:
         response = await self.openai_client.with_raw_response.vector_stores.file_batches.list_files(  # noqa: E501
@@ -848,7 +836,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         batch_id: str,
         *,
         vector_store_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.vector_stores.file_batches.poll(
@@ -868,8 +856,8 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         files: Iterable[FileTypes],
         max_concurrency: int = 5,
         file_ids: List[str] = [],
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
-        chunking_strategy: Union[Any, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
+        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.vector_stores.file_batches.upload_and_poll(
