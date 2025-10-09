@@ -415,6 +415,10 @@ class RealtimeSessionCreateResponse(BaseModel):
             "gpt-4o-realtime-preview-2025-06-03",
             "gpt-4o-mini-realtime-preview",
             "gpt-4o-mini-realtime-preview-2024-12-17",
+            "gpt-realtime-mini",
+            "gpt-realtime-mini-2025-10-06",
+            "gpt-audio-mini",
+            "gpt-audio-mini-2025-10-06",
         ],
         None,
     ] = None
@@ -429,8 +433,8 @@ class RealtimeSessionCreateResponse(BaseModel):
     """
 
     prompt: Optional[ResponsePrompt] = None
-    """Reference to a prompt template and its variables.
-
+    """
+    Reference to a prompt template and its variables.
     [Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).
     """
 

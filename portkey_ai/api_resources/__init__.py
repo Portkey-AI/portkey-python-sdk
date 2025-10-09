@@ -139,6 +139,8 @@ from .apis import (
     AsyncChatKitSessions,
     ChatKitThreads,
     AsyncChatKitThreads,
+    Calls,
+    AsyncCalls,
 )
 from .utils import (
     Modes,
@@ -313,4 +315,6 @@ __all__ = [
     "AsyncChatKitSessions",
     "ChatKitThreads",
     "AsyncChatKitThreads",
+    "Calls",
+    "AsyncCalls",
 ]

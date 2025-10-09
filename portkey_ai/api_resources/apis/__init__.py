@@ -155,6 +155,8 @@ from .main_realtime import (
     AsyncMainRealtime,
     ClientSecrets,
     AsyncClientSecrets,
+    Calls,
+    AsyncCalls,
 )
 
 from .conversations import (
@@ -325,4 +327,6 @@ __all__ = [
     "AsyncChatKitSessions",
     "ChatKitThreads",
     "AsyncChatKitThreads",
+    "Calls",
+    "AsyncCalls",
 ]

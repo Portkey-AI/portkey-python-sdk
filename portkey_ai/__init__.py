@@ -151,6 +151,8 @@ from portkey_ai.api_resources import (
     AsyncChatKitSessions,
     ChatKitThreads,
     AsyncChatKitThreads,
+    Calls,
+    AsyncCalls,
 )
 
 from portkey_ai.version import VERSION
@@ -321,4 +323,6 @@ __all__ = [
     "AsyncChatKitSessions",
     "ChatKitThreads",
     "AsyncChatKitThreads",
+    "Calls",
+    "AsyncCalls",
 ]
