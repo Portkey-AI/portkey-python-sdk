@@ -3,7 +3,7 @@ from typing import Any, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.global_constants import AUDIO_FILE_DURATION_HEADER
 from portkey_ai.api_resources.get_audio_duration import get_audio_file_duration
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN, FileTypes
+from ..._vendor.openai._types import Omit, omit, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
 
@@ -35,12 +35,12 @@ class Transcriptions(APIResource):
         *,
         file: FileTypes,
         model: str,
-        language: Union[str, NotGiven] = NOT_GIVEN,
-        prompt: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
-        timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        language: Union[str, Omit] = omit,
+        prompt: Union[str, Omit] = omit,
+        response_format: Union[str, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
+        timestamp_granularities: Union[List[str], Omit] = omit,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -97,8 +97,8 @@ class Translations(APIResource):
         *,
         file: FileTypes,
         model: str,
-        prompt: Union[str, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        prompt: Union[str, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
         **kwargs,
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -132,9 +132,9 @@ class Speech(APIResource):
         input: str,
         model: str,
         voice: str,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
-        speed: Union[float, NotGiven] = NOT_GIVEN,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        response_format: Union[str, Omit] = omit,
+        speed: Union[float, Omit] = omit,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Any:
         if stream is True:
@@ -173,12 +173,12 @@ class AsyncTranscriptions(AsyncAPIResource):
         *,
         file: FileTypes,
         model: str,
-        language: Union[str, NotGiven] = NOT_GIVEN,
-        prompt: Union[str, NotGiven] = NOT_GIVEN,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
-        timestamp_granularities: Union[List[str], NotGiven] = NOT_GIVEN,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        language: Union[str, Omit] = omit,
+        prompt: Union[str, Omit] = omit,
+        response_format: Union[str, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
+        timestamp_granularities: Union[List[str], Omit] = omit,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -237,8 +237,8 @@ class AsyncTranslations(AsyncAPIResource):
         *,
         file: FileTypes,
         model: str,
-        prompt: Union[str, NotGiven] = NOT_GIVEN,
-        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        prompt: Union[str, Omit] = omit,
+        temperature: Union[float, Omit] = omit,
         **kwargs,
     ) -> Union[Translation, TranslationVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -272,9 +272,9 @@ class AsyncSpeech(AsyncAPIResource):
         input: str,
         model: str,
         voice: str,
-        response_format: Union[str, NotGiven] = NOT_GIVEN,
-        speed: Union[float, NotGiven] = NOT_GIVEN,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        response_format: Union[str, Omit] = omit,
+        speed: Union[float, Omit] = omit,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Any:
         if stream is True:

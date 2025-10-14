@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.beta_chat_type import ParsedChatCompletion
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import Omit, omit
 
 
 class BetaChat(APIResource):
@@ -22,15 +22,15 @@ class BetaCompletions(APIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        audio: Union[Any, NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[int, NotGiven] = NOT_GIVEN,
-        metadata: Union[Dict[str, str], NotGiven] = NOT_GIVEN,
-        modalities: Union[List[Any], NotGiven] = NOT_GIVEN,
-        prediction: Union[Any, NotGiven] = NOT_GIVEN,
-        reasoning_effort: Union[Any, NotGiven] = NOT_GIVEN,
-        store: Union[bool, NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        audio: Union[Any, Omit] = omit,
+        max_completion_tokens: Union[int, Omit] = omit,
+        metadata: Union[Dict[str, str], Omit] = omit,
+        modalities: Union[List[Any], Omit] = omit,
+        prediction: Union[Any, Omit] = omit,
+        reasoning_effort: Union[Any, Omit] = omit,
+        store: Union[bool, Omit] = omit,
         **kwargs: Any,
     ) -> ParsedChatCompletion:
         response = self.openai_client.beta.chat.completions.parse(
@@ -54,15 +54,15 @@ class BetaCompletions(APIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        audio: Union[Any, NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[int, NotGiven] = NOT_GIVEN,
-        metadata: Union[Dict[str, str], NotGiven] = NOT_GIVEN,
-        modalities: Union[List[Any], NotGiven] = NOT_GIVEN,
-        prediction: Union[Any, NotGiven] = NOT_GIVEN,
-        reasoning_effort: Union[Any, NotGiven] = NOT_GIVEN,
-        store: Union[bool, NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        audio: Union[Any, Omit] = omit,
+        max_completion_tokens: Union[int, Omit] = omit,
+        metadata: Union[Dict[str, str], Omit] = omit,
+        modalities: Union[List[Any], Omit] = omit,
+        prediction: Union[Any, Omit] = omit,
+        reasoning_effort: Union[Any, Omit] = omit,
+        store: Union[bool, Omit] = omit,
         **kwargs: Any,
     ) -> Any:
         with self.openai_client.beta.chat.completions.stream(
@@ -108,15 +108,15 @@ class AsyncBetaCompletions(AsyncAPIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        audio: Union[Any, NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[int, NotGiven] = NOT_GIVEN,
-        metadata: Union[Dict[str, str], NotGiven] = NOT_GIVEN,
-        modalities: Union[List[Any], NotGiven] = NOT_GIVEN,
-        prediction: Union[Any, NotGiven] = NOT_GIVEN,
-        reasoning_effort: Union[Any, NotGiven] = NOT_GIVEN,
-        store: Union[bool, NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        audio: Union[Any, Omit] = omit,
+        max_completion_tokens: Union[int, Omit] = omit,
+        metadata: Union[Dict[str, str], Omit] = omit,
+        modalities: Union[List[Any], Omit] = omit,
+        prediction: Union[Any, Omit] = omit,
+        reasoning_effort: Union[Any, Omit] = omit,
+        store: Union[bool, Omit] = omit,
         **kwargs: Any,
     ) -> ParsedChatCompletion:
         response = await self.openai_client.beta.chat.completions.parse(
@@ -140,15 +140,15 @@ class AsyncBetaCompletions(AsyncAPIResource):
         *,
         messages: Any,
         model: Union[str, Any] = "portkey-default",
-        response_format: Union[Any, NotGiven] = NOT_GIVEN,
-        tools: Union[Any, NotGiven] = NOT_GIVEN,
-        audio: Union[Any, NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[int, NotGiven] = NOT_GIVEN,
-        metadata: Union[Dict[str, str], NotGiven] = NOT_GIVEN,
-        modalities: Union[List[Any], NotGiven] = NOT_GIVEN,
-        prediction: Union[Any, NotGiven] = NOT_GIVEN,
-        reasoning_effort: Union[Any, NotGiven] = NOT_GIVEN,
-        store: Union[bool, NotGiven] = NOT_GIVEN,
+        response_format: Union[Any, Omit] = omit,
+        tools: Union[Any, Omit] = omit,
+        audio: Union[Any, Omit] = omit,
+        max_completion_tokens: Union[int, Omit] = omit,
+        metadata: Union[Dict[str, str], Omit] = omit,
+        modalities: Union[List[Any], Omit] = omit,
+        prediction: Union[Any, Omit] = omit,
+        reasoning_effort: Union[Any, Omit] = omit,
+        store: Union[bool, Omit] = omit,
         **kwargs: Any,
     ) -> Any:
         async with self.openai_client.beta.chat.completions.stream(

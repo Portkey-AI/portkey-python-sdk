@@ -13,7 +13,7 @@ from portkey_ai.api_resources.types.containers_type import (
     ContainerListResponse,
     ContainerRetrieveResponse,
 )
-from ..._vendor.openai._types import FileTypes, NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import FileTypes, Omit, omit
 
 
 class Containers(APIResource):
@@ -26,10 +26,8 @@ class Containers(APIResource):
         self,
         *,
         name: str,
-        expires_after: Union[
-            container_create_params.ExpiresAfter, NotGiven
-        ] = NOT_GIVEN,
-        file_ids: Union[List[str], NotGiven] = NOT_GIVEN,
+        expires_after: Union[container_create_params.ExpiresAfter, Omit] = omit,
+        file_ids: Union[List[str], Omit] = omit,
         **kwargs,
     ) -> ContainerCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -83,9 +81,9 @@ class Containers(APIResource):
     def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
         **kwargs,
     ) -> ContainerListResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -134,8 +132,8 @@ class ContainersFiles(APIResource):
         self,
         container_id: str,
         *,
-        file: Union[FileTypes, NotGiven] = NOT_GIVEN,
-        file_id: Union[str, NotGiven] = NOT_GIVEN,
+        file: Union[FileTypes, Omit] = omit,
+        file_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> FileCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -194,9 +192,9 @@ class ContainersFiles(APIResource):
         self,
         container_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
         **kwargs,
     ) -> FileListResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -286,10 +284,8 @@ class AsyncContainers(AsyncAPIResource):
         self,
         *,
         name: str,
-        expires_after: Union[
-            container_create_params.ExpiresAfter, NotGiven
-        ] = NOT_GIVEN,
-        file_ids: Union[List[str], NotGiven] = NOT_GIVEN,
+        expires_after: Union[container_create_params.ExpiresAfter, Omit] = omit,
+        file_ids: Union[List[str], Omit] = omit,
         **kwargs,
     ) -> ContainerCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -343,9 +339,9 @@ class AsyncContainers(AsyncAPIResource):
     async def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
         **kwargs,
     ) -> ContainerListResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -394,8 +390,8 @@ class AsyncContainersFiles(AsyncAPIResource):
         self,
         container_id: str,
         *,
-        file: Union[FileTypes, NotGiven] = NOT_GIVEN,
-        file_id: Union[str, NotGiven] = NOT_GIVEN,
+        file: Union[FileTypes, Omit] = omit,
+        file_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> FileCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -458,9 +454,9 @@ class AsyncContainersFiles(AsyncAPIResource):
         self,
         container_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["asc", "desc"], NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["asc", "desc"], Omit] = omit,
         **kwargs,
     ) -> FileListResponse:
         extra_headers = kwargs.pop("extra_headers", None)

@@ -12,7 +12,7 @@ from portkey_ai.api_resources.types.finetuning_checkpoint_permissions import (
     PermissionDeleteResponse,
     PermissionRetrieveResponse,
 )
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import Omit, omit
 from ..._vendor.openai.types.fine_tuning import job_create_params
 
 from portkey_ai.api_resources.types.fine_tuning_type import (
@@ -43,14 +43,14 @@ class Jobs(APIResource):
         *,
         model: str,
         training_file: str,
-        hyperparameters: Union[job_create_params.Hyperparameters, NotGiven] = NOT_GIVEN,
+        hyperparameters: Union[job_create_params.Hyperparameters, Omit] = omit,
         integrations: Union[
-            Optional[Iterable[job_create_params.Integration]], NotGiven
-        ] = NOT_GIVEN,
-        method: Union[job_create_params.Method, NotGiven] = NOT_GIVEN,
-        seed: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        suffix: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        validation_file: Union[Optional[str], NotGiven] = NOT_GIVEN,
+            Optional[Iterable[job_create_params.Integration]], Omit
+        ] = omit,
+        method: Union[job_create_params.Method, Omit] = omit,
+        seed: Union[Optional[int], Omit] = omit,
+        suffix: Union[Optional[str], Omit] = omit,
+        validation_file: Union[Optional[str], Omit] = omit,
         **kwargs,
     ) -> FineTuningJob:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.create(
@@ -86,8 +86,8 @@ class Jobs(APIResource):
     def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobList:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list(
@@ -111,8 +111,8 @@ class Jobs(APIResource):
         self,
         fine_tuning_job_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobEventList:
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list_events(
@@ -136,8 +136,8 @@ class Checkpoints(APIResource):
         self,
         fine_tuning_job_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobCheckpointList:
         response = (
@@ -188,10 +188,10 @@ class Permissions(APIResource):
         self,
         fine_tuned_model_checkpoint: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["ascending", "descending"], NotGiven] = NOT_GIVEN,
-        project_id: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["ascending", "descending"], Omit] = omit,
+        project_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> PermissionRetrieveResponse:
         response = self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.retrieve(  # noqa: E501
@@ -242,7 +242,7 @@ class Graders(APIResource):
         *,
         grader: grader_run_params.Grader,
         model_sample: str,
-        item: Union[object, NotGiven] = NOT_GIVEN,
+        item: Union[object, Omit] = omit,
         **kwargs,
     ) -> GraderRunResponse:
         response = self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
@@ -294,14 +294,14 @@ class AsyncJobs(AsyncAPIResource):
         *,
         model: str,
         training_file: str,
-        hyperparameters: Union[job_create_params.Hyperparameters, NotGiven] = NOT_GIVEN,
+        hyperparameters: Union[job_create_params.Hyperparameters, Omit] = omit,
         integrations: Union[
-            Optional[Iterable[job_create_params.Integration]], NotGiven
-        ] = NOT_GIVEN,
-        method: Union[job_create_params.Method, NotGiven] = NOT_GIVEN,
-        seed: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        suffix: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        validation_file: Union[Optional[str], NotGiven] = NOT_GIVEN,
+            Optional[Iterable[job_create_params.Integration]], Omit
+        ] = omit,
+        method: Union[job_create_params.Method, Omit] = omit,
+        seed: Union[Optional[int], Omit] = omit,
+        suffix: Union[Optional[str], Omit] = omit,
+        validation_file: Union[Optional[str], Omit] = omit,
         **kwargs,
     ) -> FineTuningJob:
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.create(
@@ -342,8 +342,8 @@ class AsyncJobs(AsyncAPIResource):
     async def list(
         self,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobList:
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.list(
@@ -367,8 +367,8 @@ class AsyncJobs(AsyncAPIResource):
         self,
         fine_tuning_job_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobEventList:
         response = (
@@ -394,8 +394,8 @@ class AsyncCheckpoints(AsyncAPIResource):
         self,
         fine_tuning_job_id: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobCheckpointList:
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.checkpoints.list(  # noqa: E501
@@ -444,10 +444,10 @@ class AsyncPermissions(AsyncAPIResource):
         self,
         fine_tuned_model_checkpoint: str,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Literal["ascending", "descending"], NotGiven] = NOT_GIVEN,
-        project_id: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["ascending", "descending"], Omit] = omit,
+        project_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> PermissionRetrieveResponse:
         response = await self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.retrieve(  # noqa: E501
@@ -498,7 +498,7 @@ class AsyncGraders(AsyncAPIResource):
         *,
         grader: grader_run_params.Grader,
         model_sample: str,
-        item: Union[object, NotGiven] = NOT_GIVEN,
+        item: Union[object, Omit] = omit,
         **kwargs,
     ) -> GraderRunResponse:
         response = (

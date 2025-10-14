@@ -29,7 +29,7 @@ from portkey_ai.api_resources.types.thread_run_type import (
     RunStepList,
 )
 from portkey_ai.api_resources.types.thread_type import Thread, ThreadDeleted
-from ..._vendor.openai._types import NotGiven, NOT_GIVEN
+from ..._vendor.openai._types import Omit, omit
 from ..._vendor.openai.types.beta import thread_create_and_run_params
 from ..._vendor.openai.types.beta.assistant_response_format_option_param import (
     AssistantResponseFormatOptionParam,
@@ -62,9 +62,9 @@ class Threads(APIResource):
     def create(
         self,
         *,
-        messages: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
+        messages: Union[Any, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
         **kwargs,
     ) -> Thread:
         response = self.openai_client.with_raw_response.beta.threads.create(
@@ -96,8 +96,8 @@ class Threads(APIResource):
         self,
         thread_id,
         *,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
         **kwargs,
     ) -> Thread:
         response = self.openai_client.with_raw_response.beta.threads.update(
@@ -150,7 +150,7 @@ class Threads(APIResource):
         return data
 
     def create_and_run(
-        self, assistant_id, stream: Union[bool, NotGiven] = NOT_GIVEN, **kwargs
+        self, assistant_id, stream: Union[bool, Omit] = omit, **kwargs
     ) -> Union[Run, Iterator[AssistantStreamEvent]]:
         if stream is True:
             return self.stream_create_and_run(assistant_id, **kwargs)
@@ -161,28 +161,26 @@ class Threads(APIResource):
         self,
         *,
         assistant_id: str,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        thread: Union[thread_create_and_run_params.Thread, Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
         tool_resources: Union[
-            Optional[thread_create_and_run_params.ToolResources], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.ToolResources], Omit
+        ] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.TruncationStrategy], Omit
+        ] = omit,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> Run:
         response = self.openai_client.beta.threads.create_and_run_poll(
@@ -212,27 +210,25 @@ class Threads(APIResource):
         self,
         *,
         assistant_id: str,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[object], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        thread: Union[thread_create_and_run_params.Thread, Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
         tool_resources: Union[
-            Optional[thread_create_and_run_params.ToolResources], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.ToolResources], Omit
+        ] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.TruncationStrategy], Omit
+        ] = omit,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
     ) -> Union[
@@ -272,8 +268,8 @@ class Messages(APIResource):
         *,
         content: Union[str, Any],
         role: Any,
-        attachments: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        attachments: Union[Any, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
         **kwargs,
     ) -> ThreadMessage:
         response = self.openai_client.with_raw_response.beta.threads.messages.create(
@@ -311,7 +307,7 @@ class Messages(APIResource):
         thread_id,
         message_id,
         *,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
         **kwargs,
     ) -> ThreadMessage:
         response = self.openai_client.with_raw_response.beta.threads.messages.update(
@@ -325,11 +321,11 @@ class Messages(APIResource):
         self,
         thread_id,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
-        run_id: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Omit, Literal["asc", "desc"]] = omit,
+        run_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> MessageList:
         response = self.openai_client.with_raw_response.beta.threads.messages.list(
@@ -405,7 +401,7 @@ class Runs(APIResource):
         thread_id: str,
         *,
         assistant_id: str,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Union[Run, Iterator[AssistantStreamEvent]]:
         if stream is True:
@@ -435,7 +431,7 @@ class Runs(APIResource):
         self,
         thread_id,
         run_id,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
         **kwargs,
     ) -> Run:
         response = self.openai_client.with_raw_response.beta.threads.runs.update(
@@ -450,10 +446,10 @@ class Runs(APIResource):
         self,
         thread_id,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Omit, Literal["asc", "desc"]] = omit,
         **kwargs,
     ) -> RunList:
         response = self.openai_client.with_raw_response.beta.threads.runs.list(
@@ -482,30 +478,28 @@ class Runs(APIResource):
         self,
         *,
         assistant_id: str,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
-        additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], Omit] = omit,
+        additional_instructions: Union[Optional[str], Omit] = omit,
         additional_messages: Union[
-            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
-        ] = NOT_GIVEN,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
-        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
+            Optional[Iterable[run_create_params.AdditionalMessage]], Omit
+        ] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
+        parallel_tool_calls: Union[bool, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[run_create_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+            Optional[run_create_params.TruncationStrategy], Omit
+        ] = omit,
+        poll_interval_ms: Union[int, Omit] = omit,
         thread_id: str,
         **kwargs,
     ) -> Run:
@@ -539,28 +533,26 @@ class Runs(APIResource):
         self,
         *,
         assistant_id: str,
-        additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        additional_instructions: Union[Optional[str], Omit] = omit,
         additional_messages: Union[
-            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
-        ] = NOT_GIVEN,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
-        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
+            Optional[Iterable[run_create_params.AdditionalMessage]], Omit
+        ] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[object], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
+        parallel_tool_calls: Union[bool, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[run_create_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
+            Optional[run_create_params.TruncationStrategy], Omit
+        ] = omit,
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
@@ -610,29 +602,27 @@ class Runs(APIResource):
         self,
         *,
         assistant_id: str,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
-        additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], Omit] = omit,
+        additional_instructions: Union[Optional[str], Omit] = omit,
         additional_messages: Union[
-            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
-        ] = NOT_GIVEN,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
-        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
+            Optional[Iterable[run_create_params.AdditionalMessage]], Omit
+        ] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[object], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
+        parallel_tool_calls: Union[bool, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[run_create_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
+            Optional[run_create_params.TruncationStrategy], Omit
+        ] = omit,
         thread_id: str,
         event_handler: Union[AssistantEventHandlerT, None] = None,
         **kwargs,
@@ -670,7 +660,7 @@ class Runs(APIResource):
         *,
         thread_id,
         tool_outputs,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Run:
         response = (
@@ -693,7 +683,7 @@ class Runs(APIResource):
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
         run_id: str,
         thread_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> Run:
         response = self.openai_client.beta.threads.runs.submit_tool_outputs_and_poll(
@@ -741,7 +731,7 @@ class Steps(APIResource):
         thread_id,
         run_id,
         step_id,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], Omit] = omit,
         **kwargs,
     ) -> RunStep:
         if kwargs:
@@ -773,11 +763,11 @@ class Steps(APIResource):
         run_id,
         *,
         thread_id,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Any, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        include: Union[List[Any], Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Any, Omit] = omit,
         **kwargs,
     ) -> RunStepList:
         response = self.openai_client.with_raw_response.beta.threads.runs.steps.list(
@@ -806,9 +796,9 @@ class AsyncThreads(AsyncAPIResource):
     async def create(
         self,
         *,
-        messages: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
+        messages: Union[Any, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
         **kwargs,
     ) -> Thread:
         response = await self.openai_client.with_raw_response.beta.threads.create(
@@ -840,8 +830,8 @@ class AsyncThreads(AsyncAPIResource):
         self,
         thread_id,
         *,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        tool_resources: Union[Any, NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        tool_resources: Union[Any, Omit] = omit,
         **kwargs,
     ) -> Thread:
         response = await self.openai_client.with_raw_response.beta.threads.update(
@@ -896,7 +886,7 @@ class AsyncThreads(AsyncAPIResource):
         return data
 
     async def create_and_run(
-        self, assistant_id, stream: Union[bool, NotGiven] = NOT_GIVEN, **kwargs
+        self, assistant_id, stream: Union[bool, Omit] = omit, **kwargs
     ) -> Union[Run, AsyncIterator[AssistantStreamEvent]]:
         if stream is True:
             return self.stream_create_and_run(assistant_id=assistant_id, **kwargs)
@@ -907,28 +897,26 @@ class AsyncThreads(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        thread: Union[thread_create_and_run_params.Thread, Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
         tool_resources: Union[
-            Optional[thread_create_and_run_params.ToolResources], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.ToolResources], Omit
+        ] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.TruncationStrategy], Omit
+        ] = omit,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> Run:
         response = await self.openai_client.beta.threads.create_and_run_poll(
@@ -958,27 +946,25 @@ class AsyncThreads(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[object], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        thread: Union[thread_create_and_run_params.Thread, NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        thread: Union[thread_create_and_run_params.Thread, Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
         tool_resources: Union[
-            Optional[thread_create_and_run_params.ToolResources], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.ToolResources], Omit
+        ] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[thread_create_and_run_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
+            Optional[thread_create_and_run_params.TruncationStrategy], Omit
+        ] = omit,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
     ) -> (
@@ -1020,8 +1006,8 @@ class AsyncMessages(AsyncAPIResource):
         *,
         content: Union[str, Any],
         role: Any,
-        attachments: Union[Any, NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        attachments: Union[Any, Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
         **kwargs,
     ) -> ThreadMessage:
         response = (
@@ -1057,7 +1043,7 @@ class AsyncMessages(AsyncAPIResource):
         thread_id,
         message_id,
         *,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
         **kwargs,
     ) -> ThreadMessage:
         response = (
@@ -1073,11 +1059,11 @@ class AsyncMessages(AsyncAPIResource):
         self,
         thread_id,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
-        run_id: Union[str, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Omit, Literal["asc", "desc"]] = omit,
+        run_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> MessageList:
         response = (
@@ -1159,7 +1145,7 @@ class AsyncRuns(AsyncAPIResource):
         thread_id: str,
         *,
         assistant_id: str,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Union[Run, AsyncIterator[AssistantStreamEvent]]:
         if stream is True:
@@ -1189,7 +1175,7 @@ class AsyncRuns(AsyncAPIResource):
         self,
         thread_id,
         run_id,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
+        metadata: Union[Optional[Metadata], Omit] = omit,
         **kwargs,
     ) -> Run:
         response = await self.openai_client.with_raw_response.beta.threads.runs.update(
@@ -1204,10 +1190,10 @@ class AsyncRuns(AsyncAPIResource):
         self,
         thread_id,
         *,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[NotGiven, Literal["asc", "desc"]] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Omit, Literal["asc", "desc"]] = omit,
         **kwargs,
     ) -> RunList:
         response = await self.openai_client.with_raw_response.beta.threads.runs.list(
@@ -1236,30 +1222,28 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
-        additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], Omit] = omit,
+        additional_instructions: Union[Optional[str], Omit] = omit,
         additional_messages: Union[
-            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
-        ] = NOT_GIVEN,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[Metadata], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
-        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
+            Optional[Iterable[run_create_params.AdditionalMessage]], Omit
+        ] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[Metadata], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
+        parallel_tool_calls: Union[bool, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[run_create_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+            Optional[run_create_params.TruncationStrategy], Omit
+        ] = omit,
+        poll_interval_ms: Union[int, Omit] = omit,
         thread_id: str,
         **kwargs,
     ) -> Run:
@@ -1293,28 +1277,26 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
-        additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        additional_instructions: Union[Optional[str], Omit] = omit,
         additional_messages: Union[
-            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
-        ] = NOT_GIVEN,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
-        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
+            Optional[Iterable[run_create_params.AdditionalMessage]], Omit
+        ] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[object], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
+        parallel_tool_calls: Union[bool, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[run_create_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
+            Optional[run_create_params.TruncationStrategy], Omit
+        ] = omit,
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
@@ -1366,29 +1348,27 @@ class AsyncRuns(AsyncAPIResource):
         self,
         *,
         assistant_id: str,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
-        additional_instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], Omit] = omit,
+        additional_instructions: Union[Optional[str], Omit] = omit,
         additional_messages: Union[
-            Optional[Iterable[run_create_params.AdditionalMessage]], NotGiven
-        ] = NOT_GIVEN,
-        instructions: Union[Optional[str], NotGiven] = NOT_GIVEN,
-        max_completion_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        max_prompt_tokens: Union[Optional[int], NotGiven] = NOT_GIVEN,
-        metadata: Union[Optional[object], NotGiven] = NOT_GIVEN,
-        model: Union[str, None, NotGiven] = NOT_GIVEN,
-        parallel_tool_calls: Union[bool, NotGiven] = NOT_GIVEN,
+            Optional[Iterable[run_create_params.AdditionalMessage]], Omit
+        ] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        max_completion_tokens: Union[Optional[int], Omit] = omit,
+        max_prompt_tokens: Union[Optional[int], Omit] = omit,
+        metadata: Union[Optional[object], Omit] = omit,
+        model: Union[str, None, Omit] = omit,
+        parallel_tool_calls: Union[bool, Omit] = omit,
         response_format: Union[
-            Optional[AssistantResponseFormatOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        temperature: Union[Optional[float], NotGiven] = NOT_GIVEN,
-        tool_choice: Union[
-            Optional[AssistantToolChoiceOptionParam], NotGiven
-        ] = NOT_GIVEN,
-        tools: Union[Optional[Iterable[AssistantToolParam]], NotGiven] = NOT_GIVEN,
-        top_p: Union[Optional[float], NotGiven] = NOT_GIVEN,
+            Optional[AssistantResponseFormatOptionParam], Omit
+        ] = omit,
+        temperature: Union[Optional[float], Omit] = omit,
+        tool_choice: Union[Optional[AssistantToolChoiceOptionParam], Omit] = omit,
+        tools: Union[Optional[Iterable[AssistantToolParam]], Omit] = omit,
+        top_p: Union[Optional[float], Omit] = omit,
         truncation_strategy: Union[
-            Optional[run_create_params.TruncationStrategy], NotGiven
-        ] = NOT_GIVEN,
+            Optional[run_create_params.TruncationStrategy], Omit
+        ] = omit,
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
@@ -1428,7 +1408,7 @@ class AsyncRuns(AsyncAPIResource):
         *,
         thread_id,
         tool_outputs,
-        stream: Union[bool, NotGiven] = NOT_GIVEN,
+        stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Run:
         # fmt: off
@@ -1456,7 +1436,7 @@ class AsyncRuns(AsyncAPIResource):
         tool_outputs: Union[Iterable[run_submit_tool_outputs_params.ToolOutput]],
         run_id: str,
         thread_id: str,
-        poll_interval_ms: Union[int, NotGiven] = NOT_GIVEN,
+        poll_interval_ms: Union[int, Omit] = omit,
         **kwargs,
     ) -> Run:
         response = (
@@ -1506,7 +1486,7 @@ class AsyncSteps(AsyncAPIResource):
         thread_id,
         run_id,
         step_id,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
+        include: Union[List[Any], Omit] = omit,
         **kwargs,
     ) -> RunStep:
         if kwargs:
@@ -1531,11 +1511,11 @@ class AsyncSteps(AsyncAPIResource):
         run_id,
         *,
         thread_id,
-        after: Union[str, NotGiven] = NOT_GIVEN,
-        before: Union[str, NotGiven] = NOT_GIVEN,
-        include: Union[List[Any], NotGiven] = NOT_GIVEN,
-        limit: Union[int, NotGiven] = NOT_GIVEN,
-        order: Union[Any, NotGiven] = NOT_GIVEN,
+        after: Union[str, Omit] = omit,
+        before: Union[str, Omit] = omit,
+        include: Union[List[Any], Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Any, Omit] = omit,
         **kwargs,
     ) -> RunStepList:
         response = (

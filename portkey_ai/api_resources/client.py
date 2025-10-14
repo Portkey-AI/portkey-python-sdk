@@ -40,18 +40,21 @@ class Portkey(APIClient):
     providers: apis.Providers
     realtime: apis.MainRealtime
     conversations: apis.Conversations
+    videos: apis.Videos
 
     class beta:
         assistants: apis.Assistants
         threads: apis.Threads
         chat: apis.BetaChat
         realtime: apis.BetaRealtime
+        chatkit: apis.ChatKit
 
         def __init__(self, client: Portkey) -> None:
             self.assistants = apis.Assistants(client)
             self.threads = apis.Threads(client)
             self.chat = apis.BetaChat(client)
             self.realtime = apis.BetaRealtime(client)
+            self.chatkit = apis.ChatKit(client)
 
     def __init__(
         self,
@@ -188,6 +191,7 @@ class Portkey(APIClient):
         self.providers = apis.Providers(self)
         self.realtime = apis.MainRealtime(self)
         self.conversations = apis.Conversations(self)
+        self.videos = apis.Videos(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -372,18 +376,21 @@ class AsyncPortkey(AsyncAPIClient):
     providers: apis.AsyncProviders
     realtime: apis.AsyncMainRealtime
     conversations: apis.AsyncConversations
+    videos: apis.AsyncVideos
 
     class beta:
         assistants: apis.AsyncAssistants
         threads: apis.AsyncThreads
         chat: apis.AsyncBetaChat
         realtime: apis.AsyncBetaRealtime
+        chatkit: apis.AsyncChatKit
 
         def __init__(self, client: AsyncPortkey) -> None:
             self.assistants = apis.AsyncAssistants(client)
             self.threads = apis.AsyncThreads(client)
             self.chat = apis.AsyncBetaChat(client)
             self.realtime = apis.AsyncBetaRealtime(client)
+            self.chatkit = apis.AsyncChatKit(client)
 
     def __init__(
         self,
@@ -520,6 +527,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.providers = apis.AsyncProviders(self)
         self.realtime = apis.AsyncMainRealtime(self)
         self.conversations = apis.AsyncConversations(self)
+        self.videos = apis.AsyncVideos(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
