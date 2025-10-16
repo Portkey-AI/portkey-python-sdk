@@ -150,6 +150,11 @@ from .providers import (
     AsyncProviders,
 )
 
+from .guardrails import (
+    Guardrails,
+    AsyncGuardrails,
+)
+
 from .main_realtime import (
     MainRealtime,
     AsyncMainRealtime,
@@ -309,6 +314,8 @@ __all__ = [
     "AsyncIntegrationsModels",
     "Providers",
     "AsyncProviders",
+    "Guardrails",
+    "AsyncGuardrails",
     "Webhooks",
     "AsyncWebhooks",
     "MainRealtime",
