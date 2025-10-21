@@ -38,6 +38,7 @@ class Portkey(APIClient):
     collections: apis.Collections
     integrations: apis.Integrations
     providers: apis.Providers
+    guardrails: apis.Guardrails
     realtime: apis.MainRealtime
     conversations: apis.Conversations
     videos: apis.Videos
@@ -189,6 +190,7 @@ class Portkey(APIClient):
         self.collections = apis.Collections(self)
         self.integrations = apis.Integrations(self)
         self.providers = apis.Providers(self)
+        self.guardrails = apis.Guardrails(self)
         self.realtime = apis.MainRealtime(self)
         self.conversations = apis.Conversations(self)
         self.videos = apis.Videos(self)
@@ -374,6 +376,7 @@ class AsyncPortkey(AsyncAPIClient):
     collections: apis.AsyncCollections
     integrations: apis.AsyncIntegrations
     providers: apis.AsyncProviders
+    guardrails: apis.AsyncGuardrails
     realtime: apis.AsyncMainRealtime
     conversations: apis.AsyncConversations
     videos: apis.AsyncVideos
@@ -525,6 +528,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.collections = apis.AsyncCollections(self)
         self.integrations = apis.AsyncIntegrations(self)
         self.providers = apis.AsyncProviders(self)
+        self.guardrails = apis.AsyncGuardrails(self)
         self.realtime = apis.AsyncMainRealtime(self)
         self.conversations = apis.AsyncConversations(self)
         self.videos = apis.AsyncVideos(self)
