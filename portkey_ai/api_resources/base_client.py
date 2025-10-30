@@ -180,6 +180,11 @@ class APIClient:
         )
 
         self.allHeaders = self._build_headers(create_model_instance(Options))
+        if http_client:
+            http_client.base_url = (
+                http_client.base_url if http_client.base_url != "" else self.base_url
+            )
+
         self._client = http_client or httpx.Client(
             base_url=self.base_url,
             headers={
@@ -895,6 +900,10 @@ class AsyncAPIClient:
         )
 
         self.allHeaders = self._build_headers(create_model_instance(Options))
+        if http_client:
+            http_client.base_url = (
+                http_client.base_url if http_client.base_url != "" else self.base_url
+            )
         self._client = http_client or AsyncHttpxClientWrapper(
             base_url=self.base_url,
             headers={
