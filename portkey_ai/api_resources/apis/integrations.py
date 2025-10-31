@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -22,13 +23,13 @@ class Integrations(APIResource):
     def create(
         self,
         *,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        key: Optional[str] = None,
-        ai_provider_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        slug: Optional[str] = None,
-        configurations: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        ai_provider_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+        configurations: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> IntegrationCreateResponse:
         body = {
@@ -56,8 +57,8 @@ class Integrations(APIResource):
         *,
         current_page: Optional[int] = 0,
         page_size: Optional[int] = 100,
-        workspace_id: Optional[str] = None,
-        type: Optional[Literal["workspace", "organisation", "all"]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        type: Union[Literal["workspace", "organisation", "all"], NotGiven] = NOT_GIVEN,
     ) -> IntegrationListResponse:
         query = {
             "current_page": current_page,
@@ -65,7 +66,7 @@ class Integrations(APIResource):
             "workspace_id": workspace_id,
             "type": type,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.INTEGRATIONS_API}?{query_string}",
@@ -92,10 +93,10 @@ class Integrations(APIResource):
         self,
         *,
         slug: str,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        key: Optional[str] = None,
-        configurations: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        configurations: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -154,9 +155,9 @@ class IntegrationsWorkspaces(APIResource):
         self,
         *,
         slug: str,
-        global_workspace_access: Optional[Dict[str, Any]] = None,
-        override_existing_workspaces_access: Optional[bool] = None,
-        workspaces: Optional[List[Dict[str, Any]]] = None,
+        global_workspace_access: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        override_existing_workspaces_access: Union[bool, NotGiven] = NOT_GIVEN,
+        workspaces: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -199,8 +200,8 @@ class IntegrationsModels(APIResource):
         self,
         *,
         slug: str,
-        allow_all_models: Optional[bool] = None,
-        models: Optional[List[Dict[str, Any]]] = None,
+        allow_all_models: Union[bool, NotGiven] = NOT_GIVEN,
+        models: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -227,7 +228,7 @@ class IntegrationsModels(APIResource):
         query = {
             "slugs": slugs,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._delete(
             f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models?{query_string}",
@@ -249,13 +250,13 @@ class AsyncIntegrations(AsyncAPIResource):
     async def create(
         self,
         *,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        key: Optional[str] = None,
-        ai_provider_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        slug: Optional[str] = None,
-        configurations: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        ai_provider_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+        configurations: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> IntegrationCreateResponse:
         body = {
@@ -283,8 +284,8 @@ class AsyncIntegrations(AsyncAPIResource):
         *,
         current_page: Optional[int] = 0,
         page_size: Optional[int] = 100,
-        workspace_id: Optional[str] = None,
-        type: Optional[Literal["workspace", "organisation", "all"]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        type: Union[Literal["workspace", "organisation", "all"], NotGiven] = NOT_GIVEN,
     ) -> IntegrationListResponse:
         query = {
             "current_page": current_page,
@@ -292,7 +293,7 @@ class AsyncIntegrations(AsyncAPIResource):
             "workspace_id": workspace_id,
             "type": type,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.INTEGRATIONS_API}?{query_string}",
@@ -319,10 +320,10 @@ class AsyncIntegrations(AsyncAPIResource):
         self,
         *,
         slug: str,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        key: Optional[str] = None,
-        configurations: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        configurations: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -381,9 +382,9 @@ class AsyncIntegrationsWorkspaces(AsyncAPIResource):
         self,
         *,
         slug: str,
-        global_workspace_access: Optional[Dict[str, Any]] = None,
-        override_existing_workspaces_access: Optional[bool] = None,
-        workspaces: Optional[List[Dict[str, Any]]] = None,
+        global_workspace_access: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        override_existing_workspaces_access: Union[bool, NotGiven] = NOT_GIVEN,
+        workspaces: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -426,8 +427,8 @@ class AsyncIntegrationsModels(AsyncAPIResource):
         self,
         *,
         slug: str,
-        allow_all_models: Optional[bool] = None,
-        models: Optional[List[Dict[str, Any]]] = None,
+        allow_all_models: Union[bool, NotGiven] = NOT_GIVEN,
+        models: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GenericResponse:
         body = {
@@ -454,7 +455,7 @@ class AsyncIntegrationsModels(AsyncAPIResource):
         query = {
             "slugs": slugs,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._delete(
             f"{PortkeyApiPaths.INTEGRATIONS_API}/{slug}/models?{query_string}",
