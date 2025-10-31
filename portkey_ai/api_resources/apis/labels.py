@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any, Union
 from urllib.parse import urlencode
 from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
