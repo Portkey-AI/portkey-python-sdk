@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -22,9 +23,9 @@ class Logs(APIResource):
     def create(
         self,
         *,
-        request: Optional[Dict[str, Any]] = None,
-        response: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        request: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        response: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "request": request,
@@ -50,10 +51,10 @@ class Exports(APIResource):
     def create(
         self,
         *,
-        filters: Optional[Dict[str, Any]] = None,
-        workspace_id: Optional[str] = None,
-        description: Optional[str] = None,
-        requested_data: Optional[List[str]] = None,
+        filters: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        requested_data: Union[List[str], NotGiven] = NOT_GIVEN,
     ) -> LogsExportCreateResponse:
         body = {
             "filters": filters,
@@ -85,12 +86,12 @@ class Exports(APIResource):
     def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> LogsExportListResponse:
         query = {
             "workspace_id": workspace_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.LOGS_EXPORT_API}?{query_string}",
@@ -105,10 +106,10 @@ class Exports(APIResource):
     def update(
         self,
         *,
-        export_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        filters: Optional[Dict[str, Any]] = None,
-        requested_data: Optional[List[str]] = None,
+        export_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        filters: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        requested_data: Union[List[str], NotGiven] = NOT_GIVEN,
     ) -> LogsExportUpdateResponse:
         body = {
             "workspace_id": workspace_id,
@@ -179,9 +180,9 @@ class AsyncLogs(AsyncAPIResource):
     async def create(
         self,
         *,
-        request: Optional[Dict[str, Any]] = None,
-        response: Optional[Dict[str, Any]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        request: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        response: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "request": request,
@@ -206,10 +207,10 @@ class AsyncExports(AsyncAPIResource):
     async def create(
         self,
         *,
-        filters: Optional[Dict[str, Any]] = None,
-        workspace_id: Optional[str] = None,
-        description: Optional[str] = None,
-        requested_data: Optional[List[str]] = None,
+        filters: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        requested_data: Union[List[str], NotGiven] = NOT_GIVEN,
     ) -> LogsExportCreateResponse:
         body = {
             "filters": filters,
@@ -241,12 +242,12 @@ class AsyncExports(AsyncAPIResource):
     async def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> LogsExportListResponse:
         query = {
             "workspace_id": workspace_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.LOGS_EXPORT_API}?{query_string}",
@@ -261,10 +262,10 @@ class AsyncExports(AsyncAPIResource):
     async def update(
         self,
         *,
-        export_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        filters: Optional[Dict[str, Any]] = None,
-        requested_data: Optional[List[str]] = None,
+        export_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        filters: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        requested_data: Union[List[str], NotGiven] = NOT_GIVEN,
     ) -> LogsExportUpdateResponse:
         body = {
             "workspace_id": workspace_id,
