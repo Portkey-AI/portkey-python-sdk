@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -18,15 +19,15 @@ class VirtualKeys(APIResource):
     def create(
         self,
         *,
-        name: Optional[str] = None,
-        provider: Optional[str] = None,
-        key: Optional[str] = None,
-        note: Optional[str] = None,
-        apiVersion: Optional[str] = None,
-        resourceName: Optional[str] = None,
-        deploymentName: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        provider: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        note: Union[str, NotGiven] = NOT_GIVEN,
+        apiVersion: Union[str, NotGiven] = NOT_GIVEN,
+        resourceName: Union[str, NotGiven] = NOT_GIVEN,
+        deploymentName: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> VirtualKeysAddResponse:
         body = {
@@ -54,10 +55,10 @@ class VirtualKeys(APIResource):
     def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> VirtualKeysListReponse:
         query = {"workspace_id": workspace_id}
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.VIRTUAL_KEYS_API}?{query_string}",
@@ -83,12 +84,12 @@ class VirtualKeys(APIResource):
     def update(
         self,
         *,
-        slug: Optional[str] = None,
-        name: Optional[str] = None,
-        key: Optional[str] = None,
-        note: Optional[str] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
-        rate_limits: Optional[List[Dict[str, Any]]] = None,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        note: Union[str, NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        rate_limits: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> VirtualKeysUpdateResponse:
         body = {
@@ -132,15 +133,15 @@ class AsyncVirtualKeys(AsyncAPIResource):
     async def create(
         self,
         *,
-        name: Optional[str] = None,
-        provider: Optional[str] = None,
-        key: Optional[str] = None,
-        note: Optional[str] = None,
-        apiVersion: Optional[str] = None,
-        resourceName: Optional[str] = None,
-        deploymentName: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        provider: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        note: Union[str, NotGiven] = NOT_GIVEN,
+        apiVersion: Union[str, NotGiven] = NOT_GIVEN,
+        resourceName: Union[str, NotGiven] = NOT_GIVEN,
+        deploymentName: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> VirtualKeysAddResponse:
         body = {
@@ -168,10 +169,10 @@ class AsyncVirtualKeys(AsyncAPIResource):
     async def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> VirtualKeysListReponse:
         query = {"workspace_id": workspace_id}
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.VIRTUAL_KEYS_API}?{query_string}",
@@ -197,12 +198,12 @@ class AsyncVirtualKeys(AsyncAPIResource):
     async def update(
         self,
         *,
-        slug: Optional[str] = None,
-        name: Optional[str] = None,
-        key: Optional[str] = None,
-        note: Optional[str] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
-        rate_limits: Optional[List[Dict[str, Any]]] = None,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        key: Union[str, NotGiven] = NOT_GIVEN,
+        note: Union[str, NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        rate_limits: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> VirtualKeysUpdateResponse:
         body = {
