@@ -1,5 +1,6 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from urllib.parse import urlencode
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.utils import GenericResponse, PortkeyApiPaths
@@ -13,10 +14,10 @@ class Labels(APIResource):
         self,
         *,
         name: str,
-        organization_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        description: Optional[str] = None,
-        color_code: Optional[str] = None,
+        organization_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        color_code: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -38,10 +39,10 @@ class Labels(APIResource):
     def list(
         self,
         *,
-        organization_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        current_page: Optional[int] = None,
-        page_size: Optional[int] = None,
+        organization_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        current_page: Union[int, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "organization_id": organization_id,
@@ -49,7 +50,7 @@ class Labels(APIResource):
             "current_page": current_page,
             "page_size": page_size,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.LABELS_API}?{query_string}",
@@ -79,9 +80,9 @@ class Labels(APIResource):
         self,
         label_id: str,
         *,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        color_code: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        color_code: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -121,10 +122,10 @@ class AsyncLabels(AsyncAPIResource):
         self,
         *,
         name: str,
-        organization_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        description: Optional[str] = None,
-        color_code: Optional[str] = None,
+        organization_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        color_code: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -146,10 +147,10 @@ class AsyncLabels(AsyncAPIResource):
     async def list(
         self,
         *,
-        organization_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        current_page: Optional[int] = None,
-        page_size: Optional[int] = None,
+        organization_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        current_page: Union[int, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "organization_id": organization_id,
@@ -157,7 +158,7 @@ class AsyncLabels(AsyncAPIResource):
             "current_page": current_page,
             "page_size": page_size,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.LABELS_API}?{query_string}",
@@ -187,9 +188,9 @@ class AsyncLabels(AsyncAPIResource):
         self,
         label_id: str,
         *,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        color_code: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        color_code: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
