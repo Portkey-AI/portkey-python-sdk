@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Literal, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -45,10 +46,10 @@ class Users(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[Union[int, str]] = None,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        email: Optional[str] = None,
-        role: Optional[str] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[str, NotGiven] = NOT_GIVEN,
     ) -> UserRetrieveAllResponse:
         query = {
             "pageSize": page_size,
@@ -56,7 +57,7 @@ class Users(APIResource):
             "email": email,
             "role": role,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.USER_API}?{query_string}",
@@ -99,10 +100,10 @@ class Invites(APIResource):
     def create(
         self,
         *,
-        email: Optional[str] = None,
-        role: Optional[str] = None,
-        workspaces: Optional[List[Dict[str, Any]]] = None,
-        workspace_api_key_details: Optional[Dict[str, Any]] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[str, NotGiven] = NOT_GIVEN,
+        workspaces: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        workspace_api_key_details: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> UserInviteResponse:
         body = {
             "email": email,
@@ -134,11 +135,11 @@ class Invites(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[Union[int, str]] = None,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        email: Optional[str] = None,
-        role: Optional[str] = None,
-        status: Optional[str] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[str, NotGiven] = NOT_GIVEN,
+        status: Union[str, NotGiven] = NOT_GIVEN,
     ) -> UserInviteRetrieveAllResponse:
         query = {
             "pageSize": page_size,
@@ -147,7 +148,7 @@ class Invites(APIResource):
             "role": role,
             "status": status,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.INVITE_API}?{query_string}",
@@ -190,10 +191,10 @@ class Workspaces(APIResource):
     def create(
         self,
         *,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        defaults: Optional[Dict[str, Any]] = None,
-        users: Optional[List[str]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        users: Union[List[str], NotGiven] = NOT_GIVEN,
     ) -> WorkspacesAddResponse:
         body = {
             "name": name,
@@ -225,10 +226,10 @@ class Workspaces(APIResource):
     def list(
         self,
         *,
-        name: Optional[str] = None,
-        page_size: Optional[Union[int, str]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        exact_name: Optional[str] = None,
+        exact_name: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> WorkspacesListResponse:
         query = {
@@ -238,7 +239,7 @@ class Workspaces(APIResource):
             "exact_name": exact_name,
             **kwargs,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}?{query_string}",
@@ -253,10 +254,10 @@ class Workspaces(APIResource):
     def update(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        defaults: Optional[Dict[str, Any]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> WorkspacesUpdateResponse:
         body = {
             "name": name,
@@ -277,7 +278,7 @@ class Workspaces(APIResource):
         self,
         *,
         workspace_id: Optional[str],
-        name: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "workspace_id": workspace_id,
@@ -301,8 +302,8 @@ class WorkspacesUsers(APIResource):
     def create(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        users: Optional[List[Dict[str, str]]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        users: Union[List[Dict[str, str]], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "workspace_id": workspace_id,
@@ -321,8 +322,8 @@ class WorkspacesUsers(APIResource):
     def retrieve(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        user_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> WorkspaceMemberGetResponse:
         return self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
@@ -337,11 +338,11 @@ class WorkspacesUsers(APIResource):
     def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        page_size: Optional[Union[int, str]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        email: Optional[str] = None,
-        role: Optional[Union[Literal["admin", "manager", "member"], str]] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[Literal["admin", "manager", "member"], str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "page_size": page_size,
@@ -349,7 +350,7 @@ class WorkspacesUsers(APIResource):
             "email": email,
             "role": role,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users?{query_string}",
@@ -364,9 +365,9 @@ class WorkspacesUsers(APIResource):
     def update(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        role: Optional[Union[Literal["admin", "manager", "member"], str]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[Literal["admin", "manager", "member"], str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "user_id": user_id,
@@ -386,7 +387,7 @@ class WorkspacesUsers(APIResource):
         self,
         *,
         workspace_id: Optional[str],
-        user_id: Optional[str] = None,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         return self._delete(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
@@ -425,10 +426,10 @@ class AsyncUsers(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[Union[int, str]] = None,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        email: Optional[str] = None,
-        role: Optional[str] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[str, NotGiven] = NOT_GIVEN,
     ) -> UserRetrieveAllResponse:
         query = {
             "pageSize": page_size,
@@ -436,7 +437,7 @@ class AsyncUsers(AsyncAPIResource):
             "email": email,
             "role": role,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.USER_API}?{query_string}",
@@ -490,10 +491,10 @@ class AsyncInvites(AsyncAPIResource):
     async def create(
         self,
         *,
-        email: Optional[str] = None,
-        role: Optional[str] = None,
-        workspaces: Optional[List[Dict[str, Any]]] = None,
-        workspace_api_key_details: Optional[Dict[str, Any]] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[str, NotGiven] = NOT_GIVEN,
+        workspaces: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        workspace_api_key_details: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> UserInviteResponse:
         body = {
             "email": email,
@@ -525,11 +526,11 @@ class AsyncInvites(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[Union[int, str]] = None,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        email: Optional[str] = None,
-        role: Optional[str] = None,
-        status: Optional[str] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[str, NotGiven] = NOT_GIVEN,
+        status: Union[str, NotGiven] = NOT_GIVEN,
     ) -> UserInviteRetrieveAllResponse:
         query = {
             "pageSize": page_size,
@@ -538,7 +539,7 @@ class AsyncInvites(AsyncAPIResource):
             "role": role,
             "status": status,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.INVITE_API}?{query_string}",
@@ -570,10 +571,10 @@ class AsyncWorkspaces(AsyncAPIResource):
     async def create(
         self,
         *,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        defaults: Optional[Dict[str, Any]] = None,
-        users: Optional[List[str]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        users: Union[List[str], NotGiven] = NOT_GIVEN,
     ) -> WorkspacesAddResponse:
         body = {
             "name": name,
@@ -605,10 +606,10 @@ class AsyncWorkspaces(AsyncAPIResource):
     async def list(
         self,
         *,
-        name: Optional[str] = None,
-        page_size: Optional[Union[int, str]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        exact_name: Optional[str] = None,
+        exact_name: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> WorkspacesListResponse:
         query = {
@@ -618,7 +619,7 @@ class AsyncWorkspaces(AsyncAPIResource):
             "exact_name": exact_name,
             **kwargs,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}?{query_string}",
@@ -633,10 +634,10 @@ class AsyncWorkspaces(AsyncAPIResource):
     async def update(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        defaults: Optional[Dict[str, Any]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> WorkspacesUpdateResponse:
         body = {
             "name": name,
@@ -657,7 +658,7 @@ class AsyncWorkspaces(AsyncAPIResource):
         self,
         *,
         workspace_id: Optional[str],
-        name: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "workspace_id": workspace_id,
@@ -681,8 +682,8 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
     async def create(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        users: Optional[List[Dict[str, str]]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        users: Union[List[Dict[str, str]], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "workspace_id": workspace_id,
@@ -701,8 +702,8 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
     async def retrieve(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        user_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> WorkspaceMemberGetResponse:
         return await self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
@@ -717,11 +718,11 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
     async def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        page_size: Optional[Union[int, str]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        email: Optional[str] = None,
-        role: Optional[Union[Literal["admin", "manager", "member"], str]] = None,
+        email: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[Literal["admin", "manager", "member"], str, NotGiven] = NOT_GIVEN,
     ) -> WorkspaceMemberListResponse:
         query = {
             "page_size": page_size,
@@ -729,7 +730,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
             "email": email,
             "role": role,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users?{query_string}",
@@ -744,9 +745,9 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
     async def update(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        role: Optional[Union[Literal["admin", "manager", "member"], str]] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
+        role: Union[Literal["admin", "manager", "member"], str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "user_id": user_id,
@@ -766,7 +767,7 @@ class AsyncWorkspacesUsers(AsyncAPIResource):
         self,
         *,
         workspace_id: Optional[str],
-        user_id: Optional[str] = None,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         return await self._delete(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}/users/{user_id}",
