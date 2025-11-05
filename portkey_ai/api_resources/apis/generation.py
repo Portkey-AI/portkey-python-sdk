@@ -1,7 +1,8 @@
 from __future__ import annotations
 from urllib.parse import urlencode
 import warnings
-from typing import Dict, List, Literal, Optional, Union, Mapping, Any, overload
+from typing import Dict, List, Literal, Union, Mapping, Any, overload
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.types.generation_type import (
     PromptCompletion,
@@ -26,8 +27,8 @@ class Generations(APIResource):
         self,
         *,
         prompt_id: str,
-        config: Optional[Union[Mapping, str]] = None,
-        variables: Optional[Mapping[str, Any]] = None,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Union[GenericResponse, Stream[GenericResponse]]:
         warning_message = "This API has been deprecated. Please use the Prompt API for the saved prompt."  # noqa: E501
         warnings.warn(
@@ -35,7 +36,7 @@ class Generations(APIResource):
             DeprecationWarning,
             stacklevel=2,
         )
-        if config is None:
+        if config is NOT_GIVEN:
             config = retrieve_config()
         body = {"variables": variables}
         response = self._post(
@@ -59,8 +60,8 @@ class AsyncGenerations(AsyncAPIResource):
         self,
         *,
         prompt_id: str,
-        config: Optional[Union[Mapping, str]] = None,
-        variables: Optional[Mapping[str, Any]] = None,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
         warning_message = "This API has been deprecated. Please use the Prompt API for the saved prompt."  # noqa: E501
         warnings.warn(
@@ -68,7 +69,7 @@ class AsyncGenerations(AsyncAPIResource):
             DeprecationWarning,
             stacklevel=2,
         )
-        if config is None:
+        if config is NOT_GIVEN:
             config = retrieve_config()
         body = {"variables": variables}
         response = await self._post(
@@ -99,10 +100,10 @@ class Prompts(APIResource):
         prompt_id: str,
         variables: Mapping[str, Any],
         stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> PromptRender:
         """Prompt render Method"""
@@ -132,13 +133,13 @@ class Prompts(APIResource):
         collection_id: str,
         string: str,
         parameters: Dict[str, Any],
-        virtual_key: Optional[str] = None,
-        model: Optional[str] = None,
-        functions: Optional[List[Any]] = None,
-        tools: Optional[List[Any]] = None,
-        tool_choice: Optional[Dict[str, Any]] = None,
-        version_description: Optional[str] = None,
-        template_metadata: Optional[Dict[str, Any]] = None,
+        virtual_key: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        functions: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tools: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        version_description: Union[str, NotGiven] = NOT_GIVEN,
+        template_metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -166,11 +167,11 @@ class Prompts(APIResource):
     def list(
         self,
         *,
-        collection_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        current_page: Optional[int] = None,
-        page_size: Optional[int] = None,
-        search: Optional[str] = None,
+        collection_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        current_page: Union[int, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, NotGiven] = NOT_GIVEN,
+        search: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "collection_id": collection_id,
@@ -179,7 +180,7 @@ class Prompts(APIResource):
             "page_size": page_size,
             "search": search,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.PROMPTS_API}?{query_string}",
@@ -209,17 +210,17 @@ class Prompts(APIResource):
         self,
         prompt_slug: str,
         *,
-        name: Optional[str] = None,
-        collection_id: Optional[str] = None,
-        string: Optional[str] = None,
-        parameters: Optional[Dict[str, Any]] = None,
-        virtual_key: Optional[str] = None,
-        model: Optional[str] = None,
-        functions: Optional[List[Any]] = None,
-        tools: Optional[List[Any]] = None,
-        tool_choice: Optional[Dict[str, Any]] = None,
-        version_description: Optional[str] = None,
-        template_metadata: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        collection_id: Union[str, NotGiven] = NOT_GIVEN,
+        string: Union[str, NotGiven] = NOT_GIVEN,
+        parameters: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        virtual_key: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        functions: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tools: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        version_description: Union[str, NotGiven] = NOT_GIVEN,
+        template_metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -293,10 +294,10 @@ class AsyncPrompts(AsyncAPIResource):
         prompt_id: str,
         variables: Mapping[str, Any],
         stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         **kwargs,
     ) -> PromptRender:
         """Prompt render Method"""
@@ -326,13 +327,13 @@ class AsyncPrompts(AsyncAPIResource):
         collection_id: str,
         string: str,
         parameters: Dict[str, Any],
-        virtual_key: Optional[str] = None,
-        model: Optional[str] = None,
-        functions: Optional[List[Any]] = None,
-        tools: Optional[List[Any]] = None,
-        tool_choice: Optional[Dict[str, Any]] = None,
-        version_description: Optional[str] = None,
-        template_metadata: Optional[Dict[str, Any]] = None,
+        virtual_key: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        functions: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tools: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        version_description: Union[str, NotGiven] = NOT_GIVEN,
+        template_metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -360,11 +361,11 @@ class AsyncPrompts(AsyncAPIResource):
     async def list(
         self,
         *,
-        collection_id: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        current_page: Optional[int] = None,
-        page_size: Optional[int] = None,
-        search: Optional[str] = None,
+        collection_id: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        current_page: Union[int, NotGiven] = NOT_GIVEN,
+        page_size: Union[int, NotGiven] = NOT_GIVEN,
+        search: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "collection_id": collection_id,
@@ -373,7 +374,7 @@ class AsyncPrompts(AsyncAPIResource):
             "page_size": page_size,
             "search": search,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.PROMPTS_API}?{query_string}",
@@ -403,17 +404,17 @@ class AsyncPrompts(AsyncAPIResource):
         self,
         prompt_slug: str,
         *,
-        name: Optional[str] = None,
-        collection_id: Optional[str] = None,
-        string: Optional[str] = None,
-        parameters: Optional[Dict[str, Any]] = None,
-        virtual_key: Optional[str] = None,
-        model: Optional[str] = None,
-        functions: Optional[List[Any]] = None,
-        tools: Optional[List[Any]] = None,
-        tool_choice: Optional[Dict[str, Any]] = None,
-        version_description: Optional[str] = None,
-        template_metadata: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        collection_id: Union[str, NotGiven] = NOT_GIVEN,
+        string: Union[str, NotGiven] = NOT_GIVEN,
+        parameters: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        virtual_key: Union[str, NotGiven] = NOT_GIVEN,
+        model: Union[str, NotGiven] = NOT_GIVEN,
+        functions: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tools: Union[List[Any], NotGiven] = NOT_GIVEN,
+        tool_choice: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        version_description: Union[str, NotGiven] = NOT_GIVEN,
+        template_metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -481,13 +482,13 @@ class Completions(APIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: Literal[True],
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Stream[PromptCompletionChunk]:
@@ -498,13 +499,13 @@ class Completions(APIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: Literal[False] = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> PromptCompletion:
@@ -515,13 +516,13 @@ class Completions(APIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]:
@@ -531,18 +532,18 @@ class Completions(APIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]:
         """Prompt completions Method"""
-        if config is None:
+        if config is NOT_GIVEN:
             config = retrieve_config()
         body = {
             "variables": variables,
@@ -574,13 +575,13 @@ class AsyncCompletions(AsyncAPIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: Literal[True],
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> AsyncStream[PromptCompletionChunk]:
@@ -591,13 +592,13 @@ class AsyncCompletions(AsyncAPIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: Literal[False] = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> PromptCompletion:
@@ -608,13 +609,13 @@ class AsyncCompletions(AsyncAPIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
@@ -624,18 +625,18 @@ class AsyncCompletions(AsyncAPIResource):
         self,
         *,
         prompt_id: str,
-        variables: Optional[Mapping[str, Any]] = None,
-        config: Optional[Union[Mapping, str]] = None,
+        variables: Union[Mapping[str, Any], NotGiven] = NOT_GIVEN,
+        config: Union[Mapping, str, NotGiven] = NOT_GIVEN,
         stream: bool = False,
-        temperature: Optional[float] = None,
-        max_tokens: Optional[int] = None,
-        top_k: Optional[int] = None,
-        top_p: Optional[float] = None,
+        temperature: Union[float, NotGiven] = NOT_GIVEN,
+        max_tokens: Union[int, NotGiven] = NOT_GIVEN,
+        top_k: Union[int, NotGiven] = NOT_GIVEN,
+        top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
     ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
         """Prompt completions Method"""
-        if config is None:
+        if config is NOT_GIVEN:
             config = retrieve_config()
         body = {
             "variables": variables,
@@ -696,7 +697,7 @@ class PromptVersions(APIResource):
         prompt_slug: str,
         version_id: str,
         *,
-        label_id: Optional[str] = None,
+        label_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "label_id": label_id,
@@ -750,7 +751,7 @@ class AsyncPromptVersions(AsyncAPIResource):
         prompt_slug: str,
         version_id: str,
         *,
-        label_id: Optional[str] = None,
+        label_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "label_id": label_id,
@@ -776,8 +777,8 @@ class PromptPartials(APIResource):
         *,
         name: str,
         string: str,
-        workspace_id: Optional[str] = None,
-        version_description: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        version_description: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -798,12 +799,12 @@ class PromptPartials(APIResource):
     def list(
         self,
         *,
-        collection_id: Optional[str] = None,
+        collection_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "collection_id": collection_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}?{query_string}",
@@ -833,10 +834,10 @@ class PromptPartials(APIResource):
         self,
         partial_slug: str,
         *,
-        name: Optional[str] = None,
-        string: Optional[str] = None,
-        description: Optional[str] = None,
-        status: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        string: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        status: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -898,8 +899,8 @@ class AsyncPromptPartials(AsyncAPIResource):
         *,
         name: str,
         string: str,
-        workspace_id: Optional[str] = None,
-        version_description: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        version_description: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,
@@ -920,12 +921,12 @@ class AsyncPromptPartials(AsyncAPIResource):
     async def list(
         self,
         *,
-        collection_id: Optional[str] = None,
+        collection_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         query = {
             "collection_id": collection_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.PROMPTS_PARTIALS_API}?{query_string}",
@@ -955,10 +956,10 @@ class AsyncPromptPartials(AsyncAPIResource):
         self,
         partial_slug: str,
         *,
-        name: Optional[str] = None,
-        string: Optional[str] = None,
-        description: Optional[str] = None,
-        status: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        string: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        status: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         body = {
             "name": name,

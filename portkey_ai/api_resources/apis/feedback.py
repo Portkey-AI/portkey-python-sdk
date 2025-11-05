@@ -1,4 +1,5 @@
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from portkey_ai.api_resources.streaming import AsyncStream, Stream
@@ -13,10 +14,10 @@ class Feedback(APIResource):
     def create(
         self,
         *,
-        trace_id: Optional[str] = None,
-        value: Optional[int] = None,
-        weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        trace_id: Union[str, NotGiven] = NOT_GIVEN,
+        value: Union[int, NotGiven] = NOT_GIVEN,
+        weight: Union[float, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> FeedbackResponse:
         body = dict(trace_id=trace_id, value=value, weight=weight, metadata=metadata)
         return self._post(
@@ -44,10 +45,10 @@ class Feedback(APIResource):
     def update(
         self,
         *,
-        feedback_id: Optional[str] = None,
-        value: Optional[int] = None,
-        weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        feedback_id: Union[str, NotGiven] = NOT_GIVEN,
+        value: Union[int, NotGiven] = NOT_GIVEN,
+        weight: Union[float, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> FeedbackResponse:
         body = dict(value=value, weight=weight, metadata=metadata)
 
@@ -69,10 +70,10 @@ class AsyncFeedback(AsyncAPIResource):
     async def create(
         self,
         *,
-        trace_id: Optional[str] = None,
-        value: Optional[int] = None,
-        weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        trace_id: Union[str, NotGiven] = NOT_GIVEN,
+        value: Union[int, NotGiven] = NOT_GIVEN,
+        weight: Union[float, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> FeedbackResponse:
         body = dict(trace_id=trace_id, value=value, weight=weight, metadata=metadata)
         return await self._post(
@@ -100,10 +101,10 @@ class AsyncFeedback(AsyncAPIResource):
     async def update(
         self,
         *,
-        feedback_id: Optional[str] = None,
-        value: Optional[int] = None,
-        weight: Optional[float] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        feedback_id: Union[str, NotGiven] = NOT_GIVEN,
+        value: Union[int, NotGiven] = NOT_GIVEN,
+        weight: Union[float, NotGiven] = NOT_GIVEN,
+        metadata: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> FeedbackResponse:
         body = dict(value=value, weight=weight, metadata=metadata)
         return await self._put(

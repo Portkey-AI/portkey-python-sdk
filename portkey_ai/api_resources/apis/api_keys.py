@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -18,17 +19,17 @@ class ApiKeys(APIResource):
     def create(
         self,
         *,
-        type: Optional[str] = None,
-        sub_type: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        rate_limits: Optional[List[Dict[str, Any]]] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
-        scopes: List[str],
-        defaults: Optional[Dict[str, Any]] = None,
-        expires_at: Optional[Any] = None,
+        type: Union[str, NotGiven] = NOT_GIVEN,
+        sub_type: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
+        rate_limits: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        expires_at: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> ApiKeyAddResponse:
         body = {
@@ -69,16 +70,16 @@ class ApiKeys(APIResource):
     def list(
         self,
         *,
-        page_size: Optional[Union[int, str]] = None,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ApiKeyListResponse:
         query = {
             "page_size": page_size,
             "current_page": current_page,
             "workspace_id": workspace_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.API_KEYS_API}?{query_string}",
@@ -93,14 +94,14 @@ class ApiKeys(APIResource):
     def update(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        rate_limits: Optional[List[Dict[str, Any]]] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
-        scopes: Optional[List[str]] = None,
-        defaults: Optional[Dict[str, Any]] = None,
-        expires_at: Optional[Any] = None,
+        id: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        rate_limits: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        expires_at: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> Any:
         body = {
@@ -147,17 +148,17 @@ class AsyncApiKeys(AsyncAPIResource):
     async def create(
         self,
         *,
-        type: Optional[str] = None,
-        sub_type: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        workspace_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        rate_limits: Optional[List[Dict[str, Any]]] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
-        scopes: List[str],
-        defaults: Optional[Dict[str, Any]] = None,
-        expires_at: Optional[Any] = None,
+        type: Union[str, NotGiven] = NOT_GIVEN,
+        sub_type: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        user_id: Union[str, NotGiven] = NOT_GIVEN,
+        rate_limits: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        expires_at: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> ApiKeyAddResponse:
         body = {
@@ -198,16 +199,16 @@ class AsyncApiKeys(AsyncAPIResource):
     async def list(
         self,
         *,
-        page_size: Optional[Union[int, str]] = None,
+        page_size: Union[int, str, NotGiven] = NOT_GIVEN,
         current_page: Optional[int] = 0,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ApiKeyListResponse:
         query = {
             "page_size": page_size,
             "current_page": current_page,
             "workspace_id": workspace_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.API_KEYS_API}?{query_string}",
@@ -222,14 +223,14 @@ class AsyncApiKeys(AsyncAPIResource):
     async def update(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        rate_limits: Optional[List[Dict[str, Any]]] = None,
-        usage_limits: Optional[Dict[str, Any]] = None,
-        scopes: Optional[List[str]] = None,
-        defaults: Optional[Dict[str, Any]] = None,
-        expires_at: Optional[Any] = None,
+        id: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        description: Union[str, NotGiven] = NOT_GIVEN,
+        rate_limits: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        scopes: Union[List[str], NotGiven] = NOT_GIVEN,
+        defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        expires_at: Union[Any, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> Any:
         body = {

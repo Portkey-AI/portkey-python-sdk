@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -22,8 +23,8 @@ class Guardrails(APIResource):
         name: str,
         checks: List[Dict[str, Any]],
         actions: Dict[str, Any],
-        workspace_id: Optional[str] = None,
-        organisation_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        organisation_id: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GuardrailCreateResponse:
         body = {
@@ -47,8 +48,8 @@ class Guardrails(APIResource):
     def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        organisation_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        organisation_id: Union[str, NotGiven] = NOT_GIVEN,
         page_size: Optional[int] = 100,
         current_page: Optional[int] = 0,
     ) -> GuardrailListResponse:
@@ -58,7 +59,7 @@ class Guardrails(APIResource):
             "page_size": page_size,
             "current_page": current_page,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.GUARDRAILS_API}?{query_string}",
@@ -89,9 +90,9 @@ class Guardrails(APIResource):
         self,
         *,
         guardrail_id: str,
-        name: Optional[str] = None,
-        checks: Optional[List[Dict[str, Any]]] = None,
-        actions: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        checks: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        actions: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GuardrailUpdateResponse:
         body = {
@@ -136,8 +137,8 @@ class AsyncGuardrails(AsyncAPIResource):
         name: str,
         checks: List[Dict[str, Any]],
         actions: Dict[str, Any],
-        workspace_id: Optional[str] = None,
-        organisation_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        organisation_id: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GuardrailCreateResponse:
         body = {
@@ -161,8 +162,8 @@ class AsyncGuardrails(AsyncAPIResource):
     async def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
-        organisation_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
+        organisation_id: Union[str, NotGiven] = NOT_GIVEN,
         page_size: Optional[int] = 100,
         current_page: Optional[int] = 0,
     ) -> GuardrailListResponse:
@@ -172,7 +173,7 @@ class AsyncGuardrails(AsyncAPIResource):
             "page_size": page_size,
             "current_page": current_page,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.GUARDRAILS_API}?{query_string}",
@@ -203,9 +204,9 @@ class AsyncGuardrails(AsyncAPIResource):
         self,
         *,
         guardrail_id: str,
-        name: Optional[str] = None,
-        checks: Optional[List[Dict[str, Any]]] = None,
-        actions: Optional[Dict[str, Any]] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        checks: Union[List[Dict[str, Any]], NotGiven] = NOT_GIVEN,
+        actions: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         **kwargs: Any,
     ) -> GuardrailUpdateResponse:
         body = {

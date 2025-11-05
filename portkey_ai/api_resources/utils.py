@@ -8,6 +8,7 @@ from typing_extensions import TypedDict, NotRequired
 import httpx
 import portkey_ai
 from pydantic import BaseModel
+from .._vendor.openai._types import NOT_GIVEN
 
 from portkey_ai.api_resources.types.chat_complete_type import (
     ChatCompletionChunk,
@@ -239,9 +240,9 @@ def remove_empty_values(
     if isinstance(data, dict):
         cleaned_dict = {}
         for key, value in data.items():
-            if value is not None and value != "":
+            if value is not NOT_GIVEN and value != "":
                 cleaned_value = remove_empty_values(value)
-                if cleaned_value is not None and cleaned_value != "":
+                if cleaned_value is not NOT_GIVEN and cleaned_value != "":
                     cleaned_dict[key] = cleaned_value
         return cleaned_dict
     elif isinstance(data, list):
@@ -249,7 +250,7 @@ def remove_empty_values(
 
         for item in data:  # type: ignore
             cleaned_item = remove_empty_values(item)
-            if cleaned_item is not None and cleaned_item != "":
+            if cleaned_item is not NOT_GIVEN and cleaned_item != "":
                 cleaned_list.append(cleaned_item)
         return cleaned_list  # type: ignore
     else:

@@ -1,4 +1,5 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
+from portkey_ai._vendor.openai import NOT_GIVEN, NotGiven
 from portkey_ai.api_resources.base_client import APIClient, AsyncAPIClient
 from urllib.parse import urlencode
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -19,10 +20,10 @@ class Configs(APIResource):
     def create(
         self,
         *,
-        name: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
-        is_default: Optional[int] = None,
-        workspace_id: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        config: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        is_default: Union[int, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ConfigAddResponse:
         body = {
             "name": name,
@@ -54,12 +55,12 @@ class Configs(APIResource):
     def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ConfigListResponse:
         query = {
             "workspace_id": workspace_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return self._get(
             f"{PortkeyApiPaths.CONFIG_API}?{query_string}",
@@ -74,10 +75,10 @@ class Configs(APIResource):
     def update(
         self,
         *,
-        slug: Optional[str] = None,
-        name: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
-        status: Optional[str] = None,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        config: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        status: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ConfigUpdateResponse:
         body = {
             "slug": slug,
@@ -95,7 +96,12 @@ class Configs(APIResource):
             headers={},
         )
 
-    def delete(self, *, id: Optional[str] = None, slug: Optional[str] = None) -> Any:
+    def delete(
+        self,
+        *,
+        id: Union[str, NotGiven] = NOT_GIVEN,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+    ) -> Any:
         config_slug = None
         if id:
             import warnings
@@ -128,10 +134,10 @@ class AsyncConfigs(AsyncAPIResource):
     async def create(
         self,
         *,
-        name: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
-        is_default: Optional[int] = None,
-        workspace_id: Optional[str] = None,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        config: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        is_default: Union[int, NotGiven] = NOT_GIVEN,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ConfigAddResponse:
         body = {
             "name": name,
@@ -163,12 +169,12 @@ class AsyncConfigs(AsyncAPIResource):
     async def list(
         self,
         *,
-        workspace_id: Optional[str] = None,
+        workspace_id: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ConfigListResponse:
         query = {
             "workspace_id": workspace_id,
         }
-        filtered_query = {k: v for k, v in query.items() if v is not None}
+        filtered_query = {k: v for k, v in query.items() if v is not NOT_GIVEN}
         query_string = urlencode(filtered_query)
         return await self._get(
             f"{PortkeyApiPaths.CONFIG_API}?{query_string}",
@@ -183,10 +189,10 @@ class AsyncConfigs(AsyncAPIResource):
     async def update(
         self,
         *,
-        slug: Optional[str] = None,
-        name: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
-        status: Optional[str] = None,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
+        name: Union[str, NotGiven] = NOT_GIVEN,
+        config: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        status: Union[str, NotGiven] = NOT_GIVEN,
     ) -> ConfigUpdateResponse:
         body = {
             "slug": slug,
@@ -207,8 +213,8 @@ class AsyncConfigs(AsyncAPIResource):
     async def delete(
         self,
         *,
-        id: Optional[str] = None,
-        slug: Optional[str] = None,
+        id: Union[str, NotGiven] = NOT_GIVEN,
+        slug: Union[str, NotGiven] = NOT_GIVEN,
     ) -> Any:
         config_slug = None
         if id:
