@@ -1,6 +1,6 @@
 Metadata-Version: 2.3
 Name: openai
-Version: 2.2.0
+Version: 2.7.1
 Summary: The official Python library for the openai API
 Project-URL: Homepage, https://github.com/openai/openai-python
 Project-URL: Repository, https://github.com/openai/openai-python
@@ -25,14 +25,14 @@ Requires-Python: >=3.8
 Requires-Dist: anyio<5,>=3.5.0
 Requires-Dist: distro<2,>=1.7.0
 Requires-Dist: httpx<1,>=0.23.0
-Requires-Dist: jiter<1,>=0.4.0
+Requires-Dist: jiter<1,>=0.10.0
 Requires-Dist: pydantic<3,>=1.9.0
 Requires-Dist: sniffio
 Requires-Dist: tqdm>4
 Requires-Dist: typing-extensions<5,>=4.11
 Provides-Extra: aiohttp
 Requires-Dist: aiohttp; extra == 'aiohttp'
-Requires-Dist: httpx-aiohttp>=0.1.8; extra == 'aiohttp'
+Requires-Dist: httpx-aiohttp>=0.1.9; extra == 'aiohttp'
 Provides-Extra: datalib
 Requires-Dist: numpy>=1; extra == 'datalib'
 Requires-Dist: pandas-stubs>=1.1.0.11; extra == 'datalib'
@@ -290,7 +290,9 @@ async def main():
     client = AsyncOpenAI()
 
     async with client.realtime.connect(model="gpt-realtime") as connection:
-        await connection.session.update(session={'modalities': ['text']})
+        await connection.session.update(
+            session={"type": "realtime", "output_modalities": ["text"]}
+        )
 
         await connection.conversation.item.create(
             item={
@@ -302,10 +304,10 @@ async def main():
         await connection.response.create()
 
         async for event in connection:
-            if event.type == 'response.text.delta':
+            if event.type == "response.output_text.delta":
                 print(event.delta, flush=True, end="")
 
-            elif event.type == 'response.text.done':
+            elif event.type == "response.output_text.done":
                 print()
 
             elif event.type == "response.done":
