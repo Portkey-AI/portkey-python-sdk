@@ -143,6 +143,18 @@ class NotGiven:
     def __repr__(self) -> str:
         return "NOT_GIVEN"
 
+    def __reduce__(self) -> tuple[type[NotGiven], tuple[()]]:
+        """Support for pickling/serialization."""
+        return (self.__class__, ())
+
+    def __copy__(self) -> NotGiven:
+        """Return self since NotGiven is a singleton-like sentinel."""
+        return self
+
+    def __deepcopy__(self, memo: dict[int, Any]) -> NotGiven:
+        """Return self since NotGiven is a singleton-like sentinel."""
+        return self
+
 
 not_given = NotGiven()
 # for backwards compatibility:

@@ -1,11 +1,53 @@
 import json
+from portkey_ai._vendor.openai._types import NotGiven
+
+
+class PortkeyJSONEncoder(json.JSONEncoder):
+    """Custom JSON encoder that handles Portkey-specific types like NotGiven."""
+    
+    def default(self, obj):
+        if isinstance(obj, NotGiven):
+            # Return None for NotGiven instances during JSON serialization
+            return None
+        return super().default(obj)
+
+
+_original_json_encoder = None
+
+
+def enable_notgiven_serialization():
+    """
+    Enable global JSON serialization support for NotGiven types.
+    """
+    global _original_json_encoder
+    if _original_json_encoder is None:
+        _original_json_encoder = json.JSONEncoder.default
+        
+        def patched_default(self, obj):
+            if isinstance(obj, NotGiven):
+                return None
+            return _original_json_encoder(self, obj)
+        
+        json.JSONEncoder.default = patched_default
+
+
+def disable_notgiven_serialization():
+    """
+    Disable global JSON serialization support for NotGiven types.
+    
+    This restores the original JSONEncoder behavior.
+    """
+    global _original_json_encoder
+    if _original_json_encoder is not None:
+        json.JSONEncoder.default = _original_json_encoder
+        _original_json_encoder = None
 
 
 def serialize_kwargs(**kwargs):
     # Function to check if a value is serializable
     def is_serializable(value):
         try:
-            json.dumps(value)
+            json.dumps(value, cls=PortkeyJSONEncoder)
             return True
         except (TypeError, ValueError):
             return False
@@ -14,14 +56,14 @@ def serialize_kwargs(**kwargs):
     serializable_kwargs = {k: v for k, v in kwargs.items() if is_serializable(v)}
 
     # Convert to string representation
-    return json.dumps(serializable_kwargs)
+    return json.dumps(serializable_kwargs, cls=PortkeyJSONEncoder)
 
 
 def serialize_args(*args):
     # Function to check if a value is serializable
     def is_serializable(value):
         try:
-            json.dumps(value)
+            json.dumps(value, cls=PortkeyJSONEncoder)
             return True
         except (TypeError, ValueError):
             return False
@@ -30,4 +72,4 @@ def serialize_args(*args):
     serializable_args = [arg for arg in args if is_serializable(arg)]
 
     # Convert to string representation
-    return json.dumps(serializable_args)
+    return json.dumps(serializable_args, cls=PortkeyJSONEncoder)
