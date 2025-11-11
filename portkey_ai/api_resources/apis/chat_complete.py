@@ -75,7 +75,7 @@ class Completions(APIResource):
         **kwargs,
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
         extra_headers = kwargs.get("extra_headers", {})
-        with self.openai_client.with_streaming_response.chat.completions.create(
+        return self.openai_client.chat.completions.create(
             model=model,
             messages=messages,
             stream=stream,
@@ -91,22 +91,7 @@ class Completions(APIResource):
             store=store,
             extra_headers=extra_headers,
             extra_body=kwargs,
-        ) as response:
-            for line in response.iter_lines():
-                json_string = line.replace("data: ", "")
-                json_string = json_string.strip().rstrip("\n")
-                if json_string == "":
-                    continue
-                if json_string.startswith(":"):
-                    continue
-                elif json_string == "[DONE]":
-                    break
-                elif json_string != "":
-                    json_data = json.loads(json_string)
-                    json_data = ChatCompletionChunk(**json_data)
-                    yield json_data
-                else:
-                    return ""
+        )
 
     def normal_create(
         self,
@@ -488,7 +473,7 @@ class AsyncCompletions(AsyncAPIResource):
         **kwargs,
     ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
         extra_headers = kwargs.get("extra_headers", {})
-        async with self.openai_client.with_streaming_response.chat.completions.create(
+        return await self.openai_client.chat.completions.create(
             model=model,
             messages=messages,
             stream=stream,
@@ -504,22 +489,7 @@ class AsyncCompletions(AsyncAPIResource):
             store=store,
             extra_headers=extra_headers,
             extra_body=kwargs,
-        ) as response:
-            async for line in response.iter_lines():
-                json_string = line.replace("data: ", "")
-                json_string = json_string.strip().rstrip("\n")
-                if json_string == "":
-                    continue
-                if json_string.startswith(":"):
-                    continue
-                elif json_string == "[DONE]":
-                    break
-                elif json_string != "":
-                    json_data = json.loads(json_string)
-                    json_data = ChatCompletionChunk(**json_data)
-                    yield json_data
-                else:
-                    pass
+        )
 
     async def normal_create(
         self,
@@ -579,7 +549,7 @@ class AsyncCompletions(AsyncAPIResource):
         **kwargs,
     ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
         if stream is True:
-            return self.stream_create(
+            return await self.stream_create(
                 model=model,
                 messages=messages,
                 stream=stream,
