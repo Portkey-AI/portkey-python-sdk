@@ -39,7 +39,7 @@ class Completion(APIResource):
         stream_options,
         **kwargs,
     ) -> Union[TextCompletion, Iterator[TextCompletionChunk]]:
-        with self.openai_client.with_streaming_response.completions.create(
+        return self.openai_client.completions.create(
             model=model,
             prompt=prompt,
             stream=stream,
@@ -59,20 +59,7 @@ class Completion(APIResource):
             user=user,
             stream_options=stream_options,
             extra_body=kwargs,
-        ) as response:
-            for line in response.iter_lines():
-                json_string = line.replace("data: ", "")
-                json_string = json_string.strip().rstrip("\n")
-                if json_string == "":
-                    continue
-                elif json_string == "[DONE]":
-                    break
-                elif json_string != "":
-                    json_data = json.loads(json_string)
-                    json_data = TextCompletionChunk(**json_data)
-                    yield json_data
-                else:
-                    return ""
+        )
 
     def normal_create(
         self,
@@ -219,7 +206,7 @@ class AsyncCompletion(AsyncAPIResource):
         stream_options,
         **kwargs,
     ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
-        async with self.openai_client.with_streaming_response.completions.create(
+        return await self.openai_client.completions.create(
             model=model,
             prompt=prompt,
             stream=stream,
@@ -239,20 +226,7 @@ class AsyncCompletion(AsyncAPIResource):
             user=user,
             stream_options=stream_options,
             extra_body=kwargs,
-        ) as response:
-            async for line in response.iter_lines():
-                json_string = line.replace("data: ", "")
-                json_string = json_string.strip().rstrip("\n")
-                if json_string == "":
-                    continue
-                elif json_string == "[DONE]":
-                    break
-                elif json_string != "":
-                    json_data = json.loads(json_string)
-                    json_data = TextCompletionChunk(**json_data)
-                    yield json_data
-                else:
-                    pass
+        )
 
     async def normal_create(
         self,
@@ -327,7 +301,7 @@ class AsyncCompletion(AsyncAPIResource):
         **kwargs,
     ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
         if stream is True:
-            return self.stream_create(
+            return await self.stream_create(
                 model=model,
                 prompt=prompt,
                 stream=stream,
