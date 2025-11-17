@@ -7,27 +7,28 @@ _patched_notgiven_serialization = False
 
 
 class PortkeyJSONEncoder(json.JSONEncoder):
-    """Custom JSON encoder that handles NotGiven/Omit types using OpenAI's utilities."""
-    
-    def default(self, obj):
-        # Use OpenAI's is_given utility to check for NotGiven/Omit sentinels
+    """JSON encoder that treats OpenAI/Portkey "not provided" markers as null."""
+
+    def default(self, obj):  # type: ignore[override]
+        # If this is one of OpenAI's internal "not provided" / omit markers,
+        # encode it as None (null in JSON) instead of raising TypeError.
         if not is_given(obj):
-            # Return None for NotGiven/Omit instances during JSON serialization
             return None
         return super().default(obj)
 
 
-def enable_notgiven_serialization():
-    """Enable global JSON serialization support for NotGiven/Omit types.
-    
-    Uses OpenAI's is_given utility to detect sentinel values.
+def enable_notgiven_serialization() -> None:
+    """Enable global JSON support for OpenAI/Portkey "not provided" markers.
+
+    After this is called (done automatically in portkey_ai.__init__), any
+    json.dumps(...) that encounters these markers will encode them as null
+    instead of raising a TypeError.
     """
     global _patched_notgiven_serialization
     if _patched_notgiven_serialization:
         return
 
-    def patched_default(self, obj):
-        # Use OpenAI's utility to check for NotGiven/Omit
+    def patched_default(self, obj):  # type: ignore[override]
         if not is_given(obj):
             return None
         return _BASE_JSON_DEFAULT(self, obj)
@@ -36,10 +37,10 @@ def enable_notgiven_serialization():
     _patched_notgiven_serialization = True
 
 
-def disable_notgiven_serialization():
-    """Disable global JSON serialization support for NotGiven/Omit types.
-    
-    This restores the original JSONEncoder behavior.
+def disable_notgiven_serialization() -> None:
+    """Disable global JSON support for OpenAI/Portkey "not provided" markers.
+
+    Restores the original JSONEncoder.default implementation.
     """
     global _patched_notgiven_serialization
     if not _patched_notgiven_serialization:
