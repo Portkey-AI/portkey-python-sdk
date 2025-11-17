@@ -1,13 +1,15 @@
 import json
 from portkey_ai._vendor.openai._types import NotGiven
+from portkey_ai._vendor.openai._utils import is_given
 
 
 class PortkeyJSONEncoder(json.JSONEncoder):
-    """Custom JSON encoder that handles Portkey-specific types like NotGiven."""
+    """Custom JSON encoder that handles NotGiven types using OpenAI's utilities."""
     
     def default(self, obj):
-        if isinstance(obj, NotGiven):
-            # Return None for NotGiven instances during JSON serialization
+        # Use OpenAI's is_given utility to check for NotGiven/Omit
+        if not is_given(obj):
+            # Return None for NotGiven/Omit instances during JSON serialization
             return None
         return super().default(obj)
 
@@ -17,14 +19,17 @@ _original_json_encoder = None
 
 def enable_notgiven_serialization():
     """
-    Enable global JSON serialization support for NotGiven types.
+    Enable global JSON serialization support for NotGiven/Omit types.
+    
+    Uses OpenAI's is_given utility to detect sentinel values.
     """
     global _original_json_encoder
     if _original_json_encoder is None:
         _original_json_encoder = json.JSONEncoder.default
         
         def patched_default(self, obj):
-            if isinstance(obj, NotGiven):
+            # Use OpenAI's utility to check for NotGiven/Omit
+            if not is_given(obj):
                 return None
             return _original_json_encoder(self, obj)
         
