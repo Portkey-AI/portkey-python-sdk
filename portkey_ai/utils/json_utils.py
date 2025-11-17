@@ -18,12 +18,7 @@ class PortkeyJSONEncoder(json.JSONEncoder):
 
 
 def enable_notgiven_serialization() -> None:
-    """Enable global JSON support for OpenAI/Portkey "not provided" markers.
-
-    After this is called (done automatically in portkey_ai.__init__), any
-    json.dumps(...) that encounters these markers will encode them as null
-    instead of raising a TypeError.
-    """
+    """Globally encode NotGiven / Omit markers as null in json.dumps."""
     global _patched_notgiven_serialization
     if _patched_notgiven_serialization:
         return
@@ -38,10 +33,7 @@ def enable_notgiven_serialization() -> None:
 
 
 def disable_notgiven_serialization() -> None:
-    """Disable global JSON support for OpenAI/Portkey "not provided" markers.
-
-    Restores the original JSONEncoder.default implementation.
-    """
+    """Restore the original json.JSONEncoder.default implementation."""
     global _patched_notgiven_serialization
     if not _patched_notgiven_serialization:
         return
@@ -51,25 +43,22 @@ def disable_notgiven_serialization() -> None:
 
 
 def _is_serializable(value) -> bool:
-    """Return True if value can be serialized with PortkeyJSONEncoder."""
     try:
         json.dumps(value, cls=PortkeyJSONEncoder)
-        return True
     except (TypeError, ValueError):
         return False
+    return True
 
 
 def serialize_kwargs(**kwargs):
-    # Filter out non-serializable items
-    serializable_kwargs = {k: v for k, v in kwargs.items() if _is_serializable(v)}
-
-    # Convert to string representation
-    return json.dumps(serializable_kwargs, cls=PortkeyJSONEncoder)
+    return json.dumps(
+        {k: v for k, v in kwargs.items() if _is_serializable(v)},
+        cls=PortkeyJSONEncoder,
+    )
 
 
 def serialize_args(*args):
-    # Filter out non-serializable items
-    serializable_args = [arg for arg in args if _is_serializable(arg)]
-
-    # Convert to string representation
-    return json.dumps(serializable_args, cls=PortkeyJSONEncoder)
+    return json.dumps(
+        [arg for arg in args if _is_serializable(arg)],
+        cls=PortkeyJSONEncoder,
+    )

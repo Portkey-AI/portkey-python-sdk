@@ -169,8 +169,7 @@ from portkey_ai.utils.json_utils import (
     enable_notgiven_serialization,
     disable_notgiven_serialization,
 )
-
-# Automatically enable NotGiven serialization. Users can call disable_notgiven_serialization() if needed.
+    
 enable_notgiven_serialization()
 
 api_key = os.environ.get(PORTKEY_API_KEY_ENV)
