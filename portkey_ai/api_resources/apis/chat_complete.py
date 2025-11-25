@@ -74,7 +74,11 @@ class Completions(APIResource):
         store,
         **kwargs,
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
-        extra_headers = kwargs.get("extra_headers", {})
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        timeout = kwargs.pop("timeout", None)
+        user_extra_body = kwargs.pop("extra_body", None) or {}
+        merged_extra_body = {**user_extra_body, **kwargs}
         return self.openai_client.chat.completions.create(
             model=model,
             messages=messages,
@@ -90,7 +94,9 @@ class Completions(APIResource):
             reasoning_effort=reasoning_effort,
             store=store,
             extra_headers=extra_headers,
-            extra_body=kwargs,
+            extra_query=extra_query,
+            extra_body=merged_extra_body,
+            timeout=timeout,
         )
 
     def normal_create(
@@ -110,7 +116,11 @@ class Completions(APIResource):
         store,
         **kwargs,
     ) -> ChatCompletions:
-        extra_headers = kwargs.get("extra_headers", {})
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        timeout = kwargs.pop("timeout", None)
+        user_extra_body = kwargs.pop("extra_body", None) or {}
+        merged_extra_body = {**user_extra_body, **kwargs}
         response = self.openai_client.with_raw_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -126,7 +136,9 @@ class Completions(APIResource):
             reasoning_effort=reasoning_effort,
             store=store,
             extra_headers=extra_headers,
-            extra_body=kwargs,
+            extra_query=extra_query,
+            extra_body=merged_extra_body,
+            timeout=timeout,
         )
         data = ChatCompletions(**json.loads(response.text))
         data._headers = response.headers
@@ -472,7 +484,11 @@ class AsyncCompletions(AsyncAPIResource):
         store,
         **kwargs,
     ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
-        extra_headers = kwargs.get("extra_headers", {})
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        timeout = kwargs.pop("timeout", None)
+        user_extra_body = kwargs.pop("extra_body", None) or {}
+        merged_extra_body = {**user_extra_body, **kwargs}
         return await self.openai_client.chat.completions.create(
             model=model,
             messages=messages,
@@ -488,7 +504,9 @@ class AsyncCompletions(AsyncAPIResource):
             reasoning_effort=reasoning_effort,
             store=store,
             extra_headers=extra_headers,
-            extra_body=kwargs,
+            extra_query=extra_query,
+            extra_body=merged_extra_body,
+            timeout=timeout,
         )
 
     async def normal_create(
@@ -508,7 +526,11 @@ class AsyncCompletions(AsyncAPIResource):
         store,
         **kwargs,
     ) -> ChatCompletions:
-        extra_headers = kwargs.get("extra_headers", {})
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        timeout = kwargs.pop("timeout", None)
+        user_extra_body = kwargs.pop("extra_body", None) or {}
+        merged_extra_body = {**user_extra_body, **kwargs}
         response = await self.openai_client.with_raw_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -524,7 +546,9 @@ class AsyncCompletions(AsyncAPIResource):
             reasoning_effort=reasoning_effort,
             store=store,
             extra_headers=extra_headers,
-            extra_body=kwargs,
+            extra_query=extra_query,
+            extra_body=merged_extra_body,
+            timeout=timeout,
         )
         data = ChatCompletions(**json.loads(response.text))
         data._headers = response.headers
