@@ -95,7 +95,7 @@ class Completions(APIResource):
             store=store,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
 
@@ -137,7 +137,7 @@ class Completions(APIResource):
             store=store,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
         data = ChatCompletions(**json.loads(response.text))
@@ -505,7 +505,7 @@ class AsyncCompletions(AsyncAPIResource):
             store=store,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
 
@@ -547,7 +547,7 @@ class AsyncCompletions(AsyncAPIResource):
             store=store,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
         data = ChatCompletions(**json.loads(response.text))

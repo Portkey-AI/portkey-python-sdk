@@ -65,7 +65,7 @@ class Completion(APIResource):
             stream_options=stream_options,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
 
@@ -117,7 +117,7 @@ class Completion(APIResource):
             stream_options=stream_options,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
         data = TextCompletion(**json.loads(response.text))
@@ -248,7 +248,7 @@ class AsyncCompletion(AsyncAPIResource):
             stream_options=stream_options,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
 
@@ -300,7 +300,7 @@ class AsyncCompletion(AsyncAPIResource):
             stream_options=stream_options,
             extra_headers=extra_headers,
             extra_query=extra_query,
-            extra_body=merged_extra_body if merged_extra_body else None,
+            extra_body=merged_extra_body,
             timeout=timeout,
         )
         data = TextCompletion(**json.loads(response.text))
