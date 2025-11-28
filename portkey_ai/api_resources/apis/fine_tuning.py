@@ -12,6 +12,7 @@ from portkey_ai.api_resources.types.finetuning_checkpoint_permissions import (
     PermissionDeleteResponse,
     PermissionRetrieveResponse,
 )
+from portkey_ai.api_resources.utils import extract_extra_params
 from ..._vendor.openai._types import Omit, omit
 from ..._vendor.openai.types.fine_tuning import job_create_params
 
@@ -53,6 +54,7 @@ class Jobs(APIResource):
         validation_file: Union[Optional[str], Omit] = omit,
         **kwargs,
     ) -> FineTuningJob:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.jobs.create(
             model=model,
             training_file=training_file,
@@ -62,7 +64,7 @@ class Jobs(APIResource):
             seed=seed,
             suffix=suffix,
             validation_file=validation_file,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -70,14 +72,10 @@ class Jobs(APIResource):
         return data
 
     def retrieve(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
-        if kwargs:
-            response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-                fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
-            )
-        else:
-            response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-                fine_tuning_job_id=fine_tuning_job_id
-            )
+        extra_params = extract_extra_params(kwargs)
+        response = self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
+            fine_tuning_job_id=fine_tuning_job_id, **extra_params
+        )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
 
@@ -90,8 +88,9 @@ class Jobs(APIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobList:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list(
-            after=after, limit=limit, **kwargs
+            after=after, limit=limit, **extra_params
         )
         data = FineTuningJobList(**json.loads(response.text))
         data._headers = response.headers
@@ -99,8 +98,9 @@ class Jobs(APIResource):
         return data
 
     def cancel(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.jobs.cancel(
-            fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
+            fine_tuning_job_id=fine_tuning_job_id, **extra_params
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -115,11 +115,12 @@ class Jobs(APIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobEventList:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.jobs.list_events(
             fine_tuning_job_id=fine_tuning_job_id,
             after=after,
             limit=limit,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = FineTuningJobEventList(**json.loads(response.text))
         data._headers = response.headers
@@ -140,12 +141,13 @@ class Checkpoints(APIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobCheckpointList:
+        extra_params = extract_extra_params(kwargs)
         response = (
             self.openai_client.with_raw_response.fine_tuning.jobs.checkpoints.list(
                 fine_tuning_job_id=fine_tuning_job_id,
                 after=after,
                 limit=limit,
-                **kwargs,
+                **extra_params,
             )
         )
 
@@ -174,10 +176,11 @@ class Permissions(APIResource):
         project_ids: List[str],
         **kwargs,
     ) -> PermissionCreateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.create(  # noqa: E501
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
             project_ids=project_ids,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = PermissionCreateResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -194,13 +197,14 @@ class Permissions(APIResource):
         project_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> PermissionRetrieveResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.retrieve(  # noqa: E501
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
             after=after,
             limit=limit,
             order=order,
             project_id=project_id,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = PermissionRetrieveResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -214,10 +218,11 @@ class Permissions(APIResource):
         fine_tuned_model_checkpoint: str,
         **kwargs,
     ) -> PermissionDeleteResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.delete(  # noqa: E501
             permission_id=permission_id,
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = PermissionDeleteResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -245,11 +250,12 @@ class Graders(APIResource):
         item: Union[object, Omit] = omit,
         **kwargs,
     ) -> GraderRunResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
             grader=grader,
             model_sample=model_sample,
             item=item,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = GraderRunResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -262,10 +268,11 @@ class Graders(APIResource):
         grader: grader_run_params.Grader,
         **kwargs,
     ) -> GraderValidateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = (
             self.openai_client.with_raw_response.fine_tuning.alpha.graders.validate(
                 grader=grader,
-                extra_body=kwargs,
+                **extra_params,
             )
         )
         data = GraderValidateResponse(**json.loads(response.text))
@@ -304,6 +311,7 @@ class AsyncJobs(AsyncAPIResource):
         validation_file: Union[Optional[str], Omit] = omit,
         **kwargs,
     ) -> FineTuningJob:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.create(
             model=model,
             training_file=training_file,
@@ -313,7 +321,7 @@ class AsyncJobs(AsyncAPIResource):
             seed=seed,
             suffix=suffix,
             validation_file=validation_file,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -321,18 +329,12 @@ class AsyncJobs(AsyncAPIResource):
         return data
 
     async def retrieve(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
-        if kwargs:
-            response = (
-                await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-                    fine_tuning_job_id=fine_tuning_job_id, extra_body=kwargs
-                )
+        extra_params = extract_extra_params(kwargs)
+        response = (
+            await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
+                fine_tuning_job_id=fine_tuning_job_id, **extra_params
             )
-        else:
-            response = (
-                await self.openai_client.with_raw_response.fine_tuning.jobs.retrieve(
-                    fine_tuning_job_id=fine_tuning_job_id
-                )
-            )
+        )
 
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -346,8 +348,9 @@ class AsyncJobs(AsyncAPIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobList:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.list(
-            after=after, limit=limit, **kwargs
+            after=after, limit=limit, **extra_params
         )
         data = FineTuningJobList(**json.loads(response.text))
         data._headers = response.headers
@@ -355,8 +358,9 @@ class AsyncJobs(AsyncAPIResource):
         return data
 
     async def cancel(self, fine_tuning_job_id: str, **kwargs) -> FineTuningJob:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.cancel(
-            fine_tuning_job_id, extra_body=kwargs
+            fine_tuning_job_id, **extra_params
         )
         data = FineTuningJob(**json.loads(response.text))
         data._headers = response.headers
@@ -371,12 +375,13 @@ class AsyncJobs(AsyncAPIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobEventList:
+        extra_params = extract_extra_params(kwargs)
         response = (
             await self.openai_client.with_raw_response.fine_tuning.jobs.list_events(
                 fine_tuning_job_id=fine_tuning_job_id,
                 after=after,
                 limit=limit,
-                extra_body=kwargs,
+                **extra_params,
             )
         )
         data = FineTuningJobEventList(**json.loads(response.text))
@@ -398,11 +403,12 @@ class AsyncCheckpoints(AsyncAPIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> FineTuningJobCheckpointList:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.jobs.checkpoints.list(  # noqa: E501
             fine_tuning_job_id=fine_tuning_job_id,
             after=after,
             limit=limit,
-            **kwargs,
+            **extra_params,
         )
 
         data = FineTuningJobCheckpointList(**json.loads(response.text))
@@ -430,10 +436,11 @@ class AsyncPermissions(AsyncAPIResource):
         project_ids: List[str],
         **kwargs,
     ) -> PermissionCreateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.create(  # noqa: E501
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
             project_ids=project_ids,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = PermissionCreateResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -450,13 +457,14 @@ class AsyncPermissions(AsyncAPIResource):
         project_id: Union[str, Omit] = omit,
         **kwargs,
     ) -> PermissionRetrieveResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.retrieve(  # noqa: E501
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
             after=after,
             limit=limit,
             order=order,
             project_id=project_id,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = PermissionRetrieveResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -470,10 +478,11 @@ class AsyncPermissions(AsyncAPIResource):
         fine_tuned_model_checkpoint: str,
         **kwargs,
     ) -> PermissionDeleteResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.delete(  # noqa: E501
             permission_id=permission_id,
             fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = PermissionDeleteResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -501,12 +510,13 @@ class AsyncGraders(AsyncAPIResource):
         item: Union[object, Omit] = omit,
         **kwargs,
     ) -> GraderRunResponse:
+        extra_params = extract_extra_params(kwargs)
         response = (
             await self.openai_client.with_raw_response.fine_tuning.alpha.graders.run(
                 grader=grader,
                 model_sample=model_sample,
                 item=item,
-                extra_body=kwargs,
+                **extra_params,
             )
         )
         data = GraderRunResponse(**json.loads(response.text))
@@ -520,11 +530,12 @@ class AsyncGraders(AsyncAPIResource):
         grader: grader_run_params.Grader,
         **kwargs,
     ) -> GraderValidateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = (
             await (
                 self.openai_client.with_raw_response.fine_tuning.alpha.graders.validate(
                     grader=grader,
-                    extra_body=kwargs,
+                    **extra_params,
                 )
             )
         )

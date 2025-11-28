@@ -22,6 +22,7 @@ from portkey_ai.api_resources.types.evals_types import (
     EvalUpdateResponse,
 )
 from portkey_ai.api_resources.types.shared_types import Metadata
+from portkey_ai.api_resources.utils import extract_extra_params
 
 
 class Evals(APIResource):
@@ -39,12 +40,13 @@ class Evals(APIResource):
         name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalCreateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.evals.create(
             data_source_config=data_source_config,
             testing_criteria=testing_criteria,
             metadata=metadata,
             name=name,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = response
 
@@ -71,11 +73,12 @@ class Evals(APIResource):
         name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalUpdateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.evals.update(
             eval_id=eval_id,
             metadata=metadata,
             name=name,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         data = EvalUpdateResponse(**json.loads(response.text))
@@ -109,9 +112,10 @@ class Evals(APIResource):
         eval_id: str,
         **kwargs,
     ) -> EvalDeleteResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.evals.delete(
             eval_id=eval_id,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         data = EvalDeleteResponse(**json.loads(response.text))
@@ -135,12 +139,13 @@ class EvalsRuns(APIResource):
         name: Union[str, Omit] = omit,
         **kwargs,
     ) -> RunCreateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.evals.runs.create(
             eval_id=eval_id,
             data_source=data_source,
             metadata=metadata,
             name=name,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = RunCreateResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -193,10 +198,11 @@ class EvalsRuns(APIResource):
         eval_id: str,
         **kwargs,
     ) -> RunDeleteResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.evals.runs.delete(
             run_id=run_id,
             eval_id=eval_id,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = RunDeleteResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -210,10 +216,11 @@ class EvalsRuns(APIResource):
         eval_id: str,
         **kwargs,
     ) -> RunCancelResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.evals.runs.cancel(
             run_id=run_id,
             eval_id=eval_id,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = RunCancelResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -284,12 +291,13 @@ class AsyncEvals(AsyncAPIResource):
         name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalCreateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.evals.create(
             data_source_config=data_source_config,
             testing_criteria=testing_criteria,
             metadata=metadata,
             name=name,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = response
 
@@ -316,11 +324,12 @@ class AsyncEvals(AsyncAPIResource):
         name: Union[str, Omit] = omit,
         **kwargs,
     ) -> EvalUpdateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.evals.update(
             eval_id=eval_id,
             metadata=metadata,
             name=name,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         data = EvalUpdateResponse(**json.loads(response.text))
@@ -354,9 +363,10 @@ class AsyncEvals(AsyncAPIResource):
         eval_id: str,
         **kwargs,
     ) -> EvalDeleteResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.evals.delete(
             eval_id=eval_id,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         data = EvalDeleteResponse(**json.loads(response.text))
@@ -380,12 +390,13 @@ class AsyncEvalsRuns(AsyncAPIResource):
         name: Union[str, Omit] = omit,
         **kwargs,
     ) -> RunCreateResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.evals.runs.create(
             eval_id=eval_id,
             data_source=data_source,
             metadata=metadata,
             name=name,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = RunCreateResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -438,10 +449,11 @@ class AsyncEvalsRuns(AsyncAPIResource):
         eval_id: str,
         **kwargs,
     ) -> RunDeleteResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.evals.runs.delete(
             run_id=run_id,
             eval_id=eval_id,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = RunDeleteResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -455,10 +467,11 @@ class AsyncEvalsRuns(AsyncAPIResource):
         eval_id: str,
         **kwargs,
     ) -> RunCancelResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.evals.runs.cancel(
             run_id=run_id,
             eval_id=eval_id,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = RunCancelResponse(**json.loads(response.text))
         data._headers = response.headers

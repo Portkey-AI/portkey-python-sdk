@@ -4,6 +4,7 @@ import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.embeddings_type import CreateEmbeddingResponse
+from portkey_ai.api_resources.utils import extract_extra_params
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 
@@ -23,13 +24,14 @@ class Embeddings(APIResource):
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> CreateEmbeddingResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.embeddings.create(
             input=input,
             model=model,
             dimensions=dimensions,
             encoding_format=encoding_format,
             user=user,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         data = CreateEmbeddingResponse(**json.loads(response.text))
@@ -54,13 +56,14 @@ class AsyncEmbeddings(AsyncAPIResource):
         user: Union[str, NotGiven] = NOT_GIVEN,
         **kwargs
     ) -> CreateEmbeddingResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.embeddings.create(
             input=input,
             model=model,
             dimensions=dimensions,
             encoding_format=encoding_format,
             user=user,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = CreateEmbeddingResponse(**json.loads(response.text))
         data._headers = response.headers

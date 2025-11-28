@@ -3,6 +3,7 @@ from typing import Any, List, Union
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.global_constants import AUDIO_FILE_DURATION_HEADER
 from portkey_ai.api_resources.get_audio_duration import get_audio_file_duration
+from portkey_ai.api_resources.utils import extract_extra_params
 from ..._vendor.openai._types import Omit, omit, FileTypes
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
@@ -43,11 +44,13 @@ class Transcriptions(APIResource):
         stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
-        extra_headers = kwargs.pop("extra_headers", {})
+        extra_params = extract_extra_params(kwargs)
+        extra_headers = extra_params.get("extra_headers") or {}
         if file.name and self._client.calculate_audio_duration:
             duration = get_audio_file_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
+        extra_params["extra_headers"] = extra_headers if extra_headers else None
         if stream:
             return self.openai_client.audio.transcriptions.create(
                 file=file,
@@ -58,8 +61,7 @@ class Transcriptions(APIResource):
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
                 stream=stream,
-                extra_headers=extra_headers,
-                extra_body=kwargs,
+                **extra_params,
             )
         else:
             response = self.openai_client.with_raw_response.audio.transcriptions.create(
@@ -70,8 +72,7 @@ class Transcriptions(APIResource):
                 response_format=response_format,
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
-                extra_headers=extra_headers,
-                extra_body=kwargs,
+                **extra_params,
             )
 
             if response_format == "verbose_json":
@@ -101,18 +102,19 @@ class Translations(APIResource):
         temperature: Union[float, Omit] = omit,
         **kwargs,
     ) -> Union[Translation, TranslationVerbose, str]:
-        extra_headers = kwargs.pop("extra_headers", {})
+        extra_params = extract_extra_params(kwargs)
+        extra_headers = extra_params.get("extra_headers") or {}
         if file.name and self._client.calculate_audio_duration:  # type: ignore[union-attr]
             duration = get_audio_file_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
+        extra_params["extra_headers"] = extra_headers if extra_headers else None
         response = self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
             prompt=prompt,
             temperature=temperature,
-            extra_headers=extra_headers,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = Translation(**json.loads(response.text))
         data._headers = response.headers
@@ -139,15 +141,14 @@ class Speech(APIResource):
     ) -> Any:
         if stream is True:
             self.openai_client = self.openai_client.with_streaming_response
-        extra_headers = kwargs.pop("extra_headers", {})
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.audio.speech.create(
             input=input,
             model=model,
             voice=voice,
             response_format=response_format,
             speed=speed,
-            extra_headers=extra_headers,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         return response
@@ -181,11 +182,13 @@ class AsyncTranscriptions(AsyncAPIResource):
         stream: Union[bool, Omit] = omit,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
-        extra_headers = kwargs.pop("extra_headers", {})
+        extra_params = extract_extra_params(kwargs)
+        extra_headers = extra_params.get("extra_headers") or {}
         if file.name and self._client.calculate_audio_duration:
             duration = get_audio_file_duration(file.name)
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
+        extra_params["extra_headers"] = extra_headers if extra_headers else None
         if stream:
             return await self.openai_client.audio.transcriptions.create(
                 file=file,
@@ -196,8 +199,7 @@ class AsyncTranscriptions(AsyncAPIResource):
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
                 stream=stream,
-                extra_headers=extra_headers,
-                extra_body=kwargs,
+                **extra_params,
             )
         else:
             response = (
@@ -209,8 +211,7 @@ class AsyncTranscriptions(AsyncAPIResource):
                     response_format=response_format,
                     temperature=temperature,
                     timestamp_granularities=timestamp_granularities,
-                    extra_headers=extra_headers,
-                    extra_body=kwargs,
+                    **extra_params,
                 )
             )
 
@@ -241,18 +242,19 @@ class AsyncTranslations(AsyncAPIResource):
         temperature: Union[float, Omit] = omit,
         **kwargs,
     ) -> Union[Translation, TranslationVerbose, str]:
-        extra_headers = kwargs.pop("extra_headers", {})
+        extra_params = extract_extra_params(kwargs)
+        extra_headers = extra_params.get("extra_headers") or {}
         if file.name and self._client.calculate_audio_duration:  # type: ignore[union-attr]
             duration = get_audio_file_duration(file.name)  # type: ignore[union-attr]
             if duration is not None:
                 extra_headers[AUDIO_FILE_DURATION_HEADER] = duration
+        extra_params["extra_headers"] = extra_headers if extra_headers else None
         response = await self.openai_client.with_raw_response.audio.translations.create(
             file=file,
             model=model,
             prompt=prompt,
             temperature=temperature,
-            extra_headers=extra_headers,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = Translation(**json.loads(response.text))
         data._headers = response.headers
@@ -279,15 +281,14 @@ class AsyncSpeech(AsyncAPIResource):
     ) -> Any:
         if stream is True:
             self.openai_client = await self.openai_client.with_streaming_response
-        extra_headers = kwargs.pop("extra_headers", {})
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.audio.speech.create(
             input=input,
             model=model,
             voice=voice,
             response_format=response_format,
             speed=speed,
-            extra_headers=extra_headers,
-            extra_body=kwargs,
+            **extra_params,
         )
 
         data = response

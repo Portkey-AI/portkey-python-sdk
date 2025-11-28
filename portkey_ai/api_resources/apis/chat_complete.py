@@ -29,7 +29,7 @@ from portkey_ai.api_resources.types.chat_complete_type import (
 
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.types.shared_types import Headers, Metadata, Query
-from portkey_ai.api_resources.utils import Body
+from portkey_ai.api_resources.utils import Body, extract_extra_params
 from ..._vendor.openai._types import NOT_GIVEN, NotGiven, Omit, omit
 
 __all__ = ["ChatCompletion", "AsyncChatCompletion"]
@@ -74,11 +74,7 @@ class Completions(APIResource):
         store,
         **kwargs,
     ) -> Union[ChatCompletions, Iterator[ChatCompletionChunk]]:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         return self.openai_client.chat.completions.create(
             model=model,
             messages=messages,
@@ -93,10 +89,7 @@ class Completions(APIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
 
     def normal_create(
@@ -116,11 +109,7 @@ class Completions(APIResource):
         store,
         **kwargs,
     ) -> ChatCompletions:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -135,10 +124,7 @@ class Completions(APIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
         data = ChatCompletions(**json.loads(response.text))
         data._headers = response.headers
@@ -484,11 +470,7 @@ class AsyncCompletions(AsyncAPIResource):
         store,
         **kwargs,
     ) -> Union[ChatCompletions, AsyncIterator[ChatCompletionChunk]]:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         return await self.openai_client.chat.completions.create(
             model=model,
             messages=messages,
@@ -503,10 +485,7 @@ class AsyncCompletions(AsyncAPIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
 
     async def normal_create(
@@ -526,11 +505,7 @@ class AsyncCompletions(AsyncAPIResource):
         store,
         **kwargs,
     ) -> ChatCompletions:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.chat.completions.create(
             model=model,
             messages=messages,
@@ -545,10 +520,7 @@ class AsyncCompletions(AsyncAPIResource):
             prediction=prediction,
             reasoning_effort=reasoning_effort,
             store=store,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
         data = ChatCompletions(**json.loads(response.text))
         data._headers = response.headers

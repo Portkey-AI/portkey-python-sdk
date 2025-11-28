@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional, Union
 import typing
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.utils import extract_extra_params
 from ..._vendor.openai._types import Omit, omit
 
 from portkey_ai.api_resources.types.batches_type import Batch, BatchList
@@ -23,12 +24,13 @@ class Batches(APIResource):
         metadata: Union[Optional[Dict[str, str]], Omit] = omit,
         **kwargs,
     ) -> Batch:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.batches.create(
             completion_window=completion_window,
             endpoint=endpoint,
             input_file_id=input_file_id,
             metadata=metadata,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -36,14 +38,10 @@ class Batches(APIResource):
         return data
 
     def retrieve(self, batch_id, **kwargs) -> Batch:
-        if kwargs:
-            response = self.openai_client.with_raw_response.batches.retrieve(
-                batch_id=batch_id, extra_body=kwargs
-            )
-        else:
-            response = self.openai_client.with_raw_response.batches.retrieve(
-                batch_id=batch_id
-            )
+        extra_params = extract_extra_params(kwargs)
+        response = self.openai_client.with_raw_response.batches.retrieve(
+            batch_id=batch_id, **extra_params
+        )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
 
@@ -56,8 +54,9 @@ class Batches(APIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> BatchList:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.batches.list(
-            after=after, limit=limit
+            after=after, limit=limit, **extra_params
         )
         data = BatchList(**json.loads(response.text))
         data._headers = response.headers
@@ -65,8 +64,9 @@ class Batches(APIResource):
         return data
 
     def cancel(self, batch_id: str, **kwargs) -> Batch:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.batches.cancel(
-            batch_id=batch_id, extra_body=kwargs
+            batch_id=batch_id, **extra_params
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -102,12 +102,13 @@ class AsyncBatches(AsyncAPIResource):
         metadata: Union[Optional[Dict[str, str]], Omit] = omit,
         **kwargs,
     ) -> Batch:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.batches.create(
             completion_window=completion_window,
             endpoint=endpoint,
             input_file_id=input_file_id,
             metadata=metadata,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
@@ -115,14 +116,10 @@ class AsyncBatches(AsyncAPIResource):
         return data
 
     async def retrieve(self, batch_id, **kwargs) -> Batch:
-        if kwargs:
-            response = await self.openai_client.with_raw_response.batches.retrieve(
-                batch_id=batch_id, extra_body=kwargs
-            )
-        else:
-            response = await self.openai_client.with_raw_response.batches.retrieve(
-                batch_id=batch_id
-            )
+        extra_params = extract_extra_params(kwargs)
+        response = await self.openai_client.with_raw_response.batches.retrieve(
+            batch_id=batch_id, **extra_params
+        )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers
 
@@ -135,8 +132,9 @@ class AsyncBatches(AsyncAPIResource):
         limit: Union[int, Omit] = omit,
         **kwargs,
     ) -> BatchList:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.batches.list(
-            after=after, limit=limit
+            after=after, limit=limit, **extra_params
         )
         data = BatchList(**json.loads(response.text))
         data._headers = response.headers
@@ -144,8 +142,9 @@ class AsyncBatches(AsyncAPIResource):
         return data
 
     async def cancel(self, batch_id: str, **kwargs) -> Batch:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.batches.cancel(
-            batch_id=batch_id, extra_body=kwargs
+            batch_id=batch_id, **extra_params
         )
         data = Batch(**json.loads(response.text))
         data._headers = response.headers

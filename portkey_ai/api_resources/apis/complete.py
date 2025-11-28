@@ -1,6 +1,7 @@
 import json
 from typing import Any, AsyncIterator, Dict, Iterable, Iterator, List, Optional, Union
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
+from portkey_ai.api_resources.utils import extract_extra_params
 from ..._vendor.openai._types import NotGiven, NOT_GIVEN
 
 # from portkey_ai.api_resources.utils import TextCompletionChunk
@@ -39,11 +40,7 @@ class Completion(APIResource):
         stream_options,
         **kwargs,
     ) -> Union[TextCompletion, Iterator[TextCompletionChunk]]:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         return self.openai_client.completions.create(
             model=model,
             prompt=prompt,
@@ -63,10 +60,7 @@ class Completion(APIResource):
             suffix=suffix,
             user=user,
             stream_options=stream_options,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
 
     def normal_create(
@@ -91,11 +85,7 @@ class Completion(APIResource):
         stream_options,
         **kwargs,
     ) -> TextCompletion:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.completions.create(
             model=model,
             prompt=prompt,
@@ -115,10 +105,7 @@ class Completion(APIResource):
             suffix=suffix,
             user=user,
             stream_options=stream_options,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
         data = TextCompletion(**json.loads(response.text))
         data._headers = response.headers
@@ -222,11 +209,7 @@ class AsyncCompletion(AsyncAPIResource):
         stream_options,
         **kwargs,
     ) -> Union[TextCompletion, AsyncIterator[TextCompletionChunk]]:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         return await self.openai_client.completions.create(
             model=model,
             prompt=prompt,
@@ -246,10 +229,7 @@ class AsyncCompletion(AsyncAPIResource):
             suffix=suffix,
             user=user,
             stream_options=stream_options,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
 
     async def normal_create(
@@ -274,11 +254,7 @@ class AsyncCompletion(AsyncAPIResource):
         stream_options,
         **kwargs,
     ) -> TextCompletion:
-        extra_headers = kwargs.pop("extra_headers", None)
-        extra_query = kwargs.pop("extra_query", None)
-        timeout = kwargs.pop("timeout", None)
-        user_extra_body = kwargs.pop("extra_body", None) or {}
-        merged_extra_body = {**user_extra_body, **kwargs}
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.completions.create(
             model=model,
             prompt=prompt,
@@ -298,10 +274,7 @@ class AsyncCompletion(AsyncAPIResource):
             suffix=suffix,
             user=user,
             stream_options=stream_options,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=merged_extra_body,
-            timeout=timeout,
+            **extra_params,
         )
         data = TextCompletion(**json.loads(response.text))
         data._headers = response.headers

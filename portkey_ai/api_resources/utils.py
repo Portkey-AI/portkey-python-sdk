@@ -531,3 +531,35 @@ def create_model_instance(model_class):
     except AttributeError:
         # Fall back to Pydantic v1 method
         return model_class.construct()
+
+
+def extract_extra_params(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Extract and process extra_body, extra_headers, extra_query, and timeout from kwargs.
+
+    This function properly handles the extra_body parameter to match OpenAI SDK behavior.
+    When a user passes extra_body={'a': 'b'}, the contents should be merged at the top
+    level of the request body, not nested under an 'extra_body' key.
+
+    Args:
+        kwargs: The keyword arguments dict (will be mutated - special params removed)
+
+    Returns:
+        A dict with keys: extra_headers, extra_query, extra_body, timeout
+        ready to be passed to the OpenAI client methods.
+    """
+    extra_headers = kwargs.pop("extra_headers", None)
+    extra_query = kwargs.pop("extra_query", None)
+    timeout = kwargs.pop("timeout", None)
+    user_extra_body = kwargs.pop("extra_body", None) or {}
+
+    # Merge user's extra_body with remaining kwargs
+    # This ensures extra_body={'a': 'b'} results in 'a' at top level, not 'extra_body': {'a': 'b'}
+    merged_extra_body = {**user_extra_body, **kwargs}
+
+    return {
+        "extra_headers": extra_headers,
+        "extra_query": extra_query,
+        "extra_body": merged_extra_body if merged_extra_body else None,
+        "timeout": timeout,
+    }

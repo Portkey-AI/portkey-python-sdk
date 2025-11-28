@@ -10,6 +10,7 @@ from portkey_ai._vendor.openai.types.images_response import (
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.image_type import ImagesResponse
+from portkey_ai.api_resources.utils import extract_extra_params
 from ..._vendor.openai._types import FileTypes, Omit, omit
 from typing_extensions import overload
 
@@ -31,6 +32,7 @@ class Images(APIResource):
         user: Union[str, Omit] = omit,
         **kwargs
     ) -> ImagesResponse:
+        extra_params = extract_extra_params(kwargs)
         response = self.openai_client.with_raw_response.images.create_variation(
             image=image,
             n=n,
@@ -38,7 +40,7 @@ class Images(APIResource):
             response_format=response_format,
             size=size,
             user=user,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
@@ -340,13 +342,14 @@ class AsyncImages(AsyncAPIResource):
         user: Union[str, Omit] = omit,
         **kwargs
     ) -> ImagesResponse:
+        extra_params = extract_extra_params(kwargs)
         response = await self.openai_client.with_raw_response.images.create_variation(
             image=image,
             n=n,
             response_format=response_format,
             size=size,
             user=user,
-            extra_body=kwargs,
+            **extra_params,
         )
         data = ImagesResponse(**json.loads(response.text))
         data._headers = response.headers
