@@ -36,7 +36,10 @@ from portkey_ai._vendor.openai.types.shared.responses_model import ResponsesMode
 from portkey_ai._vendor.openai.types.shared_params.reasoning import Reasoning
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.types.response_type import Response as ResponseType
+from portkey_ai.api_resources.types.response_type import (
+    Response as ResponseType,
+    CompactedResponse,
+)
 from portkey_ai.api_resources.types.responses_input_items_type import InputItemList
 from portkey_ai.api_resources.types.responses_input_tokens_type import (
     InputTokenCountResponse,
@@ -354,6 +357,35 @@ class Responses(APIResource):
             timeout=timeout,
         )
 
+    def compact(
+        self,
+        *,
+        model: Union[str, Omit] = omit,
+        input: Union[str, Iterable[ResponseInputItemParam], None, Omit] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        previous_response_id: Union[Optional[str], Omit] = omit,
+        **kwargs,
+    ) -> CompactedResponse:
+        import json
+
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = self.openai_client.with_raw_response.responses.compact(
+            model=model,  # type: ignore[arg-type]
+            input=input,
+            instructions=instructions,
+            previous_response_id=previous_response_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
+        )
+        data = CompactedResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
 
 class InputItems(APIResource):
     def __init__(self, client: Portkey) -> None:
@@ -444,6 +476,7 @@ class AsyncResponses(AsyncAPIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
         self.input_items = AsyncInputItems(client)
+        self.input_tokens = AsyncInputTokens(client)
 
     @overload
     async def create(
@@ -745,6 +778,35 @@ class AsyncResponses(AsyncAPIResource):
             extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
+
+    async def compact(
+        self,
+        *,
+        model: Union[str, Omit] = omit,
+        input: Union[str, Iterable[ResponseInputItemParam], None, Omit] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        previous_response_id: Union[Optional[str], Omit] = omit,
+        **kwargs,
+    ) -> CompactedResponse:
+        import json
+
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = await self.openai_client.with_raw_response.responses.compact(
+            model=model,  # type: ignore[arg-type]
+            input=input,
+            instructions=instructions,
+            previous_response_id=previous_response_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
+        )
+        data = CompactedResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class AsyncInputItems(AsyncAPIResource):
