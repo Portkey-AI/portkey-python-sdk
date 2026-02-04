@@ -12,7 +12,7 @@ portkey-python-sdk/
 │   ├── __init__.py              # Public API - exports all classes
 │   ├── version.py               # SDK version
 │   ├── _vendor/                 # Vendored dependencies
-│   │   └── openai/              # Vendored OpenAI SDK (e.g., v2.7.1)
+│   │   └── openai/              # Vendored OpenAI SDK (currently v2.16.0)
 │   ├── api_resources/           # Core SDK implementation
 │   │   ├── __init__.py          # Internal exports
 │   │   ├── client.py            # Portkey & AsyncPortkey clients
@@ -41,7 +41,7 @@ The SDK vendors the OpenAI Python SDK to avoid version conflicts:
 ```toml
 # vendorize.toml
 target = "portkey_ai/_vendor"
-packages = ["openai==2.7.1"]
+packages = ["openai==2.16.0"]  # Update this version as needed
 ```
 
 ### Key Vendoring Quirks
@@ -407,19 +407,196 @@ portkey_ai/__init__.py                 # Final public export + add to __all__
 
 ## Updating Vendored OpenAI SDK
 
-1. Update version in `vendorize.toml`:
-   ```toml
-   packages = ["openai==X.Y.Z"]
+### Step-by-Step Process
+
+#### Step 1: Compare SDK Versions
+Before vendoring, compare changes between versions:
+```
+https://github.com/openai/openai-python/compare/vOLD...vNEW
+```
+This helps identify:
+- New methods/resources added
+- Removed/deprecated methods
+- Signature changes in existing methods
+
+#### Step 2: Clean and Re-vendor
+
+```bash
+# Delete the old vendor folder contents
+rm -rf portkey_ai/_vendor/*
+
+# Update version in vendorize.toml
+packages = ["openai==X.Y.Z"]
+
+# Run vendorize (install with: pip install vendorize)
+python-vendorize
+```
+
+The tool rewrites imports from `openai.*` to `portkey_ai._vendor.openai.*`
+
+#### Step 3: Apply Portkey Customizations
+
+**Two files MUST be modified after every vendoring:**
+
+1. **`portkey_ai/_vendor/openai/_constants.py`**
+   ```python
+   # Change DEFAULT_MAX_RETRIES from 2 to 1
+   DEFAULT_MAX_RETRIES = 1
    ```
 
-2. Run vendorize tool (typically `vendorize` or `python -m vendorize`)
+2. **`portkey_ai/_vendor/openai/_base_client.py`**
+   
+   Replace the `_should_retry` method with Portkey's custom logic:
+   ```python
+   def _should_retry(self, response: httpx.Response) -> bool:
+       # Custom Retry Conditions
+       retry_status_code = response.status_code
+       retry_trace_id = response.headers.get("x-portkey-trace-id")
+       retry_request_id = response.headers.get("x-portkey-request-id")
+       retry_gateway_exception = response.headers.get("x-portkey-gateway-exception")
 
-3. The tool rewrites imports from `openai.*` to `portkey_ai._vendor.openai.*`
+       if (
+           retry_status_code < 500
+           or retry_trace_id
+           or retry_request_id
+           or retry_gateway_exception
+       ):
+           return False
 
-4. After vendoring:
-   - Check for new OpenAI resources that need Portkey wrappers
-   - Update any Portkey types that mirror OpenAI types
-   - Test thoroughly - OpenAI SDK changes can break wrappers
+       return True
+   ```
+
+#### Step 4: Run Lint to Find Issues
+
+```bash
+make lint
+```
+
+This will surface:
+- Type incompatibilities
+- Missing imports
+- Signature mismatches
+
+#### Step 5: Update Portkey Wrappers
+
+For each wrapper that needs updating:
+
+**Adding new parameters:**
+```python
+# If wrapper explicitly lists parameters (not just **kwargs)
+# Add new params with Union[Type, Omit] = omit pattern
+def create(
+    self,
+    *,
+    existing_param: Union[str, Omit] = omit,
+    new_param: Union[str, Omit] = omit,  # Add new param
+    **kwargs,
+):
+    response = self.openai_client.with_raw_response.resource.create(
+        existing_param=existing_param,
+        new_param=new_param,  # Pass to underlying client
+        ...
+    )
+```
+
+**Adding new methods:**
+```python
+def new_method(
+    self,
+    *,
+    param: Union[str, Omit] = omit,
+    **kwargs,
+) -> NewResponseType:
+    import json
+    extra_headers = kwargs.pop("extra_headers", None)
+    extra_query = kwargs.pop("extra_query", None)
+    extra_body = kwargs.pop("extra_body", None)
+    timeout = kwargs.pop("timeout", None)
+    
+    response = self.openai_client.with_raw_response.resource.new_method(
+        param=param,
+        extra_headers=extra_headers,
+        extra_query=extra_query,
+        extra_body={**(extra_body or {}), **kwargs},
+        timeout=timeout,
+    )
+    data = NewResponseType(**json.loads(response.text))
+    data._headers = response.headers
+    return data
+```
+
+**Adding new response types:**
+```python
+# In api_resources/types/
+class NewResponseType(BaseModel, extra="allow"):
+    id: str
+    created_at: int
+    # ... other fields from OpenAI type
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+```
+
+#### Step 6: Handle Type Ignore Comments
+
+Sometimes Portkey uses more flexible types than OpenAI's strict literals:
+```python
+# Portkey allows any string, OpenAI expects specific literals
+response = self.openai_client.with_raw_response.resource.method(
+    model=model,  # type: ignore[arg-type]
+    ...
+)
+```
+
+#### Step 7: Verify and Test
+
+```bash
+# Format code
+make format
+
+# Run all checks
+make lint
+
+# Test imports
+python -c "from portkey_ai import Portkey; print('OK')"
+
+# Run tests (requires valid virtual keys)
+pytest . -n 10
+```
+
+### Wrapper Resilience Pattern
+
+Most Portkey wrappers use `**kwargs` pattern which automatically forwards new parameters:
+
+```python
+def create(self, *, name: str, **kwargs):
+    extra_headers = kwargs.pop("extra_headers", None)
+    # ... other pops
+    response = self.openai_client.with_raw_response.resource.create(
+        name=name,
+        extra_headers=extra_headers,
+        extra_body={**(extra_body or {}), **kwargs},  # Unknown params go here
+    )
+```
+
+This means many new OpenAI parameters work automatically without code changes. Only add explicit parameters when:
+1. The wrapper doesn't pass `**kwargs` to `extra_body`
+2. You want IDE autocomplete/type hints for important params
+3. The parameter needs special handling
+
+### Checklist for Vendoring
+
+- [ ] Delete `portkey_ai/_vendor/*`
+- [ ] Update `vendorize.toml` with new version
+- [ ] Run `python-vendorize`
+- [ ] Set `DEFAULT_MAX_RETRIES = 1` in `_constants.py`
+- [ ] Replace `_should_retry` in `_base_client.py`
+- [ ] Run `make lint` and fix errors
+- [ ] Add new methods/types if needed
+- [ ] Run `make format`
+- [ ] Test imports work
+- [ ] Commit vendored code first, then wrapper changes
 
 ## Common Gotchas
 
