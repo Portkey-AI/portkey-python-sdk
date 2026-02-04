@@ -8,6 +8,7 @@ from typing_extensions import Literal, TypeAlias, TypedDict
 from .tool_param import ToolParam
 from .tool_choice_options import ToolChoiceOptions
 from .tool_choice_mcp_param import ToolChoiceMcpParam
+from .tool_choice_shell_param import ToolChoiceShellParam
 from .tool_choice_types_param import ToolChoiceTypesParam
 from ..shared_params.reasoning import Reasoning
 from .tool_choice_custom_param import ToolChoiceCustomParam
@@ -15,6 +16,7 @@ from .response_input_item_param import ResponseInputItemParam
 from .tool_choice_allowed_param import ToolChoiceAllowedParam
 from .tool_choice_function_param import ToolChoiceFunctionParam
 from .response_conversation_param import ResponseConversationParam
+from .tool_choice_apply_patch_param import ToolChoiceApplyPatchParam
 from .response_format_text_config_param import ResponseFormatTextConfigParam
 
 __all__ = ["InputTokenCountParams", "Conversation", "Text", "ToolChoice"]
@@ -76,11 +78,7 @@ class InputTokenCountParams(TypedDict, total=False):
     """
 
     tool_choice: Optional[ToolChoice]
-    """
-    How the model should select which tool (or tools) to use when generating a
-    response. See the `tools` parameter to see how to specify which tools the model
-    can call.
-    """
+    """Controls which tool the model should use, if any."""
 
     tools: Optional[Iterable[ToolParam]]
     """An array of tools the model may call while generating a response.
@@ -103,6 +101,14 @@ Conversation: TypeAlias = Union[str, ResponseConversationParam]
 
 
 class Text(TypedDict, total=False):
+    """Configuration options for a text response from the model.
+
+    Can be plain
+    text or structured JSON data. Learn more:
+    - [Text inputs and outputs](https://platform.openai.com/docs/guides/text)
+    - [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)
+    """
+
     format: ResponseFormatTextConfigParam
     """An object specifying the format that the model must output.
 
@@ -135,4 +141,6 @@ ToolChoice: TypeAlias = Union[
     ToolChoiceFunctionParam,
     ToolChoiceMcpParam,
     ToolChoiceCustomParam,
+    ToolChoiceApplyPatchParam,
+    ToolChoiceShellParam,
 ]
