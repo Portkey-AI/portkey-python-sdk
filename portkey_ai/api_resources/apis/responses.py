@@ -68,6 +68,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Literal[False], Omit] = omit,
@@ -95,6 +98,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -121,6 +127,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -145,6 +154,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Optional[Literal[False]], Literal[True], Omit] = omit,
@@ -171,6 +183,7 @@ class Responses(APIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,  # type: ignore[arg-type]
@@ -244,6 +257,9 @@ class Responses(APIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream_options: Union[response_create_params.StreamOptions, Omit] = omit,
@@ -270,6 +286,7 @@ class Responses(APIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream_options=stream_options,
@@ -298,6 +315,9 @@ class Responses(APIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream: Union[Literal[False], Literal[True], Omit] = omit,
@@ -325,6 +345,7 @@ class Responses(APIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,
@@ -490,6 +511,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Literal[False], Omit] = omit,
@@ -517,6 +541,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -543,6 +570,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -567,6 +597,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Optional[Literal[False]], Literal[True], Omit] = omit,
@@ -593,6 +626,7 @@ class AsyncResponses(AsyncAPIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,  # type: ignore[arg-type]
@@ -666,6 +700,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream_options: Union[response_create_params.StreamOptions, Omit] = omit,
@@ -692,6 +729,7 @@ class AsyncResponses(AsyncAPIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream_options=stream_options,
@@ -720,6 +758,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream: Union[Literal[False], Literal[True], Omit] = omit,
@@ -747,6 +788,7 @@ class AsyncResponses(AsyncAPIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,

@@ -2,7 +2,7 @@ import json
 from typing import Any, Literal, Optional, Union
 
 import httpx
-from portkey_ai._vendor.openai.types.video_model import VideoModel
+from portkey_ai._vendor.openai.types.video_model_param import VideoModelParam
 from portkey_ai._vendor.openai.types.video_seconds import VideoSeconds
 from portkey_ai._vendor.openai.types.video_size import VideoSize
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
@@ -26,7 +26,7 @@ class Videos(APIResource):
         *,
         prompt: str,
         input_reference: Union[FileTypes, Omit] = omit,
-        model: Union[VideoModel, Omit] = omit,
+        model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
         extra_headers: Optional[Headers] = None,
@@ -55,7 +55,7 @@ class Videos(APIResource):
         *,
         prompt: str,
         input_reference: Union[FileTypes, Omit] = omit,
-        model: Union[VideoModel, Omit] = omit,
+        model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
         poll_interval_ms: Union[int, Omit] = omit,
@@ -208,7 +208,7 @@ class AsyncVideos(AsyncAPIResource):
         *,
         prompt: str,
         input_reference: Union[FileTypes, Omit] = omit,
-        model: Union[VideoModel, Omit] = omit,
+        model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
         extra_headers: Optional[Headers] = None,
@@ -237,7 +237,7 @@ class AsyncVideos(AsyncAPIResource):
         *,
         prompt: str,
         input_reference: Union[FileTypes, Omit] = omit,
-        model: Union[VideoModel, Omit] = omit,
+        model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
         poll_interval_ms: Union[int, Omit] = omit,

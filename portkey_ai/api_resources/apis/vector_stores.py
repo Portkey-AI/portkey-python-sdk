@@ -32,6 +32,7 @@ class VectorStores(APIResource):
         self,
         *,
         chunking_strategy: Union[Any, Omit] = omit,
+        description: Union[str, Omit] = omit,
         expires_after: Union[vector_store_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
         metadata: Union[Optional[Metadata], Omit] = omit,
@@ -39,6 +40,7 @@ class VectorStores(APIResource):
     ) -> VectorStore:
         response = self.openai_client.with_raw_response.vector_stores.create(
             chunking_strategy=chunking_strategy,
+            description=description,
             expires_after=expires_after,
             file_ids=file_ids,
             metadata=metadata,
@@ -308,7 +310,7 @@ class VectorFileBatches(APIResource):
         self,
         vector_store_id: str,
         *,
-        file_ids: List[str],
+        file_ids: Union[List[str], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
@@ -460,6 +462,7 @@ class AsyncVectorStores(AsyncAPIResource):
         self,
         *,
         chunking_strategy: Union[Any, Omit] = omit,
+        description: Union[str, Omit] = omit,
         expires_after: Union[vector_store_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
         metadata: Union[Optional[Metadata], Omit] = omit,
@@ -467,6 +470,7 @@ class AsyncVectorStores(AsyncAPIResource):
     ) -> VectorStore:
         response = await self.openai_client.with_raw_response.vector_stores.create(
             chunking_strategy=chunking_strategy,
+            description=description,
             expires_after=expires_after,
             file_ids=file_ids,
             metadata=metadata,
@@ -736,7 +740,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        file_ids: List[str],
+        file_ids: Union[List[str], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
