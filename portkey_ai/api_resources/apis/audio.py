@@ -41,6 +41,8 @@ class Transcriptions(APIResource):
         temperature: Union[float, Omit] = omit,
         timestamp_granularities: Union[List[str], Omit] = omit,
         stream: Union[bool, Omit] = omit,
+        known_speaker_names: Union[List[str], Omit] = omit,
+        known_speaker_references: Union[List[str], Omit] = omit,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -58,6 +60,8 @@ class Transcriptions(APIResource):
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
                 stream=stream,
+                known_speaker_names=known_speaker_names,
+                known_speaker_references=known_speaker_references,
                 extra_headers=extra_headers,
                 extra_body=kwargs,
             )
@@ -70,6 +74,8 @@ class Transcriptions(APIResource):
                 response_format=response_format,
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
+                known_speaker_names=known_speaker_names,
+                known_speaker_references=known_speaker_references,
                 extra_headers=extra_headers,
                 extra_body=kwargs,
             )
@@ -179,6 +185,8 @@ class AsyncTranscriptions(AsyncAPIResource):
         temperature: Union[float, Omit] = omit,
         timestamp_granularities: Union[List[str], Omit] = omit,
         stream: Union[bool, Omit] = omit,
+        known_speaker_names: Union[List[str], Omit] = omit,
+        known_speaker_references: Union[List[str], Omit] = omit,
         **kwargs,
     ) -> Union[Transcription, TranscriptionVerbose, str]:
         extra_headers = kwargs.pop("extra_headers", {})
@@ -196,6 +204,8 @@ class AsyncTranscriptions(AsyncAPIResource):
                 temperature=temperature,
                 timestamp_granularities=timestamp_granularities,
                 stream=stream,
+                known_speaker_names=known_speaker_names,
+                known_speaker_references=known_speaker_references,
                 extra_headers=extra_headers,
                 extra_body=kwargs,
             )
@@ -209,6 +219,8 @@ class AsyncTranscriptions(AsyncAPIResource):
                     response_format=response_format,
                     temperature=temperature,
                     timestamp_granularities=timestamp_granularities,
+                    known_speaker_names=known_speaker_names,
+                    known_speaker_references=known_speaker_references,
                     extra_headers=extra_headers,
                     extra_body=kwargs,
                 )
