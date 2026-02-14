@@ -97,6 +97,8 @@ from .responses import (
     InputItems,
     AsyncResponses,
     AsyncInputItems,
+    InputTokens,
+    AsyncInputTokens,
 )
 
 from .uploads import (
@@ -336,4 +338,6 @@ __all__ = [
     "AsyncChatKitThreads",
     "Calls",
     "AsyncCalls",
+    "InputTokens",
+    "AsyncInputTokens",
 ]

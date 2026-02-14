@@ -18,6 +18,28 @@ from portkey_ai.api_resources.types.shared_types import Metadata
 from portkey_ai.api_resources.types.utils import parse_headers
 
 
+class CompactedResponse(BaseModel, extra="allow"):
+    id: str
+    """The unique identifier for the compacted response."""
+
+    created_at: int
+    """Unix timestamp (in seconds) when the compacted conversation was created."""
+
+    object: Literal["response.compaction"]
+    """The object type. Always `response.compaction`."""
+
+    output: List[ResponseOutputItem]
+    """The compacted list of output items."""
+
+    usage: ResponseUsage
+    """Token accounting for the compaction pass."""
+
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
 class ResponseError(BaseModel, extra="allow"):
     code: Literal[
         "server_error",

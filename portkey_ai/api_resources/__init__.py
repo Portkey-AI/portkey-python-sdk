@@ -143,6 +143,8 @@ from .apis import (
     AsyncChatKitThreads,
     Calls,
     AsyncCalls,
+    InputTokens,
+    AsyncInputTokens,
 )
 from .utils import (
     Modes,
@@ -321,4 +323,6 @@ __all__ = [
     "AsyncChatKitThreads",
     "Calls",
     "AsyncCalls",
+    "InputTokens",
+    "AsyncInputTokens",
 ]
