@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict, Iterable, List, Optional, Union
 import typing
+from portkey_ai._vendor.openai.types.vector_stores import file_batch_create_params
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.shared_types import Metadata
@@ -311,7 +312,7 @@ class VectorFileBatches(APIResource):
         vector_store_id: str,
         *,
         file_ids: Union[List[str], Omit] = omit,
-        files: Union[Iterable[FileTypes], Omit] = omit,
+        files: Union[Iterable[file_batch_create_params.File], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
@@ -743,7 +744,7 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         vector_store_id: str,
         *,
         file_ids: Union[List[str], Omit] = omit,
-        files: Union[Iterable[FileTypes], Omit] = omit,
+        files: Union[Iterable[file_batch_create_params.File], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
