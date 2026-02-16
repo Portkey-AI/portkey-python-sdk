@@ -311,6 +311,7 @@ class VectorFileBatches(APIResource):
         vector_store_id: str,
         *,
         file_ids: Union[List[str], Omit] = omit,
+        files: Union[Iterable[FileTypes], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
@@ -318,6 +319,7 @@ class VectorFileBatches(APIResource):
             self.openai_client.with_raw_response.vector_stores.file_batches.create(
                 vector_store_id=vector_store_id,
                 file_ids=file_ids,
+                files=files,
                 chunking_strategy=chunking_strategy,
                 **kwargs,
             )
@@ -741,12 +743,14 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         vector_store_id: str,
         *,
         file_ids: Union[List[str], Omit] = omit,
+        files: Union[Iterable[FileTypes], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.with_raw_response.vector_stores.file_batches.create(  # noqa: E501
             vector_store_id=vector_store_id,
             file_ids=file_ids,
+            files=files,
             chunking_strategy=chunking_strategy,
             **kwargs,
         )
