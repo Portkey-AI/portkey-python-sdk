@@ -206,6 +206,20 @@ class Prompts(APIResource):
             headers={},
         )
 
+    def list_versions(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+
     def update(
         self,
         prompt_slug: str,
@@ -392,6 +406,20 @@ class AsyncPrompts(AsyncAPIResource):
     ) -> Any:
         return await self._get(
             f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}",
+            params=None,
+            body=None,
+            cast_to=GenericResponse,
+            stream=False,
+            stream_cls=None,
+            headers={},
+        )
+    
+    async def list_versions(
+        self,
+        prompt_slug: str,
+    ) -> Any:
+        return await self._get(
+            f"{PortkeyApiPaths.PROMPTS_API}/{prompt_slug}/versions",
             params=None,
             body=None,
             cast_to=GenericResponse,
