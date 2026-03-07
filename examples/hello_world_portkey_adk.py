@@ -42,10 +42,12 @@ async def main() -> None:
     req = build_request(model)
     final_text: List[str] = []
     async for resp in llm.generate_content_async(req, stream=False):
-        if resp.content and getattr(resp.content, "parts", None):
-            for p in resp.content.parts:
-                if getattr(p, "text", None):
-                    final_text.append(p.text)
+        parts = getattr(resp.content, "parts", None) if resp.content else None
+        if parts:
+            for p in parts:
+                text = getattr(p, "text", None)
+                if text:
+                    final_text.append(text)
     print("".join(final_text))
 
 
