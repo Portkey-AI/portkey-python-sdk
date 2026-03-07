@@ -318,6 +318,9 @@ class Completions(APIResource):
         prediction: Union[Any, Omit] = omit,
         presence_penalty: Union[Optional[float], Omit] = omit,
         prompt_cache_key: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning_effort: Union[Any, Omit] = omit,
         safety_identifier: Union[str, Omit] = omit,
         seed: Union[Optional[int], Omit] = omit,
@@ -358,6 +361,7 @@ class Completions(APIResource):
             prediction=prediction,
             presence_penalty=presence_penalty,
             prompt_cache_key=prompt_cache_key,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning_effort=reasoning_effort,
             safety_identifier=safety_identifier,
             seed=seed,
@@ -400,6 +404,9 @@ class Completions(APIResource):
         prediction: Union[Any, Omit] = omit,
         presence_penalty: Union[Optional[float], Omit] = omit,
         prompt_cache_key: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning_effort: Union[Any, Omit] = omit,
         safety_identifier: Union[str, Omit] = omit,
         seed: Union[Optional[int], Omit] = omit,
@@ -440,6 +447,7 @@ class Completions(APIResource):
             prediction=prediction,
             presence_penalty=presence_penalty,
             prompt_cache_key=prompt_cache_key,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning_effort=reasoning_effort,
             safety_identifier=safety_identifier,
             seed=seed,
@@ -723,6 +731,9 @@ class AsyncCompletions(AsyncAPIResource):
         prediction: Union[Any, Omit] = omit,
         presence_penalty: Union[Optional[float], Omit] = omit,
         prompt_cache_key: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning_effort: Union[Any, Omit] = omit,
         safety_identifier: Union[str, Omit] = omit,
         seed: Union[Optional[int], Omit] = omit,
@@ -763,6 +774,7 @@ class AsyncCompletions(AsyncAPIResource):
             prediction=prediction,
             presence_penalty=presence_penalty,
             prompt_cache_key=prompt_cache_key,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning_effort=reasoning_effort,
             safety_identifier=safety_identifier,
             seed=seed,
@@ -805,6 +817,9 @@ class AsyncCompletions(AsyncAPIResource):
         prediction: Union[Any, Omit] = omit,
         presence_penalty: Union[Optional[float], Omit] = omit,
         prompt_cache_key: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning_effort: Union[Any, Omit] = omit,
         safety_identifier: Union[str, Omit] = omit,
         seed: Union[Optional[int], Omit] = omit,
@@ -845,6 +860,7 @@ class AsyncCompletions(AsyncAPIResource):
             prediction=prediction,
             presence_penalty=presence_penalty,
             prompt_cache_key=prompt_cache_key,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning_effort=reasoning_effort,
             safety_identifier=safety_identifier,
             seed=seed,

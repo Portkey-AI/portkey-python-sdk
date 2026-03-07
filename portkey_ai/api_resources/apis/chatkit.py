@@ -2,7 +2,6 @@ import json
 from typing import Any, Literal, Optional, Union
 from portkey_ai.api_resources.types.shared_types import Body, Headers, Query
 from ..._vendor.openai._types import (
-    FileTypes,
     NotGiven,
     Omit,
     not_given,
@@ -23,9 +22,6 @@ from portkey_ai._vendor.openai.types.beta.chatkit.chat_session_rate_limits_param
 from portkey_ai._vendor.openai.types.beta.chatkit.chat_session_workflow_param import (
     ChatSessionWorkflowParam,
 )
-from portkey_ai._vendor.openai.types.beta.chatkit_upload_file_response import (
-    ChatKitUploadFileResponse,
-)
 from portkey_ai.api_resources.types.chatkit_type import (
     ChatKitThread,
     ChatKitThreadList,
@@ -40,24 +36,6 @@ class ChatKit(APIResource):
         self.openai_client = client.openai_client
         self.sessions = ChatKitSessions(client)
         self.threads = ChatKitThreads(client)
-
-    def upload_file(
-        self,
-        *,
-        file: FileTypes,
-        extra_headers: Optional[Headers] = None,
-        extra_query: Optional[Query] = None,
-        extra_body: Optional[Body] = None,
-        timeout: Union[Optional[float], httpx.Timeout, NotGiven] = not_given,
-    ) -> ChatKitUploadFileResponse:
-        response = self.openai_client.beta.chatkit.upload_file(
-            file=file,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=extra_body,
-            timeout=timeout,
-        )
-        return response
 
 
 class ChatKitSessions(APIResource):
@@ -222,24 +200,6 @@ class AsyncChatKit(AsyncAPIResource):
         self.openai_client = client.openai_client
         self.sessions = AsyncChatKitSessions(client)
         self.threads = AsyncChatKitThreads(client)
-
-    async def upload_file(
-        self,
-        *,
-        file: FileTypes,
-        extra_headers: Optional[Headers] = None,
-        extra_query: Optional[Query] = None,
-        extra_body: Optional[Body] = None,
-        timeout: Union[Optional[float], httpx.Timeout, NotGiven] = not_given,
-    ) -> ChatKitUploadFileResponse:
-        response = await self.openai_client.beta.chatkit.upload_file(
-            file=file,
-            extra_headers=extra_headers,
-            extra_query=extra_query,
-            extra_body=extra_body,
-            timeout=timeout,
-        )
-        return response
 
 
 class AsyncChatKitSessions(AsyncAPIResource):

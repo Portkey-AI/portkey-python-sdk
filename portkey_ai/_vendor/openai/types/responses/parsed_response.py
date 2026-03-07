@@ -6,7 +6,6 @@ from typing_extensions import Annotated, TypeAlias
 from ..._utils import PropertyInfo
 from .response import Response
 from ..._models import GenericModel
-from ..._utils._transform import PropertyInfo
 from .response_output_item import (
     McpCall,
     McpListTools,
@@ -19,12 +18,17 @@ from .response_output_text import ResponseOutputText
 from .response_output_message import ResponseOutputMessage
 from .response_output_refusal import ResponseOutputRefusal
 from .response_reasoning_item import ResponseReasoningItem
+from .response_compaction_item import ResponseCompactionItem
 from .response_custom_tool_call import ResponseCustomToolCall
 from .response_computer_tool_call import ResponseComputerToolCall
 from .response_function_tool_call import ResponseFunctionToolCall
 from .response_function_web_search import ResponseFunctionWebSearch
+from .response_apply_patch_tool_call import ResponseApplyPatchToolCall
 from .response_file_search_tool_call import ResponseFileSearchToolCall
+from .response_function_shell_tool_call import ResponseFunctionShellToolCall
 from .response_code_interpreter_tool_call import ResponseCodeInterpreterToolCall
+from .response_apply_patch_tool_call_output import ResponseApplyPatchToolCallOutput
+from .response_function_shell_tool_call_output import ResponseFunctionShellToolCallOutput
 
 __all__ = ["ParsedResponse", "ParsedResponseOutputMessage", "ParsedResponseOutputText"]
 
@@ -75,6 +79,11 @@ ParsedResponseOutputItem: TypeAlias = Annotated[
         McpListTools,
         ResponseCodeInterpreterToolCall,
         ResponseCustomToolCall,
+        ResponseCompactionItem,
+        ResponseFunctionShellToolCall,
+        ResponseFunctionShellToolCallOutput,
+        ResponseApplyPatchToolCall,
+        ResponseApplyPatchToolCallOutput,
     ],
     PropertyInfo(discriminator="type"),
 ]

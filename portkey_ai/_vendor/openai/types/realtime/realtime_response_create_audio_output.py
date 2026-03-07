@@ -18,12 +18,13 @@ class Output(BaseModel):
     ] = None
     """The voice the model uses to respond.
 
-    Voice cannot be changed during the session once the model has responded with
-    audio at least once. Current voice options are `alloy`, `ash`, `ballad`,
-    `coral`, `echo`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. We recommend
-    `marin` and `cedar` for best quality.
+    Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+    `shimmer`, `verse`, `marin`, and `cedar`. Voice cannot be changed during the
+    session once the model has responded with audio at least once.
     """
 
 
 class RealtimeResponseCreateAudioOutput(BaseModel):
+    """Configuration for audio input and output."""
+
     output: Optional[Output] = None

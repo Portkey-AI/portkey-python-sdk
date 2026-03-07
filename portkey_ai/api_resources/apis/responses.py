@@ -6,10 +6,16 @@ from portkey_ai._vendor.openai.lib.streaming.responses._responses import (
     AsyncResponseStreamManager,
     ResponseStreamManager,
 )
-from portkey_ai._vendor.openai.types.responses import response_create_params
+from portkey_ai._vendor.openai.types.responses import (
+    input_token_count_params,
+    response_create_params,
+)
 from portkey_ai._vendor.openai.types.responses.parsed_response import ParsedResponse
 from portkey_ai._vendor.openai.types.responses.response_includable import (
     ResponseIncludable,
+)
+from portkey_ai._vendor.openai.types.responses.response_input_item_param import (
+    ResponseInputItemParam,
 )
 from portkey_ai._vendor.openai.types.responses.response_input_param import (
     ResponseInputParam,
@@ -30,8 +36,14 @@ from portkey_ai._vendor.openai.types.shared.responses_model import ResponsesMode
 from portkey_ai._vendor.openai.types.shared_params.reasoning import Reasoning
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
-from portkey_ai.api_resources.types.response_type import Response as ResponseType
+from portkey_ai.api_resources.types.response_type import (
+    Response as ResponseType,
+    CompactedResponse,
+)
 from portkey_ai.api_resources.types.responses_input_items_type import InputItemList
+from portkey_ai.api_resources.types.responses_input_tokens_type import (
+    InputTokenCountResponse,
+)
 from portkey_ai.api_resources.types.shared_types import Metadata
 from ..._vendor.openai._types import Omit, omit
 from typing_extensions import overload
@@ -42,6 +54,7 @@ class Responses(APIResource):
         super().__init__(client)
         self.openai_client = client.openai_client
         self.input_items = InputItems(client)
+        self.input_tokens = InputTokens(client)
 
     @overload
     def create(
@@ -55,6 +68,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Literal[False], Omit] = omit,
@@ -82,6 +98,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -108,6 +127,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -132,6 +154,9 @@ class Responses(APIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Optional[Literal[False]], Literal[True], Omit] = omit,
@@ -158,6 +183,7 @@ class Responses(APIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,  # type: ignore[arg-type]
@@ -231,6 +257,9 @@ class Responses(APIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream_options: Union[response_create_params.StreamOptions, Omit] = omit,
@@ -257,6 +286,7 @@ class Responses(APIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream_options=stream_options,
@@ -285,6 +315,9 @@ class Responses(APIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream: Union[Literal[False], Literal[True], Omit] = omit,
@@ -312,6 +345,7 @@ class Responses(APIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,
@@ -343,6 +377,35 @@ class Responses(APIResource):
             extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
+
+    def compact(
+        self,
+        *,
+        model: Union[str, Omit] = omit,
+        input: Union[str, Iterable[ResponseInputItemParam], None, Omit] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        previous_response_id: Union[Optional[str], Omit] = omit,
+        **kwargs,
+    ) -> CompactedResponse:
+        import json
+
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = self.openai_client.with_raw_response.responses.compact(
+            model=model,  # type: ignore[arg-type]
+            input=input,
+            instructions=instructions,
+            previous_response_id=previous_response_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
+        )
+        data = CompactedResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class InputItems(APIResource):
@@ -379,11 +442,62 @@ class InputItems(APIResource):
         return response  # type: ignore[return-value]
 
 
+class InputTokens(APIResource):
+    def __init__(self, client: Portkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    def count(
+        self,
+        *,
+        conversation: Union[
+            Optional[input_token_count_params.Conversation], Omit
+        ] = omit,
+        input: Union[str, Iterable[ResponseInputItemParam], None, Omit] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        model: Union[Optional[str], Omit] = omit,
+        parallel_tool_calls: Union[Optional[bool], Omit] = omit,
+        previous_response_id: Union[Optional[str], Omit] = omit,
+        reasoning: Union[Optional[Reasoning], Omit] = omit,
+        text: Union[Optional[input_token_count_params.Text], Omit] = omit,
+        tool_choice: Union[Optional[input_token_count_params.ToolChoice], Omit] = omit,
+        tools: Union[Optional[Iterable[ToolParam]], Omit] = omit,
+        truncation: Union[Literal["auto", "disabled"], Omit] = omit,
+        **kwargs,
+    ) -> InputTokenCountResponse:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = self.openai_client.with_raw_response.responses.input_tokens.count(
+            conversation=conversation,
+            input=input,
+            instructions=instructions,
+            model=model,
+            parallel_tool_calls=parallel_tool_calls,
+            previous_response_id=previous_response_id,
+            reasoning=reasoning,
+            text=text,
+            tool_choice=tool_choice,
+            tools=tools,
+            truncation=truncation,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
+        )
+
+        data = InputTokenCountResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+
 class AsyncResponses(AsyncAPIResource):
     def __init__(self, client: AsyncPortkey) -> None:
         super().__init__(client)
         self.openai_client = client.openai_client
         self.input_items = AsyncInputItems(client)
+        self.input_tokens = AsyncInputTokens(client)
 
     @overload
     async def create(
@@ -397,6 +511,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Literal[False], Omit] = omit,
@@ -424,6 +541,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -450,6 +570,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         temperature: Union[Optional[float], Omit] = omit,
@@ -474,6 +597,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Optional[Metadata], Omit] = omit,
         parallel_tool_calls: Union[Optional[bool], Omit] = omit,
         previous_response_id: Union[Optional[str], Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Optional[Reasoning], Omit] = omit,
         store: Union[Optional[bool], Omit] = omit,
         stream: Union[Optional[Literal[False]], Literal[True], Omit] = omit,
@@ -500,6 +626,7 @@ class AsyncResponses(AsyncAPIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,  # type: ignore[arg-type]
@@ -573,6 +700,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream_options: Union[response_create_params.StreamOptions, Omit] = omit,
@@ -599,6 +729,7 @@ class AsyncResponses(AsyncAPIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream_options=stream_options,
@@ -627,6 +758,9 @@ class AsyncResponses(AsyncAPIResource):
         metadata: Union[Metadata, Omit] = omit,
         parallel_tool_calls: Union[bool, Omit] = omit,
         previous_response_id: Union[str, Omit] = omit,
+        prompt_cache_retention: Union[
+            Optional[Literal["in-memory", "24h"]], Omit
+        ] = omit,
         reasoning: Union[Reasoning, Omit] = omit,
         store: Union[bool, Omit] = omit,
         stream: Union[Literal[False], Literal[True], Omit] = omit,
@@ -654,6 +788,7 @@ class AsyncResponses(AsyncAPIResource):
             metadata=metadata,
             parallel_tool_calls=parallel_tool_calls,
             previous_response_id=previous_response_id,
+            prompt_cache_retention=prompt_cache_retention,
             reasoning=reasoning,
             store=store,
             stream=stream,
@@ -685,6 +820,35 @@ class AsyncResponses(AsyncAPIResource):
             extra_body={**(extra_body or {}), **kwargs},
             timeout=timeout,
         )
+
+    async def compact(
+        self,
+        *,
+        model: Union[str, Omit] = omit,
+        input: Union[str, Iterable[ResponseInputItemParam], None, Omit] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        previous_response_id: Union[Optional[str], Omit] = omit,
+        **kwargs,
+    ) -> CompactedResponse:
+        import json
+
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = await self.openai_client.with_raw_response.responses.compact(
+            model=model,  # type: ignore[arg-type]
+            input=input,
+            instructions=instructions,
+            previous_response_id=previous_response_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
+        )
+        data = CompactedResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
 
 class AsyncInputItems(AsyncAPIResource):
@@ -719,3 +883,55 @@ class AsyncInputItems(AsyncAPIResource):
         )
 
         return response  # type: ignore[return-value]
+
+
+class AsyncInputTokens(AsyncAPIResource):
+    def __init__(self, client: AsyncPortkey) -> None:
+        super().__init__(client)
+        self.openai_client = client.openai_client
+
+    async def count(
+        self,
+        *,
+        conversation: Union[
+            Optional[input_token_count_params.Conversation], Omit
+        ] = omit,
+        input: Union[str, Iterable[ResponseInputItemParam], None, Omit] = omit,
+        instructions: Union[Optional[str], Omit] = omit,
+        model: Union[Optional[str], Omit] = omit,
+        parallel_tool_calls: Union[Optional[bool], Omit] = omit,
+        previous_response_id: Union[Optional[str], Omit] = omit,
+        reasoning: Union[Optional[Reasoning], Omit] = omit,
+        text: Union[Optional[input_token_count_params.Text], Omit] = omit,
+        tool_choice: Union[Optional[input_token_count_params.ToolChoice], Omit] = omit,
+        tools: Union[Optional[Iterable[ToolParam]], Omit] = omit,
+        truncation: Union[Literal["auto", "disabled"], Omit] = omit,
+        **kwargs,
+    ) -> InputTokenCountResponse:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+        response = (
+            await self.openai_client.with_raw_response.responses.input_tokens.count(
+                conversation=conversation,
+                input=input,
+                instructions=instructions,
+                model=model,
+                parallel_tool_calls=parallel_tool_calls,
+                previous_response_id=previous_response_id,
+                reasoning=reasoning,
+                text=text,
+                tool_choice=tool_choice,
+                tools=tools,
+                truncation=truncation,
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body={**(extra_body or {}), **kwargs},
+                timeout=timeout,
+            )
+        )
+
+        data = InputTokenCountResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data

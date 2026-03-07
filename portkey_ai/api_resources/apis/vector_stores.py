@@ -1,6 +1,7 @@
 import json
 from typing import Any, Dict, Iterable, List, Optional, Union
 import typing
+from portkey_ai._vendor.openai.types.vector_stores import file_batch_create_params
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.shared_types import Metadata
@@ -32,6 +33,7 @@ class VectorStores(APIResource):
         self,
         *,
         chunking_strategy: Union[Any, Omit] = omit,
+        description: Union[str, Omit] = omit,
         expires_after: Union[vector_store_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
         metadata: Union[Optional[Metadata], Omit] = omit,
@@ -39,6 +41,7 @@ class VectorStores(APIResource):
     ) -> VectorStore:
         response = self.openai_client.with_raw_response.vector_stores.create(
             chunking_strategy=chunking_strategy,
+            description=description,
             expires_after=expires_after,
             file_ids=file_ids,
             metadata=metadata,
@@ -308,7 +311,8 @@ class VectorFileBatches(APIResource):
         self,
         vector_store_id: str,
         *,
-        file_ids: List[str],
+        file_ids: Union[List[str], Omit] = omit,
+        files: Union[Iterable[file_batch_create_params.File], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
@@ -316,6 +320,7 @@ class VectorFileBatches(APIResource):
             self.openai_client.with_raw_response.vector_stores.file_batches.create(
                 vector_store_id=vector_store_id,
                 file_ids=file_ids,
+                files=files,
                 chunking_strategy=chunking_strategy,
                 **kwargs,
             )
@@ -460,6 +465,7 @@ class AsyncVectorStores(AsyncAPIResource):
         self,
         *,
         chunking_strategy: Union[Any, Omit] = omit,
+        description: Union[str, Omit] = omit,
         expires_after: Union[vector_store_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
         metadata: Union[Optional[Metadata], Omit] = omit,
@@ -467,6 +473,7 @@ class AsyncVectorStores(AsyncAPIResource):
     ) -> VectorStore:
         response = await self.openai_client.with_raw_response.vector_stores.create(
             chunking_strategy=chunking_strategy,
+            description=description,
             expires_after=expires_after,
             file_ids=file_ids,
             metadata=metadata,
@@ -736,13 +743,15 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        file_ids: List[str],
+        file_ids: Union[List[str], Omit] = omit,
+        files: Union[Iterable[file_batch_create_params.File], Omit] = omit,
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
         response = await self.openai_client.with_raw_response.vector_stores.file_batches.create(  # noqa: E501
             vector_store_id=vector_store_id,
             file_ids=file_ids,
+            files=files,
             chunking_strategy=chunking_strategy,
             **kwargs,
         )

@@ -28,6 +28,7 @@ class Containers(APIResource):
         name: str,
         expires_after: Union[container_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
+        memory_limit: Union[Literal["1g", "4g", "16g", "64g"], Omit] = omit,
         **kwargs,
     ) -> ContainerCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -38,6 +39,7 @@ class Containers(APIResource):
             name=name,
             expires_after=expires_after,
             file_ids=file_ids,
+            memory_limit=memory_limit,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body=extra_body,
@@ -286,6 +288,7 @@ class AsyncContainers(AsyncAPIResource):
         name: str,
         expires_after: Union[container_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
+        memory_limit: Union[Literal["1g", "4g", "16g", "64g"], Omit] = omit,
         **kwargs,
     ) -> ContainerCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -296,6 +299,7 @@ class AsyncContainers(AsyncAPIResource):
             name=name,
             expires_after=expires_after,
             file_ids=file_ids,
+            memory_limit=memory_limit,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body=extra_body,

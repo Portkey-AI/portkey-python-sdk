@@ -9,6 +9,12 @@ __all__ = ["ChatCompletionAudioParam"]
 
 
 class ChatCompletionAudioParam(TypedDict, total=False):
+    """Parameters for audio output.
+
+    Required when audio output is requested with
+    `modalities: ["audio"]`. [Learn more](https://platform.openai.com/docs/guides/audio).
+    """
+
     format: Required[Literal["wav", "aac", "mp3", "flac", "opus", "pcm16"]]
     """Specifies the output audio format.
 
@@ -20,6 +26,6 @@ class ChatCompletionAudioParam(TypedDict, total=False):
     ]
     """The voice the model uses to respond.
 
-    Supported voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `nova`,
-    `onyx`, `sage`, and `shimmer`.
+    Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`,
+    `fable`, `nova`, `onyx`, `sage`, `shimmer`, `marin`, and `cedar`.
     """
