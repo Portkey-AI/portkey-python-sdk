@@ -21,11 +21,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, AsyncGenerator, Iterable, Optional
 import base64
 import json
-import logging
 
 from portkey_ai import AsyncPortkey
-
-logger = logging.getLogger("portkey_ai.integrations.adk")
 
 if TYPE_CHECKING:
     from google.adk.models.llm_request import LlmRequest  # type: ignore  # no py.typed
@@ -45,7 +42,7 @@ except Exception:  # pragma: no cover
 def _safe_json_serialize(obj: Any) -> str:
     try:
         return json.dumps(obj, ensure_ascii=False)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return str(obj)
 
 
@@ -166,10 +163,16 @@ def _content_to_input_items(content: Any, system_role: str) -> list[dict[str, An
         function_response = getattr(part, "function_response", None)
         if not function_response:
             continue
+        call_id = getattr(function_response, "id", None)
+        if not call_id:
+            raise ValueError(
+                "FunctionResponse is missing 'id' — cannot build call_id "
+                "for function_call_output item in Responses API request."
+            )
         tool_outputs.append(
             {
                 "type": "function_call_output",
-                "call_id": getattr(function_response, "id", None),
+                "call_id": call_id,
                 "output": _safe_json_serialize(
                     getattr(function_response, "response", None)
                 ),
@@ -185,13 +188,24 @@ def _content_to_input_items(content: Any, system_role: str) -> list[dict[str, An
     for part in input_parts:
         function_call = getattr(part, "function_call", None)
         if function_call:
+            fc_name = getattr(function_call, "name", None)
+            fc_id = getattr(function_call, "id", None)
+            if not fc_name:
+                raise ValueError(
+                    "FunctionCall is missing 'name' — cannot build "
+                    "function_call item for Responses API request."
+                )
+            if not fc_id:
+                raise ValueError(
+                    "FunctionCall is missing 'id' — cannot build "
+                    "call_id for function_call item in Responses API request."
+                )
             items.append(
                 {
                     "type": "function_call",
-                    "id": getattr(function_call, "id", None),
-                    "call_id": getattr(function_call, "id", None)
-                    or getattr(function_call, "name", "function_call"),
-                    "name": getattr(function_call, "name", None),
+                    "id": fc_id,
+                    "call_id": fc_id,
+                    "name": fc_name,
                     "arguments": _safe_json_serialize(
                         getattr(function_call, "args", None)
                     ),
@@ -453,18 +467,7 @@ class PortkeyAdk(_AdkBaseLlm):  # type: ignore[misc]  # _AdkBaseLlm may be a stu
 
         sys_role = str(kwargs.pop("system_role", "developer")).lower()
 
-        base_kwargs = {k: v for k, v in kwargs.items() if k != "model"}
-        try:
-            super().__init__(model=model, **base_kwargs)  # type: ignore[misc,call-arg]  # BaseLlm may be the stub; real BaseLlm signature varies by adk version
-        except TypeError:
-            super().__init__()  # type: ignore[misc,call-arg]  # fallback for older BaseLlm that takes no args
-        self.model: str = model  # type: ignore[assignment]  # BaseLlm declares model as a Pydantic field with different type
-
-        # Must be set AFTER super().__init__() -- Pydantic resets __dict__.
-        self._system_role: str = (
-            sys_role if sys_role in ("developer", "system") else "developer"
-        )
-
+        # Extract Portkey client kwargs before passing the rest to BaseLlm.
         client_args: dict[str, Any] = {}
         if api_key:
             client_args["api_key"] = api_key
@@ -480,6 +483,18 @@ class PortkeyAdk(_AdkBaseLlm):  # type: ignore[misc]  # _AdkBaseLlm may be a stu
                 client_args[key] = kwargs.pop(key)
         client_args["strict_open_ai_compliance"] = kwargs.pop(
             "strict_open_ai_compliance", False
+        )
+
+        base_kwargs = {k: v for k, v in kwargs.items() if k != "model"}
+        try:
+            super().__init__(model=model, **base_kwargs)  # type: ignore[misc,call-arg]  # BaseLlm may be the stub; real BaseLlm signature varies by adk version
+        except TypeError:
+            super().__init__()  # type: ignore[misc,call-arg]  # fallback for older BaseLlm that takes no args
+        self.model: str = model  # type: ignore[assignment]  # BaseLlm declares model as a Pydantic field with different type
+
+        # Must be set AFTER super().__init__() -- Pydantic resets __dict__.
+        self._system_role: str = (
+            sys_role if sys_role in ("developer", "system") else "developer"
         )
 
         self._client = AsyncPortkey(**client_args)  # type: ignore[arg-type]  # client_args values are Any; AsyncPortkey expects specific types
@@ -511,7 +526,17 @@ class PortkeyAdk(_AdkBaseLlm):  # type: ignore[misc]  # _AdkBaseLlm may be a stu
         if reasoning:
             response_args["reasoning"] = reasoning
             response_args.setdefault("include", ["reasoning.encrypted_content"])
+
         response_args.update(self._additional_args)
+
+        # Ensure adapter-required include entries aren't dropped by user overrides.
+        if reasoning:
+            include = response_args.get("include") or []
+            if not isinstance(include, list):
+                include = [include]
+            if "reasoning.encrypted_content" not in include:
+                include.append("reasoning.encrypted_content")
+            response_args["include"] = include
         if tools and "tool_choice" not in response_args:
             response_args["tool_choice"] = "auto"
 
