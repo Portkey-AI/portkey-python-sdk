@@ -1,5 +1,5 @@
 import json
-from typing import Iterable, List, Literal, Optional, Union
+from typing import Iterable, List, Literal, Optional, Type, Union
 from portkey_ai._vendor.openai._streaming import AsyncStream, Stream
 from portkey_ai._vendor.openai.lib._parsing._responses import TextFormatT
 from portkey_ai._vendor.openai.lib.streaming.responses._responses import (
@@ -387,7 +387,7 @@ class Responses(APIResource):
         self,
         *,
         response_id: str,
-        text_format: Union[type[TextFormatT], Omit] = omit,
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         starting_after: Union[int, Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         **kwargs,
@@ -404,7 +404,7 @@ class Responses(APIResource):
         context_management: Union[
             Optional[Iterable[response_create_params.ContextManagement]], Omit
         ] = omit,
-        text_format: Union[type[TextFormatT], Omit] = omit,
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         conversation: Union[Optional[response_create_params.Conversation], Omit] = omit,
         include: Union[Optional[List[ResponseIncludable]], Omit] = omit,
@@ -449,7 +449,7 @@ class Responses(APIResource):
         context_management: Union[
             Optional[Iterable[response_create_params.ContextManagement]], Omit
         ] = omit,
-        text_format: Union[type[TextFormatT], Omit] = omit,
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         conversation: Union[Optional[response_create_params.Conversation], Omit] = omit,
         include: Union[Optional[List[ResponseIncludable]], Omit] = omit,
@@ -528,7 +528,7 @@ class Responses(APIResource):
     def parse(
         self,
         *,
-        text_format: Union[type[TextFormatT], Omit] = omit,  # type: ignore[type-arg]
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         background: Union[Optional[bool], Omit] = omit,
         context_management: Union[
             Optional[Iterable[response_create_params.ContextManagement]], Omit
@@ -1182,7 +1182,7 @@ class AsyncResponses(AsyncAPIResource):
         self,
         *,
         response_id: str,
-        text_format: Union[type[TextFormatT], Omit] = omit,  # type: ignore[type-arg]
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         starting_after: Union[int, Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         **kwargs,
@@ -1199,7 +1199,7 @@ class AsyncResponses(AsyncAPIResource):
         context_management: Union[
             Optional[Iterable[response_create_params.ContextManagement]], Omit
         ] = omit,
-        text_format: Union[type[TextFormatT], Omit] = omit,  # type: ignore[type-arg]
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         conversation: Union[Optional[response_create_params.Conversation], Omit] = omit,
         include: Union[Optional[List[ResponseIncludable]], Omit] = omit,
@@ -1244,7 +1244,7 @@ class AsyncResponses(AsyncAPIResource):
         context_management: Union[
             Optional[Iterable[response_create_params.ContextManagement]], Omit
         ] = omit,
-        text_format: Union[type[TextFormatT], Omit] = omit,  # type: ignore[type-arg]
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         conversation: Union[Optional[response_create_params.Conversation], Omit] = omit,
         include: Union[Optional[List[ResponseIncludable]], Omit] = omit,
@@ -1330,7 +1330,7 @@ class AsyncResponses(AsyncAPIResource):
         conversation: Union[Optional[response_create_params.Conversation], Omit] = omit,
         input: Union[str, ResponseInputParam, Omit] = omit,
         model: Union[ResponsesModel, Omit] = omit,
-        text_format: Union[type[TextFormatT], Omit] = omit,  # type: ignore[type-arg]
+        text_format: Union[Type[TextFormatT], Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         include: Union[Optional[List[ResponseIncludable]], Omit] = omit,
         instructions: Union[Optional[str], Omit] = omit,
