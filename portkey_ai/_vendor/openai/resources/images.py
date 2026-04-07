@@ -25,6 +25,8 @@ __all__ = ["Images", "AsyncImages"]
 
 
 class Images(SyncAPIResource):
+    """Given a prompt and/or an input image, the model will generate a new image."""
+
     @cached_property
     def with_raw_response(self) -> ImagesWithRawResponse:
         """
@@ -147,14 +149,15 @@ class Images(SyncAPIResource):
         prompt.
 
         This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`,
-        and `gpt-image-1-mini`) and `dall-e-2`.
+        `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
 
         Args:
           image: The image(s) to edit. Must be a supported image file or an array of images.
 
               For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and
               `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than
-              50MB. You can provide up to 16 images.
+              50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same
+              input constraints as GPT image models.
 
               For `dall-e-2`, you can only provide one image, and it should be a square `png`
               file less than 4MB.
@@ -172,17 +175,15 @@ class Images(SyncAPIResource):
 
           input_fidelity: Control how much effort the model will exert to match the style and features,
               especially facial features, of input images. This parameter is only supported
-              for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and
-              `low`. Defaults to `low`.
+              for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for
+              `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
           mask: An additional image whose fully transparent areas (e.g. where alpha is zero)
               indicate where `image` should be edited. If there are multiple images provided,
               the mask will be applied on the first image. Must be a valid PNG file, less than
               4MB, and have the same dimensions as `image`.
 
-          model: The model to use for image generation. Only `dall-e-2` and the GPT image models
-              are supported. Defaults to `dall-e-2` unless a parameter specific to the GPT
-              image models is used.
+          model: The model to use for image generation. Defaults to `gpt-image-1.5`.
 
           n: The number of images to generate. Must be between 1 and 10.
 
@@ -201,14 +202,13 @@ class Images(SyncAPIResource):
               Note that the final image may be sent before the full number of partial images
               are generated if the full image is generated more quickly.
 
-          quality: The quality of the image that will be generated. `high`, `medium` and `low` are
-              only supported for the GPT image models. `dall-e-2` only supports `standard`
-              quality. Defaults to `auto`.
+          quality: The quality of the image that will be generated for GPT image models. Defaults
+              to `auto`.
 
           response_format: The format in which the generated images are returned. Must be one of `url` or
               `b64_json`. URLs are only valid for 60 minutes after the image has been
-              generated. This parameter is only supported for `dall-e-2`, as the GPT image
-              models always return base64-encoded images.
+              generated. This parameter is only supported for `dall-e-2` (default is `url` for
+              `dall-e-2`), as GPT image models always return base64-encoded images.
 
           size: The size of the generated images. Must be one of `1024x1024`, `1536x1024`
               (landscape), `1024x1536` (portrait), or `auto` (default value) for the GPT image
@@ -262,14 +262,15 @@ class Images(SyncAPIResource):
         prompt.
 
         This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`,
-        and `gpt-image-1-mini`) and `dall-e-2`.
+        `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
 
         Args:
           image: The image(s) to edit. Must be a supported image file or an array of images.
 
               For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and
               `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than
-              50MB. You can provide up to 16 images.
+              50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same
+              input constraints as GPT image models.
 
               For `dall-e-2`, you can only provide one image, and it should be a square `png`
               file less than 4MB.
@@ -291,17 +292,15 @@ class Images(SyncAPIResource):
 
           input_fidelity: Control how much effort the model will exert to match the style and features,
               especially facial features, of input images. This parameter is only supported
-              for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and
-              `low`. Defaults to `low`.
+              for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for
+              `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
           mask: An additional image whose fully transparent areas (e.g. where alpha is zero)
               indicate where `image` should be edited. If there are multiple images provided,
               the mask will be applied on the first image. Must be a valid PNG file, less than
               4MB, and have the same dimensions as `image`.
 
-          model: The model to use for image generation. Only `dall-e-2` and the GPT image models
-              are supported. Defaults to `dall-e-2` unless a parameter specific to the GPT
-              image models is used.
+          model: The model to use for image generation. Defaults to `gpt-image-1.5`.
 
           n: The number of images to generate. Must be between 1 and 10.
 
@@ -320,14 +319,13 @@ class Images(SyncAPIResource):
               Note that the final image may be sent before the full number of partial images
               are generated if the full image is generated more quickly.
 
-          quality: The quality of the image that will be generated. `high`, `medium` and `low` are
-              only supported for the GPT image models. `dall-e-2` only supports `standard`
-              quality. Defaults to `auto`.
+          quality: The quality of the image that will be generated for GPT image models. Defaults
+              to `auto`.
 
           response_format: The format in which the generated images are returned. Must be one of `url` or
               `b64_json`. URLs are only valid for 60 minutes after the image has been
-              generated. This parameter is only supported for `dall-e-2`, as the GPT image
-              models always return base64-encoded images.
+              generated. This parameter is only supported for `dall-e-2` (default is `url` for
+              `dall-e-2`), as GPT image models always return base64-encoded images.
 
           size: The size of the generated images. Must be one of `1024x1024`, `1536x1024`
               (landscape), `1024x1536` (portrait), or `auto` (default value) for the GPT image
@@ -377,14 +375,15 @@ class Images(SyncAPIResource):
         prompt.
 
         This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`,
-        and `gpt-image-1-mini`) and `dall-e-2`.
+        `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
 
         Args:
           image: The image(s) to edit. Must be a supported image file or an array of images.
 
               For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and
               `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than
-              50MB. You can provide up to 16 images.
+              50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same
+              input constraints as GPT image models.
 
               For `dall-e-2`, you can only provide one image, and it should be a square `png`
               file less than 4MB.
@@ -406,17 +405,15 @@ class Images(SyncAPIResource):
 
           input_fidelity: Control how much effort the model will exert to match the style and features,
               especially facial features, of input images. This parameter is only supported
-              for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and
-              `low`. Defaults to `low`.
+              for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for
+              `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
           mask: An additional image whose fully transparent areas (e.g. where alpha is zero)
               indicate where `image` should be edited. If there are multiple images provided,
               the mask will be applied on the first image. Must be a valid PNG file, less than
               4MB, and have the same dimensions as `image`.
 
-          model: The model to use for image generation. Only `dall-e-2` and the GPT image models
-              are supported. Defaults to `dall-e-2` unless a parameter specific to the GPT
-              image models is used.
+          model: The model to use for image generation. Defaults to `gpt-image-1.5`.
 
           n: The number of images to generate. Must be between 1 and 10.
 
@@ -435,14 +432,13 @@ class Images(SyncAPIResource):
               Note that the final image may be sent before the full number of partial images
               are generated if the full image is generated more quickly.
 
-          quality: The quality of the image that will be generated. `high`, `medium` and `low` are
-              only supported for the GPT image models. `dall-e-2` only supports `standard`
-              quality. Defaults to `auto`.
+          quality: The quality of the image that will be generated for GPT image models. Defaults
+              to `auto`.
 
           response_format: The format in which the generated images are returned. Must be one of `url` or
               `b64_json`. URLs are only valid for 60 minutes after the image has been
-              generated. This parameter is only supported for `dall-e-2`, as the GPT image
-              models always return base64-encoded images.
+              generated. This parameter is only supported for `dall-e-2` (default is `url` for
+              `dall-e-2`), as GPT image models always return base64-encoded images.
 
           size: The size of the generated images. Must be one of `1024x1024`, `1536x1024`
               (landscape), `1024x1536` (portrait), or `auto` (default value) for the GPT image
@@ -921,6 +917,8 @@ class Images(SyncAPIResource):
 
 
 class AsyncImages(AsyncAPIResource):
+    """Given a prompt and/or an input image, the model will generate a new image."""
+
     @cached_property
     def with_raw_response(self) -> AsyncImagesWithRawResponse:
         """
@@ -1043,14 +1041,15 @@ class AsyncImages(AsyncAPIResource):
         prompt.
 
         This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`,
-        and `gpt-image-1-mini`) and `dall-e-2`.
+        `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
 
         Args:
           image: The image(s) to edit. Must be a supported image file or an array of images.
 
               For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and
               `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than
-              50MB. You can provide up to 16 images.
+              50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same
+              input constraints as GPT image models.
 
               For `dall-e-2`, you can only provide one image, and it should be a square `png`
               file less than 4MB.
@@ -1068,17 +1067,15 @@ class AsyncImages(AsyncAPIResource):
 
           input_fidelity: Control how much effort the model will exert to match the style and features,
               especially facial features, of input images. This parameter is only supported
-              for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and
-              `low`. Defaults to `low`.
+              for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for
+              `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
           mask: An additional image whose fully transparent areas (e.g. where alpha is zero)
               indicate where `image` should be edited. If there are multiple images provided,
               the mask will be applied on the first image. Must be a valid PNG file, less than
               4MB, and have the same dimensions as `image`.
 
-          model: The model to use for image generation. Only `dall-e-2` and the GPT image models
-              are supported. Defaults to `dall-e-2` unless a parameter specific to the GPT
-              image models is used.
+          model: The model to use for image generation. Defaults to `gpt-image-1.5`.
 
           n: The number of images to generate. Must be between 1 and 10.
 
@@ -1097,14 +1094,13 @@ class AsyncImages(AsyncAPIResource):
               Note that the final image may be sent before the full number of partial images
               are generated if the full image is generated more quickly.
 
-          quality: The quality of the image that will be generated. `high`, `medium` and `low` are
-              only supported for the GPT image models. `dall-e-2` only supports `standard`
-              quality. Defaults to `auto`.
+          quality: The quality of the image that will be generated for GPT image models. Defaults
+              to `auto`.
 
           response_format: The format in which the generated images are returned. Must be one of `url` or
               `b64_json`. URLs are only valid for 60 minutes after the image has been
-              generated. This parameter is only supported for `dall-e-2`, as the GPT image
-              models always return base64-encoded images.
+              generated. This parameter is only supported for `dall-e-2` (default is `url` for
+              `dall-e-2`), as GPT image models always return base64-encoded images.
 
           size: The size of the generated images. Must be one of `1024x1024`, `1536x1024`
               (landscape), `1024x1536` (portrait), or `auto` (default value) for the GPT image
@@ -1158,14 +1154,15 @@ class AsyncImages(AsyncAPIResource):
         prompt.
 
         This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`,
-        and `gpt-image-1-mini`) and `dall-e-2`.
+        `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
 
         Args:
           image: The image(s) to edit. Must be a supported image file or an array of images.
 
               For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and
               `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than
-              50MB. You can provide up to 16 images.
+              50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same
+              input constraints as GPT image models.
 
               For `dall-e-2`, you can only provide one image, and it should be a square `png`
               file less than 4MB.
@@ -1187,17 +1184,15 @@ class AsyncImages(AsyncAPIResource):
 
           input_fidelity: Control how much effort the model will exert to match the style and features,
               especially facial features, of input images. This parameter is only supported
-              for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and
-              `low`. Defaults to `low`.
+              for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for
+              `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
           mask: An additional image whose fully transparent areas (e.g. where alpha is zero)
               indicate where `image` should be edited. If there are multiple images provided,
               the mask will be applied on the first image. Must be a valid PNG file, less than
               4MB, and have the same dimensions as `image`.
 
-          model: The model to use for image generation. Only `dall-e-2` and the GPT image models
-              are supported. Defaults to `dall-e-2` unless a parameter specific to the GPT
-              image models is used.
+          model: The model to use for image generation. Defaults to `gpt-image-1.5`.
 
           n: The number of images to generate. Must be between 1 and 10.
 
@@ -1216,14 +1211,13 @@ class AsyncImages(AsyncAPIResource):
               Note that the final image may be sent before the full number of partial images
               are generated if the full image is generated more quickly.
 
-          quality: The quality of the image that will be generated. `high`, `medium` and `low` are
-              only supported for the GPT image models. `dall-e-2` only supports `standard`
-              quality. Defaults to `auto`.
+          quality: The quality of the image that will be generated for GPT image models. Defaults
+              to `auto`.
 
           response_format: The format in which the generated images are returned. Must be one of `url` or
               `b64_json`. URLs are only valid for 60 minutes after the image has been
-              generated. This parameter is only supported for `dall-e-2`, as the GPT image
-              models always return base64-encoded images.
+              generated. This parameter is only supported for `dall-e-2` (default is `url` for
+              `dall-e-2`), as GPT image models always return base64-encoded images.
 
           size: The size of the generated images. Must be one of `1024x1024`, `1536x1024`
               (landscape), `1024x1536` (portrait), or `auto` (default value) for the GPT image
@@ -1273,14 +1267,15 @@ class AsyncImages(AsyncAPIResource):
         prompt.
 
         This endpoint supports GPT Image models (`gpt-image-1.5`, `gpt-image-1`,
-        and `gpt-image-1-mini`) and `dall-e-2`.
+        `gpt-image-1-mini`, and `chatgpt-image-latest`) and `dall-e-2`.
 
         Args:
           image: The image(s) to edit. Must be a supported image file or an array of images.
 
               For the GPT image models (`gpt-image-1`, `gpt-image-1-mini`, and
               `gpt-image-1.5`), each image should be a `png`, `webp`, or `jpg` file less than
-              50MB. You can provide up to 16 images.
+              50MB. You can provide up to 16 images. `chatgpt-image-latest` follows the same
+              input constraints as GPT image models.
 
               For `dall-e-2`, you can only provide one image, and it should be a square `png`
               file less than 4MB.
@@ -1302,17 +1297,15 @@ class AsyncImages(AsyncAPIResource):
 
           input_fidelity: Control how much effort the model will exert to match the style and features,
               especially facial features, of input images. This parameter is only supported
-              for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and
-              `low`. Defaults to `low`.
+              for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for
+              `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
           mask: An additional image whose fully transparent areas (e.g. where alpha is zero)
               indicate where `image` should be edited. If there are multiple images provided,
               the mask will be applied on the first image. Must be a valid PNG file, less than
               4MB, and have the same dimensions as `image`.
 
-          model: The model to use for image generation. Only `dall-e-2` and the GPT image models
-              are supported. Defaults to `dall-e-2` unless a parameter specific to the GPT
-              image models is used.
+          model: The model to use for image generation. Defaults to `gpt-image-1.5`.
 
           n: The number of images to generate. Must be between 1 and 10.
 
@@ -1331,14 +1324,13 @@ class AsyncImages(AsyncAPIResource):
               Note that the final image may be sent before the full number of partial images
               are generated if the full image is generated more quickly.
 
-          quality: The quality of the image that will be generated. `high`, `medium` and `low` are
-              only supported for the GPT image models. `dall-e-2` only supports `standard`
-              quality. Defaults to `auto`.
+          quality: The quality of the image that will be generated for GPT image models. Defaults
+              to `auto`.
 
           response_format: The format in which the generated images are returned. Must be one of `url` or
               `b64_json`. URLs are only valid for 60 minutes after the image has been
-              generated. This parameter is only supported for `dall-e-2`, as the GPT image
-              models always return base64-encoded images.
+              generated. This parameter is only supported for `dall-e-2` (default is `url` for
+              `dall-e-2`), as GPT image models always return base64-encoded images.
 
           size: The size of the generated images. Must be one of `1024x1024`, `1536x1024`
               (landscape), `1024x1536` (portrait), or `auto` (default value) for the GPT image

@@ -4,6 +4,7 @@ from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIReso
 from portkey_ai.api_resources.global_constants import AUDIO_FILE_DURATION_HEADER
 from portkey_ai.api_resources.get_audio_duration import get_audio_file_duration
 from ..._vendor.openai._types import Omit, omit, FileTypes
+from ..._vendor.openai.types.audio import speech_create_params
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 import typing
 
@@ -137,7 +138,7 @@ class Speech(APIResource):
         *,
         input: str,
         model: str,
-        voice: str,
+        voice: speech_create_params.Voice,
         response_format: Union[str, Omit] = omit,
         speed: Union[float, Omit] = omit,
         stream: Union[bool, Omit] = omit,
@@ -283,7 +284,7 @@ class AsyncSpeech(AsyncAPIResource):
         *,
         input: str,
         model: str,
-        voice: str,
+        voice: speech_create_params.Voice,
         response_format: Union[str, Omit] = omit,
         speed: Union[float, Omit] = omit,
         stream: Union[bool, Omit] = omit,

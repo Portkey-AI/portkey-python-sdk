@@ -10,7 +10,7 @@ import httpx
 from ... import _legacy_response
 from ...types import FileChunkingStrategyParam
 from ..._types import Body, Omit, Query, Headers, NotGiven, FileTypes, omit, not_given
-from ..._utils import is_given, maybe_transform, async_maybe_transform
+from ..._utils import is_given, path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
@@ -90,7 +90,7 @@ class Files(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
-            f"/vector_stores/{vector_store_id}/files",
+            path_template("/vector_stores/{vector_store_id}/files", vector_store_id=vector_store_id),
             body=maybe_transform(
                 {
                     "file_id": file_id,
@@ -135,7 +135,9 @@ class Files(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get(
-            f"/vector_stores/{vector_store_id}/files/{file_id}",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}", vector_store_id=vector_store_id, file_id=file_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -179,7 +181,9 @@ class Files(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._post(
-            f"/vector_stores/{vector_store_id}/files/{file_id}",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}", vector_store_id=vector_store_id, file_id=file_id
+            ),
             body=maybe_transform({"attributes": attributes}, file_update_params.FileUpdateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -237,7 +241,7 @@ class Files(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
-            f"/vector_stores/{vector_store_id}/files",
+            path_template("/vector_stores/{vector_store_id}/files", vector_store_id=vector_store_id),
             page=SyncCursorPage[VectorStoreFile],
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -292,7 +296,9 @@ class Files(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._delete(
-            f"/vector_stores/{vector_store_id}/files/{file_id}",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}", vector_store_id=vector_store_id, file_id=file_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -307,10 +313,23 @@ class Files(SyncAPIResource):
         attributes: Optional[Dict[str, Union[str, float, bool]]] | Omit = omit,
         poll_interval_ms: int | Omit = omit,
         chunking_strategy: FileChunkingStrategyParam | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> VectorStoreFile:
         """Attach a file to the given vector store and wait for it to be processed."""
         self.create(
-            vector_store_id=vector_store_id, file_id=file_id, chunking_strategy=chunking_strategy, attributes=attributes
+            vector_store_id=vector_store_id,
+            file_id=file_id,
+            chunking_strategy=chunking_strategy,
+            attributes=attributes,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
 
         return self.poll(
@@ -424,7 +443,11 @@ class Files(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
-            f"/vector_stores/{vector_store_id}/files/{file_id}/content",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}/content",
+                vector_store_id=vector_store_id,
+                file_id=file_id,
+            ),
             page=SyncPage[FileContentResponse],
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -498,7 +521,7 @@ class AsyncFiles(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
-            f"/vector_stores/{vector_store_id}/files",
+            path_template("/vector_stores/{vector_store_id}/files", vector_store_id=vector_store_id),
             body=await async_maybe_transform(
                 {
                     "file_id": file_id,
@@ -543,7 +566,9 @@ class AsyncFiles(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._get(
-            f"/vector_stores/{vector_store_id}/files/{file_id}",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}", vector_store_id=vector_store_id, file_id=file_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -587,7 +612,9 @@ class AsyncFiles(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._post(
-            f"/vector_stores/{vector_store_id}/files/{file_id}",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}", vector_store_id=vector_store_id, file_id=file_id
+            ),
             body=await async_maybe_transform({"attributes": attributes}, file_update_params.FileUpdateParams),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
@@ -645,7 +672,7 @@ class AsyncFiles(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `vector_store_id` but received {vector_store_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
-            f"/vector_stores/{vector_store_id}/files",
+            path_template("/vector_stores/{vector_store_id}/files", vector_store_id=vector_store_id),
             page=AsyncCursorPage[VectorStoreFile],
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -700,7 +727,9 @@ class AsyncFiles(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return await self._delete(
-            f"/vector_stores/{vector_store_id}/files/{file_id}",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}", vector_store_id=vector_store_id, file_id=file_id
+            ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -715,10 +744,23 @@ class AsyncFiles(AsyncAPIResource):
         attributes: Optional[Dict[str, Union[str, float, bool]]] | Omit = omit,
         poll_interval_ms: int | Omit = omit,
         chunking_strategy: FileChunkingStrategyParam | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> VectorStoreFile:
         """Attach a file to the given vector store and wait for it to be processed."""
         await self.create(
-            vector_store_id=vector_store_id, file_id=file_id, chunking_strategy=chunking_strategy, attributes=attributes
+            vector_store_id=vector_store_id,
+            file_id=file_id,
+            chunking_strategy=chunking_strategy,
+            attributes=attributes,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
 
         return await self.poll(
@@ -834,7 +876,11 @@ class AsyncFiles(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `file_id` but received {file_id!r}")
         extra_headers = {"OpenAI-Beta": "assistants=v2", **(extra_headers or {})}
         return self._get_api_list(
-            f"/vector_stores/{vector_store_id}/files/{file_id}/content",
+            path_template(
+                "/vector_stores/{vector_store_id}/files/{file_id}/content",
+                vector_store_id=vector_store_id,
+                file_id=file_id,
+            ),
             page=AsyncPage[FileContentResponse],
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout

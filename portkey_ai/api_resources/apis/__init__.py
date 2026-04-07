@@ -175,6 +175,17 @@ from .conversations import (
 
 from .videos import Videos, AsyncVideos
 
+from .skills import (
+    Skills,
+    AsyncSkills,
+    SkillsContent,
+    AsyncSkillsContent,
+    SkillsVersions,
+    AsyncSkillsVersions,
+    SkillsVersionsContent,
+    AsyncSkillsVersionsContent,
+)
+
 from .chatkit import (
     ChatKit,
     AsyncChatKit,
@@ -340,4 +351,12 @@ __all__ = [
     "AsyncCalls",
     "InputTokens",
     "AsyncInputTokens",
+    "Skills",
+    "AsyncSkills",
+    "SkillsContent",
+    "AsyncSkillsContent",
+    "SkillsVersions",
+    "AsyncSkillsVersions",
+    "SkillsVersionsContent",
+    "AsyncSkillsVersionsContent",
 ]
