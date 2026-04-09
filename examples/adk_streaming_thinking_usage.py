@@ -137,7 +137,8 @@ def _print_parts(parts: Any, indent: str = "    ") -> None:
                 f"({getattr(fc, 'args', {})})"
             )
         else:
-            print(f"{indent}[unknown part] {type(p).__name__}")
+            label = getattr(p, "type", None) or type(p).__name__
+            print(f"{indent}[unknown part: {label}]")
 
 
 async def run_non_streaming(
