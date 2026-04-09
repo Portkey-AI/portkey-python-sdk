@@ -9,6 +9,9 @@ from google.genai import types as genai_types  # type: ignore
 
 from portkey_ai.integrations.adk import (
     PortkeyAdk,
+    _ensure_strict_json_schema,
+    _get_response_inputs,
+    _merge_streamed_function_calls,
     _normalize_thought_signature,
     _get_reasoning_config,
 )
@@ -107,18 +110,31 @@ class _FakeTextDeltaEvent:
 
 
 class _FakeFunctionArgsDeltaEvent:
-    def __init__(self, delta: str, item_id: str = "call_1"):
+    def __init__(
+        self,
+        delta: str,
+        item_id: str = "call_1",
+        output_index: int = 0,
+    ):
         self.type = "response.function_call_arguments.delta"
         self.delta = delta
         self.item_id = item_id
+        self.output_index = output_index
 
 
 class _FakeFunctionArgsDoneEvent:
-    def __init__(self, arguments: str, name: str, item_id: str = "call_1"):
+    def __init__(
+        self,
+        arguments: str,
+        name: str,
+        item_id: str = "call_1",
+        output_index: int = 0,
+    ):
         self.type = "response.function_call_arguments.done"
         self.arguments = arguments
         self.name = name
         self.item_id = item_id
+        self.output_index = output_index
 
 
 class _FakeOutputItemAddedEvent:
@@ -320,6 +336,46 @@ async def test_streaming_function_call_yields_tool_response(
     assert function_names == ["lookup_weather"]
 
 
+@pytest.mark.asyncio
+async def test_streaming_function_call_is_merged_when_final_response_omits_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    llm = PortkeyAdk(model="@openai/gpt-4o-mini", api_key="test")
+    function_item = _FakeFunctionCall("lookup_weather", "")
+    final_response = _FakeResponse(output=[_FakeMessage(text="Done")])
+
+    async def fake_stream_gen() -> AsyncIterator[Any]:
+        yield _FakeOutputItemAddedEvent(function_item)
+        yield _FakeFunctionArgsDeltaEvent('{"city":"')
+        yield _FakeFunctionArgsDeltaEvent('SF"}')
+        yield _FakeCompletedEvent(final_response)
+
+    async def fake_create(**kwargs: Any) -> AsyncIterator[Any]:
+        return fake_stream_gen()
+
+    monkeypatch.setattr(llm._client.responses, "create", fake_create)  # type: ignore[attr-defined]
+
+    req = _build_request(model="@openai/gpt-4o-mini", text="test")
+    function_names: list[str] = []
+    function_args: list[Any] = []
+    final_text: list[str] = []
+
+    async for resp in llm.generate_content_async(req, stream=True):
+        parts = getattr(getattr(resp, "content", None), "parts", []) or []
+        for p in parts:
+            function_call = getattr(p, "function_call", None)
+            text = getattr(p, "text", None)
+            if function_call is not None and getattr(function_call, "name", None):
+                function_names.append(function_call.name)
+                function_args.append(getattr(function_call, "args", None))
+            elif text and not getattr(resp, "partial", False):
+                final_text.append(text)
+
+    assert function_names == ["lookup_weather"]
+    assert function_args == [{"city": "SF"}]
+    assert "".join(final_text) == "Done"
+
+
 def test_normalize_thought_signature_string() -> None:
     assert _normalize_thought_signature("signature_string") == "signature_string"
 
@@ -378,3 +434,176 @@ def test_get_reasoning_config_none_when_empty() -> None:
         ),
     )
     assert _get_reasoning_config(req) is None
+
+
+@pytest.mark.asyncio
+async def test_streaming_multiple_parallel_function_calls(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    llm = PortkeyAdk(model="@openai/gpt-4o-mini", api_key="test")
+    fc1 = _FakeFunctionCall("get_weather", "", call_id="call_1")
+    fc2 = _FakeFunctionCall("get_time", "", call_id="call_2")
+    final_response = _FakeResponse(output=[_FakeMessage(text="Here you go")])
+
+    async def fake_stream_gen() -> AsyncIterator[Any]:
+        yield _FakeOutputItemAddedEvent(fc1, output_index=0)
+        yield _FakeOutputItemAddedEvent(fc2, output_index=1)
+        yield _FakeFunctionArgsDeltaEvent('{"city":', item_id="call_1", output_index=0)
+        yield _FakeFunctionArgsDeltaEvent('{"tz":', item_id="call_2", output_index=1)
+        yield _FakeFunctionArgsDeltaEvent('"SF"}', item_id="call_1", output_index=0)
+        yield _FakeFunctionArgsDeltaEvent('"PST"}', item_id="call_2", output_index=1)
+        yield _FakeCompletedEvent(final_response)
+
+    async def fake_create(**kwargs: Any) -> AsyncIterator[Any]:
+        return fake_stream_gen()
+
+    monkeypatch.setattr(llm._client.responses, "create", fake_create)  # type: ignore[attr-defined]
+
+    req = _build_request(model="@openai/gpt-4o-mini", text="test")
+    function_names: list[str] = []
+    function_args: list[Any] = []
+
+    async for resp in llm.generate_content_async(req, stream=True):
+        parts = getattr(getattr(resp, "content", None), "parts", []) or []
+        for p in parts:
+            function_call = getattr(p, "function_call", None)
+            if function_call is not None and getattr(function_call, "name", None):
+                function_names.append(function_call.name)
+                function_args.append(getattr(function_call, "args", None))
+
+    assert function_names == ["get_weather", "get_time"]
+    assert function_args == [{"city": "SF"}, {"tz": "PST"}]
+
+
+@pytest.mark.asyncio
+async def test_streaming_merge_enriches_incomplete_final_response(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    llm = PortkeyAdk(model="@openai/gpt-4o-mini", api_key="test")
+    streamed_item = _FakeFunctionCall("lookup_weather", "", call_id="call_1")
+    final_item = _FakeFunctionCall("lookup_weather", "", call_id="call_1")
+    final_response = _FakeResponse(output=[final_item])
+
+    async def fake_stream_gen() -> AsyncIterator[Any]:
+        yield _FakeOutputItemAddedEvent(streamed_item, output_index=0)
+        yield _FakeFunctionArgsDeltaEvent('{"city":"SF"}', item_id="call_1", output_index=0)
+        yield _FakeCompletedEvent(final_response)
+
+    async def fake_create(**kwargs: Any) -> AsyncIterator[Any]:
+        return fake_stream_gen()
+
+    monkeypatch.setattr(llm._client.responses, "create", fake_create)  # type: ignore[attr-defined]
+
+    req = _build_request(model="@openai/gpt-4o-mini", text="test")
+    function_args: list[Any] = []
+
+    async for resp in llm.generate_content_async(req, stream=True):
+        parts = getattr(getattr(resp, "content", None), "parts", []) or []
+        for p in parts:
+            function_call = getattr(p, "function_call", None)
+            if function_call is not None and getattr(function_call, "name", None):
+                function_args.append(getattr(function_call, "args", None))
+
+    assert function_args == [{"city": "SF"}]
+
+
+def test_ensure_strict_json_schema_nested_objects() -> None:
+    schema: dict[str, Any] = {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "object",
+                "properties": {
+                    "city": {"type": "string"},
+                    "coords": {
+                        "type": "object",
+                        "properties": {
+                            "lat": {"type": "number"},
+                            "lon": {"type": "number"},
+                        },
+                    },
+                },
+            },
+        },
+    }
+    result = _ensure_strict_json_schema(schema)
+    assert result["additionalProperties"] is False
+    assert result["properties"]["location"]["additionalProperties"] is False
+    assert result["properties"]["location"]["properties"]["coords"]["additionalProperties"] is False
+
+
+def test_ensure_strict_json_schema_array_of_objects() -> None:
+    schema: dict[str, Any] = {
+        "type": "object",
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                    },
+                },
+            },
+        },
+    }
+    result = _ensure_strict_json_schema(schema)
+    assert result["additionalProperties"] is False
+    inner = result["properties"]["items"]["items"]
+    assert inner["additionalProperties"] is False
+
+
+def test_merge_streamed_function_calls_inserts_missing() -> None:
+    response = _FakeResponse(output=[_FakeMessage(text="Done")])
+    fc = _FakeFunctionCall("do_thing", '{"x":1}', call_id="call_1")
+    result = _merge_streamed_function_calls(response, {0: fc})
+    types = [getattr(item, "type", None) for item in result.output]
+    assert types == ["function_call", "message"]
+
+
+def test_merge_streamed_function_calls_enriches_existing() -> None:
+    existing_fc = _FakeFunctionCall("do_thing", "", call_id="call_1")
+    response = _FakeResponse(output=[existing_fc])
+    streamed_fc = _FakeFunctionCall("do_thing", '{"x":1}', call_id="call_1")
+    _merge_streamed_function_calls(response, {0: streamed_fc})
+    assert existing_fc.arguments == '{"x":1}'
+
+
+def test_get_response_inputs_adds_additional_properties_false_for_tools() -> None:
+    req = LlmRequest(
+        model="test",
+        contents=[
+            genai_types.Content(
+                role="user",
+                parts=[genai_types.Part.from_text(text="weather")],
+            )
+        ],
+        config=genai_types.GenerateContentConfig(
+            tools=[
+                genai_types.Tool(
+                    function_declarations=[
+                        genai_types.FunctionDeclaration(
+                            name="get_demo_weather",
+                            description="Return canned weather information.",
+                            parameters=genai_types.Schema(
+                                type="OBJECT",
+                                properties={
+                                    "city": genai_types.Schema(
+                                        type="STRING",
+                                        description="City name",
+                                    )
+                                },
+                                required=["city"],
+                            ),
+                        )
+                    ]
+                )
+            ]
+        ),
+    )
+
+    _, tools, _, _ = _get_response_inputs(req)
+
+    assert tools is not None
+    assert tools[0]["strict"] is True
+    assert tools[0]["parameters"]["additionalProperties"] is False

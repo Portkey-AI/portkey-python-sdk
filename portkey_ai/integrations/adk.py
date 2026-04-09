@@ -104,6 +104,23 @@ def _schema_to_dict(schema: Any) -> dict[str, Any]:
     return schema_dict
 
 
+def _ensure_strict_json_schema(schema: Any) -> Any:
+    if isinstance(schema, dict):
+        schema_type = schema.get("type")
+        is_object = schema_type == "object" or (
+            isinstance(schema_type, list) and "object" in schema_type
+        )
+        if is_object:
+            schema.setdefault("additionalProperties", False)
+        for key, value in list(schema.items()):
+            if isinstance(value, (dict, list)):
+                schema[key] = _ensure_strict_json_schema(value)
+        return schema
+    if isinstance(schema, list):
+        return [_ensure_strict_json_schema(item) for item in schema]
+    return schema
+
+
 def _build_input_content(parts: Iterable[Any]) -> list[dict[str, Any]] | str:
     content_objects: list[dict[str, Any]] = []
     for part in parts:
@@ -254,15 +271,21 @@ def _function_declaration_to_tool_param(function_declaration: Any) -> dict[str, 
         for key, value in params.properties.items():
             properties[key] = _schema_to_dict(value)
 
+    parameters: dict[str, Any] = {
+        "type": "object",
+        "properties": properties,
+    }
+    if params and getattr(params, "required", None):
+        parameters["required"] = params.required
+    parameters = _ensure_strict_json_schema(parameters)
+
     tool: dict[str, Any] = {
         "type": "function",
         "name": name,
         "description": getattr(function_declaration, "description", "") or "",
-        "parameters": {"type": "object", "properties": properties},
+        "parameters": parameters,
         "strict": True,
     }
-    if params and getattr(params, "required", None):
-        tool["parameters"]["required"] = params.required
     return tool
 
 
@@ -421,6 +444,64 @@ def _response_output_to_parts(output: Iterable[Any]) -> list[Any]:
     return parts
 
 
+def _function_call_key(item: Any) -> Optional[str]:
+    key = getattr(item, "call_id", None) or getattr(item, "id", None)
+    return str(key) if key is not None else None
+
+
+def _merge_function_call_item(target: Any, source: Any) -> None:
+    source_name = getattr(source, "name", None)
+    if source_name and not getattr(target, "name", None):
+        target.name = source_name
+
+    source_arguments = getattr(source, "arguments", None)
+    if source_arguments and (
+        not getattr(target, "arguments", None)
+        or len(str(source_arguments)) > len(str(getattr(target, "arguments", "")))
+    ):
+        target.arguments = source_arguments
+
+    source_call_id = getattr(source, "call_id", None)
+    if source_call_id and not getattr(target, "call_id", None):
+        target.call_id = source_call_id
+
+    source_id = getattr(source, "id", None)
+    if source_id and not getattr(target, "id", None):
+        target.id = source_id
+
+    source_status = getattr(source, "status", None)
+    if source_status and not getattr(target, "status", None):
+        target.status = source_status
+
+
+def _merge_streamed_function_calls(
+    response: Any, streamed_function_calls: dict[int, Any]
+) -> Any:
+    output = list(getattr(response, "output", None) or [])
+    existing_by_key: dict[str, Any] = {}
+
+    for item in output:
+        if getattr(item, "type", None) != "function_call":
+            continue
+        key = _function_call_key(item)
+        if key:
+            existing_by_key[key] = item
+
+    for output_index, item in sorted(streamed_function_calls.items()):
+        key = _function_call_key(item)
+        if key and key in existing_by_key:
+            _merge_function_call_item(existing_by_key[key], item)
+            continue
+
+        insert_at = min(output_index, len(output))
+        output.insert(insert_at, item)
+        if key:
+            existing_by_key[key] = item
+
+    response.output = output
+    return response
+
+
 def _response_to_llm_response(response: Any, is_partial: bool = False) -> "LlmResponse":
     from google.adk.models.llm_response import LlmResponse  # type: ignore[import-untyped]  # no py.typed
     from google.genai import types as genai_types  # type: ignore[import-untyped]  # no py.typed
@@ -549,6 +630,8 @@ class PortkeyAdk(_AdkBaseLlm):  # type: ignore[misc]  # _AdkBaseLlm may be a stu
             stream=True, **response_args
         )
         final_response: Any = None
+        streamed_function_calls_by_index: dict[int, Any] = {}
+        streamed_function_calls_by_id: dict[str, Any] = {}
 
         async for event in stream_response:  # type: ignore[union-attr]  # create() returns union of Response|AsyncStream; we know it's AsyncStream here
             event_type: str | None = getattr(event, "type", None)
@@ -569,11 +652,59 @@ class PortkeyAdk(_AdkBaseLlm):  # type: ignore[misc]  # _AdkBaseLlm may be a stu
                         is_partial=True,
                     )
 
-            # Function-call deltas are not yielded as partials; the full
-            # function_call item is emitted via the response.completed event.
+            elif event_type == "response.output_item.added":
+                item = getattr(event, "item", None)
+                if getattr(item, "type", None) == "function_call":
+                    output_index = getattr(
+                        event, "output_index", len(streamed_function_calls_by_index)
+                    )
+                    if getattr(item, "arguments", None) is None:
+                        item.arguments = ""
+                    streamed_function_calls_by_index[output_index] = item
+                    key = _function_call_key(item)
+                    if key:
+                        streamed_function_calls_by_id[key] = item
+
+            elif event_type == "response.function_call_arguments.delta":
+                output_index = getattr(event, "output_index", None)
+                item = (
+                    streamed_function_calls_by_index.get(output_index)
+                    if output_index is not None
+                    else None
+                )
+                if item is None:
+                    item_id = getattr(event, "item_id", None)
+                    if item_id is not None:
+                        item = streamed_function_calls_by_id.get(str(item_id))
+                delta = getattr(event, "delta", "")
+                if item is not None and delta:
+                    item.arguments = f"{getattr(item, 'arguments', '')}{delta}"
+
+            elif event_type == "response.function_call_arguments.done":
+                output_index = getattr(event, "output_index", None)
+                item = (
+                    streamed_function_calls_by_index.get(output_index)
+                    if output_index is not None
+                    else None
+                )
+                if item is None:
+                    item_id = getattr(event, "item_id", None)
+                    if item_id is not None:
+                        item = streamed_function_calls_by_id.get(str(item_id))
+                if item is not None:
+                    arguments = getattr(event, "arguments", None)
+                    if arguments is not None:
+                        item.arguments = arguments
+                    name = getattr(event, "name", None)
+                    if name:
+                        item.name = name
 
             elif event_type == "response.completed":
                 final_response = getattr(event, "response", None)
+                if final_response is not None and streamed_function_calls_by_index:
+                    final_response = _merge_streamed_function_calls(
+                        final_response, streamed_function_calls_by_index
+                    )
 
         if final_response is not None:
             yield _response_to_llm_response(final_response)

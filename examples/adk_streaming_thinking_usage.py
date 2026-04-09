@@ -50,6 +50,31 @@ REASONING_PROMPT = (
     "A farmer has 17 sheep. All but 9 run away. How many sheep does the "
     "farmer have left? Think step by step, then give just the number."
 )
+TOOL_CALL_PROMPT = (
+    "What is the weather in San Francisco? Use the get_demo_weather tool exactly "
+    "once and do not answer directly."
+)
+
+
+def _build_weather_tool() -> Any:
+    return genai_types.Tool(
+        function_declarations=[
+            genai_types.FunctionDeclaration(
+                name="get_demo_weather",
+                description="Return canned weather information for a city.",
+                parameters=genai_types.Schema(
+                    type="OBJECT",
+                    properties={
+                        "city": genai_types.Schema(
+                            type="STRING",
+                            description="City name to look up.",
+                        )
+                    },
+                    required=["city"],
+                ),
+            )
+        ]
+    )
 
 
 def _build_request(
@@ -57,6 +82,7 @@ def _build_request(
     prompt: str,
     *,
     enable_thinking: bool = False,
+    enable_tool_call: bool = False,
     thinking_budget: int = 4096,
 ) -> LlmRequest:
     """Build an LlmRequest with optional thinking config."""
@@ -69,13 +95,19 @@ def _build_request(
             )
         ],
     }
+    config_kwargs: dict[str, Any] = {}
     if enable_thinking:
-        kwargs["config"] = genai_types.GenerateContentConfig(
-            thinking_config=genai_types.ThinkingConfig(
-                include_thoughts=True,
-                thinking_budget=thinking_budget,
-            ),
+        config_kwargs["thinking_config"] = genai_types.ThinkingConfig(
+            include_thoughts=True,
+            thinking_budget=thinking_budget,
         )
+    if enable_tool_call:
+        config_kwargs["system_instruction"] = (
+            "When the user asks about weather, call the provided tool exactly once."
+        )
+        config_kwargs["tools"] = [_build_weather_tool()]
+    if config_kwargs:
+        kwargs["config"] = genai_types.GenerateContentConfig(**config_kwargs)
     return LlmRequest(**kwargs)
 
 
@@ -109,18 +141,36 @@ def _print_parts(parts: Any, indent: str = "    ") -> None:
 
 
 async def run_non_streaming(
-    llm: PortkeyAdk, prompt: str, *, enable_thinking: bool = False
+    llm: PortkeyAdk,
+    prompt: str,
+    *,
+    enable_thinking: bool = False,
+    enable_tool_call: bool = False,
 ) -> None:
-    req = _build_request(llm.model, prompt, enable_thinking=enable_thinking)
+    req = _build_request(
+        llm.model,
+        prompt,
+        enable_thinking=enable_thinking,
+        enable_tool_call=enable_tool_call,
+    )
     async for resp in llm.generate_content_async(req, stream=False):
         parts = getattr(resp.content, "parts", None) if resp.content else None
         _print_parts(parts)
 
 
 async def run_streaming(
-    llm: PortkeyAdk, prompt: str, *, enable_thinking: bool = False
+    llm: PortkeyAdk,
+    prompt: str,
+    *,
+    enable_thinking: bool = False,
+    enable_tool_call: bool = False,
 ) -> None:
-    req = _build_request(llm.model, prompt, enable_thinking=enable_thinking)
+    req = _build_request(
+        llm.model,
+        prompt,
+        enable_thinking=enable_thinking,
+        enable_tool_call=enable_tool_call,
+    )
     partial_count = 0
     async for resp in llm.generate_content_async(req, stream=True):
         parts = getattr(resp.content, "parts", None) if resp.content else None
@@ -168,6 +218,13 @@ async def main() -> None:
         print("    ", end="")
         try:
             await run_streaming(llm, SIMPLE_PROMPT)
+        except Exception:
+            traceback.print_exc()
+
+        print(f"\n  Streaming + tool call | prompt: {TOOL_CALL_PROMPT!r}")
+        print("    ", end="")
+        try:
+            await run_streaming(llm, TOOL_CALL_PROMPT, enable_tool_call=True)
         except Exception:
             traceback.print_exc()
 
