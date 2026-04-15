@@ -184,6 +184,39 @@ from .chatkit import (
     AsyncChatKitThreads,
 )
 
+from .analytics import (
+    Analytics,
+    AsyncAnalytics,
+    AnalyticsGraphs,
+    AsyncAnalyticsGraphs,
+    AnalyticsGroups,
+    AsyncAnalyticsGroups,
+    AnalyticsSummary,
+    AsyncAnalyticsSummary,
+)
+
+from .mcp_servers import (
+    McpServers,
+    AsyncMcpServers,
+    McpServerCapabilities,
+    AsyncMcpServerCapabilities,
+    McpServerUserAccess,
+    AsyncMcpServerUserAccess,
+    McpServerMetadata,
+    AsyncMcpServerMetadata,
+)
+
+from .mcp_integrations import (
+    McpIntegrations,
+    AsyncMcpIntegrations,
+    McpIntegrationWorkspaces,
+    AsyncMcpIntegrationWorkspaces,
+    McpIntegrationCapabilities,
+    AsyncMcpIntegrationCapabilities,
+    McpIntegrationMetadata,
+    AsyncMcpIntegrationMetadata,
+)
+
 __all__ = [
     "Completion",
     "AsyncCompletion",
@@ -340,4 +373,28 @@ __all__ = [
     "AsyncCalls",
     "InputTokens",
     "AsyncInputTokens",
+    "Analytics",
+    "AsyncAnalytics",
+    "AnalyticsGraphs",
+    "AsyncAnalyticsGraphs",
+    "AnalyticsGroups",
+    "AsyncAnalyticsGroups",
+    "AnalyticsSummary",
+    "AsyncAnalyticsSummary",
+    "McpServers",
+    "AsyncMcpServers",
+    "McpServerCapabilities",
+    "AsyncMcpServerCapabilities",
+    "McpServerUserAccess",
+    "AsyncMcpServerUserAccess",
+    "McpServerMetadata",
+    "AsyncMcpServerMetadata",
+    "McpIntegrations",
+    "AsyncMcpIntegrations",
+    "McpIntegrationWorkspaces",
+    "AsyncMcpIntegrationWorkspaces",
+    "McpIntegrationCapabilities",
+    "AsyncMcpIntegrationCapabilities",
+    "McpIntegrationMetadata",
+    "AsyncMcpIntegrationMetadata",
 ]
