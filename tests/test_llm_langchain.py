@@ -7,9 +7,9 @@ import pytest
 
 from tests.utils import read_json_file
 from portkey_ai.langchain import LangchainCallbackHandler
-from langchain_community.chat_models import ChatOpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_classic.chains import LLMChain
+from langchain.chains import LLMChain
 
 api_key = os.environ.get("PORTKEY_API_KEY")
 

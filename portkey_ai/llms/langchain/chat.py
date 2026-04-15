@@ -16,7 +16,7 @@ from typing import (
 
 try:
     from langchain.callbacks.manager import CallbackManagerForLLMRun
-    from langchain_community.chat_models.base import SimpleChatModel
+    from langchain.chat_models.base import SimpleChatModel
     from langchain.pydantic_v1 import Field, PrivateAttr
     from langchain.schema.messages import (
         AIMessage,
