@@ -43,6 +43,9 @@ class Portkey(APIClient):
     conversations: apis.Conversations
     videos: apis.Videos
     skills: apis.Skills
+    analytics: apis.Analytics
+    mcp_servers: apis.McpServers
+    mcp_integrations: apis.McpIntegrations
 
     class beta:
         assistants: apis.Assistants
@@ -196,6 +199,9 @@ class Portkey(APIClient):
         self.conversations = apis.Conversations(self)
         self.videos = apis.Videos(self)
         self.skills = apis.Skills(self)
+        self.analytics = apis.Analytics(self)
+        self.mcp_servers = apis.McpServers(self)
+        self.mcp_integrations = apis.McpIntegrations(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
@@ -383,6 +389,9 @@ class AsyncPortkey(AsyncAPIClient):
     conversations: apis.AsyncConversations
     videos: apis.AsyncVideos
     skills: apis.AsyncSkills
+    analytics: apis.AsyncAnalytics
+    mcp_servers: apis.AsyncMcpServers
+    mcp_integrations: apis.AsyncMcpIntegrations
 
     class beta:
         assistants: apis.AsyncAssistants
@@ -536,6 +545,9 @@ class AsyncPortkey(AsyncAPIClient):
         self.conversations = apis.AsyncConversations(self)
         self.videos = apis.AsyncVideos(self)
         self.skills = apis.AsyncSkills(self)
+        self.analytics = apis.AsyncAnalytics(self)
+        self.mcp_servers = apis.AsyncMcpServers(self)
+        self.mcp_integrations = apis.AsyncMcpIntegrations(self)
         self.beta = self.beta(self)  # type: ignore
 
         if self.instrumentation:
