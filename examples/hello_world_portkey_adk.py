@@ -43,9 +43,10 @@ async def main() -> None:
     final_text: List[str] = []
     async for resp in llm.generate_content_async(req, stream=False):
         if resp.content and getattr(resp.content, "parts", None):
-            for p in resp.content.parts:
-                if getattr(p, "text", None):
-                    final_text.append(p.text)
+            for p in resp.content.parts or []:
+                text = getattr(p, "text", None)
+                if text:
+                    final_text.append(text)
     print("".join(final_text))
 
 

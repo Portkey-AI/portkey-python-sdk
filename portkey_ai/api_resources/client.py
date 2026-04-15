@@ -42,6 +42,7 @@ class Portkey(APIClient):
     realtime: apis.MainRealtime
     conversations: apis.Conversations
     videos: apis.Videos
+    skills: apis.Skills
     analytics: apis.Analytics
     mcp_servers: apis.McpServers
     mcp_integrations: apis.McpIntegrations
@@ -197,6 +198,7 @@ class Portkey(APIClient):
         self.realtime = apis.MainRealtime(self)
         self.conversations = apis.Conversations(self)
         self.videos = apis.Videos(self)
+        self.skills = apis.Skills(self)
         self.analytics = apis.Analytics(self)
         self.mcp_servers = apis.McpServers(self)
         self.mcp_integrations = apis.McpIntegrations(self)
@@ -386,6 +388,7 @@ class AsyncPortkey(AsyncAPIClient):
     realtime: apis.AsyncMainRealtime
     conversations: apis.AsyncConversations
     videos: apis.AsyncVideos
+    skills: apis.AsyncSkills
     analytics: apis.AsyncAnalytics
     mcp_servers: apis.AsyncMcpServers
     mcp_integrations: apis.AsyncMcpIntegrations
@@ -541,6 +544,7 @@ class AsyncPortkey(AsyncAPIClient):
         self.realtime = apis.AsyncMainRealtime(self)
         self.conversations = apis.AsyncConversations(self)
         self.videos = apis.AsyncVideos(self)
+        self.skills = apis.AsyncSkills(self)
         self.analytics = apis.AsyncAnalytics(self)
         self.mcp_servers = apis.AsyncMcpServers(self)
         self.mcp_integrations = apis.AsyncMcpIntegrations(self)

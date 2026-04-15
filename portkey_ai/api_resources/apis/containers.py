@@ -1,5 +1,5 @@
 import json
-from typing import Any, List, Literal, Union
+from typing import Any, Iterable, List, Literal, Union
 from portkey_ai._vendor.openai.types import container_create_params
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -29,6 +29,8 @@ class Containers(APIResource):
         expires_after: Union[container_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
         memory_limit: Union[Literal["1g", "4g", "16g", "64g"], Omit] = omit,
+        network_policy: Union[container_create_params.NetworkPolicy, Omit] = omit,
+        skills: Union[Iterable[container_create_params.Skill], Omit] = omit,
         **kwargs,
     ) -> ContainerCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -40,6 +42,8 @@ class Containers(APIResource):
             expires_after=expires_after,
             file_ids=file_ids,
             memory_limit=memory_limit,
+            network_policy=network_policy,
+            skills=skills,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body=extra_body,
@@ -85,6 +89,7 @@ class Containers(APIResource):
         *,
         after: Union[str, Omit] = omit,
         limit: Union[int, Omit] = omit,
+        name: Union[str, Omit] = omit,
         order: Union[Literal["asc", "desc"], Omit] = omit,
         **kwargs,
     ) -> ContainerListResponse:
@@ -95,6 +100,7 @@ class Containers(APIResource):
         response = self.openai_client.with_raw_response.containers.list(
             after=after,
             limit=limit,
+            name=name,
             order=order,
             extra_headers=extra_headers,
             extra_query=extra_query,
@@ -289,6 +295,8 @@ class AsyncContainers(AsyncAPIResource):
         expires_after: Union[container_create_params.ExpiresAfter, Omit] = omit,
         file_ids: Union[List[str], Omit] = omit,
         memory_limit: Union[Literal["1g", "4g", "16g", "64g"], Omit] = omit,
+        network_policy: Union[container_create_params.NetworkPolicy, Omit] = omit,
+        skills: Union[Iterable[container_create_params.Skill], Omit] = omit,
         **kwargs,
     ) -> ContainerCreateResponse:
         extra_headers = kwargs.pop("extra_headers", None)
@@ -300,6 +308,8 @@ class AsyncContainers(AsyncAPIResource):
             expires_after=expires_after,
             file_ids=file_ids,
             memory_limit=memory_limit,
+            network_policy=network_policy,
+            skills=skills,
             extra_headers=extra_headers,
             extra_query=extra_query,
             extra_body=extra_body,
@@ -345,6 +355,7 @@ class AsyncContainers(AsyncAPIResource):
         *,
         after: Union[str, Omit] = omit,
         limit: Union[int, Omit] = omit,
+        name: Union[str, Omit] = omit,
         order: Union[Literal["asc", "desc"], Omit] = omit,
         **kwargs,
     ) -> ContainerListResponse:
@@ -355,6 +366,7 @@ class AsyncContainers(AsyncAPIResource):
         response = await self.openai_client.with_raw_response.containers.list(
             after=after,
             limit=limit,
+            name=name,
             order=order,
             extra_headers=extra_headers,
             extra_query=extra_query,

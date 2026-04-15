@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+import json
+import logging
 from copy import copy
-from typing import Any, List, Type, Union, Iterable, Optional, cast
+from types import TracebackType
+from typing import TYPE_CHECKING, Any, List, Type, Union, Iterable, Iterator, Optional, AsyncIterator, cast
 from functools import partial
 from typing_extensions import Literal, overload
 
 import httpx
+from pydantic import BaseModel
 
 from ... import _legacy_response
 from ..._types import NOT_GIVEN, Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
-from ..._utils import is_given, maybe_transform, async_maybe_transform
+from ..._utils import is_given, path_template, maybe_transform, strip_not_given, async_maybe_transform
 from ..._compat import cached_property
+from ..._models import construct_type_unchecked
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import to_streamed_response_wrapper, async_to_streamed_response_wrapper
 from .input_items import (
@@ -33,11 +38,13 @@ from .input_tokens import (
     InputTokensWithStreamingResponse,
     AsyncInputTokensWithStreamingResponse,
 )
-from ..._base_client import make_request_options
+from ..._exceptions import OpenAIError
+from ..._base_client import _merge_mappings, make_request_options
 from ...types.responses import (
     response_create_params,
     response_compact_params,
     response_retrieve_params,
+    responses_client_event_param,
 )
 from ...lib._parsing._responses import (
     TextFormatT,
@@ -51,15 +58,27 @@ from ...types.shared_params.reasoning import Reasoning
 from ...types.responses.parsed_response import ParsedResponse
 from ...lib.streaming.responses._responses import ResponseStreamManager, AsyncResponseStreamManager
 from ...types.responses.compacted_response import CompactedResponse
+from ...types.websocket_connection_options import WebSocketConnectionOptions
 from ...types.responses.response_includable import ResponseIncludable
 from ...types.shared_params.responses_model import ResponsesModel
 from ...types.responses.response_input_param import ResponseInputParam
 from ...types.responses.response_prompt_param import ResponsePromptParam
 from ...types.responses.response_stream_event import ResponseStreamEvent
+from ...types.responses.responses_client_event import ResponsesClientEvent
+from ...types.responses.responses_server_event import ResponsesServerEvent
 from ...types.responses.response_input_item_param import ResponseInputItemParam
 from ...types.responses.response_text_config_param import ResponseTextConfigParam
+from ...types.responses.responses_client_event_param import ResponsesClientEventParam
+
+if TYPE_CHECKING:
+    from websockets.sync.client import ClientConnection as WebSocketConnection
+    from websockets.asyncio.client import ClientConnection as AsyncWebSocketConnection
+
+    from ..._client import OpenAI, AsyncOpenAI
 
 __all__ = ["Responses", "AsyncResponses"]
+
+log: logging.Logger = logging.getLogger(__name__)
 
 
 class Responses(SyncAPIResource):
@@ -95,6 +114,7 @@ class Responses(SyncAPIResource):
         self,
         *,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -146,6 +166,8 @@ class Responses(SyncAPIResource):
         Args:
           background: Whether to run the model response in the background.
               [Learn more](https://platform.openai.com/docs/guides/background).
+
+          context_management: Context management configuration for this request.
 
           conversation: The conversation that this response belongs to. Items from this conversation are
               prepended to `input_items` for this response request. Input items and output
@@ -235,8 +257,9 @@ class Responses(SyncAPIResource):
 
           safety_identifier: A stable identifier used to help detect users of your application that may be
               violating OpenAI's usage policies. The IDs should be a string that uniquely
-              identifies each user. We recommend hashing their username or email address, in
-              order to avoid sending us any identifying information.
+              identifies each user, with a maximum length of 64 characters. We recommend
+              hashing their username or email address, in order to avoid sending us any
+              identifying information.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
 
           service_tier: Specifies the processing type used for serving the request.
@@ -341,6 +364,7 @@ class Responses(SyncAPIResource):
         *,
         stream: Literal[True],
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -398,6 +422,8 @@ class Responses(SyncAPIResource):
 
           background: Whether to run the model response in the background.
               [Learn more](https://platform.openai.com/docs/guides/background).
+
+          context_management: Context management configuration for this request.
 
           conversation: The conversation that this response belongs to. Items from this conversation are
               prepended to `input_items` for this response request. Input items and output
@@ -487,8 +513,9 @@ class Responses(SyncAPIResource):
 
           safety_identifier: A stable identifier used to help detect users of your application that may be
               violating OpenAI's usage policies. The IDs should be a string that uniquely
-              identifies each user. We recommend hashing their username or email address, in
-              order to avoid sending us any identifying information.
+              identifies each user, with a maximum length of 64 characters. We recommend
+              hashing their username or email address, in order to avoid sending us any
+              identifying information.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
 
           service_tier: Specifies the processing type used for serving the request.
@@ -586,6 +613,7 @@ class Responses(SyncAPIResource):
         *,
         stream: bool,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -643,6 +671,8 @@ class Responses(SyncAPIResource):
 
           background: Whether to run the model response in the background.
               [Learn more](https://platform.openai.com/docs/guides/background).
+
+          context_management: Context management configuration for this request.
 
           conversation: The conversation that this response belongs to. Items from this conversation are
               prepended to `input_items` for this response request. Input items and output
@@ -732,8 +762,9 @@ class Responses(SyncAPIResource):
 
           safety_identifier: A stable identifier used to help detect users of your application that may be
               violating OpenAI's usage policies. The IDs should be a string that uniquely
-              identifies each user. We recommend hashing their username or email address, in
-              order to avoid sending us any identifying information.
+              identifies each user, with a maximum length of 64 characters. We recommend
+              hashing their username or email address, in order to avoid sending us any
+              identifying information.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
 
           service_tier: Specifies the processing type used for serving the request.
@@ -829,6 +860,7 @@ class Responses(SyncAPIResource):
         self,
         *,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -868,6 +900,7 @@ class Responses(SyncAPIResource):
             body=maybe_transform(
                 {
                     "background": background,
+                    "context_management": context_management,
                     "conversation": conversation,
                     "include": include,
                     "input": input,
@@ -930,6 +963,7 @@ class Responses(SyncAPIResource):
         input: Union[str, ResponseInputParam],
         model: ResponsesModel,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         text_format: type[TextFormatT] | Omit = omit,
         tools: Iterable[ParseableToolParam] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
@@ -970,6 +1004,7 @@ class Responses(SyncAPIResource):
         input: Union[str, ResponseInputParam] | Omit = omit,
         model: ResponsesModel | Omit = omit,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         text_format: type[TextFormatT] | Omit = omit,
         tools: Iterable[ParseableToolParam] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
@@ -1006,6 +1041,7 @@ class Responses(SyncAPIResource):
         new_response_args = {
             "input": input,
             "model": model,
+            "context_management": context_management,
             "conversation": conversation,
             "include": include,
             "instructions": instructions,
@@ -1061,6 +1097,7 @@ class Responses(SyncAPIResource):
                 input=input,
                 model=model,
                 tools=tools,
+                context_management=context_management,
                 conversation=conversation,
                 include=include,
                 instructions=instructions,
@@ -1118,6 +1155,7 @@ class Responses(SyncAPIResource):
         *,
         text_format: type[TextFormatT] | Omit = omit,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -1176,6 +1214,7 @@ class Responses(SyncAPIResource):
             body=maybe_transform(
                 {
                     "background": background,
+                    "context_management": context_management,
                     "conversation": conversation,
                     "include": include,
                     "input": input,
@@ -1432,7 +1471,7 @@ class Responses(SyncAPIResource):
         if not response_id:
             raise ValueError(f"Expected a non-empty value for `response_id` but received {response_id!r}")
         return self._get(
-            f"/responses/{response_id}",
+            path_template("/responses/{response_id}", response_id=response_id),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -1480,7 +1519,7 @@ class Responses(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `response_id` but received {response_id!r}")
         extra_headers = {"Accept": "*/*", **(extra_headers or {})}
         return self._delete(
-            f"/responses/{response_id}",
+            path_template("/responses/{response_id}", response_id=response_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1516,7 +1555,7 @@ class Responses(SyncAPIResource):
         if not response_id:
             raise ValueError(f"Expected a non-empty value for `response_id` but received {response_id!r}")
         return self._post(
-            f"/responses/{response_id}/cancel",
+            path_template("/responses/{response_id}/cancel", response_id=response_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -1528,6 +1567,12 @@ class Responses(SyncAPIResource):
         *,
         model: Union[
             Literal[
+                "gpt-5.4",
+                "gpt-5.4-mini",
+                "gpt-5.4-nano",
+                "gpt-5.4-mini-2026-03-17",
+                "gpt-5.4-nano-2026-03-17",
+                "gpt-5.3-chat-latest",
                 "gpt-5.2",
                 "gpt-5.2-2025-12-11",
                 "gpt-5.2-chat-latest",
@@ -1621,6 +1666,7 @@ class Responses(SyncAPIResource):
         input: Union[str, Iterable[ResponseInputItemParam], None] | Omit = omit,
         instructions: Optional[str] | Omit = omit,
         previous_response_id: Optional[str] | Omit = omit,
+        prompt_cache_key: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1628,8 +1674,14 @@ class Responses(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> CompactedResponse:
-        """
-        Compact conversation
+        """Compact a conversation.
+
+        Returns a compacted response object.
+
+        Learn when and how to compact long-running conversations in the
+        [conversation state guide](https://platform.openai.com/docs/guides/conversation-state#managing-the-context-window).
+        For ZDR-compatible compaction details, see
+        [Compaction (advanced)](https://platform.openai.com/docs/guides/conversation-state#compaction-advanced).
 
         Args:
           model: Model ID used to generate the response, like `gpt-5` or `o3`. OpenAI offers a
@@ -1650,6 +1702,8 @@ class Responses(SyncAPIResource):
               [conversation state](https://platform.openai.com/docs/guides/conversation-state).
               Cannot be used in conjunction with `conversation`.
 
+          prompt_cache_key: A key to use when reading from or writing to the prompt cache.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -1666,6 +1720,7 @@ class Responses(SyncAPIResource):
                     "input": input,
                     "instructions": instructions,
                     "previous_response_id": previous_response_id,
+                    "prompt_cache_key": prompt_cache_key,
                 },
                 response_compact_params.ResponseCompactParams,
             ),
@@ -1673,6 +1728,23 @@ class Responses(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=CompactedResponse,
+        )
+
+    def connect(
+        self,
+        extra_query: Query = {},
+        extra_headers: Headers = {},
+        websocket_connection_options: WebSocketConnectionOptions = {},
+    ) -> ResponsesConnectionManager:
+        """Connect to a persistent Responses API WebSocket.
+
+        Send `response.create` events and receive response stream events over the socket.
+        """
+        return ResponsesConnectionManager(
+            client=self._client,
+            extra_query=extra_query,
+            extra_headers=extra_headers,
+            websocket_connection_options=websocket_connection_options,
         )
 
 
@@ -1709,6 +1781,7 @@ class AsyncResponses(AsyncAPIResource):
         self,
         *,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -1760,6 +1833,8 @@ class AsyncResponses(AsyncAPIResource):
         Args:
           background: Whether to run the model response in the background.
               [Learn more](https://platform.openai.com/docs/guides/background).
+
+          context_management: Context management configuration for this request.
 
           conversation: The conversation that this response belongs to. Items from this conversation are
               prepended to `input_items` for this response request. Input items and output
@@ -1849,8 +1924,9 @@ class AsyncResponses(AsyncAPIResource):
 
           safety_identifier: A stable identifier used to help detect users of your application that may be
               violating OpenAI's usage policies. The IDs should be a string that uniquely
-              identifies each user. We recommend hashing their username or email address, in
-              order to avoid sending us any identifying information.
+              identifies each user, with a maximum length of 64 characters. We recommend
+              hashing their username or email address, in order to avoid sending us any
+              identifying information.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
 
           service_tier: Specifies the processing type used for serving the request.
@@ -1955,6 +2031,7 @@ class AsyncResponses(AsyncAPIResource):
         *,
         stream: Literal[True],
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -2012,6 +2089,8 @@ class AsyncResponses(AsyncAPIResource):
 
           background: Whether to run the model response in the background.
               [Learn more](https://platform.openai.com/docs/guides/background).
+
+          context_management: Context management configuration for this request.
 
           conversation: The conversation that this response belongs to. Items from this conversation are
               prepended to `input_items` for this response request. Input items and output
@@ -2101,8 +2180,9 @@ class AsyncResponses(AsyncAPIResource):
 
           safety_identifier: A stable identifier used to help detect users of your application that may be
               violating OpenAI's usage policies. The IDs should be a string that uniquely
-              identifies each user. We recommend hashing their username or email address, in
-              order to avoid sending us any identifying information.
+              identifies each user, with a maximum length of 64 characters. We recommend
+              hashing their username or email address, in order to avoid sending us any
+              identifying information.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
 
           service_tier: Specifies the processing type used for serving the request.
@@ -2200,6 +2280,7 @@ class AsyncResponses(AsyncAPIResource):
         *,
         stream: bool,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -2257,6 +2338,8 @@ class AsyncResponses(AsyncAPIResource):
 
           background: Whether to run the model response in the background.
               [Learn more](https://platform.openai.com/docs/guides/background).
+
+          context_management: Context management configuration for this request.
 
           conversation: The conversation that this response belongs to. Items from this conversation are
               prepended to `input_items` for this response request. Input items and output
@@ -2346,8 +2429,9 @@ class AsyncResponses(AsyncAPIResource):
 
           safety_identifier: A stable identifier used to help detect users of your application that may be
               violating OpenAI's usage policies. The IDs should be a string that uniquely
-              identifies each user. We recommend hashing their username or email address, in
-              order to avoid sending us any identifying information.
+              identifies each user, with a maximum length of 64 characters. We recommend
+              hashing their username or email address, in order to avoid sending us any
+              identifying information.
               [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).
 
           service_tier: Specifies the processing type used for serving the request.
@@ -2443,6 +2527,7 @@ class AsyncResponses(AsyncAPIResource):
         self,
         *,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -2482,6 +2567,7 @@ class AsyncResponses(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "background": background,
+                    "context_management": context_management,
                     "conversation": conversation,
                     "include": include,
                     "input": input,
@@ -2544,6 +2630,7 @@ class AsyncResponses(AsyncAPIResource):
         input: Union[str, ResponseInputParam],
         model: ResponsesModel,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         text_format: type[TextFormatT] | Omit = omit,
         tools: Iterable[ParseableToolParam] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
@@ -2584,6 +2671,7 @@ class AsyncResponses(AsyncAPIResource):
         input: Union[str, ResponseInputParam] | Omit = omit,
         model: ResponsesModel | Omit = omit,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         text_format: type[TextFormatT] | Omit = omit,
         tools: Iterable[ParseableToolParam] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
@@ -2620,6 +2708,7 @@ class AsyncResponses(AsyncAPIResource):
         new_response_args = {
             "input": input,
             "model": model,
+            "context_management": context_management,
             "conversation": conversation,
             "include": include,
             "instructions": instructions,
@@ -2675,6 +2764,7 @@ class AsyncResponses(AsyncAPIResource):
                 model=model,
                 stream=True,
                 tools=tools,
+                context_management=context_management,
                 conversation=conversation,
                 include=include,
                 instructions=instructions,
@@ -2736,6 +2826,7 @@ class AsyncResponses(AsyncAPIResource):
         *,
         text_format: type[TextFormatT] | Omit = omit,
         background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[response_create_params.ContextManagement]] | Omit = omit,
         conversation: Optional[response_create_params.Conversation] | Omit = omit,
         include: Optional[List[ResponseIncludable]] | Omit = omit,
         input: Union[str, ResponseInputParam] | Omit = omit,
@@ -2794,6 +2885,7 @@ class AsyncResponses(AsyncAPIResource):
             body=maybe_transform(
                 {
                     "background": background,
+                    "context_management": context_management,
                     "conversation": conversation,
                     "include": include,
                     "input": input,
@@ -3050,7 +3142,7 @@ class AsyncResponses(AsyncAPIResource):
         if not response_id:
             raise ValueError(f"Expected a non-empty value for `response_id` but received {response_id!r}")
         return await self._get(
-            f"/responses/{response_id}",
+            path_template("/responses/{response_id}", response_id=response_id),
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -3098,7 +3190,7 @@ class AsyncResponses(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `response_id` but received {response_id!r}")
         extra_headers = {"Accept": "*/*", **(extra_headers or {})}
         return await self._delete(
-            f"/responses/{response_id}",
+            path_template("/responses/{response_id}", response_id=response_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -3134,7 +3226,7 @@ class AsyncResponses(AsyncAPIResource):
         if not response_id:
             raise ValueError(f"Expected a non-empty value for `response_id` but received {response_id!r}")
         return await self._post(
-            f"/responses/{response_id}/cancel",
+            path_template("/responses/{response_id}/cancel", response_id=response_id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -3146,6 +3238,12 @@ class AsyncResponses(AsyncAPIResource):
         *,
         model: Union[
             Literal[
+                "gpt-5.4",
+                "gpt-5.4-mini",
+                "gpt-5.4-nano",
+                "gpt-5.4-mini-2026-03-17",
+                "gpt-5.4-nano-2026-03-17",
+                "gpt-5.3-chat-latest",
                 "gpt-5.2",
                 "gpt-5.2-2025-12-11",
                 "gpt-5.2-chat-latest",
@@ -3239,6 +3337,7 @@ class AsyncResponses(AsyncAPIResource):
         input: Union[str, Iterable[ResponseInputItemParam], None] | Omit = omit,
         instructions: Optional[str] | Omit = omit,
         previous_response_id: Optional[str] | Omit = omit,
+        prompt_cache_key: Optional[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -3246,8 +3345,14 @@ class AsyncResponses(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> CompactedResponse:
-        """
-        Compact conversation
+        """Compact a conversation.
+
+        Returns a compacted response object.
+
+        Learn when and how to compact long-running conversations in the
+        [conversation state guide](https://platform.openai.com/docs/guides/conversation-state#managing-the-context-window).
+        For ZDR-compatible compaction details, see
+        [Compaction (advanced)](https://platform.openai.com/docs/guides/conversation-state#compaction-advanced).
 
         Args:
           model: Model ID used to generate the response, like `gpt-5` or `o3`. OpenAI offers a
@@ -3268,6 +3373,8 @@ class AsyncResponses(AsyncAPIResource):
               [conversation state](https://platform.openai.com/docs/guides/conversation-state).
               Cannot be used in conjunction with `conversation`.
 
+          prompt_cache_key: A key to use when reading from or writing to the prompt cache.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -3284,6 +3391,7 @@ class AsyncResponses(AsyncAPIResource):
                     "input": input,
                     "instructions": instructions,
                     "previous_response_id": previous_response_id,
+                    "prompt_cache_key": prompt_cache_key,
                 },
                 response_compact_params.ResponseCompactParams,
             ),
@@ -3291,6 +3399,23 @@ class AsyncResponses(AsyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=CompactedResponse,
+        )
+
+    def connect(
+        self,
+        extra_query: Query = {},
+        extra_headers: Headers = {},
+        websocket_connection_options: WebSocketConnectionOptions = {},
+    ) -> AsyncResponsesConnectionManager:
+        """Connect to a persistent Responses API WebSocket.
+
+        Send `response.create` events and receive response stream events over the socket.
+        """
+        return AsyncResponsesConnectionManager(
+            client=self._client,
+            extra_query=extra_query,
+            extra_headers=extra_headers,
+            websocket_connection_options=websocket_connection_options,
         )
 
 
@@ -3452,3 +3577,495 @@ def _make_tools(tools: Iterable[ParseableToolParam] | Omit) -> List[ToolParam] |
         converted_tools.append(new_tool.cast())
 
     return converted_tools
+
+
+class AsyncResponsesConnection:
+    """Represents a live WebSocket connection to the Responses API"""
+
+    response: AsyncResponsesResponseResource
+
+    _connection: AsyncWebSocketConnection
+
+    def __init__(self, connection: AsyncWebSocketConnection) -> None:
+        self._connection = connection
+
+        self.response = AsyncResponsesResponseResource(self)
+
+    async def __aiter__(self) -> AsyncIterator[ResponsesServerEvent]:
+        """
+        An infinite-iterator that will continue to yield events until
+        the connection is closed.
+        """
+        from websockets.exceptions import ConnectionClosedOK
+
+        try:
+            while True:
+                yield await self.recv()
+        except ConnectionClosedOK:
+            return
+
+    async def recv(self) -> ResponsesServerEvent:
+        """
+        Receive the next message from the connection and parses it into a `ResponsesServerEvent` object.
+
+        Canceling this method is safe. There's no risk of losing data.
+        """
+        return self.parse_event(await self.recv_bytes())
+
+    async def recv_bytes(self) -> bytes:
+        """Receive the next message from the connection as raw bytes.
+
+        Canceling this method is safe. There's no risk of losing data.
+
+        If you want to parse the message into a `ResponsesServerEvent` object like `.recv()` does,
+        then you can call `.parse_event(data)`.
+        """
+        message = await self._connection.recv(decode=False)
+        log.debug(f"Received WebSocket message: %s", message)
+        return message
+
+    async def send(self, event: ResponsesClientEvent | ResponsesClientEventParam) -> None:
+        data = (
+            event.to_json(use_api_names=True, exclude_defaults=True, exclude_unset=True)
+            if isinstance(event, BaseModel)
+            else json.dumps(await async_maybe_transform(event, ResponsesClientEventParam))
+        )
+        await self._connection.send(data)
+
+    async def close(self, *, code: int = 1000, reason: str = "") -> None:
+        await self._connection.close(code=code, reason=reason)
+
+    def parse_event(self, data: str | bytes) -> ResponsesServerEvent:
+        """
+        Converts a raw `str` or `bytes` message into a `ResponsesServerEvent` object.
+
+        This is helpful if you're using `.recv_bytes()`.
+        """
+        return cast(
+            ResponsesServerEvent,
+            construct_type_unchecked(value=json.loads(data), type_=cast(Any, ResponsesServerEvent)),
+        )
+
+
+class AsyncResponsesConnectionManager:
+    """
+    Context manager over a `AsyncResponsesConnection` that is returned by `responses.connect()`
+
+    This context manager ensures that the connection will be closed when it exits.
+
+    ---
+
+    Note that if your application doesn't work well with the context manager approach then you
+    can call the `.enter()` method directly to initiate a connection.
+
+    **Warning**: You must remember to close the connection with `.close()`.
+
+    ```py
+    connection = await client.responses.connect(...).enter()
+    # ...
+    await connection.close()
+    ```
+    """
+
+    def __init__(
+        self,
+        *,
+        client: AsyncOpenAI,
+        extra_query: Query,
+        extra_headers: Headers,
+        websocket_connection_options: WebSocketConnectionOptions,
+    ) -> None:
+        self.__client = client
+        self.__connection: AsyncResponsesConnection | None = None
+        self.__extra_query = extra_query
+        self.__extra_headers = extra_headers
+        self.__websocket_connection_options = websocket_connection_options
+
+    async def __aenter__(self) -> AsyncResponsesConnection:
+        """
+        👋 If your application doesn't work well with the context manager approach then you
+        can call this method directly to initiate a connection.
+
+        **Warning**: You must remember to close the connection with `.close()`.
+
+        ```py
+        connection = await client.responses.connect(...).enter()
+        # ...
+        await connection.close()
+        ```
+        """
+        try:
+            from websockets.asyncio.client import connect
+        except ImportError as exc:
+            raise OpenAIError("You need to install `openai[realtime]` to use this method") from exc
+
+        url = self._prepare_url().copy_with(
+            params={
+                **self.__client.base_url.params,
+                **self.__extra_query,
+            },
+        )
+        log.debug("Connecting to %s", url)
+        if self.__websocket_connection_options:
+            log.debug("Connection options: %s", self.__websocket_connection_options)
+
+        self.__connection = AsyncResponsesConnection(
+            await connect(
+                str(url),
+                user_agent_header=self.__client.user_agent,
+                additional_headers=_merge_mappings(
+                    {
+                        **self.__client.auth_headers,
+                    },
+                    self.__extra_headers,
+                ),
+                **self.__websocket_connection_options,
+            )
+        )
+
+        return self.__connection
+
+    enter = __aenter__
+
+    def _prepare_url(self) -> httpx.URL:
+        if self.__client.websocket_base_url is not None:
+            base_url = httpx.URL(self.__client.websocket_base_url)
+        else:
+            scheme = self.__client._base_url.scheme
+            ws_scheme = "ws" if scheme == "http" else "wss"
+            base_url = self.__client._base_url.copy_with(scheme=ws_scheme)
+
+        merge_raw_path = base_url.raw_path.rstrip(b"/") + b"/responses"
+        return base_url.copy_with(raw_path=merge_raw_path)
+
+    async def __aexit__(
+        self, exc_type: type[BaseException] | None, exc: BaseException | None, exc_tb: TracebackType | None
+    ) -> None:
+        if self.__connection is not None:
+            await self.__connection.close()
+
+
+class ResponsesConnection:
+    """Represents a live WebSocket connection to the Responses API"""
+
+    response: ResponsesResponseResource
+
+    _connection: WebSocketConnection
+
+    def __init__(self, connection: WebSocketConnection) -> None:
+        self._connection = connection
+
+        self.response = ResponsesResponseResource(self)
+
+    def __iter__(self) -> Iterator[ResponsesServerEvent]:
+        """
+        An infinite-iterator that will continue to yield events until
+        the connection is closed.
+        """
+        from websockets.exceptions import ConnectionClosedOK
+
+        try:
+            while True:
+                yield self.recv()
+        except ConnectionClosedOK:
+            return
+
+    def recv(self) -> ResponsesServerEvent:
+        """
+        Receive the next message from the connection and parses it into a `ResponsesServerEvent` object.
+
+        Canceling this method is safe. There's no risk of losing data.
+        """
+        return self.parse_event(self.recv_bytes())
+
+    def recv_bytes(self) -> bytes:
+        """Receive the next message from the connection as raw bytes.
+
+        Canceling this method is safe. There's no risk of losing data.
+
+        If you want to parse the message into a `ResponsesServerEvent` object like `.recv()` does,
+        then you can call `.parse_event(data)`.
+        """
+        message = self._connection.recv(decode=False)
+        log.debug(f"Received WebSocket message: %s", message)
+        return message
+
+    def send(self, event: ResponsesClientEvent | ResponsesClientEventParam) -> None:
+        data = (
+            event.to_json(use_api_names=True, exclude_defaults=True, exclude_unset=True)
+            if isinstance(event, BaseModel)
+            else json.dumps(maybe_transform(event, ResponsesClientEventParam))
+        )
+        self._connection.send(data)
+
+    def close(self, *, code: int = 1000, reason: str = "") -> None:
+        self._connection.close(code=code, reason=reason)
+
+    def parse_event(self, data: str | bytes) -> ResponsesServerEvent:
+        """
+        Converts a raw `str` or `bytes` message into a `ResponsesServerEvent` object.
+
+        This is helpful if you're using `.recv_bytes()`.
+        """
+        return cast(
+            ResponsesServerEvent,
+            construct_type_unchecked(value=json.loads(data), type_=cast(Any, ResponsesServerEvent)),
+        )
+
+
+class ResponsesConnectionManager:
+    """
+    Context manager over a `ResponsesConnection` that is returned by `responses.connect()`
+
+    This context manager ensures that the connection will be closed when it exits.
+
+    ---
+
+    Note that if your application doesn't work well with the context manager approach then you
+    can call the `.enter()` method directly to initiate a connection.
+
+    **Warning**: You must remember to close the connection with `.close()`.
+
+    ```py
+    connection = client.responses.connect(...).enter()
+    # ...
+    connection.close()
+    ```
+    """
+
+    def __init__(
+        self,
+        *,
+        client: OpenAI,
+        extra_query: Query,
+        extra_headers: Headers,
+        websocket_connection_options: WebSocketConnectionOptions,
+    ) -> None:
+        self.__client = client
+        self.__connection: ResponsesConnection | None = None
+        self.__extra_query = extra_query
+        self.__extra_headers = extra_headers
+        self.__websocket_connection_options = websocket_connection_options
+
+    def __enter__(self) -> ResponsesConnection:
+        """
+        👋 If your application doesn't work well with the context manager approach then you
+        can call this method directly to initiate a connection.
+
+        **Warning**: You must remember to close the connection with `.close()`.
+
+        ```py
+        connection = client.responses.connect(...).enter()
+        # ...
+        connection.close()
+        ```
+        """
+        try:
+            from websockets.sync.client import connect
+        except ImportError as exc:
+            raise OpenAIError("You need to install `openai[realtime]` to use this method") from exc
+
+        url = self._prepare_url().copy_with(
+            params={
+                **self.__client.base_url.params,
+                **self.__extra_query,
+            },
+        )
+        log.debug("Connecting to %s", url)
+        if self.__websocket_connection_options:
+            log.debug("Connection options: %s", self.__websocket_connection_options)
+
+        self.__connection = ResponsesConnection(
+            connect(
+                str(url),
+                user_agent_header=self.__client.user_agent,
+                additional_headers=_merge_mappings(
+                    {
+                        **self.__client.auth_headers,
+                    },
+                    self.__extra_headers,
+                ),
+                **self.__websocket_connection_options,
+            )
+        )
+
+        return self.__connection
+
+    enter = __enter__
+
+    def _prepare_url(self) -> httpx.URL:
+        if self.__client.websocket_base_url is not None:
+            base_url = httpx.URL(self.__client.websocket_base_url)
+        else:
+            scheme = self.__client._base_url.scheme
+            ws_scheme = "ws" if scheme == "http" else "wss"
+            base_url = self.__client._base_url.copy_with(scheme=ws_scheme)
+
+        merge_raw_path = base_url.raw_path.rstrip(b"/") + b"/responses"
+        return base_url.copy_with(raw_path=merge_raw_path)
+
+    def __exit__(
+        self, exc_type: type[BaseException] | None, exc: BaseException | None, exc_tb: TracebackType | None
+    ) -> None:
+        if self.__connection is not None:
+            self.__connection.close()
+
+
+class BaseResponsesConnectionResource:
+    def __init__(self, connection: ResponsesConnection) -> None:
+        self._connection = connection
+
+
+class ResponsesResponseResource(BaseResponsesConnectionResource):
+    def create(
+        self,
+        *,
+        background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[responses_client_event_param.ContextManagement]] | Omit = omit,
+        conversation: Optional[responses_client_event_param.Conversation] | Omit = omit,
+        include: Optional[List[ResponseIncludable]] | Omit = omit,
+        input: Union[str, ResponseInputParam] | Omit = omit,
+        instructions: Optional[str] | Omit = omit,
+        max_output_tokens: Optional[int] | Omit = omit,
+        max_tool_calls: Optional[int] | Omit = omit,
+        metadata: Optional[Metadata] | Omit = omit,
+        model: ResponsesModel | Omit = omit,
+        parallel_tool_calls: Optional[bool] | Omit = omit,
+        previous_response_id: Optional[str] | Omit = omit,
+        prompt: Optional[ResponsePromptParam] | Omit = omit,
+        prompt_cache_key: str | Omit = omit,
+        prompt_cache_retention: Optional[Literal["in-memory", "24h"]] | Omit = omit,
+        reasoning: Optional[Reasoning] | Omit = omit,
+        safety_identifier: str | Omit = omit,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | Omit = omit,
+        store: Optional[bool] | Omit = omit,
+        stream: Optional[bool] | Omit = omit,
+        stream_options: Optional[responses_client_event_param.StreamOptions] | Omit = omit,
+        temperature: Optional[float] | Omit = omit,
+        text: ResponseTextConfigParam | Omit = omit,
+        tool_choice: responses_client_event_param.ToolChoice | Omit = omit,
+        tools: Iterable[ToolParam] | Omit = omit,
+        top_logprobs: Optional[int] | Omit = omit,
+        top_p: Optional[float] | Omit = omit,
+        truncation: Optional[Literal["auto", "disabled"]] | Omit = omit,
+        user: str | Omit = omit,
+    ) -> None:
+        self._connection.send(
+            cast(
+                ResponsesClientEventParam,
+                strip_not_given(
+                    {
+                        "type": "response.create",
+                        "background": background,
+                        "context_management": context_management,
+                        "conversation": conversation,
+                        "include": include,
+                        "input": input,
+                        "instructions": instructions,
+                        "max_output_tokens": max_output_tokens,
+                        "max_tool_calls": max_tool_calls,
+                        "metadata": metadata,
+                        "model": model,
+                        "parallel_tool_calls": parallel_tool_calls,
+                        "previous_response_id": previous_response_id,
+                        "prompt": prompt,
+                        "prompt_cache_key": prompt_cache_key,
+                        "prompt_cache_retention": prompt_cache_retention,
+                        "reasoning": reasoning,
+                        "safety_identifier": safety_identifier,
+                        "service_tier": service_tier,
+                        "store": store,
+                        "stream": stream,
+                        "stream_options": stream_options,
+                        "temperature": temperature,
+                        "text": text,
+                        "tool_choice": tool_choice,
+                        "tools": tools,
+                        "top_logprobs": top_logprobs,
+                        "top_p": top_p,
+                        "truncation": truncation,
+                        "user": user,
+                    }
+                ),
+            )
+        )
+
+
+class BaseAsyncResponsesConnectionResource:
+    def __init__(self, connection: AsyncResponsesConnection) -> None:
+        self._connection = connection
+
+
+class AsyncResponsesResponseResource(BaseAsyncResponsesConnectionResource):
+    async def create(
+        self,
+        *,
+        background: Optional[bool] | Omit = omit,
+        context_management: Optional[Iterable[responses_client_event_param.ContextManagement]] | Omit = omit,
+        conversation: Optional[responses_client_event_param.Conversation] | Omit = omit,
+        include: Optional[List[ResponseIncludable]] | Omit = omit,
+        input: Union[str, ResponseInputParam] | Omit = omit,
+        instructions: Optional[str] | Omit = omit,
+        max_output_tokens: Optional[int] | Omit = omit,
+        max_tool_calls: Optional[int] | Omit = omit,
+        metadata: Optional[Metadata] | Omit = omit,
+        model: ResponsesModel | Omit = omit,
+        parallel_tool_calls: Optional[bool] | Omit = omit,
+        previous_response_id: Optional[str] | Omit = omit,
+        prompt: Optional[ResponsePromptParam] | Omit = omit,
+        prompt_cache_key: str | Omit = omit,
+        prompt_cache_retention: Optional[Literal["in-memory", "24h"]] | Omit = omit,
+        reasoning: Optional[Reasoning] | Omit = omit,
+        safety_identifier: str | Omit = omit,
+        service_tier: Optional[Literal["auto", "default", "flex", "scale", "priority"]] | Omit = omit,
+        store: Optional[bool] | Omit = omit,
+        stream: Optional[bool] | Omit = omit,
+        stream_options: Optional[responses_client_event_param.StreamOptions] | Omit = omit,
+        temperature: Optional[float] | Omit = omit,
+        text: ResponseTextConfigParam | Omit = omit,
+        tool_choice: responses_client_event_param.ToolChoice | Omit = omit,
+        tools: Iterable[ToolParam] | Omit = omit,
+        top_logprobs: Optional[int] | Omit = omit,
+        top_p: Optional[float] | Omit = omit,
+        truncation: Optional[Literal["auto", "disabled"]] | Omit = omit,
+        user: str | Omit = omit,
+    ) -> None:
+        await self._connection.send(
+            cast(
+                ResponsesClientEventParam,
+                strip_not_given(
+                    {
+                        "type": "response.create",
+                        "background": background,
+                        "context_management": context_management,
+                        "conversation": conversation,
+                        "include": include,
+                        "input": input,
+                        "instructions": instructions,
+                        "max_output_tokens": max_output_tokens,
+                        "max_tool_calls": max_tool_calls,
+                        "metadata": metadata,
+                        "model": model,
+                        "parallel_tool_calls": parallel_tool_calls,
+                        "previous_response_id": previous_response_id,
+                        "prompt": prompt,
+                        "prompt_cache_key": prompt_cache_key,
+                        "prompt_cache_retention": prompt_cache_retention,
+                        "reasoning": reasoning,
+                        "safety_identifier": safety_identifier,
+                        "service_tier": service_tier,
+                        "store": store,
+                        "stream": stream,
+                        "stream_options": stream_options,
+                        "temperature": temperature,
+                        "text": text,
+                        "tool_choice": tool_choice,
+                        "tools": tools,
+                        "top_logprobs": top_logprobs,
+                        "top_p": top_p,
+                        "truncation": truncation,
+                        "user": user,
+                    }
+                ),
+            )
+        )

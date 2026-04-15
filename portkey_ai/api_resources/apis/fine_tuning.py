@@ -1,5 +1,6 @@
 import json
 from typing import Iterable, List, Literal, Optional, Union
+import typing_extensions
 from portkey_ai._vendor.openai.types.fine_tuning.alpha import grader_run_params
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -10,6 +11,7 @@ from portkey_ai.api_resources.types.fine_tuning_alpha_grader_type import (
 from portkey_ai.api_resources.types.finetuning_checkpoint_permissions import (
     PermissionCreateResponse,
     PermissionDeleteResponse,
+    PermissionListPage,
     PermissionRetrieveResponse,
 )
 from ..._vendor.openai._types import Omit, omit
@@ -184,6 +186,9 @@ class Permissions(APIResource):
 
         return data
 
+    @typing_extensions.deprecated(
+        "Retrieve is deprecated. Please swap to the paginated list method instead."
+    )
     def retrieve(
         self,
         fine_tuned_model_checkpoint: str,
@@ -203,6 +208,29 @@ class Permissions(APIResource):
             extra_body=kwargs,
         )
         data = PermissionRetrieveResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    def list(
+        self,
+        fine_tuned_model_checkpoint: str,
+        *,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["ascending", "descending"], Omit] = omit,
+        project_id: Union[str, Omit] = omit,
+        **kwargs,
+    ) -> PermissionListPage:
+        response = self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.list(  # noqa: E501
+            fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
+            after=after,
+            limit=limit,
+            order=order,
+            project_id=project_id,
+            extra_body=kwargs,
+        )
+        data = PermissionListPage(**json.loads(response.text))
         data._headers = response.headers
 
         return data
@@ -440,6 +468,9 @@ class AsyncPermissions(AsyncAPIResource):
 
         return data
 
+    @typing_extensions.deprecated(
+        "Retrieve is deprecated. Please swap to the paginated list method instead."
+    )
     async def retrieve(
         self,
         fine_tuned_model_checkpoint: str,
@@ -459,6 +490,29 @@ class AsyncPermissions(AsyncAPIResource):
             extra_body=kwargs,
         )
         data = PermissionRetrieveResponse(**json.loads(response.text))
+        data._headers = response.headers
+
+        return data
+
+    async def list(
+        self,
+        fine_tuned_model_checkpoint: str,
+        *,
+        after: Union[str, Omit] = omit,
+        limit: Union[int, Omit] = omit,
+        order: Union[Literal["ascending", "descending"], Omit] = omit,
+        project_id: Union[str, Omit] = omit,
+        **kwargs,
+    ) -> PermissionListPage:
+        response = await self.openai_client.with_raw_response.fine_tuning.checkpoints.permissions.list(  # noqa: E501
+            fine_tuned_model_checkpoint=fine_tuned_model_checkpoint,
+            after=after,
+            limit=limit,
+            order=order,
+            project_id=project_id,
+            extra_body=kwargs,
+        )
+        data = PermissionListPage(**json.loads(response.text))
         data._headers = response.headers
 
         return data
