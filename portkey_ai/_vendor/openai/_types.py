@@ -125,61 +125,70 @@ class RequestOptions(TypedDict, total=False):
 
 
 # Sentinel class used until PEP 0661 is accepted
-class NotGiven:
-    """
-    For parameters with a meaningful None value, we need to distinguish between
-    the user explicitly passing None, and the user not passing the parameter at
-    all.
+# Use external openai's NotGiven/Omit if available for compatibility with libraries
+# that use the standard openai package (e.g., pydantic-ai, langchain)
+try:
+    from openai._types import NotGiven, Omit, NOT_GIVEN
 
-    User code shouldn't need to use not_given directly.
+    # External openai only exports NOT_GIVEN, not the lowercase not_given
+    not_given = NOT_GIVEN
+    # External openai doesn't export lowercase omit, create from class
+    omit = Omit()
+except ImportError:
+    # Fall back to defining our own (for standalone use without openai installed)
 
-    For example:
+    class NotGiven:
+        """
+        For parameters with a meaningful None value, we need to distinguish between
+        the user explicitly passing None, and the user not passing the parameter at
+        all.
 
-    ```py
-    def create(timeout: Timeout | None | NotGiven = not_given): ...
+        User code shouldn't need to use not_given directly.
 
+        For example:
 
-    create(timeout=1)  # 1s timeout
-    create(timeout=None)  # No timeout
-    create()  # Default timeout behavior
-    ```
-    """
-
-    def __bool__(self) -> Literal[False]:
-        return False
-
-    @override
-    def __repr__(self) -> str:
-        return "NOT_GIVEN"
+        ```py
+        def create(timeout: Timeout | None | NotGiven = not_given): ...
 
 
-not_given = NotGiven()
-# for backwards compatibility:
-NOT_GIVEN = NotGiven()
+        create(timeout=1)  # 1s timeout
+        create(timeout=None)  # No timeout
+        create()  # Default timeout behavior
+        ```
+        """
 
+        def __bool__(self) -> Literal[False]:
+            return False
 
-class Omit:
-    """
-    To explicitly omit something from being sent in a request, use `omit`.
+        @override
+        def __repr__(self) -> str:
+            return "NOT_GIVEN"
 
-    ```py
-    # as the default `Content-Type` header is `application/json` that will be sent
-    client.post("/upload/files", files={"file": b"my raw file content"})
+    not_given = NotGiven()
+    # for backwards compatibility:
+    NOT_GIVEN = NotGiven()
 
-    # you can't explicitly override the header as it has to be dynamically generated
-    # to look something like: 'multipart/form-data; boundary=0d8382fcf5f8c3be01ca2e11002d2983'
-    client.post(..., headers={"Content-Type": "multipart/form-data"})
+    class Omit:
+        """
+        To explicitly omit something from being sent in a request, use `omit`.
 
-    # instead you can remove the default `application/json` header by passing omit
-    client.post(..., headers={"Content-Type": omit})
-    ```
-    """
+        ```py
+        # as the default `Content-Type` header is `application/json` that will be sent
+        client.post("/upload/files", files={"file": b"my raw file content"})
 
-    def __bool__(self) -> Literal[False]:
-        return False
+        # you can't explicitly override the header as it has to be dynamically generated
+        # to look something like: 'multipart/form-data; boundary=0d8382fcf5f8c3be01ca2e11002d2983'
+        client.post(..., headers={"Content-Type": "multipart/form-data"})
 
+        # instead you can remove the default `application/json` header by passing omit
+        client.post(..., headers={"Content-Type": omit})
+        ```
+        """
 
-omit = Omit()
+        def __bool__(self) -> Literal[False]:
+            return False
+
+    omit = Omit()
 
 Omittable = Union[_T, Omit]
 
