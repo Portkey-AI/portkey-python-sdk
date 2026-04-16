@@ -124,13 +124,13 @@ class _MessageFormatter:
                     ):
                         formatted.append({"role": role, "content": part["text"]})
                     elif isinstance(part, dict) and "toolUse" in part:
-                        formatted.append(self._format_tool_use_part(part))  # type: ignore[arg-type]
+                        formatted.append(self._format_tool_use_part(part))
                     elif (
                         isinstance(part, dict)
                         and "toolResult" in part
                         and self._current_tool_use_id is not None
                     ):
-                        formatted.append(self._format_tool_result_part(part))  # type: ignore[arg-type]
+                        formatted.append(self._format_tool_result_part(part))
 
         return formatted
 
@@ -339,7 +339,7 @@ class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
         state["tool_use_id"] = None
         state["tool_name"] = None
 
-    async def structured_output(  # type: ignore[override]
+    async def structured_output(
         self,
         output_model: "Type[T]",
         prompt: List[dict[str, Any]],
