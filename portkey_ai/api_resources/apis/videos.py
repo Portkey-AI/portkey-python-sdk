@@ -2,6 +2,11 @@ import json
 from typing import Any, Literal, Optional, Union
 
 import httpx
+from portkey_ai._vendor.openai.types import (
+    video_create_params,
+    video_edit_params,
+    video_extend_params,
+)
 from portkey_ai._vendor.openai.types.video_model_param import VideoModelParam
 from portkey_ai._vendor.openai.types.video_seconds import VideoSeconds
 from portkey_ai._vendor.openai.types.video_size import VideoSize
@@ -10,7 +15,9 @@ from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.shared_types import Body, Headers, Query
 from portkey_ai.api_resources.types.videos_type import (
     Video,
+    VideoCreateCharacterResponse,
     VideoDeleteResponse,
+    VideoGetCharacterResponse,
     VideoList,
 )
 from ..._vendor.openai._types import FileTypes, NotGiven, Omit, not_given, omit
@@ -25,7 +32,7 @@ class Videos(APIResource):
         self,
         *,
         prompt: str,
-        input_reference: Union[FileTypes, Omit] = omit,
+        input_reference: Union[video_create_params.InputReference, Omit] = omit,
         model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
@@ -54,7 +61,7 @@ class Videos(APIResource):
         self,
         *,
         prompt: str,
-        input_reference: Union[FileTypes, Omit] = omit,
+        input_reference: Union[video_create_params.InputReference, Omit] = omit,
         model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
@@ -155,6 +162,30 @@ class Videos(APIResource):
         data._headers = response.headers
         return data
 
+    def create_character(
+        self,
+        *,
+        name: str,
+        video: FileTypes,
+        **kwargs,
+    ) -> VideoCreateCharacterResponse:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = self.openai_client.with_raw_response.videos.create_character(
+            name=name,
+            video=video,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = VideoCreateCharacterResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
     def download_content(
         self,
         video_id: str,
@@ -174,6 +205,77 @@ class Videos(APIResource):
             timeout=timeout,
         )
         return response
+
+    def edit(
+        self,
+        *,
+        prompt: str,
+        video: video_edit_params.Video,
+        **kwargs,
+    ) -> Video:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = self.openai_client.with_raw_response.videos.edit(
+            prompt=prompt,
+            video=video,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = Video(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    def extend(
+        self,
+        *,
+        prompt: str,
+        seconds: VideoSeconds,
+        video: video_edit_params.Video,
+        **kwargs,
+    ) -> Video:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = self.openai_client.with_raw_response.videos.extend(
+            prompt=prompt,
+            seconds=seconds,
+            video=video,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = Video(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    def get_character(
+        self,
+        character_id: str,
+        **kwargs,
+    ) -> VideoGetCharacterResponse:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = self.openai_client.with_raw_response.videos.get_character(
+            character_id=character_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = VideoGetCharacterResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
     def remix(
         self,
@@ -207,7 +309,7 @@ class AsyncVideos(AsyncAPIResource):
         self,
         *,
         prompt: str,
-        input_reference: Union[FileTypes, Omit] = omit,
+        input_reference: Union[video_create_params.InputReference, Omit] = omit,
         model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
@@ -236,7 +338,7 @@ class AsyncVideos(AsyncAPIResource):
         self,
         *,
         prompt: str,
-        input_reference: Union[FileTypes, Omit] = omit,
+        input_reference: Union[video_create_params.InputReference, Omit] = omit,
         model: Union[VideoModelParam, Omit] = omit,
         seconds: Union[VideoSeconds, Omit] = omit,
         size: Union[VideoSize, Omit] = omit,
@@ -337,6 +439,30 @@ class AsyncVideos(AsyncAPIResource):
         data._headers = response.headers
         return data
 
+    async def create_character(
+        self,
+        *,
+        name: str,
+        video: FileTypes,
+        **kwargs,
+    ) -> VideoCreateCharacterResponse:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = await self.openai_client.with_raw_response.videos.create_character(
+            name=name,
+            video=video,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = VideoCreateCharacterResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
     async def download_content(
         self,
         video_id: str,
@@ -356,6 +482,77 @@ class AsyncVideos(AsyncAPIResource):
             timeout=timeout,
         )
         return response
+
+    async def edit(
+        self,
+        *,
+        prompt: str,
+        video: video_edit_params.Video,
+        **kwargs,
+    ) -> Video:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = await self.openai_client.with_raw_response.videos.edit(
+            prompt=prompt,
+            video=video,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = Video(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    async def extend(
+        self,
+        *,
+        prompt: str,
+        seconds: VideoSeconds,
+        video: video_extend_params.Video,
+        **kwargs,
+    ) -> Video:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = await self.openai_client.with_raw_response.videos.extend(
+            prompt=prompt,
+            seconds=seconds,
+            video=video,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = Video(**json.loads(response.text))
+        data._headers = response.headers
+        return data
+
+    async def get_character(
+        self,
+        character_id: str,
+        **kwargs,
+    ) -> VideoGetCharacterResponse:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
+        response = await self.openai_client.with_raw_response.videos.get_character(
+            character_id=character_id,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
+        )
+        data = VideoGetCharacterResponse(**json.loads(response.text))
+        data._headers = response.headers
+        return data
 
     async def remix(
         self,

@@ -28,7 +28,7 @@ from portkey_ai._vendor.openai.types.responses.response_prompt_param import (
     ResponsePromptParam,
 )
 from portkey_ai._vendor.openai.types.websocket_connection_options import (
-    WebsocketConnectionOptions,
+    WebSocketConnectionOptions,
 )
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
@@ -48,7 +48,7 @@ class MainRealtime(APIResource):
         model: str,
         extra_query: Query = {},
         extra_headers: Headers = {},
-        websocket_connection_options: WebsocketConnectionOptions = {},
+        websocket_connection_options: WebSocketConnectionOptions = {},
     ) -> RealtimeConnectionManager:
         return self.openai_client.realtime.connect(
             model=model,
@@ -71,7 +71,7 @@ class AsyncMainRealtime(AsyncAPIResource):
         model: str,
         extra_query: Query = {},
         extra_headers: Headers = {},
-        websocket_connection_options: WebsocketConnectionOptions = {},
+        websocket_connection_options: WebSocketConnectionOptions = {},
     ) -> AsyncRealtimeConnectionManager:
         return self.openai_client.realtime.connect(
             model=model,
@@ -174,6 +174,7 @@ class Calls(APIResource):
             str,
             Literal[
                 "gpt-realtime",
+                "gpt-realtime-1.5",
                 "gpt-realtime-2025-08-28",
                 "gpt-4o-realtime-preview",
                 "gpt-4o-realtime-preview-2024-10-01",
@@ -183,8 +184,11 @@ class Calls(APIResource):
                 "gpt-4o-mini-realtime-preview-2024-12-17",
                 "gpt-realtime-mini",
                 "gpt-realtime-mini-2025-10-06",
+                "gpt-realtime-mini-2025-12-15",
+                "gpt-audio-1.5",
                 "gpt-audio-mini",
                 "gpt-audio-mini-2025-10-06",
+                "gpt-audio-mini-2025-12-15",
             ],
             Omit,
         ] = omit,
@@ -314,6 +318,7 @@ class AsyncCalls(AsyncAPIResource):
             str,
             Literal[
                 "gpt-realtime",
+                "gpt-realtime-1.5",
                 "gpt-realtime-2025-08-28",
                 "gpt-4o-realtime-preview",
                 "gpt-4o-realtime-preview-2024-10-01",
@@ -323,8 +328,11 @@ class AsyncCalls(AsyncAPIResource):
                 "gpt-4o-mini-realtime-preview-2024-12-17",
                 "gpt-realtime-mini",
                 "gpt-realtime-mini-2025-10-06",
+                "gpt-realtime-mini-2025-12-15",
+                "gpt-audio-1.5",
                 "gpt-audio-mini",
                 "gpt-audio-mini-2025-10-06",
+                "gpt-audio-mini-2025-12-15",
             ],
             Omit,
         ] = omit,

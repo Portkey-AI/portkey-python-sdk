@@ -31,7 +31,7 @@ async def main() -> None:
     ]
 
     print(f"Streaming with model: {model_id}")
-    async for event in model.stream(messages=messages):
+    async for event in model.stream(messages=messages):  # type: ignore[arg-type]
         # Events follow the Strands stream event shape produced by our adapter.
         if isinstance(event, dict) and "contentBlockDelta" in event:
             delta = event["contentBlockDelta"].get("delta", {})
