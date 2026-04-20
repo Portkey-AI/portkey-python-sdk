@@ -5,8 +5,9 @@ from portkey_ai._vendor.openai.types.vector_stores import file_batch_create_para
 from portkey_ai.api_resources.apis.api_resource import APIResource, AsyncAPIResource
 from portkey_ai.api_resources.client import AsyncPortkey, Portkey
 from portkey_ai.api_resources.types.shared_types import Metadata
-from ..._vendor.openai._types import Omit, omit, FileTypes
+from ..._vendor.openai._types import Omit, SequenceNotStr, omit, FileTypes
 from ..._vendor.openai.types import (
+    FileChunkingStrategyParam,
     vector_store_create_params,
     vector_store_update_params,
 )
@@ -233,17 +234,23 @@ class VectorFiles(APIResource):
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
         response = self.openai_client.vector_stores.files.create_and_poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
             attributes=attributes,
             poll_interval_ms=poll_interval_ms,
             chunking_strategy=chunking_strategy,
-            **kwargs,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {}), **kwargs},
+            timeout=timeout,
         )
-        data = response
-
-        return data  # type: ignore[return-value]
+        return response  # type: ignore[return-value]
 
     def poll(
         self,
@@ -368,20 +375,31 @@ class VectorFileBatches(APIResource):
         self,
         vector_store_id: str,
         *,
-        file_ids: List[str],
+        attributes: Union[Optional[Dict[str, Union[str, float, bool]]], Omit] = omit,
+        chunking_strategy: Union[FileChunkingStrategyParam, Omit] = omit,
+        file_ids: Union[SequenceNotStr[str], Omit] = omit,
+        files: Union[Iterable[file_batch_create_params.File], Omit] = omit,
         poll_interval_ms: Union[int, Omit] = omit,
-        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
         response = self.openai_client.vector_stores.file_batches.create_and_poll(
             vector_store_id=vector_store_id,
-            file_ids=file_ids,
-            poll_interval_ms=poll_interval_ms,
+            attributes=attributes,
             chunking_strategy=chunking_strategy,
-            **kwargs,
+            file_ids=file_ids,
+            files=files,
+            poll_interval_ms=poll_interval_ms,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body=extra_body,
+            timeout=timeout,
         )
-        data = response
-        return data  # type: ignore[return-value]
+        return response  # type: ignore[return-value]
 
     @typing.no_type_check
     def list_files(
@@ -668,11 +686,20 @@ class AsyncVectorFiles(AsyncAPIResource):
         chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFile:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
         response = await self.openai_client.vector_stores.files.create_and_poll(
             file_id=file_id,
             vector_store_id=vector_store_id,
             poll_interval_ms=poll_interval_ms,
             chunking_strategy=chunking_strategy,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
             **kwargs,
         )
         data = response
@@ -796,17 +823,29 @@ class AsyncVectorFileBatches(AsyncAPIResource):
         self,
         vector_store_id: str,
         *,
-        file_ids: List[str],
+        attributes: Union[Optional[Dict[str, Union[str, float, bool]]], Omit] = omit,
+        chunking_strategy: Union[FileChunkingStrategyParam, Omit] = omit,
+        file_ids: Union[SequenceNotStr[str], Omit] = omit,
+        files: Union[Iterable[file_batch_create_params.File], Omit] = omit,
         poll_interval_ms: Union[int, Omit] = omit,
-        chunking_strategy: Union[Any, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileBatch:
+        extra_headers = kwargs.pop("extra_headers", None)
+        extra_query = kwargs.pop("extra_query", None)
+        extra_body = kwargs.pop("extra_body", None)
+        timeout = kwargs.pop("timeout", None)
+
         response = await self.openai_client.vector_stores.file_batches.create_and_poll(
             vector_store_id=vector_store_id,
-            file_ids=file_ids,
-            poll_interval_ms=poll_interval_ms,
+            attributes=attributes,
             chunking_strategy=chunking_strategy,
-            **kwargs,
+            file_ids=file_ids,
+            files=files,
+            poll_interval_ms=poll_interval_ms,
+            extra_headers=extra_headers,
+            extra_query=extra_query,
+            extra_body={**(extra_body or {})},
+            timeout=timeout,
         )
         data = response
 

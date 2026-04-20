@@ -77,3 +77,43 @@ class VideoDeleteResponse(BaseModel, extra="allow"):
 
     def get_headers(self) -> Optional[Dict[str, str]]:
         return parse_headers(self._headers)
+
+
+class VideoCreateCharacterResponse(BaseModel, extra="allow"):
+    id: str
+    created_at: int
+    name: str
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)
+
+
+class VideoGetCharacterResponse(BaseModel, extra="allow"):
+    id: str
+    created_at: int
+    name: str
+    _headers: Optional[httpx.Headers] = PrivateAttr()
+
+    def __str__(self):
+        del self._headers
+        return json.dumps(self.dict(), indent=4)
+
+    def __getitem__(self, key):
+        return getattr(self, key, None)
+
+    def get(self, key: str, default: Optional[Any] = None):
+        return getattr(self, key, None) or default
+
+    def get_headers(self) -> Optional[Dict[str, str]]:
+        return parse_headers(self._headers)

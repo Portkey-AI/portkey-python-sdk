@@ -27,7 +27,6 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     cast,
-    List,
     Type,
     TypeVar,
     Union,
@@ -124,13 +123,17 @@ class _MessageFormatter:
                     ):
                         formatted.append({"role": role, "content": part["text"]})
                     elif isinstance(part, dict) and "toolUse" in part:
-                        formatted.append(self._format_tool_use_part(part))
+                        formatted.append(
+                            self._format_tool_use_part(part)  # type: ignore[arg-type]
+                        )
                     elif (
                         isinstance(part, dict)
                         and "toolResult" in part
                         and self._current_tool_use_id is not None
                     ):
-                        formatted.append(self._format_tool_result_part(part))
+                        formatted.append(
+                            self._format_tool_result_part(part)  # type: ignore[arg-type]
+                        )
 
         return formatted
 
@@ -339,13 +342,13 @@ class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
         state["tool_use_id"] = None
         state["tool_name"] = None
 
-    async def structured_output(
+    async def structured_output(  # type: ignore[override]
         self,
         output_model: "Type[T]",
-        prompt: List[dict[str, Any]],
+        prompt: Any,
         system_prompt: Optional[str] = None,
         **kwargs: Any,
-    ) -> AsyncGenerator[dict[str, Union["T", Any]], None]:  # type: ignore[override]
+    ) -> AsyncGenerator[dict[str, Union["T", Any]], None]:
         """Placeholder to satisfy Strands Model abstract requirements.
 
         Note: PortkeyStrands currently focuses on streaming text/tool events via `stream`.
@@ -356,6 +359,7 @@ class PortkeyStrands(_StrandsModel):  # type: ignore[misc]
             "PortkeyStrands.structured_output is not implemented yet. "
             "Use model.stream(...) for streaming responses."
         )
+        yield {}  # Make this a generator (never reached due to raise above)
 
 
 __all__ = ["PortkeyStrands"]
