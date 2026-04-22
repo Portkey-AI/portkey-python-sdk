@@ -486,7 +486,9 @@ async def test_streaming_merge_enriches_incomplete_final_response(
 
     async def fake_stream_gen() -> AsyncIterator[Any]:
         yield _FakeOutputItemAddedEvent(streamed_item, output_index=0)
-        yield _FakeFunctionArgsDeltaEvent('{"city":"SF"}', item_id="call_1", output_index=0)
+        yield _FakeFunctionArgsDeltaEvent(
+            '{"city":"SF"}', item_id="call_1", output_index=0
+        )
         yield _FakeCompletedEvent(final_response)
 
     async def fake_create(**kwargs: Any) -> AsyncIterator[Any]:
@@ -529,7 +531,10 @@ def test_ensure_strict_json_schema_nested_objects() -> None:
     result = _ensure_strict_json_schema(schema)
     assert result["additionalProperties"] is False
     assert result["properties"]["location"]["additionalProperties"] is False
-    assert result["properties"]["location"]["properties"]["coords"]["additionalProperties"] is False
+    assert (
+        result["properties"]["location"]["properties"]["coords"]["additionalProperties"]
+        is False
+    )
 
 
 def test_ensure_strict_json_schema_array_of_objects() -> None:

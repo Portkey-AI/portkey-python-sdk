@@ -659,7 +659,7 @@ class PortkeyAdk(_AdkBaseLlm):  # type: ignore[misc]  # _AdkBaseLlm may be a stu
                         event, "output_index", len(streamed_function_calls_by_index)
                     )
                     if getattr(item, "arguments", None) is None:
-                        item.arguments = ""
+                        item.arguments = ""  # type: ignore[union-attr]
                     streamed_function_calls_by_index[output_index] = item
                     key = _function_call_key(item)
                     if key:
