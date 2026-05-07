@@ -371,10 +371,26 @@ def _usage_to_metadata(usage: Any) -> Any:
 
     if not usage:
         return None
+
+    usage_dict = usage.model_dump()
+
+    prompt_tokens = usage_dict.get("input_tokens", 0)
+    output_tokens = usage_dict.get("output_tokens", 0)
+
+    input_tokens_details = usage_dict.get("input_tokens_details", {})
+    cached_tokens = input_tokens_details.get("cached_tokens", 0)
+
+    output_tokens_details = usage_dict.get("output_tokens_details", {})
+    reasoning_tokens = output_tokens_details.get("reasoning_tokens", 0)
+    completion_tokens = output_tokens - reasoning_tokens
+    total_tokens = usage_dict.get("total_tokens", 0)
+
     return genai_types.GenerateContentResponseUsageMetadata(
-        prompt_token_count=getattr(usage, "input_tokens", 0),
-        candidates_token_count=getattr(usage, "output_tokens", 0),
-        total_token_count=getattr(usage, "total_tokens", 0),
+        prompt_token_count=prompt_tokens,
+        cached_content_token_count=cached_tokens,
+        candidates_token_count=completion_tokens,
+        thoughts_token_count=reasoning_tokens,
+        total_token_count=total_tokens,
     )
 
 
