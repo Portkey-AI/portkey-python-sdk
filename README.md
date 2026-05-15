@@ -228,7 +228,7 @@ Configuration notes:
 
 Portkey currently supports all the OpenAI methods, including the legacy ones.
 
-| Methods                    | OpenAI<br>V1.26.0 | Portkey<br>V1.3.1 |
+| Methods                    | OpenAI<br>V2.2.0 | Portkey<br>V2.0.2 |
 |:----------------------------|:--------|:---------|
 | [Audio](https://portkey.ai/docs/product/ai-gateway-streamline-llm-integrations/multimodal-capabilities/vision-1) | ✅ | ✅ |
 | [Chat](https://portkey.ai/docs/api-reference/chat-completions) | ✅ | ✅ |
@@ -251,7 +251,7 @@ Portkey currently supports all the OpenAI methods, including the legacy ones.
 | Completions                  | ❌ (Deprecated) | ✅ |
 
 ### Portkey-Specific Methods
-| Methods | Portkey<br>V1.3.1 |
+| Methods | Portkey<br>V2.0.2 |
 | :-- | :-- |
 | [Feedback](https://portkey.ai/docs/api-reference/feedback) | ✅ |
 | [Prompts](https://portkey.ai/docs/api-reference/prompts) | ✅ |
