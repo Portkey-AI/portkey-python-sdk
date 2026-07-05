@@ -385,9 +385,9 @@ class GenericResponse(BaseModel, extra="allow"):
 
 
 def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
-    env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
     if provider is None:
         return ""
+    env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
     if env_key in os.environ and os.environ[env_key]:
         return os.environ.get(env_key, "")
 
