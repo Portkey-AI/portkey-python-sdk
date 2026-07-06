@@ -1314,6 +1314,7 @@ class AsyncAPIClient:
             headers=headers,
             params=params,
             json=json_body,
+            files=options.files,
             timeout=options.timeout,
         )
         return request
