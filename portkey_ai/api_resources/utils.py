@@ -42,6 +42,7 @@ from .global_constants import (
     MISSING_MODE_MESSAGE,
     PORTKEY_BASE_URL,
     PORTKEY_API_KEY_ENV,
+    PORTKEY_BASE_URL_ENV,
     PORTKEY_HEADER_PREFIX,
     PORTKEY_PROXY_ENV,
 )
@@ -509,7 +510,9 @@ def set_base_url(base_url, api_key):
     if base_url:
         return base_url
 
-    env_base_url = os.environ.get(PORTKEY_BASE_URL) or os.environ.get(PORTKEY_PROXY_ENV)
+    env_base_url = os.environ.get(PORTKEY_BASE_URL_ENV) or os.environ.get(
+        PORTKEY_PROXY_ENV
+    )
 
     if env_base_url:
         return env_base_url
