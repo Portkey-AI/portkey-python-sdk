@@ -384,7 +384,9 @@ class GenericResponse(BaseModel, extra="allow"):
         return parse_headers_generic(self._headers)
 
 
-def apikey_from_env(provider: Union[ProviderTypes, ProviderTypesLiteral, str]) -> str:
+def apikey_from_env(
+    provider: Optional[Union[ProviderTypes, ProviderTypesLiteral, str]]
+) -> str:
     if provider is None:
         return ""
     env_key = f"{provider.upper().replace('-', '_')}_API_KEY"
