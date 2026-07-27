@@ -21,16 +21,16 @@ def _capture_transport(captured: Dict[str, object]) -> httpx.MockTransport:
 
 def test_sync_post_sends_multipart_files() -> None:
     captured: Dict[str, object] = {}
-    http_client = httpx.Client(
+    with httpx.Client(
         transport=_capture_transport(captured), base_url=BASE_URL
-    )
-    client = Portkey(api_key="dummy", base_url=BASE_URL, http_client=http_client)
+    ) as http_client:
+        client = Portkey(api_key="dummy", base_url=BASE_URL, http_client=http_client)
 
-    client.post(
-        url="/files",
-        purpose="assistants",
-        files={"file": ("hello.txt", b"hello world", "text/plain")},
-    )
+        client.post(
+            url="/files",
+            purpose="assistants",
+            files={"file": ("hello.txt", b"hello world", "text/plain")},
+        )
 
     assert "multipart/form-data" in captured["content_type"]
     body = captured["content"]
@@ -41,16 +41,18 @@ def test_sync_post_sends_multipart_files() -> None:
 @pytest.mark.asyncio
 async def test_async_post_sends_multipart_files() -> None:
     captured: Dict[str, object] = {}
-    http_client = httpx.AsyncClient(
+    async with httpx.AsyncClient(
         transport=_capture_transport(captured), base_url=BASE_URL
-    )
-    client = AsyncPortkey(api_key="dummy", base_url=BASE_URL, http_client=http_client)
+    ) as http_client:
+        client = AsyncPortkey(
+            api_key="dummy", base_url=BASE_URL, http_client=http_client
+        )
 
-    await client.post(
-        url="/files",
-        purpose="assistants",
-        files={"file": ("hello.txt", b"hello world", "text/plain")},
-    )
+        await client.post(
+            url="/files",
+            purpose="assistants",
+            files={"file": ("hello.txt", b"hello world", "text/plain")},
+        )
 
     assert "multipart/form-data" in captured["content_type"]
     body = captured["content"]
