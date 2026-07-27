@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 from portkey_ai.api_resources.global_constants import (
