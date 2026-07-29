@@ -195,12 +195,16 @@ class Workspaces(APIResource):
         description: Union[str, NotGiven] = NOT_GIVEN,
         defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
         users: Union[List[str], NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        rate_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> WorkspacesAddResponse:
         body = {
             "name": name,
             "description": description,
             "defaults": defaults,
             "users": users,
+            "usage_limits": usage_limits,
+            "rate_limits": rate_limits,
         }
         return self._post(
             f"{PortkeyApiPaths.WORKSPACE_API}",
@@ -258,11 +262,15 @@ class Workspaces(APIResource):
         name: Union[str, NotGiven] = NOT_GIVEN,
         description: Union[str, NotGiven] = NOT_GIVEN,
         defaults: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        usage_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
+        rate_limits: Union[Dict[str, Any], NotGiven] = NOT_GIVEN,
     ) -> WorkspacesUpdateResponse:
         body = {
             "name": name,
             "description": description,
             "defaults": defaults,
+            "usage_limits": usage_limits,
+            "rate_limits": rate_limits,
         }
         return self._put(
             f"{PortkeyApiPaths.WORKSPACE_API}/{workspace_id}",
