@@ -4,6 +4,7 @@ Utility Tools for the Portkey Class.
 This file module contains a collection of utility functions designed to enhance
 the functionality and usability of the Portkey class
 """
+
 from typing import TYPE_CHECKING
 
 
@@ -114,7 +115,7 @@ def modelname_to_contextsize(modelname: str) -> int:
 
     if modelname in DISCONTINUED_MODELS:
         raise ValueError(
-            f"Model {modelname} has been discontinued. " "Please choose another model."
+            f"Model {modelname} has been discontinued. Please choose another model."
         )
 
     context_size = ALL_AVAILABLE_MODELS.get(modelname, None)

@@ -3,7 +3,7 @@ Hello and thank you for considering contributing to the Portkey Python SDK! Whet
 
 ## 🚀 Quick Start
 1. Fork the repository on Github.
-2. Clone your forked repository to your machine. 
+2. Clone your forked repository to your machine.
 ```sh
 $ git clone https://github.com/YOUR_USERNAME/portkey-python-sdk.git
 ```
@@ -15,7 +15,12 @@ $ source .venv/bin/activate # On macOS and Linux
 ```
 4. Install dependencies
 ```sh
-$ pip install -e .
+$ make dev
+```
+5. Install the git hooks. Do this once per clone — it is what stops formatting
+   and typing problems from ever reaching a PR.
+```sh
+$ make hooks
 ```
 
 ## 🖋 Types of Contributions

@@ -165,9 +165,11 @@ class Stream(Generic[ResponseT]):
             if sse.data.startswith("[DONE]"):
                 break
             if sse.event is None:
-                yield cast(ResponseT, self._cast_to(**sse.json())) if not isinstance(
-                    self._cast_to, httpx.Response
-                ) else cast(ResponseT, sse)
+                yield (
+                    cast(ResponseT, self._cast_to(**sse.json()))
+                    if not isinstance(self._cast_to, httpx.Response)
+                    else cast(ResponseT, sse)
+                )
 
             if sse.event == "ping":
                 continue
@@ -232,9 +234,11 @@ class AsyncStream(Generic[ResponseT]):
             if sse.data.startswith("[DONE]"):
                 break
             if sse.event is None:
-                yield cast(ResponseT, self._cast_to(**sse.json())) if not isinstance(
-                    self._cast_to, httpx.Response
-                ) else cast(ResponseT, sse)
+                yield (
+                    cast(ResponseT, self._cast_to(**sse.json()))
+                    if not isinstance(self._cast_to, httpx.Response)
+                    else cast(ResponseT, sse)
+                )
 
             if sse.event == "ping":
                 continue

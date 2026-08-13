@@ -108,8 +108,7 @@ class Responses(APIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     @overload
     def create(
@@ -153,8 +152,7 @@ class Responses(APIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> Stream[ResponseStreamEvent]:
-        ...
+    ) -> Stream[ResponseStreamEvent]: ...
 
     @overload
     def create(
@@ -198,8 +196,7 @@ class Responses(APIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> Union[Response, Stream[ResponseStreamEvent]]:
-        ...
+    ) -> Union[Response, Stream[ResponseStreamEvent]]: ...
 
     def create(
         self,
@@ -294,8 +291,7 @@ class Responses(APIResource):
         starting_after: Union[int, Omit] = omit,
         stream: Union[Literal[False], Omit] = omit,
         **kwargs,
-    ) -> ResponseType:
-        ...
+    ) -> ResponseType: ...
 
     @overload
     def retrieve(
@@ -307,8 +303,7 @@ class Responses(APIResource):
         include_obfuscation: Union[bool, Omit] = omit,
         starting_after: Union[int, Omit] = omit,
         **kwargs,
-    ) -> Stream[ResponseStreamEvent]:
-        ...
+    ) -> Stream[ResponseStreamEvent]: ...
 
     @overload
     def retrieve(
@@ -320,8 +315,7 @@ class Responses(APIResource):
         include_obfuscation: Union[bool, Omit] = omit,
         starting_after: Union[int, Omit] = omit,
         **kwargs,
-    ) -> Union[ResponseType, Stream[ResponseStreamEvent]]:
-        ...
+    ) -> Union[ResponseType, Stream[ResponseStreamEvent]]: ...
 
     def retrieve(
         self,
@@ -391,8 +385,7 @@ class Responses(APIResource):
         starting_after: Union[int, Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         **kwargs,
-    ) -> ResponseStreamManager[TextFormatT]:
-        ...
+    ) -> ResponseStreamManager[TextFormatT]: ...
 
     @overload
     def stream(
@@ -436,8 +429,7 @@ class Responses(APIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> ResponseStreamManager[TextFormatT]:
-        ...
+    ) -> ResponseStreamManager[TextFormatT]: ...
 
     def stream(
         self,
@@ -903,8 +895,7 @@ class AsyncResponses(AsyncAPIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> Response:
-        ...
+    ) -> Response: ...
 
     @overload
     async def create(
@@ -948,8 +939,7 @@ class AsyncResponses(AsyncAPIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> AsyncStream[ResponseStreamEvent]:
-        ...
+    ) -> AsyncStream[ResponseStreamEvent]: ...
 
     @overload
     async def create(
@@ -993,8 +983,7 @@ class AsyncResponses(AsyncAPIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> Union[Response, AsyncStream[ResponseStreamEvent]]:
-        ...
+    ) -> Union[Response, AsyncStream[ResponseStreamEvent]]: ...
 
     async def create(
         self,
@@ -1089,8 +1078,7 @@ class AsyncResponses(AsyncAPIResource):
         starting_after: Union[int, Omit] = omit,
         stream: Union[Literal[False], Omit] = omit,
         **kwargs,
-    ) -> ResponseType:
-        ...
+    ) -> ResponseType: ...
 
     @overload
     async def retrieve(
@@ -1102,8 +1090,7 @@ class AsyncResponses(AsyncAPIResource):
         include_obfuscation: Union[bool, Omit] = omit,
         starting_after: Union[int, Omit] = omit,
         **kwargs,
-    ) -> AsyncStream[ResponseStreamEvent]:
-        ...
+    ) -> AsyncStream[ResponseStreamEvent]: ...
 
     @overload
     async def retrieve(
@@ -1115,8 +1102,7 @@ class AsyncResponses(AsyncAPIResource):
         include_obfuscation: Union[bool, Omit] = omit,
         starting_after: Union[int, Omit] = omit,
         **kwargs,
-    ) -> Union[ResponseType, AsyncStream[ResponseStreamEvent]]:
-        ...
+    ) -> Union[ResponseType, AsyncStream[ResponseStreamEvent]]: ...
 
     async def retrieve(
         self,
@@ -1186,8 +1172,7 @@ class AsyncResponses(AsyncAPIResource):
         starting_after: Union[int, Omit] = omit,
         tools: Union[Iterable[ParseableToolParam], Omit] = omit,
         **kwargs,
-    ) -> AsyncResponseStreamManager[TextFormatT]:
-        ...
+    ) -> AsyncResponseStreamManager[TextFormatT]: ...
 
     @overload
     def stream(
@@ -1231,8 +1216,7 @@ class AsyncResponses(AsyncAPIResource):
         truncation: Union[Optional[Literal["auto", "disabled"]], Omit] = omit,
         user: Union[str, Omit] = omit,
         **kwargs,
-    ) -> AsyncResponseStreamManager[TextFormatT]:
-        ...
+    ) -> AsyncResponseStreamManager[TextFormatT]: ...
 
     def stream(
         self,

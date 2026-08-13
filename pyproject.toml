@@ -3,6 +3,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.mypy]
+# Explicit scope. Without this, a bare `mypy .` also type-checks untracked
+# scratch files in the repo root, so `make lint` fails locally while CI passes.
+files = ['portkey_ai', 'examples']
 exclude = ['portkey_ai/_vendor', 'tests']
 ignore_missing_imports = true
 follow_imports = "silent"
@@ -12,10 +15,18 @@ disable_error_code = ['import-untyped', 'import-not-found']
 module = 'portkey_ai._vendor.*'
 ignore_errors = true
 
-[tool.black]
-force-exclude = '''(portkey_ai/_vendor)/'''
-
 [tool.ruff]
-exclude =  ["portkey_ai/_vendor", "tests"]
-ignore = ["E501"]
+# `*.md` is excluded because ruff formats Python code blocks inside Markdown.
+# README/CLAUDE.md snippets are illustrative -- abbreviated bodies and blank
+# lines used for grouping are intentional, and reformatting them is churn.
+exclude = ["portkey_ai/_vendor", "tests", "*.md"]
 line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+# Pin the rule set explicitly. Under ruff 0.0.292 these were the effective
+# defaults, but leaving `select` unset means a future ruff upgrade silently
+# enables new rule families -- upgrading with it unset surfaced 7176 findings.
+# Widen this deliberately, in its own PR.
+select = ["E4", "E7", "E9", "F"]
+ignore = ["E501"]

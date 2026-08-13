@@ -218,8 +218,7 @@ class APIClient:
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> StreamT:
-        ...
+    ) -> StreamT: ...
 
     @overload
     def _post(
@@ -233,8 +232,7 @@ class APIClient:
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     def _post(
@@ -248,8 +246,7 @@ class APIClient:
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> Union[ResponseT, StreamT]:
-        ...
+    ) -> Union[ResponseT, StreamT]: ...
 
     def _post(
         self,
@@ -303,8 +300,7 @@ class APIClient:
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> StreamT:
-        ...
+    ) -> StreamT: ...
 
     @overload
     def _put(
@@ -317,8 +313,7 @@ class APIClient:
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     def _put(
@@ -331,8 +326,7 @@ class APIClient:
         stream_cls: type[StreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> Union[ResponseT, StreamT]:
-        ...
+    ) -> Union[ResponseT, StreamT]: ...
 
     def _put(
         self,
@@ -372,8 +366,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
-    ) -> StreamT:
-        ...
+    ) -> StreamT: ...
 
     @overload
     def _get(
@@ -386,8 +379,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     def _get(
@@ -400,8 +392,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
-    ) -> Union[ResponseT, StreamT]:
-        ...
+    ) -> Union[ResponseT, StreamT]: ...
 
     def _get(
         self,
@@ -441,8 +432,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[StreamT],
-    ) -> StreamT:
-        ...
+    ) -> StreamT: ...
 
     @overload
     def _delete(
@@ -455,8 +445,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[StreamT],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     def _delete(
@@ -469,8 +458,7 @@ class APIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[StreamT],
-    ) -> Union[ResponseT, StreamT]:
-        ...
+    ) -> Union[ResponseT, StreamT]: ...
 
     def _delete(
         self,
@@ -630,8 +618,7 @@ class APIClient:
         stream: Literal[False],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     def _request(
@@ -642,8 +629,7 @@ class APIClient:
         stream: Literal[True],
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-    ) -> StreamT:
-        ...
+    ) -> StreamT: ...
 
     @overload
     def _request(
@@ -654,8 +640,7 @@ class APIClient:
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[StreamT],
-    ) -> Union[ResponseT, StreamT]:
-        ...
+    ) -> Union[ResponseT, StreamT]: ...
 
     def _request(
         self,
@@ -933,8 +918,7 @@ class AsyncAPIClient:
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     async def _post(
@@ -948,8 +932,7 @@ class AsyncAPIClient:
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> AsyncStreamT:
-        ...
+    ) -> AsyncStreamT: ...
 
     @overload
     async def _post(
@@ -963,8 +946,7 @@ class AsyncAPIClient:
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> Union[ResponseT, AsyncStreamT]:
-        ...
+    ) -> Union[ResponseT, AsyncStreamT]: ...
 
     async def _post(
         self,
@@ -1018,8 +1000,7 @@ class AsyncAPIClient:
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     async def _put(
@@ -1032,8 +1013,7 @@ class AsyncAPIClient:
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> AsyncStreamT:
-        ...
+    ) -> AsyncStreamT: ...
 
     @overload
     async def _put(
@@ -1046,8 +1026,7 @@ class AsyncAPIClient:
         stream_cls: type[AsyncStreamT],
         params: Mapping[str, str],
         headers: Mapping[str, str],
-    ) -> Union[ResponseT, AsyncStreamT]:
-        ...
+    ) -> Union[ResponseT, AsyncStreamT]: ...
 
     async def _put(
         self,
@@ -1087,8 +1066,7 @@ class AsyncAPIClient:
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[AsyncStreamT],
-    ) -> AsyncStreamT:
-        ...
+    ) -> AsyncStreamT: ...
 
     @overload
     async def _get(
@@ -1101,8 +1079,7 @@ class AsyncAPIClient:
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[AsyncStreamT],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     async def _get(
@@ -1115,8 +1092,7 @@ class AsyncAPIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[AsyncStreamT],
-    ) -> Union[ResponseT, AsyncStreamT]:
-        ...
+    ) -> Union[ResponseT, AsyncStreamT]: ...
 
     async def _get(
         self,
@@ -1156,8 +1132,7 @@ class AsyncAPIClient:
         cast_to: Type[ResponseT],
         stream: Literal[True],
         stream_cls: type[AsyncStreamT],
-    ) -> AsyncStreamT:
-        ...
+    ) -> AsyncStreamT: ...
 
     @overload
     async def _delete(
@@ -1170,8 +1145,7 @@ class AsyncAPIClient:
         cast_to: Type[ResponseT],
         stream: Literal[False],
         stream_cls: type[AsyncStreamT],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     async def _delete(
@@ -1184,8 +1158,7 @@ class AsyncAPIClient:
         cast_to: Type[ResponseT],
         stream: bool,
         stream_cls: type[AsyncStreamT],
-    ) -> Union[ResponseT, AsyncStreamT]:
-        ...
+    ) -> Union[ResponseT, AsyncStreamT]: ...
 
     async def _delete(
         self,
@@ -1344,8 +1317,7 @@ class AsyncAPIClient:
         stream: Literal[False],
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
-    ) -> ResponseT:
-        ...
+    ) -> ResponseT: ...
 
     @overload
     async def _request(
@@ -1356,8 +1328,7 @@ class AsyncAPIClient:
         stream: Literal[True],
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
-    ) -> AsyncStreamT:
-        ...
+    ) -> AsyncStreamT: ...
 
     @overload
     async def _request(
@@ -1368,8 +1339,7 @@ class AsyncAPIClient:
         stream: bool,
         cast_to: Type[ResponseT],
         stream_cls: Type[AsyncStreamT],
-    ) -> Union[ResponseT, AsyncStreamT]:
-        ...
+    ) -> Union[ResponseT, AsyncStreamT]: ...
 
     async def _request(
         self,

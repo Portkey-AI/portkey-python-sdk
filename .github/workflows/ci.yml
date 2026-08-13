@@ -9,25 +9,52 @@ on:
         branches:
             - main
             - dev
-    
+
     # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
 
 jobs:
-    
+
+    # Authoritative lint gate: runs the exact same pinned hooks that
+    # `make hooks` runs on a contributor's machine, on a single pinned
+    # interpreter. Make this a required status check on `main`.
+    pre-commit:
+        name: Lint (pre-commit)
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Set up Python
+                uses: actions/setup-python@v5
+                with:
+                    python-version: '3.11'
+
+            -   uses: actions/cache@v4
+                with:
+                    path: ~/.cache/pre-commit
+                    key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+            -   name: Install Dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                    make dev
+
+            -   name: Run pre-commit
+                run: pre-commit run --all-files --show-diff-on-failure
+
     Linting:
         runs-on: ubuntu-latest
         strategy:
             matrix:
                 python-version: ['3.8', '3.9', '3.10', '3.11']
-        
+
         steps:
             -   uses: actions/checkout@v4
             -   name: Set up Python ${{ matrix.python-version }}
                 uses: actions/setup-python@v5
                 with:
                     python-version: ${{ matrix.python-version }}
-                    
+
             -   uses: actions/cache@v4
                 with:
                     path: ~/.cache/pip
@@ -38,6 +65,6 @@ jobs:
                     python -m pip install --upgrade pip
                     make dev
 
-            -   name: Lint with mypy, black and ruff
+            -   name: Lint with mypy and ruff
                 run: |
                     make lint

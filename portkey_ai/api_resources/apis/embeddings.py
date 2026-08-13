@@ -21,7 +21,7 @@ class Embeddings(APIResource):
         dimensions: Union[int, NotGiven] = NOT_GIVEN,
         encoding_format: Union[str, NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> CreateEmbeddingResponse:
         response = self.openai_client.with_raw_response.embeddings.create(
             input=input,
@@ -52,7 +52,7 @@ class AsyncEmbeddings(AsyncAPIResource):
         dimensions: Union[int, NotGiven] = NOT_GIVEN,
         encoding_format: Union[str, NotGiven] = NOT_GIVEN,
         user: Union[str, NotGiven] = NOT_GIVEN,
-        **kwargs
+        **kwargs,
     ) -> CreateEmbeddingResponse:
         response = await self.openai_client.with_raw_response.embeddings.create(
             input=input,

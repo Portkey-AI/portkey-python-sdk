@@ -414,15 +414,17 @@ class VectorFileBatches(APIResource):
         order: Union[str, Omit] = omit,
         **kwargs,
     ) -> VectorStoreFileList:
-        response = self.openai_client.with_raw_response.vector_stores.file_batches.list_files(  # noqa: E501
-            batch_id=batch_id,
-            vector_store_id=vector_store_id,
-            after=after,
-            before=before,
-            filter=filter,
-            limit=limit,
-            order=order,
-            **kwargs,
+        response = (
+            self.openai_client.with_raw_response.vector_stores.file_batches.list_files(  # noqa: E501
+                batch_id=batch_id,
+                vector_store_id=vector_store_id,
+                after=after,
+                before=before,
+                filter=filter,
+                limit=limit,
+                order=order,
+                **kwargs,
+            )
         )
         data = VectorStoreFileList(**json.loads(response.text))
         data._headers = response.headers
@@ -617,15 +619,19 @@ class AsyncVectorFiles(AsyncAPIResource):
         **kwargs,
     ) -> VectorStoreFile:
         if kwargs:
-            response = await self.openai_client.with_raw_response.vector_stores.files.retrieve(  # noqa: E501
-                file_id=file_id,
-                vector_store_id=vector_store_id,
-                extra_body=kwargs,
+            response = (
+                await self.openai_client.with_raw_response.vector_stores.files.retrieve(  # noqa: E501
+                    file_id=file_id,
+                    vector_store_id=vector_store_id,
+                    extra_body=kwargs,
+                )
             )
         else:
-            response = await self.openai_client.with_raw_response.vector_stores.files.retrieve(  # noqa: E501
-                file_id=file_id,
-                vector_store_id=vector_store_id,
+            response = (
+                await self.openai_client.with_raw_response.vector_stores.files.retrieve(  # noqa: E501
+                    file_id=file_id,
+                    vector_store_id=vector_store_id,
+                )
             )
         data = VectorStoreFile(**json.loads(response.text))
         data._headers = response.headers

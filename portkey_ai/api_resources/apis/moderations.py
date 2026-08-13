@@ -16,7 +16,7 @@ class Moderations(APIResource):
         *,
         input: Union[str, List[str], Iterable[Any]],
         model: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> ModerationCreateResponse:
         response = self.openai_client.with_raw_response.moderations.create(
             input=input, model=model, extra_body=kwargs
@@ -37,7 +37,7 @@ class AsyncModerations(AsyncAPIResource):
         *,
         input: Union[str, List[str], Iterable[Any]],
         model: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> ModerationCreateResponse:
         response = await self.openai_client.with_raw_response.moderations.create(
             input=input, model=model, extra_body=kwargs

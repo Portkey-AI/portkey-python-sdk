@@ -8,4 +8,4 @@
 
 ## Reporting a Vulnerability
 
-Please report any security vulnerabilities at `support@portkey.ai`. 
+Please report any security vulnerabilities at `support@portkey.ai`.

@@ -44,7 +44,7 @@ The Portkey SDK is built on top of the OpenAI SDK, allowing you to seamlessly in
     <tr>
         <td width=50%><b>Analytics</b><br />Track your app & LLM's performance with 40+ production-critical metrics in a single place.</td>
     </tr>
-</table> 
+</table>
 
 ## Usage
 
@@ -117,7 +117,7 @@ from portkey_ai.integrations.strands import PortkeyStrands
 model = PortkeyStrands(
     api_key="PORTKEY_API_KEY",
     model_id="@openai/gpt-4o-mini",
-#   base_url="https://api.portkey.ai/v1",  ## Optional    
+#   base_url="https://api.portkey.ai/v1",  ## Optional
 )
 
 agent = Agent(model=model)
@@ -150,7 +150,7 @@ from portkey_ai.integrations.adk import PortkeyAdk
 llm = PortkeyAdk(
     api_key="PORTKEY_API_KEY",
     model="@openai/gpt-4o-mini",
-#   base_url="https://api.portkey.ai/v1",  ## Optional    
+#   base_url="https://api.portkey.ai/v1",  ## Optional
 )
 
 req = LlmRequest(
@@ -213,7 +213,7 @@ asyncio.run(main())
 Configuration notes:
 
 - **system_role**: By default, the adapter sends the system instruction as a `developer` role message to align with ADK. If your provider expects a strict `system` role, pass `system_role="system"` when constructing `PortkeyAdk`.
-  
+
   ```python
   llm = PortkeyAdk(
       model="@openai/gpt-4o-mini",

@@ -18,8 +18,7 @@ class Post(APIResource):
         url: str,
         stream: Literal[True],
         **kwargs,
-    ) -> Stream[GenericResponse]:
-        ...
+    ) -> Stream[GenericResponse]: ...
 
     @overload
     def create(
@@ -28,8 +27,7 @@ class Post(APIResource):
         url: str,
         stream: Literal[False] = False,
         **kwargs,
-    ) -> GenericResponse:
-        ...
+    ) -> GenericResponse: ...
 
     @overload
     def create(
@@ -38,8 +36,7 @@ class Post(APIResource):
         url: str,
         stream: bool = False,
         **kwargs,
-    ) -> Union[GenericResponse, Stream[GenericResponse]]:
-        ...
+    ) -> Union[GenericResponse, Stream[GenericResponse]]: ...
 
     def create(
         self,
@@ -73,8 +70,7 @@ class AsyncPost(AsyncAPIResource):
         url: str,
         stream: Literal[True],
         **kwargs,
-    ) -> AsyncStream[GenericResponse]:
-        ...
+    ) -> AsyncStream[GenericResponse]: ...
 
     @overload
     async def create(
@@ -83,8 +79,7 @@ class AsyncPost(AsyncAPIResource):
         url: str,
         stream: Literal[False] = False,
         **kwargs,
-    ) -> GenericResponse:
-        ...
+    ) -> GenericResponse: ...
 
     @overload
     async def create(
@@ -93,8 +88,7 @@ class AsyncPost(AsyncAPIResource):
         url: str,
         stream: bool = False,
         **kwargs,
-    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]:
-        ...
+    ) -> Union[GenericResponse, AsyncStream[GenericResponse]]: ...
 
     async def create(
         self,

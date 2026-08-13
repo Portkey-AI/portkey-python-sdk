@@ -860,8 +860,10 @@ class AsyncThreads(AsyncAPIResource):
     async def stream_create_and_run(
         self, assistant_id, **kwargs
     ) -> Union[Run, AsyncIterator[AssistantStreamEvent]]:
-        async with self.openai_client.with_streaming_response.beta.threads.create_and_run(  # noqa: E501
-            assistant_id=assistant_id, stream=True, extra_body=kwargs
+        async with (
+            self.openai_client.with_streaming_response.beta.threads.create_and_run(  # noqa: E501
+                assistant_id=assistant_id, stream=True, extra_body=kwargs
+            )
         ) as streaming:
             async for line in streaming.iter_lines():
                 json_string = line.replace("data: ", "")
@@ -967,12 +969,10 @@ class AsyncThreads(AsyncAPIResource):
         ] = omit,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
-    ) -> (
-        Union[
-            AsyncAssistantStreamManager[AsyncAssistantEventHandler],
-            AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
-        ]
-    ):
+    ) -> Union[
+        AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+    ]:
         response = await self.openai_client.beta.threads.create_and_run_stream(
             assistant_id=assistant_id,
             instructions=instructions,
@@ -1300,12 +1300,10 @@ class AsyncRuns(AsyncAPIResource):
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
-    ) -> (
-        Union[
-            AsyncAssistantStreamManager[AsyncAssistantEventHandler],
-            AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
-        ]
-    ):
+    ) -> Union[
+        AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+    ]:
         response = await self.openai_client.beta.threads.runs.create_and_stream(
             assistant_id=assistant_id,
             additional_instructions=additional_instructions,
@@ -1372,12 +1370,10 @@ class AsyncRuns(AsyncAPIResource):
         thread_id: str,
         event_handler: Union[AsyncAssistantEventHandlerT, None] = None,
         **kwargs,
-    ) -> (
-        Union[
-            AsyncAssistantStreamManager[AsyncAssistantEventHandler],
-            AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
-        ]
-    ):
+    ) -> Union[
+        AsyncAssistantStreamManager[AsyncAssistantEventHandler],
+        AsyncAssistantStreamManager[AsyncAssistantEventHandlerT],
+    ]:
         response = await self.openai_client.beta.threads.runs.stream(
             assistant_id=assistant_id,
             include=include,

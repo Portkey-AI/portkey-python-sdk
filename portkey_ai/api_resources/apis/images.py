@@ -29,7 +29,7 @@ class Images(APIResource):
         response_format: Union[str, Omit] = omit,
         size: Union[str, Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> ImagesResponse:
         response = self.openai_client.with_raw_response.images.create_variation(
             image=image,
@@ -64,9 +64,8 @@ class Images(APIResource):
         size: Union[Optional[str], Omit] = omit,
         stream: Union[Optional[Literal[False]], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]: ...
 
     @overload
     def edit(
@@ -87,9 +86,8 @@ class Images(APIResource):
         response_format: Union[Optional[str], Omit] = omit,
         size: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Stream[ImageEditStreamEvent]:
-        ...
+        **kwargs,
+    ) -> Stream[ImageEditStreamEvent]: ...
 
     @overload
     def edit(
@@ -110,9 +108,8 @@ class Images(APIResource):
         response_format: Union[Optional[str], Omit] = omit,
         size: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent], ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent], ImagesResponse]: ...
 
     def edit(
         self,
@@ -132,7 +129,7 @@ class Images(APIResource):
         size: Union[Optional[str], Omit] = omit,
         stream: Union[Optional[Literal[False]], Literal[True], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Union[OpenAIImagesResponse, Stream[ImageEditStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
@@ -205,9 +202,8 @@ class Images(APIResource):
         stream: Union[Optional[Literal[False]], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]: ...
 
     @overload
     def generate(
@@ -227,9 +223,8 @@ class Images(APIResource):
         size: Union[Optional[str], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Stream[ImageGenStreamEvent]:
-        ...
+        **kwargs,
+    ) -> Stream[ImageGenStreamEvent]: ...
 
     @overload
     def generate(
@@ -249,9 +244,8 @@ class Images(APIResource):
         size: Union[Optional[str], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent], ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent], ImagesResponse]: ...
 
     def generate(
         self,
@@ -270,7 +264,7 @@ class Images(APIResource):
         stream: Union[Optional[Union[Literal[False], Literal[True]]], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Union[OpenAIImagesResponse, Stream[ImageGenStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
@@ -338,7 +332,7 @@ class AsyncImages(AsyncAPIResource):
         response_format: Union[str, Omit] = omit,
         size: Union[str, Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> ImagesResponse:
         response = await self.openai_client.with_raw_response.images.create_variation(
             image=image,
@@ -372,9 +366,8 @@ class AsyncImages(AsyncAPIResource):
         size: Union[Optional[str], Omit] = omit,
         stream: Union[Optional[Literal[False]], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]: ...
 
     @overload
     async def edit(
@@ -395,9 +388,8 @@ class AsyncImages(AsyncAPIResource):
         response_format: Union[Optional[str], Omit] = omit,
         size: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> AsyncStream[ImageEditStreamEvent]:
-        ...
+        **kwargs,
+    ) -> AsyncStream[ImageEditStreamEvent]: ...
 
     @overload
     async def edit(
@@ -418,9 +410,10 @@ class AsyncImages(AsyncAPIResource):
         response_format: Union[Optional[str], Omit] = omit,
         size: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent], ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[
+        OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent], ImagesResponse
+    ]: ...
 
     async def edit(
         self,
@@ -440,7 +433,7 @@ class AsyncImages(AsyncAPIResource):
         size: Union[Optional[str], Omit] = omit,
         stream: Union[Optional[Literal[False]], Literal[True], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Union[OpenAIImagesResponse, AsyncStream[ImageEditStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)
@@ -513,9 +506,8 @@ class AsyncImages(AsyncAPIResource):
         stream: Union[Optional[Literal[False]], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[OpenAIImagesResponse, ImagesResponse]: ...
 
     @overload
     async def generate(
@@ -535,9 +527,8 @@ class AsyncImages(AsyncAPIResource):
         size: Union[Optional[str], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> AsyncStream[ImageGenStreamEvent]:
-        ...
+        **kwargs,
+    ) -> AsyncStream[ImageGenStreamEvent]: ...
 
     @overload
     async def generate(
@@ -557,9 +548,10 @@ class AsyncImages(AsyncAPIResource):
         size: Union[Optional[str], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
-    ) -> Union[OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent], ImagesResponse]:
-        ...
+        **kwargs,
+    ) -> Union[
+        OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent], ImagesResponse
+    ]: ...
 
     async def generate(
         self,
@@ -578,7 +570,7 @@ class AsyncImages(AsyncAPIResource):
         stream: Union[Optional[Union[Literal[False], Literal[True]]], Omit] = omit,
         style: Union[Optional[str], Omit] = omit,
         user: Union[str, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Union[OpenAIImagesResponse, AsyncStream[ImageGenStreamEvent], ImagesResponse]:
         extra_headers = kwargs.pop("extra_headers", None)
         extra_query = kwargs.pop("extra_query", None)

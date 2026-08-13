@@ -491,8 +491,7 @@ class Completions(APIResource):
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
-    ) -> Stream[PromptCompletionChunk]:
-        ...
+    ) -> Stream[PromptCompletionChunk]: ...
 
     @overload
     def create(
@@ -508,8 +507,7 @@ class Completions(APIResource):
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
-    ) -> PromptCompletion:
-        ...
+    ) -> PromptCompletion: ...
 
     @overload
     def create(
@@ -525,8 +523,7 @@ class Completions(APIResource):
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
-    ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]:
-        ...
+    ) -> Union[PromptCompletion, Stream[PromptCompletionChunk]]: ...
 
     def create(
         self,
@@ -584,8 +581,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
-    ) -> AsyncStream[PromptCompletionChunk]:
-        ...
+    ) -> AsyncStream[PromptCompletionChunk]: ...
 
     @overload
     async def create(
@@ -601,8 +597,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
-    ) -> PromptCompletion:
-        ...
+    ) -> PromptCompletion: ...
 
     @overload
     async def create(
@@ -618,8 +613,7 @@ class AsyncCompletions(AsyncAPIResource):
         top_p: Union[float, NotGiven] = NOT_GIVEN,
         extra_headers: Mapping[str, str] = {},
         **kwargs,
-    ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]:
-        ...
+    ) -> Union[PromptCompletion, AsyncStream[PromptCompletionChunk]]: ...
 
     async def create(
         self,

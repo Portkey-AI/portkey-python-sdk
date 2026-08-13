@@ -97,9 +97,9 @@ class LangchainCallbackHandler(BaseCallbackHandler):
 
         response_payload = self.on_llm_end_transformer(response, kwargs=kwargs)
         self.event_map["llm_start_" + str(run_id)]["response"] = response_payload
-        self.event_map["llm_start_" + str(run_id)]["response"][
-            "response_time"
-        ] = total_time
+        self.event_map["llm_start_" + str(run_id)]["response"]["response_time"] = (
+            total_time
+        )
 
         self.event_array.append(self.event_map["llm_start_" + str(run_id)])
 
@@ -166,9 +166,9 @@ class LangchainCallbackHandler(BaseCallbackHandler):
         response_payload = self.on_chain_end_transformer(outputs)
 
         self.event_map["chain_start_" + str(run_id)]["response"] = response_payload
-        self.event_map["chain_start_" + str(run_id)]["response"][
-            "response_time"
-        ] = total_time
+        self.event_map["chain_start_" + str(run_id)]["response"]["response_time"] = (
+            total_time
+        )
 
         self.event_array.append(self.event_map["chain_start_" + str(run_id)])
 
@@ -225,9 +225,9 @@ class LangchainCallbackHandler(BaseCallbackHandler):
 
         response_payload = self.on_tool_end_transformer(output)
         self.event_map["tool_start_" + str(run_id)]["response"] = response_payload
-        self.event_map["tool_start_" + str(run_id)]["response"][
-            "response_time"
-        ] = total_time
+        self.event_map["tool_start_" + str(run_id)]["response"]["response_time"] = (
+            total_time
+        )
         self.event_array.append(self.event_map["tool_start_" + str(run_id)])
         pass
 
@@ -396,16 +396,28 @@ class LangchainCallbackHandler(BaseCallbackHandler):
                             "role": "assistant",
                             "content": response.generations[0][0].text,
                         },
-                        "logprobs": response.generations[0][0].generation_info.get("logprobs", ""),  # type: ignore[union-attr] # noqa: E501
-                        "finish_reason": response.generations[0][0].generation_info.get("finish_reason", ""),  # type: ignore[union-attr] # noqa: E501
+                        "logprobs": response.generations[0][0].generation_info.get(
+                            "logprobs", ""
+                        ),  # type: ignore[union-attr] # noqa: E501
+                        "finish_reason": response.generations[0][0].generation_info.get(
+                            "finish_reason", ""
+                        ),  # type: ignore[union-attr] # noqa: E501
                     }
                 ]
             }
             response_obj["body"].update({"usage": usage})
             response_obj["body"].update({"id": str(kwargs.get("run_id", ""))})
             response_obj["body"].update({"created": int(time.time())})
-            response_obj["body"].update({"model": (response.llm_output or {}).get("model_name", "")})  # type: ignore[union-attr] # noqa: E501
-            response_obj["body"].update({"system_fingerprint": (response.llm_output or {}).get("system_fingerprint", "")})  # type: ignore[union-attr] # noqa: E501
+            response_obj["body"].update(
+                {"model": (response.llm_output or {}).get("model_name", "")}
+            )  # type: ignore[union-attr] # noqa: E501
+            response_obj["body"].update(
+                {
+                    "system_fingerprint": (response.llm_output or {}).get(
+                        "system_fingerprint", ""
+                    )
+                }
+            )  # type: ignore[union-attr] # noqa: E501
             response_obj["headers"] = {}
             return response_obj
         except Exception:

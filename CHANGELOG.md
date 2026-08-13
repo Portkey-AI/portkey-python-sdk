@@ -61,11 +61,10 @@ We are excited to announce the **stable release** of the all-new **Portkey Pytho
 
 - **Stability and Reliability**: This release marks the stable version of Portkey Python SDK, thoroughly tested to ensure reliable performance in your projects.
 
-- **Ease of Use**: The SDK follows OpenAI SDK footprint, and with one line of change to your existing code, you can add Portkey's production features to your app. 
+- **Ease of Use**: The SDK follows OpenAI SDK footprint, and with one line of change to your existing code, you can add Portkey's production features to your app.
 
 - **Community Support**: [Join our growing community](https://discord.gg/QHJ3RgcvKT) of practitioners putting LLMs in production. Share ideas, resolve doubts, and collaborate on projects.
 
 Happy coding!
 
 - The Portkey Team
-

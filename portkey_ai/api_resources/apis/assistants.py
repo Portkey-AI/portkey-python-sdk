@@ -28,7 +28,7 @@ class Assistants(APIResource):
         tool_resources: Union[Any, Omit] = omit,
         tools: Union[Any, Omit] = omit,
         top_p: Union[float, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Assistant:
         response = self.openai_client.with_raw_response.beta.assistants.create(
             model=model,
@@ -76,7 +76,7 @@ class Assistants(APIResource):
         tool_resources: Union[Any, Omit] = omit,
         tools: Union[Any, Omit] = omit,
         top_p: Union[float, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Assistant:
         response = self.openai_client.with_raw_response.beta.assistants.update(
             assistant_id=assistant_id,
@@ -104,7 +104,7 @@ class Assistants(APIResource):
         before: Union[str, Omit] = omit,
         limit: Union[int, Omit] = omit,
         order: Union[Omit, Literal["asc", "desc"]] = omit,
-        **kwargs
+        **kwargs,
     ) -> AssistantList:
         response = self.openai_client.with_raw_response.beta.assistants.list(
             after=after, before=before, limit=limit, order=order
@@ -141,7 +141,7 @@ class AsyncAssistants(AsyncAPIResource):
         tool_resources: Union[Any, Omit] = omit,
         tools: Union[Any, Omit] = omit,
         top_p: Union[float, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Assistant:
         response = await self.openai_client.with_raw_response.beta.assistants.create(
             model=model,
@@ -193,7 +193,7 @@ class AsyncAssistants(AsyncAPIResource):
         tool_resources: Union[Any, Omit] = omit,
         tools: Union[Any, Omit] = omit,
         top_p: Union[float, Omit] = omit,
-        **kwargs
+        **kwargs,
     ) -> Assistant:
         response = await self.openai_client.with_raw_response.beta.assistants.update(
             assistant_id=assistant_id,
@@ -221,7 +221,7 @@ class AsyncAssistants(AsyncAPIResource):
         before: Union[str, Omit] = omit,
         limit: Union[int, Omit] = omit,
         order: Union[Omit, Literal["asc", "desc"]] = omit,
-        **kwargs
+        **kwargs,
     ) -> AssistantList:
         response = await self.openai_client.with_raw_response.beta.assistants.list(
             after=after, before=before, limit=limit, order=order

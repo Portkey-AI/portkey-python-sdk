@@ -102,9 +102,9 @@ def _build_request(
             thinking_budget=thinking_budget,
         )
     if enable_tool_call:
-        config_kwargs[
-            "system_instruction"
-        ] = "When the user asks about weather, call the provided tool exactly once."
+        config_kwargs["system_instruction"] = (
+            "When the user asks about weather, call the provided tool exactly once."
+        )
         config_kwargs["tools"] = [_build_weather_tool()]
     if config_kwargs:
         kwargs["config"] = genai_types.GenerateContentConfig(**config_kwargs)

@@ -230,12 +230,11 @@ class ModelParams(BaseModel):
     tools: Optional[List[Tool]] = None
 
 
-class OverrideParams(ModelParams, ConversationInput):
-    ...
+class OverrideParams(ModelParams, ConversationInput): ...
 
 
 def remove_empty_values(
-    data: Union[Dict[str, Any], Mapping[str, Any]]
+    data: Union[Dict[str, Any], Mapping[str, Any]],
 ) -> Dict[str, Any]:
     if isinstance(data, dict):
         cleaned_dict = {}
@@ -329,16 +328,14 @@ class RequestConfig(BaseModel):
     options: List[ProviderOptions]
 
 
-class Body(LLMOptions):
-    ...
+class Body(LLMOptions): ...
 
 
 class ConfigSlug(BaseModel):
     config: str
 
 
-class Params(Constructs, ConversationInput, ModelParams, extra="forbid"):
-    ...
+class Params(Constructs, ConversationInput, ModelParams, extra="forbid"): ...
 
 
 class RequestData(BaseModel):

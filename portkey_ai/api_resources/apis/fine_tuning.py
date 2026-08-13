@@ -574,12 +574,10 @@ class AsyncGraders(AsyncAPIResource):
         grader: grader_run_params.Grader,
         **kwargs,
     ) -> GraderValidateResponse:
-        response = (
-            await (
-                self.openai_client.with_raw_response.fine_tuning.alpha.graders.validate(
-                    grader=grader,
-                    extra_body=kwargs,
-                )
+        response = await (
+            self.openai_client.with_raw_response.fine_tuning.alpha.graders.validate(
+                grader=grader,
+                extra_body=kwargs,
             )
         )
         data = GraderValidateResponse(**json.loads(response.text))
