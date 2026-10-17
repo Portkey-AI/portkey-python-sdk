@@ -275,8 +275,10 @@ class Portkey(APIClient):
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
             metadata=metadata or self.metadata,
-            debug=debug or self.debug,
-            cache_force_refresh=cache_force_refresh or self.cache_force_refresh,
+            debug=self.debug if debug is None else debug,
+            cache_force_refresh=self.cache_force_refresh
+            if cache_force_refresh is None
+            else cache_force_refresh,
             custom_host=custom_host or self.custom_host,
             forward_headers=forward_headers or self.forward_headers,
             instrumentation=instrumentation or self.instrumentation,
@@ -621,8 +623,10 @@ class AsyncPortkey(AsyncAPIClient):
             provider=provider or self.provider,
             trace_id=trace_id or self.trace_id,
             metadata=metadata or self.metadata,
-            debug=debug or self.debug,
-            cache_force_refresh=cache_force_refresh or self.cache_force_refresh,
+            debug=self.debug if debug is None else debug,
+            cache_force_refresh=self.cache_force_refresh
+            if cache_force_refresh is None
+            else cache_force_refresh,
             custom_host=custom_host or self.custom_host,
             forward_headers=forward_headers or self.forward_headers,
             instrumentation=instrumentation or self.instrumentation,
